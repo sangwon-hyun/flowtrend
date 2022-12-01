@@ -17,7 +17,6 @@ This package implements `flowsmooth`, a model used for smooth estimation of
 mixture models across time.
 
 
-
 ```{r render, echo = FALSE, eval = FALSE}
 litr::render("index.Rmd", output_format = litr::litr_gitbook())
 ```

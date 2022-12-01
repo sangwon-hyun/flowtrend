@@ -49,7 +49,7 @@ obj = reorder_clust(obj)
 The objective value (that is, the penalized log likelihood) should be monotone
 across EM algorithm iterations.
 
-```{r, eval=FALSE}
+```{r test-objective, eval = FALSE}
 testthat::test_that("Objective value decreases over EM iterations.",{
   
   devtools::load_all("~/repos/FlowTF")
@@ -194,7 +194,7 @@ first, let's write a couple of functions `interpolate_mn()` and
 `interpolate_prob()` which do a linear interpolation of the means and
 probabilities at new time points.
 
-```{r interpolate_mn}
+```{r interpolate_mn, eval = FALSE}
 #' Do a linear interpolation of the cluster means.
 #'
 #' @param x Training times.
@@ -228,7 +228,7 @@ interpolate_mn <- function(x, tt, iclust, mn){
 }
 ```
 
-```{r interpolate_prob}
+```{r interpolate_prob, eval = FALSE}
 #' Do a linear interpolation of the cluster means.
 #'
 #' @param x Training times.
@@ -268,7 +268,7 @@ interpolate_prob <- function(x, tt, iclust, prob){
 Next, let's build a prediction function `predict_flowsmooth()` which takes the
 model object `obj`, and the new time points `newtimes`, and produces.
 
-```{r predict_flowsmooth}
+```{r predict_flowsmooth, eval = FALSE}
 #' Prediction: Given new timepoints in the original time interval,generate a set
 #' of means and probs (and return the same Sigma).
 #'
@@ -407,8 +407,6 @@ dt2 = dt %>% subset(time > 50)
 ```
 
 
-
-
 ## 1d example with cross-validation
 
-Thoroughly test the selected lambda.
+TODO: Thoroughly test the selected lambda.
