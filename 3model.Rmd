@@ -821,7 +821,7 @@ Estep <- function (mn, sigma, prob, ylist = NULL, numclust, denslist_by_clust = 
 The E step should return a list of exactly the same size and format as `ylist`,
 which is a $T$ -length list of matrices of size $n_t \times d$.
 
-```{r test-Estep}
+```{r test-Estep, eval = FALSE}
 testthat::test_that("E step returns appropriately sized object.",{
   
   ## Generate some fake data

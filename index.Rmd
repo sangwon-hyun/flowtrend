@@ -13,12 +13,11 @@ documentclass: book
 
 # Introduction
 
-You can introduce what your R package does here.
+This package implements `flowsmooth`, a model used for smooth estimation of
+mixture models across time.
 
-**Note:** If you are working in RStudio, you can simply press "Knit" to render
-this bookdown (and open `_book/index.html` to see the result).  More generally,
-in a console you can run the following:
 
-```{r, eval = FALSE}
+
+```{r render, echo = FALSE, eval = FALSE}
 litr::render("index.Rmd", output_format = litr::litr_gitbook())
 ```

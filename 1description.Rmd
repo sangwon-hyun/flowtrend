@@ -35,7 +35,7 @@ the console.
 
 This package will have some dependancies:
 
-```{r, message = FALSE}
+```{r dependencies, message = FALSE}
 library(tidyverse)
 library(ggplot2)
 ```

@@ -328,7 +328,7 @@ predict_flowsmooth <- function(obj, newtimes = NULL){
 Here's a quick test (no new data) to make sure this function returns a list
 containing: the mean, probability, covariance, and new times.
 
-```{r, eval = FALSE}
+```{r test-predict_flowsmooth, eval = FALSE}
 testthat::test_that("The prediction function returns the right things", {
   ## Generate data
   ## ll()
@@ -391,7 +391,7 @@ testthat::test_that("prediction function returns the right things", {
 
 ## Evaluating data fit (by likelihood) in an out-of-sample measurement. 
 
-```{r predict-example eval = FALSE}
+```{r predict-example, eval = FALSE}
 predobj = predict_flowsmooth(obj, newtimes = held_out)
 predobj
 ```
@@ -399,7 +399,7 @@ predobj
 
 ## 1d example with ends cut off
 
-```{r, eval = FALSE}
+```{r 1d-example-ends-cut-off, eval = FALSE}
 set.seed(100)
 dt <-       gendat_1d(TT, ntlist, die_off_time = 0.45)
 dt1 = dt %>% subset(time <= 50)
