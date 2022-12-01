@@ -1,0 +1,41 @@
+# Package setup
+
+The DESCRIPTION file is created using this code.
+
+```{r package-setup, message=FALSE, results='hide'}
+usethis::create_package(
+  path = ".",
+  fields = list(
+    Package = params$package_name,
+    Version = "0.0.0.9000",
+    Title = "flowsmooth",
+    Description = "Time-smooth mixture modeling for flow cytometry data.",
+    `Authors@R` = person(
+      given = "Sangwon",
+      family = "Hyun",
+      email = "sangwonh@ucsc.edu",
+      role = c("aut", "cre")
+      )
+  )
+)
+usethis::use_mit_license(copyright_holder = "Sangwon Hyun")
+```
+
+The following is what will show up when someone types `package?flowsmooth` in
+the console.
+
+```{package_doc}
+#' flowsmooth
+#'
+#' This package implements the `flowsmooth` method for automatic gating of flow cytometry data over time and space.
+#' 
+#' @docType package
+```
+
+
+This package will have some dependancies:
+
+```{r, message = FALSE}
+library(tidyverse)
+library(ggplot2)
+```
