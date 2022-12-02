@@ -1,0 +1,537 @@
+# Tuning the regularization parameters for `flowsmooth`
+
+We're going to take a huge leap, and assume the `flowsmooth()` function has been
+built. We need to build up quite a few functions before we're able to do
+cross-validation. These include:
+
+- Predicting out-of-sample, using `predict_flowsmooth()`.
+- Evaluating data fit (by likelihood) in an out-of-sample measurement, using
+  `objective(..., unpenalized = TRUE)`.
+- Numerically estimating the maximum regularization values to test, using
+  `get_max_lambda()`.
+- Making data splits, using `make_cv_tf_folds()`.
+
+
+## Predicting and evaluating on new time points
+
+First, let's write a couple of functions `interpolate_mn()` and
+`interpolate_prob()` which linearly interpolate the means and probabilities at
+new time points.
+
+```{r interpolate_mn, eval = FALSE}
+#' Do a linear interpolation of the cluster means.
+#'
+#' @param x Training times.
+#' @param tt Prediction time.
+#' @param iclust Cluster number.
+#' @param mn length(x) by dimdat by numclust matrix.
+#'
+#' @return A dimdat-length vector.
+interpolate_mn <- function(x, tt, iclust, mn){
+
+  ## Basic checks
+  stopifnot(length(x) == dim(mn)[1])
+  stopifnot(iclust <= dim(mn)[3])
+  if(tt %in% x) return(mn[which(x==tt),,iclust,drop=TRUE])
+
+  ## Set up for linear interpolation
+  floor_t <- max(x[which(x <= tt)])
+  ceiling_t <- min(x[which(x >= tt)])
+  floor_t_ind <- which(x == floor_t)
+  ceiling_t_ind <- which(x == ceiling_t)
+
+  ## Do the linear interpolation
+  mn_t <-
+    mn[ceiling_t_ind,,iclust,drop=TRUE]*(tt - floor_t)/(ceiling_t - floor_t) +
+    mn[floor_t_ind,,iclust,drop=TRUE]*(ceiling_t - tt)/(ceiling_t - floor_t) 
+
+  ## Basic checks
+  stopifnot(length(mn_t) == dim(mn)[2])
+
+  return(mn_t)
+}
+```
+
+```{r interpolate_prob, eval = FALSE}
+#' Do a linear interpolation of the cluster means.
+#'
+#' @param x Training times.
+#' @param tt Prediction time.
+#' @param iclust Cluster number.
+#' @param prob length(x) by numclust array or matrix.
+#'
+#' @return One probability.
+interpolate_prob <- function(x, tt, iclust, prob){
+
+  ## Basic checks
+  numdat = dim(prob)[1]
+  numclust = dim(prob)[2]
+  stopifnot(length(x) == numdat)
+  stopifnot(iclust <= numclust)
+  if(tt %in% x) return(prob[which(x == tt),iclust,drop=TRUE])
+
+  ## Set up for linear interpolation
+  floor_t <- max(x[which(x <= tt)])
+  ceiling_t <- min(x[which(x >= tt)])
+  floor_t_ind <- which(x == floor_t)
+  ceiling_t_ind <- which(x == ceiling_t)
+
+  ## Do the linear interpolation
+  prob_t <-
+    prob[ceiling_t_ind,iclust,drop=TRUE]*(tt - floor_t)/(ceiling_t - floor_t) +
+    prob[floor_t_ind,iclust,drop=TRUE]*(ceiling_t - tt)/(ceiling_t - floor_t) # linear interpolation between floor_t and ceiling_t
+
+  ## Basic checks
+  stopifnot(length(prob_t) == 1)
+  stopifnot(0 <= prob_t & prob_t <= 1)
+
+  return(prob_t)
+}
+```
+
+Next, let's build a prediction function `predict_flowsmooth()` which takes the
+model object `obj`, and the new time points `newtimes`, and produces.
+
+```{r predict_flowsmooth, eval = FALSE}
+#' Prediction: Given new timepoints in the original time interval,generate a set
+#' of means and probs (and return the same Sigma).
+#'
+#' @param obj Object returned from covariate EM flowmix().
+#' @param newtimes New times at which to make predictions.
+#'
+#' @return List containing mean, prob, and sigma, and x.
+#'
+#' @export
+#'
+predict_flowsmooth <- function(obj, newtimes = NULL){
+
+  ## Check the dimensions
+  newx <- newtimes
+  if(is.null(newtimes)){ newx = obj$x }
+
+  ## Check if the new times are within the time range of the original data (why is this important)?
+  if(FALSE) stopifnot(all(sapply(newx, FUN = function(t) t >= min(obj$x) & t <= max(obj$x))))
+
+  ## Setup some things
+  x <- obj$x
+  TT_new = length(newx)
+  numclust = obj$numclust
+  dimdat = obj$dimdat
+
+  ## Predict the means (manually).
+  newmn_array = array(NA, dim = c(TT_new, dimdat, numclust))
+  for(iclust in 1:numclust){
+    newmn_oneclust <- lapply(newx, function(tt){
+      interpolate_mn(x, tt, iclust, obj$mn)
+    }) %>% do.call(rbind, . )
+    newmn_array[,,iclust] = newmn_oneclust
+  }
+
+  ## Predict the probs.
+  newprob = array(NA, dim = c(TT_new, numclust))
+  for(iclust in 1:numclust){
+    newprob_oneclust <- lapply(newx, function(tt){
+      interpolate_prob(x, tt, iclust, obj$prob)
+    }) %>% do.call(c, .)
+    newprob[,iclust] = newprob_oneclust
+  }
+
+  ## Basic checks
+  stopifnot(all(dim(newprob) == c(TT_new,numclust)))
+  stopifnot(all(newprob >= 0))
+  stopifnot(all(newprob <= 1))
+
+  ## Return the predictions
+  return(list(mn = newmn_array,
+              prob = newprob,
+              sigma = obj$sigma,
+              x = newx))
+}
+```
+
+Here's a quick test (no new data) to make sure this function returns a list
+containing: the mean, probability, covariance, and new times.
+
+```{r test-predict_flowsmooth, eval = FALSE}
+testthat::test_that("The prediction function returns the right things", {
+  ## Generate data
+  ## ll()
+  ## devtools::load_all('~/repos/FlowTF')
+  set.seed(100)
+  dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
+  ylist = dt %>% dt2ylist()
+  x = dt %>% pull(time) %>% unique()
+  obj <- flowsmooth(ylist = ylist,
+                    x = x,
+                    maxdev = 5,
+                    numclust = 3,
+                    lambda = 0.02,
+                    l = 1,
+                    l_prob = 2,
+                    lambda_prob = .005, ## 
+                    nrestart = 1,
+                    niter = 3)
+
+  predobj = predict_flowsmooth(obj)
+  testthat::expect_named(predobj, c("mn", "prob", "sigma", "x"))
+})
+```
+
+Now, we try to make predictions at *new* held-out time points `held_out=25:35`,
+from a model that is estimated without those time points.
+
+```{r test-predict_flowsmooth2, eval = FALSE}
+testthat::test_that("prediction function returns the right things", {
+  ## Generate data
+  set.seed(100)
+  dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
+  dt_model       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45, return_model = TRUE)
+  held_out = 25:35
+  dt_subset = dt %>% subset(time %ni% held_out)
+  ylist = dt_subset %>% dt2ylist()
+  x = dt_subset %>% pull(time) %>% unique()
+  obj <- flowsmooth(ylist = ylist, 
+                    x = x,
+                    maxdev = 5,
+                    numclust = 3,
+                    lambda = 0.02,
+                    l = 1,
+                    l_prob = 2,
+                    lambda_prob = .005, ## 
+                    nrestart = 1)
+
+  ## Also reorder the cluster labels of the truth, to match the fitted model.
+  ord = obj$mn[,1,] %>% colSums() %>% order(decreasing=TRUE)
+  lookup <- setNames(c(1:obj$numclust), ord)
+  dt_model$cluster = lookup[as.numeric(dt_model$cluster)] %>% as.factor()
+  
+  ## Reorder the cluster lables of the fitted model.
+  obj = reorder_clust(obj)
+   
+  predobj = predict_flowsmooth(obj, newtimes = held_out)
+
+  ## Check a few things
+  testthat::expect_equal(predobj$x,  held_out)
+  testthat::expect_equal(rowSums(predobj$prob),  rep(1, length(held_out)))
+  testthat::expect_equal(dim(predobj$mn),  c(length(held_out), 1, 3))
+})
+```
+
+Plot the predicted means and probabilities, with purple points at the
+interpolated means.  We can see that it works as expected.
+
+```{r predict-plot-mean, eval = FALSE, fig.width = 7, fig.height = 5}
+g = plot_1d(ylist, obj, x = x) +
+  geom_line(aes(x = time, y = mean, group = cluster),
+            data = dt_model,## %>% subset(time %ni% held_out),
+            linetype = "dashed", size=2, alpha = .7)
+
+## Plot the predicted means
+preds = lapply(1:3, function(iclust){
+  tibble(mn = predobj$mn %>% .[,,iclust, drop = TRUE],
+         prob = predobj$prob %>% .[,iclust, drop = TRUE],
+         time = held_out,
+         cluster = iclust)
+}) %>% bind_rows() 
+g + geom_point(aes(x=time, y=mn, group = cluster), data = preds, col = 'purple', alpha = .8) 
+```
+
+The estimated probabilities are shown here, with purple points showing the
+interpolation. It works as expected.
+
+```{r predict-plot-prob, eval = FALSE, fig.width = 7, fig.height = 5}
+plot_prob(obj, x=x) +
+  geom_line(aes(x = time, y = prob, group = cluster, color = cluster),
+            data = dt_model, linetype = "dashed")  +
+  facet_wrap(~cluster) +
+  geom_point(aes(x = time, y = prob), data = preds, col = 'purple')
+```
+
+## Evaluating data fit (by likelihood) in an out-of-sample measurement. 
+
+```{r predict-example, eval = FALSE}
+predobj = predict_flowsmooth(obj, newtimes = held_out)
+
+## Use the predicted (interpolated) model parameters
+obj_pred = objective(mu = predobj$mn, prob = predobj$prob, sigma = predobj$sigma, ylist = ylist[held_out],
+                     unpenalized = TRUE)
+truemn = array(NA, dim = dim(predobj$mn))
+truemn[,1,] =
+  dt_model %>% select(time, cluster, mean) %>%
+  pivot_wider(names_from = cluster, values_from = mean) %>% subset(time %in% held_out) %>%
+  select(-time) %>% as.matrix()
+
+## Use the true mean
+obj_better = objective(mu = truemn, prob = predobj$prob, sigma = predobj$sigma, ylist = ylist[held_out],
+                       unpenalized = TRUE)
+
+## Make sure using the true mean is better (lower is better)
+stopifnot(obj_better < obj_pred)
+obj$objectives %>% plot(type = 'o')
+
+## matplot(truemn[,1,], type = 'l')
+## matlines(predobj$mn[,1,], lwd = 2)
+```
+
+
+
+## 1d example with ends cut off
+
+```{r 1d-example-ends-cut-off, eval = FALSE}
+set.seed(100)
+dt <-       gendat_1d(TT, ntlist, die_off_time = 0.45)
+dt1 = dt %>% subset(time <= 50)
+dt2 = dt %>% subset(time > 50)
+```
+
+
+## 1d example with cross-validation
+
+TODO: Thoroughly test the selected lambda.
+
+
+```{r, eval = FALSE}
+TT = length(ylist)
+nfold = 3
+make_cv_tf_folds(ylist, nfold, TT)
+TT
+```
+
+
+## Maximum $(\lambda_\mu, \lambda_\pi)$ values to test
+
+What should the maximum value of regularization parameters to use? It's useful
+to be able to calculate the *smallest* value of regularization parameters that
+result in fully flat $\mu$ and $\pi$ over time, in all clusters. Call these
+$\lambda_\mu^{\text{max}}$ and $\lambda_{\pi}&{\text{max}}$. Then, as candidates
+for cross-validation, we can use a grid of logarithmically-spaced pairs of
+values between (0,0) and $(\lambda_{\mu}&{\text{max}},
+\lambda_{\pi}&{\text{max}})$.
+
+The function `get_max_lambda()` numerically estimates this maximum pair
+$(\lambda_{\mu}&{\text{max}}, \lambda_{\pi}&{\text{max}})$. It proceeds by first
+running `flowsmooth()` on a very large pair $(\lambda_\mu, \lambda_\pi)$, then
+sequentially halving both values while checking if the resulting estimated $\mu$
+and $\pi$ are *all* flat over time. As soon as they cease to be flat, stop and
+take the previous pair of values of $(\lambda_\mu, \lambda_\pi)$.
+
+`get_max_lambda()` is a wrapper around the workhorse `calc_max_lambda()`. It
+obtains the value *and* saves it to a `maxres_file` (which defaults to
+`maxres.Rdata`) in the `destin` directory.
+
+```{r get_max_lambda}
+##' A wrapper for \code{calc_max_lambda}. Saves the two maximum lambda values in
+##' a file.
+##'
+##' @param destin Where to save the output (A two-lengthed list called
+##'   "maxres").
+##' @param maxres_file Filename for output. Defaults to maxres.Rdata.
+##' @param ... Additional arguments to \code{flowmix()}.
+##' @inheritParams calc_max_lambda
+##'
+##' @return No return
+##'
+##' @export
+get_max_lambda <- function(destin, maxres_file = "maxres.Rdata",
+                           ylist,
+                           countslist,
+                           X,
+                           numclust,
+                           maxdev,
+                           max_prob_lambda,
+                           max_mean_lambda,
+                           ...){
+  
+  if(file.exists(file.path(destin, maxres_file))){
+    load(file.path(destin, maxres_file))
+    cat("Maximum regularization values are loaded.", fill=TRUE)
+    return(maxres)
+  } else {
+    print(Sys.time())
+    cat("Maximum regularization values being calculated.", fill = TRUE)
+    cat("with initial lambdas values (alpha and beta):", fill = TRUE)
+    print(c(max_prob_lambda, max_mean_lambda));
+    maxres = calc_max_lambda(ylist = ylist,
+                             countslist = countslist,
+                             X = X,
+                             numclust = numclust,
+                             maxdev = maxdev,
+                             ## This function's settings
+                             max_prob_lambda = max_prob_lambda,
+                             max_mean_lambda = max_mean_lambda,
+                             ...)
+    save(maxres, file = file.path(destin, maxres_file))
+    cat("file was written to ", file.path(destin, maxres_file), fill=TRUE)
+    cat("maximum regularization value calculation done.", fill = TRUE)
+    print(Sys.time())
+    return(maxres)
+  }
+}
+```
+
+The aforementioned workhorse `calc_max_lambda()` is here.
+
+```{r calc_max_lambda}
+##' Estimate maximum lambda values by brute force.  First starts with a large
+##' initial value \code{max_mean_lambda} and \code{max_prob_lambda}, and runs
+##' the EM algorithm on decreasing set of values (sequentially halved). This
+##' stops once you see any non-zero coefficients, and returns the *smallest*
+##' regularization (lambda) value pair that gives full sparsity. Note that the
+##' \code{zero_stabilize=TRUE} option is used in \code{flowmix()}, which
+##' basically means the EM algorithm runs only until the zero pattern
+##' stabilizes.
+##'
+##' @param ylist List of responses.
+##' @param X Covariates.
+##' @param numclust Number of clusters.
+##' @param max_mean_lambda Defaults to 4000.
+##' @param max_prob_lambda Defaults to 1000.
+##' @param iimax Maximum value of x for 2^{-x} factors to try.
+##' @param ... Other arguments to \code{flowmix_once()}.
+##' @return list containing the two maximum values to use.
+##' @examples
+##' \dontrun{
+##' ## Generate and bin data
+##' obj = generate_data_generic(p=5, TT=50, fac=1, nt=7000, dimdat=3)
+##' ylist = obj$ylist
+##' X = obj$X
+##' dat.gridsize = 50
+##' dat.grid = make_grid(ylist, gridsize = dat.gridsize)
+##' obj = bin_many_cytograms(ylist, dat.grid, mc.cores=4, verbose=TRUE)
+##' ybin_list = obj$ybin_list
+##' counts_list = obj$counts_list
+##'
+##' numclust = 4
+##' maxres = calc_max_lambda(ybin_list, counts_list, X, numclust, verbose=TRUE,
+##'                             nrep = 4,
+##'                             ## Function settings
+##'                             parallelize = FALSE,
+##'                             iimax = 20,
+##'                             niter = 1000,
+##'                             max_prob_lambda = 10000,
+##'                             tol = 1E-3 ## This doesn't need to be so low here.
+##'                             )
+##'
+##' }
+calc_max_lambda <- function(ylist, countslist = NULL, numclust,
+                            max_lambda = 4000,
+                            max_lambda_pi = 1000,
+                            verbose = FALSE,
+                            iimax = 16,
+                            ...){
+
+  ## Get range of regularization parameters.
+  facs = sapply(1:iimax, function(ii) 2^(-ii+1)) ## DECREASING order
+  print("running the models once")
+  for(ii in 1:iimax){
+
+    ## print_progress(ii, iimax, "regularization values", fill = TRUE)
+    cat("###############################################################", fill=TRUE)
+    cat("#### lambda_alpha = ", max_prob_lambda * facs[ii],
+        " and lambda_beta = ", max_mean_lambda * facs[ii], "being tested.  ", fill=TRUE)
+    cat("###############################################################", fill=TRUE)
+
+    res = flowsmooth_once(ylist = ylist,
+                       countslist = countslist,
+                       numclust = numclust,
+                       prob_lambda = max_lambda_pi * facs[ii],
+                       mean_lambda = max_lambda * facs[ii],
+                       verbose = verbose,
+                       zero_stabilize = TRUE,
+                       ...)
+
+    ## Check zero-ness
+    toler = 0
+    sum_nonzero_alpha = sum(res$alpha[,-1] > toler)
+    sum_nonzero_beta = sum(unlist(lapply(res$beta, function(cf){ sum(cf[-1,] > toler) })))
+
+
+    ## If there are *any* nonzero values, do one of the following
+    if(sum_nonzero_alpha + sum_nonzero_beta != 0){
+
+
+      ## If there are *any* nonzero values at the first iter, prompt a restart
+      ## with higher initial lambda values.
+      if(ii==1){
+        stop(paste0("Max lambdas: ", max_lambda, " and ",
+                    max_lambda_pi,
+                    " were too small as maximum reg. values. Go up and try again!!"))
+
+      ## If there are *any* nonzero values, return the immediately preceding
+      ## lambda values -- these were the smallest values we had found that gives
+      ## full sparsity.
+      } else {
+        ## Check one more time whether the model was actually zero, by fully running it;
+        res = flowsmooth_once(ylist = ylist,
+                           countslist = countslist,
+                           X = X,
+                           numclust = numclust,
+                           lambda_pi = max_lambda_pi * facs[ii],
+                           lambda = max_lambda * facs[ii],
+                           zero_stabilize = FALSE,
+                           ...)
+        toler = 0
+        sum_nonzero_alpha = sum(res$alpha[,-1] > toler)
+        sum_nonzero_beta = sum(unlist(lapply(res$beta, function(cf){ sum(cf[-1,] > toler) })))
+
+        ## If there are *any* nonzero values, do one of the following
+        if(sum_nonzero_alpha + sum_nonzero_beta != 0){
+          return(list(beta = max_lambda * facs[ii-1],
+                      alpha = max_lambda_pi *facs[ii-1]))
+        }
+        ## Otherwise, just proceed to the next iteration.
+      }
+    }
+    cat(fill=TRUE)
+  }
+}
+```
+
+
+## Cross-validation
+
+Finally, we build the immediate elements needed for cross-validation.
+
+`make_cv_tf_folds()` makes the cross-validation "folds", which are the $K$
+(`nfold`) list of data indices. These are not times! They simply split of
+`1:length(ylist)`.
+
+
+```{r}
+##' Define the time folds cross-validation.
+##'
+##' @param nfold Number of folds.
+##' @return List of fold indices.
+##' @export
+##'
+make_cv_tf_folds <- function(ylist=NULL, nfold, TT=NULL){
+
+  ## Make hour-long index list
+  if(is.null(TT)) TT = length(ylist)
+
+  folds <- rep(1:nfold, ceiling( (TT-2)/nfold))[1:(TT-2)]
+  inds <- lapply(1:nfold, FUN = function(k) (2:(TT-1))[folds == k])
+  names(inds) = paste0("Fold", 1:nfold)
+  return(inds)
+} 
+```
+
+We can visualize how the data is to be split. In the following plot, vertical
+lines mark data indices in each fold using different colors. For `nfold = 5`,
+the first fold is every 5th point starting at 2, $\{2,7,\dots\}$, and the second
+fold is $\{3,8,\dots\}$, and so forth. The first index $1$ and the last $TT$ are
+intentionally left out and assumed available to folds. This is a small detail
+required because, otherwise, we cannot predictions at the either end points.
+TODO: explanation is clunky
+
+```{r, fig.width = 7, fig.height = 3}
+nfold = 5
+TT = 100
+inds = make_cv_tf_folds(nfold = nfold, TT = TT)
+print(inds)
+plot(NA, xlim = c(0,TT), ylim=1:2, ylab = "", xlab = "Data index of ylist", yaxt = "n", xaxt="n")
+axis(1, at = c(1, seq(10, 100,10)))
+for(ifold in 1:nfold){
+  abline(v = inds[[ifold]], col = ifold, lwd = 2)
+}
+```

@@ -38,4 +38,8 @@ This package will have some dependancies:
 ```{r dependencies, message = FALSE}
 library(tidyverse)
 library(ggplot2)
+usethis::use_package("tidyverse", type = "depends") 
+usethis::use_package("ggplot2") 
+usethis::use_package("clue") 
+## Temporary loading of the old package
 ```

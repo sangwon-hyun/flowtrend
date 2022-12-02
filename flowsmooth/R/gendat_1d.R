@@ -1,10 +1,5 @@
-# Generating 1d data
+# Generated from _main.Rmd: do not edit by hand
 
-This function generates synthetic 1-dimensional data, and returns it in a "long"
-format matrix, with columns `time`, `y`, `mu`, and `cluster`. The latter two are
-the true underlying parameters.
-
-```{r gendat_1d}
 #' Generates some synthetic 1-dimensional data with three clusters. Returns a
 #' data frame with (1) time, (2) Y (3) mu (4) cluster assignments.
 #'
@@ -83,26 +78,3 @@ gendat_1d <- function(TT, ntlist, die_off_time = 0.45,
   }) %>% bind_rows()
   return(ys)
 }
-```
-
-
-`dt2ylist()` is a helper that takes the output generated from `gendat_1d()`, and
-splits it by the `time` column to create a `ylist` object, which is a $T$-length
-list of $n_t \times d$ matrices.
-
-```{r dt2ylist}
-#' Converting to a list of matrices, \code{ylist}, to input to \code{flowsmooth()}.
-#'
-#' @param dt Output from \code{gendat_1d()}.
-#'
-#' @return List of matrices
-#' @export
-dt2ylist <- function(dt){
-  dt%>% select(time, Y) %>% arrange(time) %>%
-    group_by(time) %>%
-    group_split(.keep = FALSE) %>%
-    lapply(as.matrix)
-}
-```
-
-Next, we'll make some plotting functions 1d model and data.

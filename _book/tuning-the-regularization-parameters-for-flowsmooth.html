@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>9 Tuning the regularization parameters for flowsmooth | Creating the flowsmooth R package</title>
+  <meta name="description" content="9 Tuning the regularization parameters for flowsmooth | Creating the flowsmooth R package" />
+  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="9 Tuning the regularization parameters for flowsmooth | Creating the flowsmooth R package" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="9 Tuning the regularization parameters for flowsmooth | Creating the flowsmooth R package" />
+  
+  
+  
+
+<meta name="author" content="Sangwon Hyun" />
+
+
+<meta name="date" content="2022-12-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="plotting-for-1d-data.html"/>
+<link rel="next" href="testing-the-flowsmooth-method.html"/>
+<script src="libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a></li>
+<li class="chapter" data-level="3" data-path="generating-1d-data.html"><a href="generating-1d-data.html"><i class="fa fa-check"></i><b>3</b> Generating 1d data</a></li>
+<li class="chapter" data-level="4" data-path="building-the-flowmix_tf-method.html"><a href="building-the-flowmix_tf-method.html"><i class="fa fa-check"></i><b>4</b> Building the <code>flowmix_tf()</code> method</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="building-the-flowmix_tf-method.html"><a href="building-the-flowmix_tf-method.html#trend-filtering-briefly"><i class="fa fa-check"></i><b>4.1</b> Trend filtering, briefly</a></li>
+<li class="chapter" data-level="4.2" data-path="building-the-flowmix_tf-method.html"><a href="building-the-flowmix_tf-method.html#differencing-matrix"><i class="fa fa-check"></i><b>4.2</b> Differencing matrix</a></li>
+<li class="chapter" data-level="4.3" data-path="building-the-flowmix_tf-method.html"><a href="building-the-flowmix_tf-method.html#objective-data-log-likelihood"><i class="fa fa-check"></i><b>4.3</b> Objective (data log-likelihood)</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>5</b> M step</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>5.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
+<li class="chapter" data-level="5.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>5.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
+<li class="chapter" data-level="5.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>5.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>6</b> E step</a></li>
+<li class="chapter" data-level="7" data-path="main-flowsmooth-function.html"><a href="main-flowsmooth-function.html"><i class="fa fa-check"></i><b>7</b> Main <code><a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>()</code> function</a></li>
+<li class="chapter" data-level="8" data-path="plotting-for-1d-data.html"><a href="plotting-for-1d-data.html"><i class="fa fa-check"></i><b>8</b> Plotting for 1d data</a></li>
+<li class="chapter" data-level="9" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html"><i class="fa fa-check"></i><b>9</b> Tuning the regularization parameters for <code>flowsmooth</code></a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>9.1</b> Predicting and evaluating on new time points</a></li>
+<li class="chapter" data-level="9.2" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#evaluating-data-fit-by-likelihood-in-an-out-of-sample-measurement."><i class="fa fa-check"></i><b>9.2</b> Evaluating data fit (by likelihood) in an out-of-sample measurement.</a></li>
+<li class="chapter" data-level="9.3" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#d-example-with-ends-cut-off"><i class="fa fa-check"></i><b>9.3</b> 1d example with ends cut off</a></li>
+<li class="chapter" data-level="9.4" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#d-example-with-cross-validation"><i class="fa fa-check"></i><b>9.4</b> 1d example with cross-validation</a></li>
+<li class="chapter" data-level="9.5" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>9.5</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
+<li class="chapter" data-level="9.6" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cross-validation"><i class="fa fa-check"></i><b>9.6</b> Cross-validation</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html"><i class="fa fa-check"></i><b>10</b> Testing the <code><a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>()</code> method</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html#d-example"><i class="fa fa-check"></i><b>10.1</b> 1d example</a></li>
+<li class="chapter" data-level="10.2" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html#d-example-with-gap"><i class="fa fa-check"></i><b>10.2</b> 1d example with gap</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating the <code>flowsmooth</code> R package</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="tuning-the-regularization-parameters-for-flowsmooth" class="section level1 hasAnchor" number="9">
+<h1><span class="header-section-number">9</span> Tuning the regularization parameters for <code>flowsmooth</code><a href="tuning-the-regularization-parameters-for-flowsmooth.html#tuning-the-regularization-parameters-for-flowsmooth" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>We’re going to take a huge leap, and assume the <code><a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>()</code> function has been
+built. We need to build up quite a few functions before we’re able to do
+cross-validation. These include:</p>
+<ul>
+<li>Predicting out-of-sample, using <code><a href='tuning-the-regularization-parameters-for-flowsmooth.html#predict_flowsmooth'>predict_flowsmooth</a>()</code>.</li>
+<li>Evaluating data fit (by likelihood) in an out-of-sample measurement, using
+<code><a href='building-the-flowmix_tf-method.html#objective'>objective</a>(..., unpenalized = TRUE)</code>.</li>
+<li>Numerically estimating the maximum regularization values to test, using
+<code><a href='tuning-the-regularization-parameters-for-flowsmooth.html#get_max_lambda'>get_max_lambda</a>()</code>.</li>
+<li>Making data splits, using <code><a href='tuning-the-regularization-parameters-for-flowsmooth.html#make_cv_tf_folds'>make_cv_tf_folds</a>()</code>.</li>
+</ul>
+<div id="predicting-and-evaluating-on-new-time-points" class="section level2 hasAnchor" number="9.1">
+<h2><span class="header-section-number">9.1</span> Predicting and evaluating on new time points<a href="tuning-the-regularization-parameters-for-flowsmooth.html#predicting-and-evaluating-on-new-time-points" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>First, let’s write a couple of functions <code><a href='tuning-the-regularization-parameters-for-flowsmooth.html#interpolate_mn'>interpolate_mn</a>()</code> and
+<code><a href='tuning-the-regularization-parameters-for-flowsmooth.html#interpolate_prob'>interpolate_prob</a>()</code> which linearly interpolate the means and probabilities at
+new time points.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Do a linear interpolation of the cluster means.</span></span>
+<span id="cb40-2"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb40-3"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param x Training times.</span></span>
+<span id="cb40-4"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param tt Prediction time.</span></span>
+<span id="cb40-5"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param iclust Cluster number.</span></span>
+<span id="cb40-6"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param mn length(x) by dimdat by numclust matrix.</span></span>
+<span id="cb40-7"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb40-8"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return A dimdat-length vector.</span></span>
+<span id="cb40-9"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-9" aria-hidden="true" tabindex="-1"></a><span id='interpolate_mn'>interpolate_mn</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(x, tt, iclust, mn){</span>
+<span id="cb40-10"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-11"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-11" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb40-12"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">length</span>(x) <span class="sc">==</span> <span class="fu">dim</span>(mn)[<span class="dv">1</span>])</span>
+<span id="cb40-13"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(iclust <span class="sc">&lt;=</span> <span class="fu">dim</span>(mn)[<span class="dv">3</span>])</span>
+<span id="cb40-14"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(tt <span class="sc">%in%</span> x) <span class="fu">return</span>(mn[<span class="fu">which</span>(x<span class="sc">==</span>tt),,iclust,<span class="at">drop=</span><span class="cn">TRUE</span>])</span>
+<span id="cb40-15"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-16"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-16" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Set up for linear interpolation</span></span>
+<span id="cb40-17"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-17" aria-hidden="true" tabindex="-1"></a>  floor_t <span class="ot">&lt;-</span> <span class="fu">max</span>(x[<span class="fu">which</span>(x <span class="sc">&lt;=</span> tt)])</span>
+<span id="cb40-18"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-18" aria-hidden="true" tabindex="-1"></a>  ceiling_t <span class="ot">&lt;-</span> <span class="fu">min</span>(x[<span class="fu">which</span>(x <span class="sc">&gt;=</span> tt)])</span>
+<span id="cb40-19"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-19" aria-hidden="true" tabindex="-1"></a>  floor_t_ind <span class="ot">&lt;-</span> <span class="fu">which</span>(x <span class="sc">==</span> floor_t)</span>
+<span id="cb40-20"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-20" aria-hidden="true" tabindex="-1"></a>  ceiling_t_ind <span class="ot">&lt;-</span> <span class="fu">which</span>(x <span class="sc">==</span> ceiling_t)</span>
+<span id="cb40-21"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-22"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-22" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Do the linear interpolation</span></span>
+<span id="cb40-23"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-23" aria-hidden="true" tabindex="-1"></a>  mn_t <span class="ot">&lt;-</span></span>
+<span id="cb40-24"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-24" aria-hidden="true" tabindex="-1"></a>    mn[ceiling_t_ind,,iclust,drop<span class="ot">=</span><span class="cn">TRUE</span>]<span class="sc">*</span>(tt <span class="sc">-</span> floor_t)<span class="sc">/</span>(ceiling_t <span class="sc">-</span> floor_t) <span class="sc">+</span></span>
+<span id="cb40-25"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-25" aria-hidden="true" tabindex="-1"></a>    mn[floor_t_ind,,iclust,drop<span class="ot">=</span><span class="cn">TRUE</span>]<span class="sc">*</span>(ceiling_t <span class="sc">-</span> tt)<span class="sc">/</span>(ceiling_t <span class="sc">-</span> floor_t) </span>
+<span id="cb40-26"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-27"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-27" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb40-28"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">length</span>(mn_t) <span class="sc">==</span> <span class="fu">dim</span>(mn)[<span class="dv">2</span>])</span>
+<span id="cb40-29"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-30"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(mn_t)</span>
+<span id="cb40-31"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb40-31" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Do a linear interpolation of the cluster means.</span></span>
+<span id="cb41-2"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb41-3"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param x Training times.</span></span>
+<span id="cb41-4"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param tt Prediction time.</span></span>
+<span id="cb41-5"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param iclust Cluster number.</span></span>
+<span id="cb41-6"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param prob length(x) by numclust array or matrix.</span></span>
+<span id="cb41-7"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb41-8"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return One probability.</span></span>
+<span id="cb41-9"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-9" aria-hidden="true" tabindex="-1"></a><span id='interpolate_prob'>interpolate_prob</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(x, tt, iclust, prob){</span>
+<span id="cb41-10"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-11"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-11" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb41-12"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-12" aria-hidden="true" tabindex="-1"></a>  numdat <span class="ot">=</span> <span class="fu">dim</span>(prob)[<span class="dv">1</span>]</span>
+<span id="cb41-13"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-13" aria-hidden="true" tabindex="-1"></a>  numclust <span class="ot">=</span> <span class="fu">dim</span>(prob)[<span class="dv">2</span>]</span>
+<span id="cb41-14"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">length</span>(x) <span class="sc">==</span> numdat)</span>
+<span id="cb41-15"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(iclust <span class="sc">&lt;=</span> numclust)</span>
+<span id="cb41-16"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(tt <span class="sc">%in%</span> x) <span class="fu">return</span>(prob[<span class="fu">which</span>(x <span class="sc">==</span> tt),iclust,<span class="at">drop=</span><span class="cn">TRUE</span>])</span>
+<span id="cb41-17"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-18"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-18" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Set up for linear interpolation</span></span>
+<span id="cb41-19"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-19" aria-hidden="true" tabindex="-1"></a>  floor_t <span class="ot">&lt;-</span> <span class="fu">max</span>(x[<span class="fu">which</span>(x <span class="sc">&lt;=</span> tt)])</span>
+<span id="cb41-20"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-20" aria-hidden="true" tabindex="-1"></a>  ceiling_t <span class="ot">&lt;-</span> <span class="fu">min</span>(x[<span class="fu">which</span>(x <span class="sc">&gt;=</span> tt)])</span>
+<span id="cb41-21"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-21" aria-hidden="true" tabindex="-1"></a>  floor_t_ind <span class="ot">&lt;-</span> <span class="fu">which</span>(x <span class="sc">==</span> floor_t)</span>
+<span id="cb41-22"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-22" aria-hidden="true" tabindex="-1"></a>  ceiling_t_ind <span class="ot">&lt;-</span> <span class="fu">which</span>(x <span class="sc">==</span> ceiling_t)</span>
+<span id="cb41-23"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-24"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-24" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Do the linear interpolation</span></span>
+<span id="cb41-25"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-25" aria-hidden="true" tabindex="-1"></a>  prob_t <span class="ot">&lt;-</span></span>
+<span id="cb41-26"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-26" aria-hidden="true" tabindex="-1"></a>    prob[ceiling_t_ind,iclust,drop<span class="ot">=</span><span class="cn">TRUE</span>]<span class="sc">*</span>(tt <span class="sc">-</span> floor_t)<span class="sc">/</span>(ceiling_t <span class="sc">-</span> floor_t) <span class="sc">+</span></span>
+<span id="cb41-27"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-27" aria-hidden="true" tabindex="-1"></a>    prob[floor_t_ind,iclust,drop<span class="ot">=</span><span class="cn">TRUE</span>]<span class="sc">*</span>(ceiling_t <span class="sc">-</span> tt)<span class="sc">/</span>(ceiling_t <span class="sc">-</span> floor_t) <span class="co"># linear interpolation between floor_t and ceiling_t</span></span>
+<span id="cb41-28"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-29"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-29" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb41-30"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">length</span>(prob_t) <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb41-31"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="dv">0</span> <span class="sc">&lt;=</span> prob_t <span class="sc">&amp;</span> prob_t <span class="sc">&lt;=</span> <span class="dv">1</span>)</span>
+<span id="cb41-32"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-33"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(prob_t)</span>
+<span id="cb41-34"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb41-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Next, let’s build a prediction function <code><a href='tuning-the-regularization-parameters-for-flowsmooth.html#predict_flowsmooth'>predict_flowsmooth</a>()</code> which takes the
+model object <code>obj</code>, and the new time points <code>newtimes</code>, and produces.</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Prediction: Given new timepoints in the original time interval,generate a set</span></span>
+<span id="cb42-2"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; of means and probs (and return the same Sigma).</span></span>
+<span id="cb42-3"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb42-4"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param obj Object returned from covariate EM flowmix().</span></span>
+<span id="cb42-5"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param newtimes New times at which to make predictions.</span></span>
+<span id="cb42-6"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb42-7"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return List containing mean, prob, and sigma, and x.</span></span>
+<span id="cb42-8"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb42-9"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb42-10"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb42-11"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-11" aria-hidden="true" tabindex="-1"></a><span id='predict_flowsmooth'>predict_flowsmooth</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(obj, <span class="at">newtimes =</span> <span class="cn">NULL</span>){</span>
+<span id="cb42-12"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-13"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-13" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Check the dimensions</span></span>
+<span id="cb42-14"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-14" aria-hidden="true" tabindex="-1"></a>  newx <span class="ot">&lt;-</span> newtimes</span>
+<span id="cb42-15"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(newtimes)){ newx <span class="ot">=</span> obj<span class="sc">$</span>x }</span>
+<span id="cb42-16"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-17"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-17" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Check if the new times are within the time range of the original data (why is this important)?</span></span>
+<span id="cb42-18"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="cn">FALSE</span>) <span class="fu">stopifnot</span>(<span class="fu">all</span>(<span class="fu">sapply</span>(newx, <span class="at">FUN =</span> <span class="cf">function</span>(t) t <span class="sc">&gt;=</span> <span class="fu">min</span>(obj<span class="sc">$</span>x) <span class="sc">&amp;</span> t <span class="sc">&lt;=</span> <span class="fu">max</span>(obj<span class="sc">$</span>x))))</span>
+<span id="cb42-19"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-20"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-20" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Setup some things</span></span>
+<span id="cb42-21"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-21" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> obj<span class="sc">$</span>x</span>
+<span id="cb42-22"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-22" aria-hidden="true" tabindex="-1"></a>  TT_new <span class="ot">=</span> <span class="fu">length</span>(newx)</span>
+<span id="cb42-23"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-23" aria-hidden="true" tabindex="-1"></a>  numclust <span class="ot">=</span> obj<span class="sc">$</span>numclust</span>
+<span id="cb42-24"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-24" aria-hidden="true" tabindex="-1"></a>  dimdat <span class="ot">=</span> obj<span class="sc">$</span>dimdat</span>
+<span id="cb42-25"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-26"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-26" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Predict the means (manually).</span></span>
+<span id="cb42-27"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-27" aria-hidden="true" tabindex="-1"></a>  newmn_array <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim =</span> <span class="fu">c</span>(TT_new, dimdat, numclust))</span>
+<span id="cb42-28"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-28" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){</span>
+<span id="cb42-29"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-29" aria-hidden="true" tabindex="-1"></a>    newmn_oneclust <span class="ot">&lt;-</span> <span class="fu">lapply</span>(newx, <span class="cf">function</span>(tt){</span>
+<span id="cb42-30"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-30" aria-hidden="true" tabindex="-1"></a>      <a href='tuning-the-regularization-parameters-for-flowsmooth.html#interpolate_mn'>interpolate_mn</a>(x, tt, iclust, obj<span class="sc">$</span>mn)</span>
+<span id="cb42-31"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-31" aria-hidden="true" tabindex="-1"></a>    }) <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind, . )</span>
+<span id="cb42-32"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-32" aria-hidden="true" tabindex="-1"></a>    newmn_array[,,iclust] <span class="ot">=</span> newmn_oneclust</span>
+<span id="cb42-33"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-33" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb42-34"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-35"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-35" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Predict the probs.</span></span>
+<span id="cb42-36"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-36" aria-hidden="true" tabindex="-1"></a>  newprob <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim =</span> <span class="fu">c</span>(TT_new, numclust))</span>
+<span id="cb42-37"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-37" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){</span>
+<span id="cb42-38"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-38" aria-hidden="true" tabindex="-1"></a>    newprob_oneclust <span class="ot">&lt;-</span> <span class="fu">lapply</span>(newx, <span class="cf">function</span>(tt){</span>
+<span id="cb42-39"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-39" aria-hidden="true" tabindex="-1"></a>      <a href='tuning-the-regularization-parameters-for-flowsmooth.html#interpolate_prob'>interpolate_prob</a>(x, tt, iclust, obj<span class="sc">$</span>prob)</span>
+<span id="cb42-40"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-40" aria-hidden="true" tabindex="-1"></a>    }) <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(c, .)</span>
+<span id="cb42-41"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-41" aria-hidden="true" tabindex="-1"></a>    newprob[,iclust] <span class="ot">=</span> newprob_oneclust</span>
+<span id="cb42-42"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-42" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb42-43"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-44"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-44" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb42-45"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(<span class="fu">dim</span>(newprob) <span class="sc">==</span> <span class="fu">c</span>(TT_new,numclust)))</span>
+<span id="cb42-46"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(newprob <span class="sc">&gt;=</span> <span class="dv">0</span>))</span>
+<span id="cb42-47"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(newprob <span class="sc">&lt;=</span> <span class="dv">1</span>))</span>
+<span id="cb42-48"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-49"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-49" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Return the predictions</span></span>
+<span id="cb42-50"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">mn =</span> newmn_array,</span>
+<span id="cb42-51"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-51" aria-hidden="true" tabindex="-1"></a>              <span class="at">prob =</span> newprob,</span>
+<span id="cb42-52"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-52" aria-hidden="true" tabindex="-1"></a>              <span class="at">sigma =</span> obj<span class="sc">$</span>sigma,</span>
+<span id="cb42-53"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-53" aria-hidden="true" tabindex="-1"></a>              <span class="at">x =</span> newx))</span>
+<span id="cb42-54"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb42-54" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Here’s a quick test (no new data) to make sure this function returns a list
+containing: the mean, probability, covariance, and new times.</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-1" aria-hidden="true" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;The prediction function returns the right things&quot;</span>, {</span>
+<span id="cb43-2"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Generate data</span></span>
+<span id="cb43-3"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="do">## <a href='testing-the-flowsmooth-method.html#ll'>ll</a>()</span></span>
+<span id="cb43-4"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="do">## devtools::load_a<a href='testing-the-flowsmooth-method.html#ll'>ll</a>(&#39;~/repos/FlowTF&#39;)</span></span>
+<span id="cb43-5"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb43-6"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-6" aria-hidden="true" tabindex="-1"></a>  dt       <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>)</span>
+<span id="cb43-7"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-7" aria-hidden="true" tabindex="-1"></a>  ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='generating-1d-data.html#dt2ylist'>dt2ylist</a>()</span>
+<span id="cb43-8"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-8" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
+<span id="cb43-9"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-9" aria-hidden="true" tabindex="-1"></a>  obj <span class="ot">&lt;-</span> <a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb43-10"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-10" aria-hidden="true" tabindex="-1"></a>                    <span class="at">x =</span> x,</span>
+<span id="cb43-11"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-11" aria-hidden="true" tabindex="-1"></a>                    <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
+<span id="cb43-12"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-12" aria-hidden="true" tabindex="-1"></a>                    <span class="at">numclust =</span> <span class="dv">3</span>,</span>
+<span id="cb43-13"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-13" aria-hidden="true" tabindex="-1"></a>                    <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
+<span id="cb43-14"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-14" aria-hidden="true" tabindex="-1"></a>                    <span class="at">l =</span> <span class="dv">1</span>,</span>
+<span id="cb43-15"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-15" aria-hidden="true" tabindex="-1"></a>                    <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
+<span id="cb43-16"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-16" aria-hidden="true" tabindex="-1"></a>                    <span class="at">lambda_prob =</span> .<span class="dv">005</span>, <span class="do">## </span></span>
+<span id="cb43-17"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-17" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nrestart =</span> <span class="dv">1</span>,</span>
+<span id="cb43-18"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-18" aria-hidden="true" tabindex="-1"></a>                    <span class="at">niter =</span> <span class="dv">3</span>)</span>
+<span id="cb43-19"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-20"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-20" aria-hidden="true" tabindex="-1"></a>  predobj <span class="ot">=</span> <a href='tuning-the-regularization-parameters-for-flowsmooth.html#predict_flowsmooth'>predict_flowsmooth</a>(obj)</span>
+<span id="cb43-21"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-21" aria-hidden="true" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_named</span>(predobj, <span class="fu">c</span>(<span class="st">&quot;mn&quot;</span>, <span class="st">&quot;prob&quot;</span>, <span class="st">&quot;sigma&quot;</span>, <span class="st">&quot;x&quot;</span>))</span>
+<span id="cb43-22"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb43-22" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<p>Now, we try to make predictions at <em>new</em> held-out time points <code>held_out=25:35</code>,
+from a model that is estimated without those time points.</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-1" aria-hidden="true" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;prediction function returns the right things&quot;</span>, {</span>
+<span id="cb44-2"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Generate data</span></span>
+<span id="cb44-3"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb44-4"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-4" aria-hidden="true" tabindex="-1"></a>  dt       <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>)</span>
+<span id="cb44-5"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-5" aria-hidden="true" tabindex="-1"></a>  dt_model       <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>, <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb44-6"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-6" aria-hidden="true" tabindex="-1"></a>  held_out <span class="ot">=</span> <span class="dv">25</span><span class="sc">:</span><span class="dv">35</span></span>
+<span id="cb44-7"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-7" aria-hidden="true" tabindex="-1"></a>  dt_subset <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">subset</span>(time <span class="sc">%ni%</span> held_out)</span>
+<span id="cb44-8"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-8" aria-hidden="true" tabindex="-1"></a>  ylist <span class="ot">=</span> dt_subset <span class="sc">%&gt;%</span> <a href='generating-1d-data.html#dt2ylist'>dt2ylist</a>()</span>
+<span id="cb44-9"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-9" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> dt_subset <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
+<span id="cb44-10"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-10" aria-hidden="true" tabindex="-1"></a>  obj <span class="ot">&lt;-</span> <a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>(<span class="at">ylist =</span> ylist, </span>
+<span id="cb44-11"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-11" aria-hidden="true" tabindex="-1"></a>                    <span class="at">x =</span> x,</span>
+<span id="cb44-12"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-12" aria-hidden="true" tabindex="-1"></a>                    <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
+<span id="cb44-13"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-13" aria-hidden="true" tabindex="-1"></a>                    <span class="at">numclust =</span> <span class="dv">3</span>,</span>
+<span id="cb44-14"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-14" aria-hidden="true" tabindex="-1"></a>                    <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
+<span id="cb44-15"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-15" aria-hidden="true" tabindex="-1"></a>                    <span class="at">l =</span> <span class="dv">1</span>,</span>
+<span id="cb44-16"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-16" aria-hidden="true" tabindex="-1"></a>                    <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
+<span id="cb44-17"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-17" aria-hidden="true" tabindex="-1"></a>                    <span class="at">lambda_prob =</span> .<span class="dv">005</span>, <span class="do">## </span></span>
+<span id="cb44-18"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-18" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nrestart =</span> <span class="dv">1</span>)</span>
+<span id="cb44-19"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-20"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-20" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Also reorder the cluster labels of the truth, to match the fitted model.</span></span>
+<span id="cb44-21"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-21" aria-hidden="true" tabindex="-1"></a>  ord <span class="ot">=</span> obj<span class="sc">$</span>mn[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">colSums</span>() <span class="sc">%&gt;%</span> <span class="fu">order</span>(<span class="at">decreasing=</span><span class="cn">TRUE</span>)</span>
+<span id="cb44-22"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-22" aria-hidden="true" tabindex="-1"></a>  lookup <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>obj<span class="sc">$</span>numclust), ord)</span>
+<span id="cb44-23"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-23" aria-hidden="true" tabindex="-1"></a>  dt_model<span class="sc">$</span>cluster <span class="ot">=</span> lookup[<span class="fu">as.numeric</span>(dt_model<span class="sc">$</span>cluster)] <span class="sc">%&gt;%</span> <span class="fu">as.factor</span>()</span>
+<span id="cb44-24"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb44-25"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-25" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Reorder the cluster lables of the fitted model.</span></span>
+<span id="cb44-26"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-26" aria-hidden="true" tabindex="-1"></a>  obj <span class="ot">=</span> <a href='plotting-for-1d-data.html#reorder_clust'>reorder_clust</a>(obj)</span>
+<span id="cb44-27"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-27" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb44-28"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-28" aria-hidden="true" tabindex="-1"></a>  predobj <span class="ot">=</span> <a href='tuning-the-regularization-parameters-for-flowsmooth.html#predict_flowsmooth'>predict_flowsmooth</a>(obj, <span class="at">newtimes =</span> held_out)</span>
+<span id="cb44-29"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-30"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-30" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Check a few things</span></span>
+<span id="cb44-31"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-31" aria-hidden="true" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_equal</span>(predobj<span class="sc">$</span>x,  held_out)</span>
+<span id="cb44-32"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-32" aria-hidden="true" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_equal</span>(<span class="fu">rowSums</span>(predobj<span class="sc">$</span>prob),  <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">length</span>(held_out)))</span>
+<span id="cb44-33"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-33" aria-hidden="true" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_equal</span>(<span class="fu">dim</span>(predobj<span class="sc">$</span>mn),  <span class="fu">c</span>(<span class="fu">length</span>(held_out), <span class="dv">1</span>, <span class="dv">3</span>))</span>
+<span id="cb44-34"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb44-34" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<p>Plot the predicted means and probabilities, with purple points at the
+interpolated means. We can see that it works as expected.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb45-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">=</span> <a href='plotting-for-1d-data.html#plot_1d'>plot_1d</a>(ylist, obj, <span class="at">x =</span> x) <span class="sc">+</span></span>
+<span id="cb45-2"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">group =</span> cluster),</span>
+<span id="cb45-3"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb45-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> dt_model,<span class="do">## %&gt;% subset(time %ni% held_out),</span></span>
+<span id="cb45-4"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb45-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">size=</span><span class="dv">2</span>, <span class="at">alpha =</span> .<span class="dv">7</span>)</span>
+<span id="cb45-5"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Plot the predicted means</span></span>
+<span id="cb45-7"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb45-7" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="cf">function</span>(iclust){</span>
+<span id="cb45-8"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">mn =</span> predobj<span class="sc">$</span>mn <span class="sc">%&gt;%</span> .[,,iclust, <span class="at">drop =</span> <span class="cn">TRUE</span>],</span>
+<span id="cb45-9"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb45-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">prob =</span> predobj<span class="sc">$</span>prob <span class="sc">%&gt;%</span> .[,iclust, <span class="at">drop =</span> <span class="cn">TRUE</span>],</span>
+<span id="cb45-10"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb45-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">time =</span> held_out,</span>
+<span id="cb45-11"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb45-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">cluster =</span> iclust)</span>
+<span id="cb45-12"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb45-12" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>() </span>
+<span id="cb45-13"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb45-13" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y=</span>mn, <span class="at">group =</span> cluster), <span class="at">data =</span> preds, <span class="at">col =</span> <span class="st">&#39;purple&#39;</span>, <span class="at">alpha =</span> .<span class="dv">8</span>) </span></code></pre></div>
+<p>The estimated probabilities are shown here, with purple points showing the
+interpolation. It works as expected.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb46-1" aria-hidden="true" tabindex="-1"></a><a href='plotting-for-1d-data.html#plot_prob'>plot_prob</a>(obj, <span class="at">x=</span>x) <span class="sc">+</span></span>
+<span id="cb46-2"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> prob, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
+<span id="cb46-3"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb46-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> dt_model, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>)  <span class="sc">+</span></span>
+<span id="cb46-4"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>cluster) <span class="sc">+</span></span>
+<span id="cb46-5"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> prob), <span class="at">data =</span> preds, <span class="at">col =</span> <span class="st">&#39;purple&#39;</span>)</span></code></pre></div>
+</div>
+<div id="evaluating-data-fit-by-likelihood-in-an-out-of-sample-measurement." class="section level2 hasAnchor" number="9.2">
+<h2><span class="header-section-number">9.2</span> Evaluating data fit (by likelihood) in an out-of-sample measurement.<a href="tuning-the-regularization-parameters-for-flowsmooth.html#evaluating-data-fit-by-likelihood-in-an-out-of-sample-measurement." class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-1" aria-hidden="true" tabindex="-1"></a>predobj <span class="ot">=</span> <a href='tuning-the-regularization-parameters-for-flowsmooth.html#predict_flowsmooth'>predict_flowsmooth</a>(obj, <span class="at">newtimes =</span> held_out)</span>
+<span id="cb47-2"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-3"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Use the predicted (interpolated) model parameters</span></span>
+<span id="cb47-4"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-4" aria-hidden="true" tabindex="-1"></a>obj_pred <span class="ot">=</span> <a href='building-the-flowmix_tf-method.html#objective'>objective</a>(<span class="at">mu =</span> predobj<span class="sc">$</span>mn, <span class="at">prob =</span> predobj<span class="sc">$</span>prob, <span class="at">sigma =</span> predobj<span class="sc">$</span>sigma, <span class="at">ylist =</span> ylist[held_out],</span>
+<span id="cb47-5"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">unpenalized =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb47-6"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-6" aria-hidden="true" tabindex="-1"></a>truemn <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim =</span> <span class="fu">dim</span>(predobj<span class="sc">$</span>mn))</span>
+<span id="cb47-7"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-7" aria-hidden="true" tabindex="-1"></a>truemn[,<span class="dv">1</span>,] <span class="ot">=</span></span>
+<span id="cb47-8"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-8" aria-hidden="true" tabindex="-1"></a>  dt_model <span class="sc">%&gt;%</span> <span class="fu">select</span>(time, cluster, mean) <span class="sc">%&gt;%</span></span>
+<span id="cb47-9"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> cluster, <span class="at">values_from =</span> mean) <span class="sc">%&gt;%</span> <span class="fu">subset</span>(time <span class="sc">%in%</span> held_out) <span class="sc">%&gt;%</span></span>
+<span id="cb47-10"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>time) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb47-11"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-12"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-12" aria-hidden="true" tabindex="-1"></a><span class="do">## Use the true mean</span></span>
+<span id="cb47-13"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-13" aria-hidden="true" tabindex="-1"></a>obj_better <span class="ot">=</span> <a href='building-the-flowmix_tf-method.html#objective'>objective</a>(<span class="at">mu =</span> truemn, <span class="at">prob =</span> predobj<span class="sc">$</span>prob, <span class="at">sigma =</span> predobj<span class="sc">$</span>sigma, <span class="at">ylist =</span> ylist[held_out],</span>
+<span id="cb47-14"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-14" aria-hidden="true" tabindex="-1"></a>                       <span class="at">unpenalized =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb47-15"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-16"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-16" aria-hidden="true" tabindex="-1"></a><span class="do">## Make sure using the true mean is better (lower is better)</span></span>
+<span id="cb47-17"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-17" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(obj_better <span class="sc">&lt;</span> obj_pred)</span>
+<span id="cb47-18"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-18" aria-hidden="true" tabindex="-1"></a>obj<span class="sc">$</span>objectives <span class="sc">%&gt;%</span> <span class="fu">plot</span>(<span class="at">type =</span> <span class="st">&#39;o&#39;</span>)</span>
+<span id="cb47-19"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-20"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-20" aria-hidden="true" tabindex="-1"></a><span class="do">## matplot(truemn[,1,], type = &#39;l&#39;)</span></span>
+<span id="cb47-21"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb47-21" aria-hidden="true" tabindex="-1"></a><span class="do">## matlines(predobj$mn[,1,], lwd = 2)</span></span></code></pre></div>
+</div>
+<div id="d-example-with-ends-cut-off" class="section level2 hasAnchor" number="9.3">
+<h2><span class="header-section-number">9.3</span> 1d example with ends cut off<a href="tuning-the-regularization-parameters-for-flowsmooth.html#d-example-with-ends-cut-off" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb48-2"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb48-2" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">&lt;-</span>       <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(TT, ntlist, <span class="at">die_off_time =</span> <span class="fl">0.45</span>)</span>
+<span id="cb48-3"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb48-3" aria-hidden="true" tabindex="-1"></a>dt1 <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">subset</span>(time <span class="sc">&lt;=</span> <span class="dv">50</span>)</span>
+<span id="cb48-4"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb48-4" aria-hidden="true" tabindex="-1"></a>dt2 <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">subset</span>(time <span class="sc">&gt;</span> <span class="dv">50</span>)</span></code></pre></div>
+</div>
+<div id="d-example-with-cross-validation" class="section level2 hasAnchor" number="9.4">
+<h2><span class="header-section-number">9.4</span> 1d example with cross-validation<a href="tuning-the-regularization-parameters-for-flowsmooth.html#d-example-with-cross-validation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>TODO: Thoroughly test the selected lambda.</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb49-1" aria-hidden="true" tabindex="-1"></a>TT <span class="ot">=</span> <span class="fu">length</span>(ylist)</span>
+<span id="cb49-2"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb49-2" aria-hidden="true" tabindex="-1"></a>nfold <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb49-3"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb49-3" aria-hidden="true" tabindex="-1"></a><a href='tuning-the-regularization-parameters-for-flowsmooth.html#make_cv_tf_folds'>make_cv_tf_folds</a>(ylist, nfold, TT)</span>
+<span id="cb49-4"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb49-4" aria-hidden="true" tabindex="-1"></a>TT</span></code></pre></div>
+</div>
+<div id="maximum-lambda_mu-lambda_pi-values-to-test" class="section level2 hasAnchor" number="9.5">
+<h2><span class="header-section-number">9.5</span> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test<a href="tuning-the-regularization-parameters-for-flowsmooth.html#maximum-lambda_mu-lambda_pi-values-to-test" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>What should the maximum value of regularization parameters to use? It’s useful
+to be able to calculate the <em>smallest</em> value of regularization parameters that
+result in fully flat <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\pi\)</span> over time, in all clusters. Call these
+<span class="math inline">\(\lambda_\mu^{\text{max}}\)</span> and <span class="math inline">\(\lambda_{\pi}&amp;{\text{max}}\)</span>. Then, as candidates
+for cross-validation, we can use a grid of logarithmically-spaced pairs of
+values between (0,0) and <span class="math inline">\((\lambda_{\mu}&amp;{\text{max}}, \lambda_{\pi}&amp;{\text{max}})\)</span>.</p>
+<p>The function <code><a href='tuning-the-regularization-parameters-for-flowsmooth.html#get_max_lambda'>get_max_lambda</a>()</code> numerically estimates this maximum pair
+<span class="math inline">\((\lambda_{\mu}&amp;{\text{max}}, \lambda_{\pi}&amp;{\text{max}})\)</span>. It proceeds by first
+running <code><a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>()</code> on a very large pair <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span>, then
+sequentially halving both values while checking if the resulting estimated <span class="math inline">\(\mu\)</span>
+and <span class="math inline">\(\pi\)</span> are <em>all</em> flat over time. As soon as they cease to be flat, stop and
+take the previous pair of values of <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span>.</p>
+<p><code><a href='tuning-the-regularization-parameters-for-flowsmooth.html#get_max_lambda'>get_max_lambda</a>()</code> is a wrapper around the workhorse <code><a href='tuning-the-regularization-parameters-for-flowsmooth.html#calc_max_lambda'>calc_max_lambda</a>()</code>. It
+obtains the value <em>and</em> saves it to a <code>maxres_file</code> (which defaults to
+<code>maxres.Rdata</code>) in the <code>destin</code> directory.</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; A wrapper for \code{calc_max_lambda}. Saves the two maximum lambda values in</span></span>
+<span id="cb50-2"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; a file.</span></span>
+<span id="cb50-3"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
+<span id="cb50-4"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param destin Where to save the output (A two-lengthed list called</span></span>
+<span id="cb50-5"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;   &quot;maxres&quot;).</span></span>
+<span id="cb50-6"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param maxres_file Filename for output. Defaults to maxres.Rdata.</span></span>
+<span id="cb50-7"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param ... Additional arguments to \code{flowmix()}.</span></span>
+<span id="cb50-8"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @inheritParams calc_max_lambda</span></span>
+<span id="cb50-9"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
+<span id="cb50-10"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @return No return</span></span>
+<span id="cb50-11"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-11" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
+<span id="cb50-12"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-12" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @export</span></span>
+<span id="cb50-13"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-13" aria-hidden="true" tabindex="-1"></a><span id='get_max_lambda'>get_max_lambda</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(destin, <span class="at">maxres_file =</span> <span class="st">&quot;maxres.Rdata&quot;</span>,</span>
+<span id="cb50-14"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-14" aria-hidden="true" tabindex="-1"></a>                           ylist,</span>
+<span id="cb50-15"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-15" aria-hidden="true" tabindex="-1"></a>                           countslist,</span>
+<span id="cb50-16"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-16" aria-hidden="true" tabindex="-1"></a>                           X,</span>
+<span id="cb50-17"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-17" aria-hidden="true" tabindex="-1"></a>                           numclust,</span>
+<span id="cb50-18"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-18" aria-hidden="true" tabindex="-1"></a>                           maxdev,</span>
+<span id="cb50-19"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-19" aria-hidden="true" tabindex="-1"></a>                           max_prob_lambda,</span>
+<span id="cb50-20"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-20" aria-hidden="true" tabindex="-1"></a>                           max_mean_lambda,</span>
+<span id="cb50-21"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-21" aria-hidden="true" tabindex="-1"></a>                           ...){</span>
+<span id="cb50-22"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-23"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">file.exists</span>(<span class="fu">file.path</span>(destin, maxres_file))){</span>
+<span id="cb50-24"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">load</span>(<span class="fu">file.path</span>(destin, maxres_file))</span>
+<span id="cb50-25"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;Maximum regularization values are loaded.&quot;</span>, <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
+<span id="cb50-26"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(maxres)</span>
+<span id="cb50-27"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-27" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb50-28"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">Sys.time</span>())</span>
+<span id="cb50-29"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;Maximum regularization values being calculated.&quot;</span>, <span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb50-30"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;with initial lambdas values (alpha and beta):&quot;</span>, <span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb50-31"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">c</span>(max_prob_lambda, max_mean_lambda));</span>
+<span id="cb50-32"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-32" aria-hidden="true" tabindex="-1"></a>    maxres <span class="ot">=</span> <a href='tuning-the-regularization-parameters-for-flowsmooth.html#calc_max_lambda'>calc_max_lambda</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb50-33"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-33" aria-hidden="true" tabindex="-1"></a>                             <span class="at">countslist =</span> countslist,</span>
+<span id="cb50-34"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-34" aria-hidden="true" tabindex="-1"></a>                             <span class="at">X =</span> X,</span>
+<span id="cb50-35"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-35" aria-hidden="true" tabindex="-1"></a>                             <span class="at">numclust =</span> numclust,</span>
+<span id="cb50-36"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-36" aria-hidden="true" tabindex="-1"></a>                             <span class="at">maxdev =</span> maxdev,</span>
+<span id="cb50-37"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-37" aria-hidden="true" tabindex="-1"></a>                             <span class="do">## This function&#39;s settings</span></span>
+<span id="cb50-38"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-38" aria-hidden="true" tabindex="-1"></a>                             <span class="at">max_prob_lambda =</span> max_prob_lambda,</span>
+<span id="cb50-39"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-39" aria-hidden="true" tabindex="-1"></a>                             <span class="at">max_mean_lambda =</span> max_mean_lambda,</span>
+<span id="cb50-40"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-40" aria-hidden="true" tabindex="-1"></a>                             ...)</span>
+<span id="cb50-41"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">save</span>(maxres, <span class="at">file =</span> <span class="fu">file.path</span>(destin, maxres_file))</span>
+<span id="cb50-42"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;file was written to &quot;</span>, <span class="fu">file.path</span>(destin, maxres_file), <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
+<span id="cb50-43"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;maximum regularization value calculation done.&quot;</span>, <span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb50-44"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">Sys.time</span>())</span>
+<span id="cb50-45"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(maxres)</span>
+<span id="cb50-46"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-46" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb50-47"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb50-47" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>The aforementioned workhorse <code><a href='tuning-the-regularization-parameters-for-flowsmooth.html#calc_max_lambda'>calc_max_lambda</a>()</code> is here.</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; Estimate maximum lambda values by brute force.  First starts with a large</span></span>
+<span id="cb51-2"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; initial value \code{max_mean_lambda} and \code{max_prob_lambda}, and runs</span></span>
+<span id="cb51-3"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; the EM algorithm on decreasing set of values (sequentially halved). This</span></span>
+<span id="cb51-4"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; stops once you see any non-zero coefficients, and returns the *smallest*</span></span>
+<span id="cb51-5"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; regularization (lambda) value pair that gives full sparsity. Note that the</span></span>
+<span id="cb51-6"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; \code{zero_stabilize=TRUE} option is used in \code{flowmix()}, which</span></span>
+<span id="cb51-7"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; basically means the EM algorithm runs only until the zero pattern</span></span>
+<span id="cb51-8"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; stabilizes.</span></span>
+<span id="cb51-9"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-9" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
+<span id="cb51-10"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-10" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param ylist List of responses.</span></span>
+<span id="cb51-11"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-11" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param X Covariates.</span></span>
+<span id="cb51-12"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-12" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param numclust Number of clusters.</span></span>
+<span id="cb51-13"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-13" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param max_mean_lambda Defaults to 4000.</span></span>
+<span id="cb51-14"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-14" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param max_prob_lambda Defaults to 1000.</span></span>
+<span id="cb51-15"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-15" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param iimax Maximum value of x for 2^{-x} factors to try.</span></span>
+<span id="cb51-16"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-16" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param ... Other arguments to \code{flowmix_once()}.</span></span>
+<span id="cb51-17"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-17" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @return list containing the two maximum values to use.</span></span>
+<span id="cb51-18"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-18" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @examples</span></span>
+<span id="cb51-19"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-19" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; \dontrun{</span></span>
+<span id="cb51-20"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-20" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; ## Generate and bin data</span></span>
+<span id="cb51-21"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-21" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; obj = generate_data_generic(p=5, TT=50, fac=1, nt=7000, dimdat=3)</span></span>
+<span id="cb51-22"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-22" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; ylist = obj$ylist</span></span>
+<span id="cb51-23"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-23" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; X = obj$X</span></span>
+<span id="cb51-24"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-24" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; dat.gridsize = 50</span></span>
+<span id="cb51-25"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-25" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; dat.grid = make_grid(ylist, gridsize = dat.gridsize)</span></span>
+<span id="cb51-26"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-26" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; obj = bin_many_cytograms(ylist, dat.grid, mc.cores=4, verbose=TRUE)</span></span>
+<span id="cb51-27"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-27" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; ybin_list = obj$ybin_list</span></span>
+<span id="cb51-28"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-28" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; counts_list = obj$counts_list</span></span>
+<span id="cb51-29"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-29" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
+<span id="cb51-30"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-30" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; numclust = 4</span></span>
+<span id="cb51-31"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-31" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; maxres = <a href='tuning-the-regularization-parameters-for-flowsmooth.html#calc_max_lambda'>calc_max_lambda</a>(ybin_list, counts_list, X, numclust, verbose=TRUE,</span></span>
+<span id="cb51-32"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-32" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;                             nrep = 4,</span></span>
+<span id="cb51-33"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-33" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;                             ## Function settings</span></span>
+<span id="cb51-34"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-34" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;                             parallelize = FALSE,</span></span>
+<span id="cb51-35"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-35" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;                             iimax = 20,</span></span>
+<span id="cb51-36"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-36" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;                             niter = 1000,</span></span>
+<span id="cb51-37"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-37" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;                             max_prob_lambda = 10000,</span></span>
+<span id="cb51-38"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-38" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;                             tol = 1E-3 ## This doesn&#39;t need to be so low here.</span></span>
+<span id="cb51-39"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-39" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;                             )</span></span>
+<span id="cb51-40"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-40" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
+<span id="cb51-41"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-41" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; }</span></span>
+<span id="cb51-42"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-42" aria-hidden="true" tabindex="-1"></a><span id='calc_max_lambda'>calc_max_lambda</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, <span class="at">countslist =</span> <span class="cn">NULL</span>, numclust,</span>
+<span id="cb51-43"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-43" aria-hidden="true" tabindex="-1"></a>                            <span class="at">max_lambda =</span> <span class="dv">4000</span>,</span>
+<span id="cb51-44"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-44" aria-hidden="true" tabindex="-1"></a>                            <span class="at">max_lambda_pi =</span> <span class="dv">1000</span>,</span>
+<span id="cb51-45"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-45" aria-hidden="true" tabindex="-1"></a>                            <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb51-46"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-46" aria-hidden="true" tabindex="-1"></a>                            <span class="at">iimax =</span> <span class="dv">16</span>,</span>
+<span id="cb51-47"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-47" aria-hidden="true" tabindex="-1"></a>                            ...){</span>
+<span id="cb51-48"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-49"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-49" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Get range of regularization parameters.</span></span>
+<span id="cb51-50"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-50" aria-hidden="true" tabindex="-1"></a>  facs <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>iimax, <span class="cf">function</span>(ii) <span class="dv">2</span><span class="sc">^</span>(<span class="sc">-</span>ii<span class="sc">+</span><span class="dv">1</span>)) <span class="do">## DECREASING order</span></span>
+<span id="cb51-51"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">&quot;running the models once&quot;</span>)</span>
+<span id="cb51-52"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-52" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>iimax){</span>
+<span id="cb51-53"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-54"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-54" aria-hidden="true" tabindex="-1"></a>    <span class="do">## print_progress(ii, iimax, &quot;regularization values&quot;, fill = TRUE)</span></span>
+<span id="cb51-55"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-55" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;###############################################################&quot;</span>, <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
+<span id="cb51-56"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;#### lambda_alpha = &quot;</span>, max_prob_lambda <span class="sc">*</span> facs[ii],</span>
+<span id="cb51-57"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-57" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot; and lambda_beta = &quot;</span>, max_mean_lambda <span class="sc">*</span> facs[ii], <span class="st">&quot;being tested.  &quot;</span>, <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
+<span id="cb51-58"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-58" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;###############################################################&quot;</span>, <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
+<span id="cb51-59"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-60"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-60" aria-hidden="true" tabindex="-1"></a>    res <span class="ot">=</span> <a href='main-flowsmooth-function.html#flowsmooth_once'>flowsmooth_once</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb51-61"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-61" aria-hidden="true" tabindex="-1"></a>                       <span class="at">countslist =</span> countslist,</span>
+<span id="cb51-62"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-62" aria-hidden="true" tabindex="-1"></a>                       <span class="at">numclust =</span> numclust,</span>
+<span id="cb51-63"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-63" aria-hidden="true" tabindex="-1"></a>                       <span class="at">prob_lambda =</span> max_lambda_pi <span class="sc">*</span> facs[ii],</span>
+<span id="cb51-64"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-64" aria-hidden="true" tabindex="-1"></a>                       <span class="at">mean_lambda =</span> max_lambda <span class="sc">*</span> facs[ii],</span>
+<span id="cb51-65"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-65" aria-hidden="true" tabindex="-1"></a>                       <span class="at">verbose =</span> verbose,</span>
+<span id="cb51-66"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-66" aria-hidden="true" tabindex="-1"></a>                       <span class="at">zero_stabilize =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb51-67"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-67" aria-hidden="true" tabindex="-1"></a>                       ...)</span>
+<span id="cb51-68"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-69"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-69" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Check zero-ness</span></span>
+<span id="cb51-70"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-70" aria-hidden="true" tabindex="-1"></a>    toler <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb51-71"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-71" aria-hidden="true" tabindex="-1"></a>    sum_nonzero_alpha <span class="ot">=</span> <span class="fu">sum</span>(res<span class="sc">$</span>alpha[,<span class="sc">-</span><span class="dv">1</span>] <span class="sc">&gt;</span> toler)</span>
+<span id="cb51-72"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-72" aria-hidden="true" tabindex="-1"></a>    sum_nonzero_beta <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">unlist</span>(<span class="fu">lapply</span>(res<span class="sc">$</span>beta, <span class="cf">function</span>(cf){ <span class="fu">sum</span>(cf[<span class="sc">-</span><span class="dv">1</span>,] <span class="sc">&gt;</span> toler) })))</span>
+<span id="cb51-73"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-74"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-75"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-75" aria-hidden="true" tabindex="-1"></a>    <span class="do">## If there are *any* nonzero values, do one of the following</span></span>
+<span id="cb51-76"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-76" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(sum_nonzero_alpha <span class="sc">+</span> sum_nonzero_beta <span class="sc">!=</span> <span class="dv">0</span>){</span>
+<span id="cb51-77"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-78"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-79"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-79" aria-hidden="true" tabindex="-1"></a>      <span class="do">## If there are *any* nonzero values at the first iter, prompt a restart</span></span>
+<span id="cb51-80"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-80" aria-hidden="true" tabindex="-1"></a>      <span class="do">## with higher initial lambda values.</span></span>
+<span id="cb51-81"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-81" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(ii<span class="sc">==</span><span class="dv">1</span>){</span>
+<span id="cb51-82"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-82" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stop</span>(<span class="fu">paste0</span>(<span class="st">&quot;Max lambdas: &quot;</span>, max_lambda, <span class="st">&quot; and &quot;</span>,</span>
+<span id="cb51-83"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-83" aria-hidden="true" tabindex="-1"></a>                    max_lambda_pi,</span>
+<span id="cb51-84"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-84" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot; were too small as maximum reg. values. Go up and try again!!&quot;</span>))</span>
+<span id="cb51-85"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-86"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-86" aria-hidden="true" tabindex="-1"></a>      <span class="do">## If there are *any* nonzero values, return the immediately preceding</span></span>
+<span id="cb51-87"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-87" aria-hidden="true" tabindex="-1"></a>      <span class="do">## lambda values -- these were the smallest values we had found that gives</span></span>
+<span id="cb51-88"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-88" aria-hidden="true" tabindex="-1"></a>      <span class="do">## full sparsity.</span></span>
+<span id="cb51-89"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-89" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb51-90"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-90" aria-hidden="true" tabindex="-1"></a>        <span class="do">## Check one more time whether the model was actually zero, by fully running it;</span></span>
+<span id="cb51-91"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-91" aria-hidden="true" tabindex="-1"></a>        res <span class="ot">=</span> <a href='main-flowsmooth-function.html#flowsmooth_once'>flowsmooth_once</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb51-92"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-92" aria-hidden="true" tabindex="-1"></a>                           <span class="at">countslist =</span> countslist,</span>
+<span id="cb51-93"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-93" aria-hidden="true" tabindex="-1"></a>                           <span class="at">X =</span> X,</span>
+<span id="cb51-94"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-94" aria-hidden="true" tabindex="-1"></a>                           <span class="at">numclust =</span> numclust,</span>
+<span id="cb51-95"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-95" aria-hidden="true" tabindex="-1"></a>                           <span class="at">lambda_pi =</span> max_lambda_pi <span class="sc">*</span> facs[ii],</span>
+<span id="cb51-96"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-96" aria-hidden="true" tabindex="-1"></a>                           <span class="at">lambda =</span> max_lambda <span class="sc">*</span> facs[ii],</span>
+<span id="cb51-97"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-97" aria-hidden="true" tabindex="-1"></a>                           <span class="at">zero_stabilize =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb51-98"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-98" aria-hidden="true" tabindex="-1"></a>                           ...)</span>
+<span id="cb51-99"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-99" aria-hidden="true" tabindex="-1"></a>        toler <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb51-100"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-100" aria-hidden="true" tabindex="-1"></a>        sum_nonzero_alpha <span class="ot">=</span> <span class="fu">sum</span>(res<span class="sc">$</span>alpha[,<span class="sc">-</span><span class="dv">1</span>] <span class="sc">&gt;</span> toler)</span>
+<span id="cb51-101"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-101" aria-hidden="true" tabindex="-1"></a>        sum_nonzero_beta <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">unlist</span>(<span class="fu">lapply</span>(res<span class="sc">$</span>beta, <span class="cf">function</span>(cf){ <span class="fu">sum</span>(cf[<span class="sc">-</span><span class="dv">1</span>,] <span class="sc">&gt;</span> toler) })))</span>
+<span id="cb51-102"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-103"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-103" aria-hidden="true" tabindex="-1"></a>        <span class="do">## If there are *any* nonzero values, do one of the following</span></span>
+<span id="cb51-104"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-104" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span>(sum_nonzero_alpha <span class="sc">+</span> sum_nonzero_beta <span class="sc">!=</span> <span class="dv">0</span>){</span>
+<span id="cb51-105"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-105" aria-hidden="true" tabindex="-1"></a>          <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">beta =</span> max_lambda <span class="sc">*</span> facs[ii<span class="dv">-1</span>],</span>
+<span id="cb51-106"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-106" aria-hidden="true" tabindex="-1"></a>                      <span class="at">alpha =</span> max_lambda_pi <span class="sc">*</span>facs[ii<span class="dv">-1</span>]))</span>
+<span id="cb51-107"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-107" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb51-108"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-108" aria-hidden="true" tabindex="-1"></a>        <span class="do">## Otherwise, just proceed to the next iteration.</span></span>
+<span id="cb51-109"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-109" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb51-110"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-110" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb51-111"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-111" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="at">fill=</span><span class="cn">TRUE</span>)</span>
+<span id="cb51-112"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-112" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb51-113"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb51-113" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="cross-validation" class="section level2 hasAnchor" number="9.6">
+<h2><span class="header-section-number">9.6</span> Cross-validation<a href="tuning-the-regularization-parameters-for-flowsmooth.html#cross-validation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Finally, we build the immediate elements needed for cross-validation.</p>
+<p><code><a href='tuning-the-regularization-parameters-for-flowsmooth.html#make_cv_tf_folds'>make_cv_tf_folds</a>()</code> makes the cross-validation “folds”, which are the <span class="math inline">\(K\)</span>
+(<code>nfold</code>) list of data indices. These are not times! They simply split of
+<code>1:length(ylist)</code>.</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; Define the time folds cross-validation.</span></span>
+<span id="cb52-2"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
+<span id="cb52-3"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param nfold Number of folds.</span></span>
+<span id="cb52-4"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @return List of fold indices.</span></span>
+<span id="cb52-5"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @export</span></span>
+<span id="cb52-6"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-6" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
+<span id="cb52-7"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-7" aria-hidden="true" tabindex="-1"></a><span id='make_cv_tf_folds'>make_cv_tf_folds</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">ylist=</span><span class="cn">NULL</span>, nfold, <span class="at">TT=</span><span class="cn">NULL</span>){</span>
+<span id="cb52-8"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-9"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-9" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Make hour-long index list</span></span>
+<span id="cb52-10"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(TT)) TT <span class="ot">=</span> <span class="fu">length</span>(ylist)</span>
+<span id="cb52-11"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-12"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-12" aria-hidden="true" tabindex="-1"></a>  folds <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>nfold, <span class="fu">ceiling</span>( (TT<span class="dv">-2</span>)<span class="sc">/</span>nfold))[<span class="dv">1</span><span class="sc">:</span>(TT<span class="dv">-2</span>)]</span>
+<span id="cb52-13"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-13" aria-hidden="true" tabindex="-1"></a>  inds <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>nfold, <span class="at">FUN =</span> <span class="cf">function</span>(k) (<span class="dv">2</span><span class="sc">:</span>(TT<span class="dv">-1</span>))[folds <span class="sc">==</span> k])</span>
+<span id="cb52-14"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(inds) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;Fold&quot;</span>, <span class="dv">1</span><span class="sc">:</span>nfold)</span>
+<span id="cb52-15"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(inds)</span>
+<span id="cb52-16"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb52-16" aria-hidden="true" tabindex="-1"></a>} </span></code></pre></div>
+<p>We can visualize how the data is to be split. In the following plot, vertical
+lines mark data indices in each fold using different colors. For <code>nfold = 5</code>,
+the first fold is every 5th point starting at 2, <span class="math inline">\(\{2,7,\dots\}\)</span>, and the second
+fold is <span class="math inline">\(\{3,8,\dots\}\)</span>, and so forth. The first index <span class="math inline">\(1\)</span> and the last <span class="math inline">\(TT\)</span> are
+intentionally left out and assumed available to folds. This is a small detail
+required because, otherwise, we cannot predictions at the either end points.
+TODO: explanation is clunky</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb53-1" aria-hidden="true" tabindex="-1"></a>nfold <span class="ot">=</span> <span class="dv">5</span></span>
+<span id="cb53-2"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb53-2" aria-hidden="true" tabindex="-1"></a>TT <span class="ot">=</span> <span class="dv">100</span></span>
+<span id="cb53-3"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb53-3" aria-hidden="true" tabindex="-1"></a>inds <span class="ot">=</span> <a href='tuning-the-regularization-parameters-for-flowsmooth.html#make_cv_tf_folds'>make_cv_tf_folds</a>(<span class="at">nfold =</span> nfold, <span class="at">TT =</span> TT)</span>
+<span id="cb53-4"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(inds)</span>
+<span id="cb53-5"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="cn">NA</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,TT), <span class="at">ylim=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Data index of ylist&quot;</span>, <span class="at">yaxt =</span> <span class="st">&quot;n&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>)</span>
+<span id="cb53-6"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb53-6" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">seq</span>(<span class="dv">10</span>, <span class="dv">100</span>,<span class="dv">10</span>)))</span>
+<span id="cb53-7"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(ifold <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nfold){</span>
+<span id="cb53-8"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb53-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">v =</span> inds[[ifold]], <span class="at">col =</span> ifold, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb53-9"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cb53-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## $Fold1
+##  [1]  2  7 12 17 22 27 32 37 42 47 52 57 62 67 72 77 82 87 92 97
+## 
+## $Fold2
+##  [1]  3  8 13 18 23 28 33 38 43 48 53 58 63 68 73 78 83 88 93 98
+## 
+## $Fold3
+##  [1]  4  9 14 19 24 29 34 39 44 49 54 59 64 69 74 79 84 89 94 99
+## 
+## $Fold4
+##  [1]  5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95
+## 
+## $Fold5
+##  [1]  6 11 16 21 26 31 36 41 46 51 56 61 66 71 76 81 86 91 96</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="plotting-for-1d-data.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="testing-the-flowsmooth-method.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

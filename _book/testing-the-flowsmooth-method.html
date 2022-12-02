@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>10 Testing the <a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>() method | Creating the flowsmooth R package</title>
+  <meta name="description" content="10 Testing the <a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>() method | Creating the flowsmooth R package" />
+  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="10 Testing the <a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>() method | Creating the flowsmooth R package" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="10 Testing the <a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>() method | Creating the flowsmooth R package" />
+  
+  
+  
+
+<meta name="author" content="Sangwon Hyun" />
+
+
+<meta name="date" content="2022-12-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="tuning-the-regularization-parameters-for-flowsmooth.html"/>
+
+<script src="libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a></li>
+<li class="chapter" data-level="3" data-path="generating-1d-data.html"><a href="generating-1d-data.html"><i class="fa fa-check"></i><b>3</b> Generating 1d data</a></li>
+<li class="chapter" data-level="4" data-path="building-the-flowmix_tf-method.html"><a href="building-the-flowmix_tf-method.html"><i class="fa fa-check"></i><b>4</b> Building the <code>flowmix_tf()</code> method</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="building-the-flowmix_tf-method.html"><a href="building-the-flowmix_tf-method.html#trend-filtering-briefly"><i class="fa fa-check"></i><b>4.1</b> Trend filtering, briefly</a></li>
+<li class="chapter" data-level="4.2" data-path="building-the-flowmix_tf-method.html"><a href="building-the-flowmix_tf-method.html#differencing-matrix"><i class="fa fa-check"></i><b>4.2</b> Differencing matrix</a></li>
+<li class="chapter" data-level="4.3" data-path="building-the-flowmix_tf-method.html"><a href="building-the-flowmix_tf-method.html#objective-data-log-likelihood"><i class="fa fa-check"></i><b>4.3</b> Objective (data log-likelihood)</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>5</b> M step</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>5.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
+<li class="chapter" data-level="5.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>5.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
+<li class="chapter" data-level="5.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>5.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>6</b> E step</a></li>
+<li class="chapter" data-level="7" data-path="main-flowsmooth-function.html"><a href="main-flowsmooth-function.html"><i class="fa fa-check"></i><b>7</b> Main <code><a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>()</code> function</a></li>
+<li class="chapter" data-level="8" data-path="plotting-for-1d-data.html"><a href="plotting-for-1d-data.html"><i class="fa fa-check"></i><b>8</b> Plotting for 1d data</a></li>
+<li class="chapter" data-level="9" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html"><i class="fa fa-check"></i><b>9</b> Tuning the regularization parameters for <code>flowsmooth</code></a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>9.1</b> Predicting and evaluating on new time points</a></li>
+<li class="chapter" data-level="9.2" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#evaluating-data-fit-by-likelihood-in-an-out-of-sample-measurement."><i class="fa fa-check"></i><b>9.2</b> Evaluating data fit (by likelihood) in an out-of-sample measurement.</a></li>
+<li class="chapter" data-level="9.3" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#d-example-with-ends-cut-off"><i class="fa fa-check"></i><b>9.3</b> 1d example with ends cut off</a></li>
+<li class="chapter" data-level="9.4" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#d-example-with-cross-validation"><i class="fa fa-check"></i><b>9.4</b> 1d example with cross-validation</a></li>
+<li class="chapter" data-level="9.5" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>9.5</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
+<li class="chapter" data-level="9.6" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cross-validation"><i class="fa fa-check"></i><b>9.6</b> Cross-validation</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html"><i class="fa fa-check"></i><b>10</b> Testing the <code><a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>()</code> method</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html#d-example"><i class="fa fa-check"></i><b>10.1</b> 1d example</a></li>
+<li class="chapter" data-level="10.2" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html#d-example-with-gap"><i class="fa fa-check"></i><b>10.2</b> 1d example with gap</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating the <code>flowsmooth</code> R package</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="testing-the-flowsmooth-method" class="section level1 hasAnchor" number="10">
+<h1><span class="header-section-number">10</span> Testing the <code><a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>()</code> method<a href="testing-the-flowsmooth-method.html#testing-the-flowsmooth-method" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>We’re going to take a huge leap, and assume the <code><a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>()</code> function has been
+built. We’re going to test it now.</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="testing-the-flowsmooth-method.html#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb55-2"><a href="testing-the-flowsmooth-method.html#cb55-2" aria-hidden="true" tabindex="-1"></a><span id='ll'>ll</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(){</span>
+<span id="cb55-3"><a href="testing-the-flowsmooth-method.html#cb55-3" aria-hidden="true" tabindex="-1"></a>  litr<span class="sc">::</span><span class="fu">render</span>(<span class="st">&quot;index.Rmd&quot;</span>, <span class="at">output_format =</span> litr<span class="sc">::</span><span class="fu">litr_gitbook</span>())</span>
+<span id="cb55-4"><a href="testing-the-flowsmooth-method.html#cb55-4" aria-hidden="true" tabindex="-1"></a>  devtools<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">&quot;~/repos/FlowTF&quot;</span>)</span>
+<span id="cb55-5"><a href="testing-the-flowsmooth-method.html#cb55-5" aria-hidden="true" tabindex="-1"></a>  devtools<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">&#39;~/repos/flowsmooth/flowsmooth&#39;</span>)</span>
+<span id="cb55-6"><a href="testing-the-flowsmooth-method.html#cb55-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb55-7"><a href="testing-the-flowsmooth-method.html#cb55-7" aria-hidden="true" tabindex="-1"></a><a href='testing-the-flowsmooth-method.html#ll'>ll</a>()</span></code></pre></div>
+<div id="d-example" class="section level2 hasAnchor" number="10.1">
+<h2><span class="header-section-number">10.1</span> 1d example<a href="testing-the-flowsmooth-method.html#d-example" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="testing-the-flowsmooth-method.html#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Generate data</span></span>
+<span id="cb56-2"><a href="testing-the-flowsmooth-method.html#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb56-3"><a href="testing-the-flowsmooth-method.html#cb56-3" aria-hidden="true" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>)</span>
+<span id="cb56-4"><a href="testing-the-flowsmooth-method.html#cb56-4" aria-hidden="true" tabindex="-1"></a>dt_model <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>, <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb56-5"><a href="testing-the-flowsmooth-method.html#cb56-5" aria-hidden="true" tabindex="-1"></a>ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='generating-1d-data.html#dt2ylist'>dt2ylist</a>()</span>
+<span id="cb56-6"><a href="testing-the-flowsmooth-method.html#cb56-6" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
+<span id="cb56-7"><a href="testing-the-flowsmooth-method.html#cb56-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-8"><a href="testing-the-flowsmooth-method.html#cb56-8" aria-hidden="true" tabindex="-1"></a><span class="do">## Fit model</span></span>
+<span id="cb56-9"><a href="testing-the-flowsmooth-method.html#cb56-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">0</span>)</span>
+<span id="cb56-10"><a href="testing-the-flowsmooth-method.html#cb56-10" aria-hidden="true" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb56-11"><a href="testing-the-flowsmooth-method.html#cb56-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">x =</span> x,</span>
+<span id="cb56-12"><a href="testing-the-flowsmooth-method.html#cb56-12" aria-hidden="true" tabindex="-1"></a>                  <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
+<span id="cb56-13"><a href="testing-the-flowsmooth-method.html#cb56-13" aria-hidden="true" tabindex="-1"></a>                  <span class="at">numclust =</span> <span class="dv">3</span>,</span>
+<span id="cb56-14"><a href="testing-the-flowsmooth-method.html#cb56-14" aria-hidden="true" tabindex="-1"></a>                  <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
+<span id="cb56-15"><a href="testing-the-flowsmooth-method.html#cb56-15" aria-hidden="true" tabindex="-1"></a>                  <span class="at">l =</span> <span class="dv">1</span>,</span>
+<span id="cb56-16"><a href="testing-the-flowsmooth-method.html#cb56-16" aria-hidden="true" tabindex="-1"></a>                  <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
+<span id="cb56-17"><a href="testing-the-flowsmooth-method.html#cb56-17" aria-hidden="true" tabindex="-1"></a>                  <span class="at">lambda_prob =</span> .<span class="dv">005</span>,</span>
+<span id="cb56-18"><a href="testing-the-flowsmooth-method.html#cb56-18" aria-hidden="true" tabindex="-1"></a>                  <span class="do">## nrestart = 3)</span></span>
+<span id="cb56-19"><a href="testing-the-flowsmooth-method.html#cb56-19" aria-hidden="true" tabindex="-1"></a>                  <span class="at">nrestart =</span> <span class="dv">1</span>)</span>
+<span id="cb56-20"><a href="testing-the-flowsmooth-method.html#cb56-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-21"><a href="testing-the-flowsmooth-method.html#cb56-21" aria-hidden="true" tabindex="-1"></a><span class="do">## Also reorder the cluster labels of the truth, to match the fitted model.</span></span>
+<span id="cb56-22"><a href="testing-the-flowsmooth-method.html#cb56-22" aria-hidden="true" tabindex="-1"></a>ord <span class="ot">=</span> obj<span class="sc">$</span>mn[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">colSums</span>() <span class="sc">%&gt;%</span> <span class="fu">order</span>(<span class="at">decreasing=</span><span class="cn">TRUE</span>)</span>
+<span id="cb56-23"><a href="testing-the-flowsmooth-method.html#cb56-23" aria-hidden="true" tabindex="-1"></a>lookup <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>obj<span class="sc">$</span>numclust), ord)</span>
+<span id="cb56-24"><a href="testing-the-flowsmooth-method.html#cb56-24" aria-hidden="true" tabindex="-1"></a>dt_model<span class="sc">$</span>cluster <span class="ot">=</span> lookup[<span class="fu">as.numeric</span>(dt_model<span class="sc">$</span>cluster)] <span class="sc">%&gt;%</span> <span class="fu">as.factor</span>()</span>
+<span id="cb56-25"><a href="testing-the-flowsmooth-method.html#cb56-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-26"><a href="testing-the-flowsmooth-method.html#cb56-26" aria-hidden="true" tabindex="-1"></a><span class="do">## Reorder the cluster lables of the fitted model.</span></span>
+<span id="cb56-27"><a href="testing-the-flowsmooth-method.html#cb56-27" aria-hidden="true" tabindex="-1"></a>obj <span class="ot">=</span> <a href='plotting-for-1d-data.html#reorder_clust'>reorder_clust</a>(obj)</span></code></pre></div>
+<p>The objective value (that is, the penalized log likelihood) should be monotone
+across EM algorithm iterations.</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="testing-the-flowsmooth-method.html#cb57-1" aria-hidden="true" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;Objective value decreases over EM iterations.&quot;</span>,{</span>
+<span id="cb57-2"><a href="testing-the-flowsmooth-method.html#cb57-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb57-3"><a href="testing-the-flowsmooth-method.html#cb57-3" aria-hidden="true" tabindex="-1"></a>  devtools<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">&quot;~/repos/FlowTF&quot;</span>)</span>
+<span id="cb57-4"><a href="testing-the-flowsmooth-method.html#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(iseed <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>){</span>
+<span id="cb57-5"><a href="testing-the-flowsmooth-method.html#cb57-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb57-6"><a href="testing-the-flowsmooth-method.html#cb57-6" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Generate increasingly noisy data</span></span>
+<span id="cb57-7"><a href="testing-the-flowsmooth-method.html#cb57-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set.seed</span>(iseed<span class="sc">*</span><span class="dv">100</span>)</span>
+<span id="cb57-8"><a href="testing-the-flowsmooth-method.html#cb57-8" aria-hidden="true" tabindex="-1"></a>    dt       <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.2</span>)</span>
+<span id="cb57-9"><a href="testing-the-flowsmooth-method.html#cb57-9" aria-hidden="true" tabindex="-1"></a>    dt<span class="sc">$</span>Y <span class="ot">=</span> dt<span class="sc">$</span>Y <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(dt), <span class="dv">0</span>, iseed<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb57-10"><a href="testing-the-flowsmooth-method.html#cb57-10" aria-hidden="true" tabindex="-1"></a>    ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='generating-1d-data.html#dt2ylist'>dt2ylist</a>()</span>
+<span id="cb57-11"><a href="testing-the-flowsmooth-method.html#cb57-11" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
+<span id="cb57-12"><a href="testing-the-flowsmooth-method.html#cb57-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb57-13"><a href="testing-the-flowsmooth-method.html#cb57-13" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Fit model</span></span>
+<span id="cb57-14"><a href="testing-the-flowsmooth-method.html#cb57-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">0</span>)</span>
+<span id="cb57-15"><a href="testing-the-flowsmooth-method.html#cb57-15" aria-hidden="true" tabindex="-1"></a>    obj <span class="ot">&lt;-</span> <a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb57-16"><a href="testing-the-flowsmooth-method.html#cb57-16" aria-hidden="true" tabindex="-1"></a>                      <span class="at">x =</span> x,</span>
+<span id="cb57-17"><a href="testing-the-flowsmooth-method.html#cb57-17" aria-hidden="true" tabindex="-1"></a>                      <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
+<span id="cb57-18"><a href="testing-the-flowsmooth-method.html#cb57-18" aria-hidden="true" tabindex="-1"></a>                      <span class="at">numclust =</span> <span class="dv">3</span>,</span>
+<span id="cb57-19"><a href="testing-the-flowsmooth-method.html#cb57-19" aria-hidden="true" tabindex="-1"></a>                      <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
+<span id="cb57-20"><a href="testing-the-flowsmooth-method.html#cb57-20" aria-hidden="true" tabindex="-1"></a>                      <span class="at">l =</span> <span class="dv">1</span>,</span>
+<span id="cb57-21"><a href="testing-the-flowsmooth-method.html#cb57-21" aria-hidden="true" tabindex="-1"></a>                      <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
+<span id="cb57-22"><a href="testing-the-flowsmooth-method.html#cb57-22" aria-hidden="true" tabindex="-1"></a>                      <span class="do">## lambda_prob = .5,</span></span>
+<span id="cb57-23"><a href="testing-the-flowsmooth-method.html#cb57-23" aria-hidden="true" tabindex="-1"></a>                      <span class="at">lambda_prob =</span> <span class="fl">0.05</span>,</span>
+<span id="cb57-24"><a href="testing-the-flowsmooth-method.html#cb57-24" aria-hidden="true" tabindex="-1"></a>                      <span class="at">nrestart =</span> <span class="dv">1</span>)</span>
+<span id="cb57-25"><a href="testing-the-flowsmooth-method.html#cb57-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb57-26"><a href="testing-the-flowsmooth-method.html#cb57-26" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Test objective monotonicity</span></span>
+<span id="cb57-27"><a href="testing-the-flowsmooth-method.html#cb57-27" aria-hidden="true" tabindex="-1"></a>    testthat<span class="sc">::</span><span class="fu">expect_true</span>(<span class="fu">all</span>(<span class="fu">diff</span>(obj<span class="sc">$</span>objective) <span class="sc">&lt;</span> <span class="dv">0</span>))</span>
+<span id="cb57-28"><a href="testing-the-flowsmooth-method.html#cb57-28" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb57-29"><a href="testing-the-flowsmooth-method.html#cb57-29" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<p>While the slight rise in objective value is not egregious, I would like to get
+to the bottom of this. The next code block shows a self-contained example of the
+objective value rising. I didn’t stop the algorithm (allowing the full
+<code>niter=200</code> iterations) to see if it increases. Now I wonder – is it due to
+glmnet? If we use CVXR, will it go away?</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="testing-the-flowsmooth-method.html#cb58-1" aria-hidden="true" tabindex="-1"></a>iseed <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb58-2"><a href="testing-the-flowsmooth-method.html#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(iseed <span class="sc">*</span> <span class="dv">100</span>)</span>
+<span id="cb58-3"><a href="testing-the-flowsmooth-method.html#cb58-3" aria-hidden="true" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.2</span>)</span>
+<span id="cb58-4"><a href="testing-the-flowsmooth-method.html#cb58-4" aria-hidden="true" tabindex="-1"></a>dt<span class="sc">$</span>Y <span class="ot">=</span> dt<span class="sc">$</span>Y <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(dt), <span class="dv">0</span>, iseed<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb58-5"><a href="testing-the-flowsmooth-method.html#cb58-5" aria-hidden="true" tabindex="-1"></a>ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='generating-1d-data.html#dt2ylist'>dt2ylist</a>()</span>
+<span id="cb58-6"><a href="testing-the-flowsmooth-method.html#cb58-6" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
+<span id="cb58-7"><a href="testing-the-flowsmooth-method.html#cb58-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-8"><a href="testing-the-flowsmooth-method.html#cb58-8" aria-hidden="true" tabindex="-1"></a><span class="do">## Fit model</span></span>
+<span id="cb58-9"><a href="testing-the-flowsmooth-method.html#cb58-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">0</span>)</span>
+<span id="cb58-10"><a href="testing-the-flowsmooth-method.html#cb58-10" aria-hidden="true" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb58-11"><a href="testing-the-flowsmooth-method.html#cb58-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">x =</span> x,</span>
+<span id="cb58-12"><a href="testing-the-flowsmooth-method.html#cb58-12" aria-hidden="true" tabindex="-1"></a>                  <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
+<span id="cb58-13"><a href="testing-the-flowsmooth-method.html#cb58-13" aria-hidden="true" tabindex="-1"></a>                  <span class="at">numclust =</span> <span class="dv">3</span>,</span>
+<span id="cb58-14"><a href="testing-the-flowsmooth-method.html#cb58-14" aria-hidden="true" tabindex="-1"></a>                  <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
+<span id="cb58-15"><a href="testing-the-flowsmooth-method.html#cb58-15" aria-hidden="true" tabindex="-1"></a>                  <span class="at">l =</span> <span class="dv">1</span>,</span>
+<span id="cb58-16"><a href="testing-the-flowsmooth-method.html#cb58-16" aria-hidden="true" tabindex="-1"></a>                  <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
+<span id="cb58-17"><a href="testing-the-flowsmooth-method.html#cb58-17" aria-hidden="true" tabindex="-1"></a>                  <span class="at">lambda_prob =</span> <span class="fl">0.05</span>,</span>
+<span id="cb58-18"><a href="testing-the-flowsmooth-method.html#cb58-18" aria-hidden="true" tabindex="-1"></a>                  <span class="at">nrestart =</span> <span class="dv">1</span>,</span>
+<span id="cb58-19"><a href="testing-the-flowsmooth-method.html#cb58-19" aria-hidden="true" tabindex="-1"></a>                  <span class="at">niter =</span> <span class="dv">200</span>,</span>
+<span id="cb58-20"><a href="testing-the-flowsmooth-method.html#cb58-20" aria-hidden="true" tabindex="-1"></a>                  <span class="at">verbose =</span> <span class="cn">TRUE</span>) <span class="do">## </span><span class="al">TODO</span><span class="do">: remember to comment out the convergence check!!</span></span>
+<span id="cb58-21"><a href="testing-the-flowsmooth-method.html#cb58-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-22"><a href="testing-the-flowsmooth-method.html#cb58-22" aria-hidden="true" tabindex="-1"></a>objectives <span class="ot">=</span> obj<span class="sc">$</span>objective</span>
+<span id="cb58-23"><a href="testing-the-flowsmooth-method.html#cb58-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">200</span>){</span>
+<span id="cb58-24"><a href="testing-the-flowsmooth-method.html#cb58-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<a href='building-the-flowmix_tf-method.html#check_converge_rel'>check_converge_rel</a>(objectives[iter<span class="dv">-1</span>], objectives[iter], <span class="at">tol =</span> <span class="fl">1E-4</span>)) <span class="cf">break</span></span>
+<span id="cb58-25"><a href="testing-the-flowsmooth-method.html#cb58-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb58-26"><a href="testing-the-flowsmooth-method.html#cb58-26" aria-hidden="true" tabindex="-1"></a>stopping_iter <span class="ot">=</span> iter</span>
+<span id="cb58-27"><a href="testing-the-flowsmooth-method.html#cb58-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-28"><a href="testing-the-flowsmooth-method.html#cb58-28" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">range</span>(<span class="fu">diff</span>(obj<span class="sc">$</span>objective)))</span>
+<span id="cb58-29"><a href="testing-the-flowsmooth-method.html#cb58-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-30"><a href="testing-the-flowsmooth-method.html#cb58-30" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(obj<span class="sc">$</span>objective, <span class="at">type =</span><span class="st">&#39;l&#39;</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">50</span>)) <span class="do">## Ok did it rise?</span></span>
+<span id="cb58-31"><a href="testing-the-flowsmooth-method.html#cb58-31" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span>iter, <span class="at">lty =</span> <span class="st">&#39;dotted&#39;</span>)</span>
+<span id="cb58-32"><a href="testing-the-flowsmooth-method.html#cb58-32" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="fu">min</span>(obj<span class="sc">$</span>objective), <span class="at">lty =</span> <span class="st">&#39;dotted&#39;</span>, <span class="at">col =</span> <span class="st">&#39;blue&#39;</span>)</span>
+<span id="cb58-33"><a href="testing-the-flowsmooth-method.html#cb58-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-34"><a href="testing-the-flowsmooth-method.html#cb58-34" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">diff</span>(obj<span class="sc">$</span>objective), <span class="at">type =</span><span class="st">&#39;l&#39;</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.001</span>, <span class="fl">0.0005</span>)) <span class="do">## Ok did it rise?</span></span>
+<span id="cb58-35"><a href="testing-the-flowsmooth-method.html#cb58-35" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>, <span class="at">col =</span> <span class="st">&#39;blue&#39;</span>, <span class="at">lty =</span> <span class="st">&#39;dotted&#39;</span>)</span></code></pre></div>
+<p>The data and estimated model are shown here.</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="testing-the-flowsmooth-method.html#cb59-1" aria-hidden="true" tabindex="-1"></a><a href='plotting-for-1d-data.html#plot_1d'>plot_1d</a>(ylist, obj, <span class="at">x =</span> x) <span class="sc">+</span></span>
+<span id="cb59-2"><a href="testing-the-flowsmooth-method.html#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">group =</span> cluster),</span>
+<span id="cb59-3"><a href="testing-the-flowsmooth-method.html#cb59-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> dt_model,<span class="do">## %&gt;% subset(time %ni% held_out),</span></span>
+<span id="cb59-4"><a href="testing-the-flowsmooth-method.html#cb59-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">size=</span><span class="dv">2</span>, <span class="at">alpha =</span> .<span class="dv">7</span>)</span></code></pre></div>
+<p>The estimated probabilities are shown here.</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="testing-the-flowsmooth-method.html#cb60-1" aria-hidden="true" tabindex="-1"></a><a href='plotting-for-1d-data.html#plot_prob'>plot_prob</a>(obj) <span class="sc">+</span></span>
+<span id="cb60-2"><a href="testing-the-flowsmooth-method.html#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> prob, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
+<span id="cb60-3"><a href="testing-the-flowsmooth-method.html#cb60-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> dt_model, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>)  <span class="sc">+</span></span>
+<span id="cb60-4"><a href="testing-the-flowsmooth-method.html#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>cluster)</span></code></pre></div>
+</div>
+<div id="d-example-with-gap" class="section level2 hasAnchor" number="10.2">
+<h2><span class="header-section-number">10.2</span> 1d example with gap<a href="testing-the-flowsmooth-method.html#d-example-with-gap" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Repeating this exercise with data that has a gap (between times 25 and 35).</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="testing-the-flowsmooth-method.html#cb61-1" aria-hidden="true" tabindex="-1"></a>held_out <span class="ot">=</span> <span class="dv">25</span><span class="sc">:</span><span class="dv">35</span></span>
+<span id="cb61-2"><a href="testing-the-flowsmooth-method.html#cb61-2" aria-hidden="true" tabindex="-1"></a>dt_subset <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">subset</span>(time <span class="sc">%ni%</span> held_out)</span>
+<span id="cb61-3"><a href="testing-the-flowsmooth-method.html#cb61-3" aria-hidden="true" tabindex="-1"></a>ylist <span class="ot">=</span> dt_subset <span class="sc">%&gt;%</span> <a href='generating-1d-data.html#dt2ylist'>dt2ylist</a>()</span>
+<span id="cb61-4"><a href="testing-the-flowsmooth-method.html#cb61-4" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> dt_subset <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
+<span id="cb61-5"><a href="testing-the-flowsmooth-method.html#cb61-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-6"><a href="testing-the-flowsmooth-method.html#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Fit model</span></span>
+<span id="cb61-7"><a href="testing-the-flowsmooth-method.html#cb61-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">0</span>)</span>
+<span id="cb61-8"><a href="testing-the-flowsmooth-method.html#cb61-8" aria-hidden="true" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb61-9"><a href="testing-the-flowsmooth-method.html#cb61-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">x =</span> x,</span>
+<span id="cb61-10"><a href="testing-the-flowsmooth-method.html#cb61-10" aria-hidden="true" tabindex="-1"></a>                  <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
+<span id="cb61-11"><a href="testing-the-flowsmooth-method.html#cb61-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">numclust =</span> <span class="dv">3</span>,</span>
+<span id="cb61-12"><a href="testing-the-flowsmooth-method.html#cb61-12" aria-hidden="true" tabindex="-1"></a>                  <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
+<span id="cb61-13"><a href="testing-the-flowsmooth-method.html#cb61-13" aria-hidden="true" tabindex="-1"></a>                  <span class="at">l =</span> <span class="dv">1</span>,</span>
+<span id="cb61-14"><a href="testing-the-flowsmooth-method.html#cb61-14" aria-hidden="true" tabindex="-1"></a>                  <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
+<span id="cb61-15"><a href="testing-the-flowsmooth-method.html#cb61-15" aria-hidden="true" tabindex="-1"></a>                  <span class="at">lambda_prob =</span> .<span class="dv">005</span>,</span>
+<span id="cb61-16"><a href="testing-the-flowsmooth-method.html#cb61-16" aria-hidden="true" tabindex="-1"></a>                  <span class="at">nrestart =</span> <span class="dv">2</span>)</span>
+<span id="cb61-17"><a href="testing-the-flowsmooth-method.html#cb61-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-18"><a href="testing-the-flowsmooth-method.html#cb61-18" aria-hidden="true" tabindex="-1"></a><span class="do">## Also reorder the cluster labels of the truth, to match the fitted model.</span></span>
+<span id="cb61-19"><a href="testing-the-flowsmooth-method.html#cb61-19" aria-hidden="true" tabindex="-1"></a>ord <span class="ot">=</span> obj<span class="sc">$</span>mn[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">colSums</span>() <span class="sc">%&gt;%</span> <span class="fu">order</span>(<span class="at">decreasing=</span><span class="cn">TRUE</span>)</span>
+<span id="cb61-20"><a href="testing-the-flowsmooth-method.html#cb61-20" aria-hidden="true" tabindex="-1"></a>lookup <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>obj<span class="sc">$</span>numclust), ord)</span>
+<span id="cb61-21"><a href="testing-the-flowsmooth-method.html#cb61-21" aria-hidden="true" tabindex="-1"></a>dt_model<span class="sc">$</span>cluster <span class="ot">=</span> lookup[<span class="fu">as.numeric</span>(dt_model<span class="sc">$</span>cluster)] <span class="sc">%&gt;%</span> <span class="fu">as.factor</span>()</span>
+<span id="cb61-22"><a href="testing-the-flowsmooth-method.html#cb61-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-23"><a href="testing-the-flowsmooth-method.html#cb61-23" aria-hidden="true" tabindex="-1"></a><span class="do">## Reorder the cluster lables of the fitted model.</span></span>
+<span id="cb61-24"><a href="testing-the-flowsmooth-method.html#cb61-24" aria-hidden="true" tabindex="-1"></a>obj <span class="ot">=</span> <a href='plotting-for-1d-data.html#reorder_clust'>reorder_clust</a>(obj)</span></code></pre></div>
+<p>The model estimates (the solid colored lines) at the gap (between 25 and 35) are
+automatically generated by <code>ggplot::geom_line()</code>, and no model estimates are
+being made here. But actually, this is what we want to do when making
+predictions at new time points. There’s more about this shortly.</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="testing-the-flowsmooth-method.html#cb62-1" aria-hidden="true" tabindex="-1"></a><a href='plotting-for-1d-data.html#plot_1d'>plot_1d</a>(ylist, obj, <span class="at">x =</span> x) <span class="sc">+</span></span>
+<span id="cb62-2"><a href="testing-the-flowsmooth-method.html#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">group =</span> cluster),</span>
+<span id="cb62-3"><a href="testing-the-flowsmooth-method.html#cb62-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> dt_model,<span class="do">## %&gt;% subset(time %ni% held_out),</span></span>
+<span id="cb62-4"><a href="testing-the-flowsmooth-method.html#cb62-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">size=</span><span class="dv">2</span>, <span class="at">alpha =</span> .<span class="dv">7</span>)</span></code></pre></div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="tuning-the-regularization-parameters-for-flowsmooth.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

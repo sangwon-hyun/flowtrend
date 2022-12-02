@@ -1,6 +1,7 @@
 # Plotting for 1d data
 
-Given data `ylist` and an estimated model object `obj`, plot the data.
+Given 1d data `ylist` and an estimated model object `obj`, we want to plot both
+in a single plot. `plot_1d()` lets you do this.
 
 ```{r plot_1d}
 #' Makes 1d plot of data and model
@@ -29,8 +30,8 @@ plot_1d <- function(ylist, obj=NULL, x = NULL){
   ## plot long matrix
   gg = ymat %>% ggplot() +
     geom_point(aes(x = time, y = Y), alpha = .1) +
-    theme_bw() + ylab("Data") + xlab("Time") +
-    theme(legend.position = 'none')
+    theme_bw() + ylab("Data") + xlab("Time") 
+    ## theme(legend.position = 'none')
   if(is.null(obj)) return(gg)
 
   ## Add the model
@@ -43,6 +44,7 @@ plot_1d <- function(ylist, obj=NULL, x = NULL){
   est_long = full_join(mn_long, prob_long)
   gg = gg + geom_line(aes(x = time, y = mean, size = prob, group = cluster, color = cluster),
                       data = est_long)
+  ## TODO: make it ignore the missing values at the gaps; currently this is not coded as NAs.
 
   ## Add the estimated 95% probability regions for data.
   stdev = obj$sigma %>% .[,,1] %>% sqrt()
@@ -59,6 +61,24 @@ plot_1d <- function(ylist, obj=NULL, x = NULL){
               data = band_long, size = rel(1), alpha = .5)
 }
 ```
+
+The plotting function `plot_1d()` will be even more useful when we have a model,
+but can simply plot the data. Let's try this out.
+
+```{r test-gendat}
+set.seed(100)
+dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
+dt_model <- gendat_1d(100, rep(100, 100), die_off_time = 0.45, return_model = TRUE)
+ylist = dt %>% dt2ylist()
+x = dt %>% pull(time) %>% unique()
+
+plot_1d(ylist, NULL, x = x) +
+  geom_line(aes(x = time, y = mean, group = cluster),
+            data = dt_model,
+            linetype = "dashed", size=2, alpha = .7)
+```
+
+The following few sections show examples of how to use these plotting functions.
 
 
 Also, we will want to plot the estimated cluster probabilities, from `obj`.
@@ -128,20 +148,177 @@ reorder_clust <- function(res, ord = NULL){
 }
 ```
 
-The plotting function `plot_1d()` will be even more useful when we have a model,
-but can simply plot the data. Let's try this out.
+It's useful to be able to reorder, or *permute*, one model's cluster labels
+(cluster 1,2,.. of `newres` which are arbitrary) to that of another model
+`origres`. The function `reorder_kl()` does this by taking the posterior
+probabilities of the particles in `ylist_particle` (row-binded to be a $\sum_t
+n_t \times K$ matrix), and then using a Hungarian algorithm to best match the
+two elongated matrices $A$ and $B$ by measuring the (symmetric? TODO check) KL
+divergence between all permutations of the $K$ columns
 
-```{r test-gendat}
+TODO: right now this is just copy-pasted from `flowmix`. But actually, this is
+an example of a function that can be directly borrowed; all the work is done in
+`reorder_clust()`. So deal with that!!
+
+```{r}
+#' Reorder the cluster numbers for a new flowsmooth object \code{newres}; the best
+#' permutation (reordering) is to match the original flowmix object
+#' \code{origres}.
+#'
+#' @param newres New flowsmooth object to reorder.
+#' @param origres Original flowsmooth object.
+#' @param ylist_particle The particle-level data.
+#' @param fac Defaults to 100, to take 1/100'th of the particles from each time point.
+#' @param verbose Loud or not?
+#'
+#' @return Reordered res
+#'
+#' @export
+reorder_kl <- function(newres, origres, ylist_particle, fac = 100, verbose = FALSE){
+
+  ## Randomly sample  1/100 of the original particles (mainly for memory reasons)
+  TT = length(ylist_particle)
+  N = sapply(ylist_particle, nrow) %>% sum()
+  ntlist = sapply(ylist_particle, nrow)
+  indlist = lapply(1:TT, function(tt){
+    nt = ntlist[[tt]]
+    ind = sample(1:nt, round(nt / fac), replace=FALSE)
+  })
+
+  ## Sample responsibilities
+  ylist_particle_small = Map(function(ind, y){ y[ind,,drop = FALSE]  }, indlist, ylist_particle)
+
+  ## Calculate new responsibilities
+  resp_orig_small <- Estep(origres$mn, origres$sigma, origres$prob,
+                           ylist = ylist_particle_small,
+                           numclust = origres$numclust, first_iter = TRUE)
+  resp_new_small <- Estep(newres$mn, newres$sigma, newres$prob,
+                          ylist = ylist_particle_small,
+                          numclust = newres$numclust, first_iter = TRUE)
+  assertthat::assert_that(all(sapply(resp_orig_small, dim) == sapply(resp_new_small, dim)))
+
+  ## Get best ordering (using symm. KL divergence and Hungarian algorithm for
+  ## matching)
+  best_ord <- get_best_match_from_kl(resp_new_small, resp_orig_small)
+
+  if(verbose) cat("New order is", best_ord, fill=TRUE)
+  newres_reordered_kl = newres %>% reorder_clust(ord = best_ord)
+
+  ## Return the reordered object
+  return(newres_reordered_kl)
+}
+```
+
+This function uses `get_best_match_from_kl()`, which takes two lists containing
+responsibilities (posterior probabilities of particles) -- one from each model
+-- and returns the cluster ordering to apply to the model that produced
+`resp_new`. We define this function and a couple of helper functions next.
+
+```{r}
+#' Compute KL divergence from responsibilities between two models'
+#' responsibilities \code{resp_new} and \code{resp_old}.
+#'
+#' @param resp_new New responsibilities
+#' @param resp_orig Original responsiblities.
+#'
+#' @return Calculate reordering \code{o} of the clusters in model represented
+#'   by \code{resp_new}. To be clear, \code{o[i]} of new model is the best
+#'   match with the i'th cluster of the original model.
+#'
+#' @export
+#' @importFrom clue solve_LSAP
+get_best_match_from_kl <- function(resp_new, resp_orig){
+
+  ## Basic checks
+  . = NULL ## Fixing check()
+  assertthat::assert_that(all(sapply(resp_new, dim) == sapply(resp_orig , dim)))
+
+  ## Row-bind all the responsibilities to make a long matrix
+  distmat = form_symmetric_kl_distmat(resp_orig %>% do.call(rbind,.),
+                                      resp_new %>% do.call(rbind,.))
+
+  ## Use Hungarian algorithm to solve.
+  fit <- clue::solve_LSAP(distmat)
+  o <- as.numeric(fit)
+
+  ## Return the ordering
+  return(o)
+}
+
+##' From two probability matrices, form a (K x K) distance matrix of the
+##' (n)-vectors. The distance between the vectors is the symmetric KL
+##' divergence.
+##'
+##' @param mat1 Matrix 1 of size (n x K).
+##' @param mat2 Matrix 2 of size (n x K).
+##'
+##' @return K x K matrix containing symmetric KL divergence of each column of
+##'   \code{mat1} and \code{mat2}.
+form_symmetric_kl_distmat <- function(mat1, mat2){
+
+  ## Manually add some small, in case some columns are all zero
+  mat1 = (mat1 + 1E-10) %>% pmin(1)
+  mat2 = (mat2 + 1E-10) %>% pmin(1)
+
+  ## Calculate and return distance matrix.
+  KK1 = ncol(mat1)
+  KK2 = ncol(mat2)
+  distmat = matrix(NA, ncol=KK2, nrow=KK1)
+  for(kk1 in 1:KK1){
+    for(kk2 in 1:KK2){
+      mydist = symmetric_kl(mat1[,kk1, drop=TRUE], mat2[,kk2, drop=TRUE])
+      distmat[kk1, kk2] = mydist
+    }
+  }
+  stopifnot(all(!is.na(distmat)))
+  return(distmat)
+}
+
+##' Symmetric KL divergence, of two probability vectors.
+##'
+##' @param vec1 First probability vector.
+##' @param vec2 Second prbability vector.
+##'
+##' @return Symmetric KL divergence (scalar).
+symmetric_kl <- function(vec1, vec2){
+  stopifnot(all(vec1 <= 1) & all(vec1 >= 0))
+  stopifnot(all(vec2 <= 1) & all(vec2 >= 0))
+  kl <- function(vec1, vec2){
+    sum(vec1 * log(vec1 / vec2))
+  }
+  return((kl(vec1, vec2) + kl(vec2, vec1))/2)
+}
+```
+
+Here's an example of how to use it.
+TODO: this code block incurs an error because flowsmooth is not fully available to use yet, at this stage of the code. Fix this!
+
+```{r test-reordering, fig.width = 7, fig.height = 5, eval = FALSE}
+devtools::load_all("~/repos/FlowTF")
 set.seed(100)
 dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
 dt_model <- gendat_1d(100, rep(100, 100), die_off_time = 0.45, return_model = TRUE)
 ylist = dt %>% dt2ylist()
 x = dt %>% pull(time) %>% unique()
 
-plot_1d(ylist, NULL, x = x) +
-  geom_line(aes(x = time, y = mean, group = cluster),
-            data = dt_model,
-            linetype = "dashed", size=2, alpha = .7)
+## Fit model
+set.seed(2)
+objlist <- lapply(1:2, function(isim){
+  flowsmooth(ylist = ylist,
+             x = x,
+             maxdev = 5,
+             numclust = 3,
+             lambda = 0.02,
+             l = 1,
+             l_prob = 2,
+             lambda_prob = .005,
+             nrestart = 1, verbose = TRUE)})
+newres = objlist[[1]]
+origres = objlist[[2]]
+newres_reordered = reorder_kl(newres, origres, ylist, fac = 100, verbose = FALSE)
+plot_1d(ylist, newres, x = x) + ggtitle("before reordering, model 1")
+plot_1d(ylist, origres, x = x) + ggtitle("model 2")
+plot_1d(ylist, newres_reordered, x = x) + ggtitle("reordered model 1")
 ```
 
-The following few sections show examples of how to use these plotting functions.
+
