@@ -6,7 +6,7 @@ Markdown document in this directory -- called ~1description.Rmd~,
 ~2generate-data.Rmd~, and so forth -- contain code that directly builds the R
 package. 
 
-The resulting "knitted" documentation from these files is [[./_book/index.html][here]], and..
+The resulting "knitted" documentation from these files is [[https://htmlpreview.github.io/?https://github.com/sangwon-hyun/flowsmooth/blob/main/_book/index.html][here]], and..
 
 The resulting R package is in the subdirectory [[./flowsmooth]], and can be
 installed as follows.
