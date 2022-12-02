@@ -871,7 +871,7 @@ testthat::test_that("E step returns appropriately sized object.",{
 ```
 
 
-# Main `flowsmooth()` function
+# Main flowsmooth function
 
 Now we've assembled all ingredients we need, we'll build the main function
 `flowsmooth_once()` to estimate a flowsmooth model. Here goes:

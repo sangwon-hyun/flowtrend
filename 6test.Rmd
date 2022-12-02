@@ -1,4 +1,4 @@
-# Testing the `flowsmooth()` method
+# Testing the flowsmooth method
 
 We're going to take a huge leap, and assume the `flowsmooth()` function has been
 built. We're going to test it now.

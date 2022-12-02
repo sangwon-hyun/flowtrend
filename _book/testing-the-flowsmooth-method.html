@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>10 Testing the <a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>() method | Creating the flowsmooth R package</title>
-  <meta name="description" content="10 Testing the <a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>() method | Creating the flowsmooth R package" />
+  <title>10 Testing the flowsmooth method | Creating the flowsmooth R package</title>
+  <meta name="description" content="10 Testing the flowsmooth method | Creating the flowsmooth R package" />
   <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="10 Testing the <a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>() method | Creating the flowsmooth R package" />
+  <meta property="og:title" content="10 Testing the flowsmooth method | Creating the flowsmooth R package" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="10 Testing the <a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>() method | Creating the flowsmooth R package" />
+  <meta name="twitter:title" content="10 Testing the flowsmooth method | Creating the flowsmooth R package" />
   
   
   
@@ -149,7 +149,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>5.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>6</b> E step</a></li>
-<li class="chapter" data-level="7" data-path="main-flowsmooth-function.html"><a href="main-flowsmooth-function.html"><i class="fa fa-check"></i><b>7</b> Main <code><a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>()</code> function</a></li>
+<li class="chapter" data-level="7" data-path="main-flowsmooth-function.html"><a href="main-flowsmooth-function.html"><i class="fa fa-check"></i><b>7</b> Main flowsmooth function</a></li>
 <li class="chapter" data-level="8" data-path="plotting-for-1d-data.html"><a href="plotting-for-1d-data.html"><i class="fa fa-check"></i><b>8</b> Plotting for 1d data</a></li>
 <li class="chapter" data-level="9" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html"><i class="fa fa-check"></i><b>9</b> Tuning the regularization parameters for <code>flowsmooth</code></a>
 <ul>
@@ -160,7 +160,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.5" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>9.5</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
 <li class="chapter" data-level="9.6" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cross-validation"><i class="fa fa-check"></i><b>9.6</b> Cross-validation</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html"><i class="fa fa-check"></i><b>10</b> Testing the <code><a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>()</code> method</a>
+<li class="chapter" data-level="10" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html"><i class="fa fa-check"></i><b>10</b> Testing the flowsmooth method</a>
 <ul>
 <li class="chapter" data-level="10.1" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html#d-example"><i class="fa fa-check"></i><b>10.1</b> 1d example</a></li>
 <li class="chapter" data-level="10.2" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html#d-example-with-gap"><i class="fa fa-check"></i><b>10.2</b> 1d example with gap</a></li>
@@ -183,7 +183,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="testing-the-flowsmooth-method" class="section level1 hasAnchor" number="10">
-<h1><span class="header-section-number">10</span> Testing the <code><a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>()</code> method<a href="testing-the-flowsmooth-method.html#testing-the-flowsmooth-method" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<h1><span class="header-section-number">10</span> Testing the flowsmooth method<a href="testing-the-flowsmooth-method.html#testing-the-flowsmooth-method" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>We’re going to take a huge leap, and assume the <code><a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>()</code> function has been
 built. We’re going to test it now.</p>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="testing-the-flowsmooth-method.html#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
