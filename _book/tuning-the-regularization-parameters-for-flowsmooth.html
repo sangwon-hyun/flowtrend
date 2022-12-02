@@ -448,15 +448,15 @@ interpolation. It works as expected.</p>
 <p>What should the maximum value of regularization parameters to use? It’s useful
 to be able to calculate the <em>smallest</em> value of regularization parameters that
 result in fully flat <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\pi\)</span> over time, in all clusters. Call these
-<span class="math inline">\(\lambda_\mu^{\text{max}}\)</span> and <span class="math inline">\(\lambda_{\pi}&amp;{\text{max}}\)</span>. Then, as candidates
+<span class="math inline">\(\lambda_\mu^{\text{max}}\)</span> and <span class="math inline">\(\lambda_{\pi}^{\text{max}}\)</span>. Then, as candidates
 for cross-validation, we can use a grid of logarithmically-spaced pairs of
-values between (0,0) and <span class="math inline">\((\lambda_{\mu}&amp;{\text{max}}, \lambda_{\pi}&amp;{\text{max}})\)</span>.</p>
+values between (0,0) and <span class="math inline">\((\lambda_{\mu}^{\text{max}}, \lambda_{\pi}^{\text{max}})\)</span>.</p>
 <p>The function <code><a href='tuning-the-regularization-parameters-for-flowsmooth.html#get_max_lambda'>get_max_lambda</a>()</code> numerically estimates this maximum pair
-<span class="math inline">\((\lambda_{\mu}&amp;{\text{max}}, \lambda_{\pi}&amp;{\text{max}})\)</span>. It proceeds by first
+<span class="math inline">\((\lambda_{\mu}^{\text{max}}, \lambda_{\pi}&amp;{\text{max}})\)</span>. It proceeds by first
 running <code><a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>()</code> on a very large pair <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span>, then
 sequentially halving both values while checking if the resulting estimated <span class="math inline">\(\mu\)</span>
-and <span class="math inline">\(\pi\)</span> are <em>all</em> flat over time. As soon as they cease to be flat, stop and
-take the previous pair of values of <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span>.</p>
+and <span class="math inline">\(\pi\)</span> are <em>all</em> flat over time. As soon as they cease to be flat, we stop
+and take the immediately previous pair of values of <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span>.</p>
 <p><code><a href='tuning-the-regularization-parameters-for-flowsmooth.html#get_max_lambda'>get_max_lambda</a>()</code> is a wrapper around the workhorse <code><a href='tuning-the-regularization-parameters-for-flowsmooth.html#calc_max_lambda'>calc_max_lambda</a>()</code>. It
 obtains the value <em>and</em> saves it to a <code>maxres_file</code> (which defaults to
 <code>maxres.Rdata</code>) in the <code>destin</code> directory.</p>

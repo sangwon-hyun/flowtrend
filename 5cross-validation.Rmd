@@ -303,17 +303,18 @@ TT
 What should the maximum value of regularization parameters to use? It's useful
 to be able to calculate the *smallest* value of regularization parameters that
 result in fully flat $\mu$ and $\pi$ over time, in all clusters. Call these
-$\lambda_\mu^{\text{max}}$ and $\lambda_{\pi}&{\text{max}}$. Then, as candidates
+$\lambda_\mu^{\text{max}}$ and $\lambda_{\pi}^{\text{max}}$. Then, as candidates
 for cross-validation, we can use a grid of logarithmically-spaced pairs of
-values between (0,0) and $(\lambda_{\mu}&{\text{max}},
-\lambda_{\pi}&{\text{max}})$.
+values between (0,0) and $(\lambda_{\mu}^{\text{max}},
+\lambda_{\pi}^{\text{max}})$.
 
 The function `get_max_lambda()` numerically estimates this maximum pair
-$(\lambda_{\mu}&{\text{max}}, \lambda_{\pi}&{\text{max}})$. It proceeds by first
+$(\lambda_{\mu}^{\text{max}}, \lambda_{\pi}&{\text{max}})$. It proceeds by first
 running `flowsmooth()` on a very large pair $(\lambda_\mu, \lambda_\pi)$, then
 sequentially halving both values while checking if the resulting estimated $\mu$
-and $\pi$ are *all* flat over time. As soon as they cease to be flat, stop and
-take the previous pair of values of $(\lambda_\mu, \lambda_\pi)$.
+and $\pi$ are *all* flat over time. As soon as they cease to be flat, we stop
+and take the immediately previous pair of values of $(\lambda_\mu,
+\lambda_\pi)$.
 
 `get_max_lambda()` is a wrapper around the workhorse `calc_max_lambda()`. It
 obtains the value *and* saves it to a `maxres_file` (which defaults to
