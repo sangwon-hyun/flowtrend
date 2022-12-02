@@ -150,7 +150,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>6.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
 <li class="chapter" data-level="6.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>6.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="flowsmooth.html"><a href="flowsmooth.html"><i class="fa fa-check"></i><b>7</b> <code><a href='flowsmooth.html#flowsmooth'>flowsmooth</a>()</code></a></li>
+<li class="chapter" data-level="7" data-path="flowsmooth.html"><a href="flowsmooth.html"><i class="fa fa-check"></i><b>7</b> flowsmooth</a></li>
 <li class="chapter" data-level="8" data-path="plotting-for-1d-data.html"><a href="plotting-for-1d-data.html"><i class="fa fa-check"></i><b>8</b> Plotting for 1d data</a></li>
 <li class="chapter" data-level="9" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html"><i class="fa fa-check"></i><b>9</b> Tuning the regularization parameters for <code>flowsmooth</code></a>
 <ul>
@@ -364,7 +364,7 @@ to solve an equivalent problem as the trend filtering of the ’th degree.
 <span id="cb15-4"><a href="ingredients-for-building-the-flowmix_tf-method.html#cb15-4" aria-hidden="true" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_equal</span>(H1, H2)</span>
 <span id="cb15-5"><a href="ingredients-for-building-the-flowmix_tf-method.html#cb15-5" aria-hidden="true" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_equal</span>(<span class="fu">dim</span>(H1), <span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">10</span>))</span>
 <span id="cb15-6"><a href="ingredients-for-building-the-flowmix_tf-method.html#cb15-6" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
-<pre><code>## Test passed 😀</code></pre>
+<pre><code>## Test passed 🎉</code></pre>
 </div>
 <div id="objective-data-log-likelihood" class="section level2 hasAnchor" number="4.3">
 <h2><span class="header-section-number">4.3</span> Objective (data log-likelihood)<a href="ingredients-for-building-the-flowmix_tf-method.html#objective-data-log-likelihood" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -491,7 +491,7 @@ cytograms, given model parameter <code>mu</code>, <code>prob</code>, and <code>s
 <span id="cb20-12"><a href="ingredients-for-building-the-flowmix_tf-method.html#cb20-12" aria-hidden="true" tabindex="-1"></a>  link <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">100</span>, <span class="at">min =</span> <span class="sc">-</span><span class="dv">10</span>, <span class="at">max =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> <span class="dv">10</span>, <span class="at">ncol =</span> <span class="dv">10</span>)</span>
 <span id="cb20-13"><a href="ingredients-for-building-the-flowmix_tf-method.html#cb20-13" aria-hidden="true" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_true</span>(<span class="fu">all</span>(<span class="fu">abs</span>(<span class="fu">rowSums</span>(<a href='ingredients-for-building-the-flowmix_tf-method.html#softmax'>softmax</a>(link)) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">&lt;</span> <span class="fl">1E-13</span>))</span>
 <span id="cb20-14"><a href="ingredients-for-building-the-flowmix_tf-method.html#cb20-14" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
-<pre><code>## Test passed 🎉</code></pre>
+<pre><code>## Test passed 😀</code></pre>
 </div>
 <div id="initial-parameter-values-for-em-algorithm" class="section level2 hasAnchor" number="4.4">
 <h2><span class="header-section-number">4.4</span> Initial parameter values for EM algorithm<a href="ingredients-for-building-the-flowmix_tf-method.html#initial-parameter-values-for-em-algorithm" class="anchor-section" aria-label="Anchor link to header"></a></h2>

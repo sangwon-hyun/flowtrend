@@ -1205,7 +1205,7 @@ testthat::test_that("Test the M step of \mu against CVXR", {})
 
 
 
-# `flowsmooth()`
+# flowsmooth
 
 Now we've assembled all ingredients we need, we'll build the main function
 `flowsmooth_once()` to estimate a flowsmooth model. Here goes:
