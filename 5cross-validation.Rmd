@@ -1,5 +1,6 @@
 # Tuning the regularization parameters for `flowsmooth`
 
+
 We're going to take a huge leap, and assume the `flowsmooth()` function has been
 built. We need to build up quite a few functions before we're able to do
 cross-validation. These include:
@@ -309,7 +310,7 @@ values between (0,0) and $(\lambda_{\mu}^{\text{max}},
 \lambda_{\pi}^{\text{max}})$.
 
 The function `get_max_lambda()` numerically estimates this maximum pair
-$(\lambda_{\mu}^{\text{max}}, \lambda_{\pi}&{\text{max}})$. It proceeds by first
+$(\lambda_{\mu}^{\text{max}}, \lambda_{\pi}^{\text{max}})$. It proceeds by first
 running `flowsmooth()` on a very large pair $(\lambda_\mu, \lambda_\pi)$, then
 sequentially halving both values while checking if the resulting estimated $\mu$
 and $\pi$ are *all* flat over time. As soon as they cease to be flat, we stop

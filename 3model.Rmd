@@ -1,4 +1,4 @@
-# Building the `flowmix_tf()` method
+# Ingredients for building the `flowmix_tf()` method
 
 \def\E{\mathbb{E}}
 \def\R{\mathbb{R}}
@@ -327,9 +327,256 @@ testthat::test_that("Test for softmax",{
 })
 ```
 
+
+## Initial parameter values for EM algorithm
+
+The EM algorithm requires some initial values for $\mu$, $\pi$ and $\Sigma$. 
+
+Initializing $\pi$ is one line.  `prob = matrix(1/numclust, nrow = TT, ncol =
+numclust)`, which sets everything to $1/K$.
+  
+For $\mu$ and $\Sigma$, we write some functions. Essentially, initial means
+$\mu$ are *jittered* versions of a $K$ means that are drawn from a downsampled
+version of $ylist$ (downsampling is done because $ylist$ can have a large number
+of particles). $\Sigma$ is $d\times d$ identity matrices, with `fac=1` diagonal
+by default. 
+
+TODO: better downsampling for binned data.
+TODO: think hard about best way to design sigma
+  * TODO: this could be a good student project; best initialization
+    techniques. How much does it take to get to the optimum?
+
+```{r init}
+#' Initialize the cluster centers.
+#'
+#' @param ylist  A T-length list of (nt  by 3) datasets.  There should  be T of
+#'   such datasets. 3 is actually \code{mulen}.
+#' @param numclust Number of clusters (M).
+#' @param TT total number of (training) time points.
+#'
+#' @return An array of dimension (T x dimdat x M).
+#' @export
+init_mn <- function(ylist, numclust, TT, dimdat, countslist = NULL, seed=NULL){
+
+  if(!is.null(seed)){
+    assertthat::assert_that(all((seed %>% sapply(., class)) == "integer"))
+    assertthat::assert_that(length(seed) == 7)
+    .Random.seed <<- seed
+  }
+
+  if(!is.null(countslist)){
+
+    ## Initialize the means by (1) collapsing to one cytogram (2) random
+    ## sampling from this distribution, after truncation,
+    TT = length(ylist)
+    ylist_downsampled <- lapply(1:TT, function(tt){
+
+      y = ylist[[tt]]
+      counts = countslist[[tt]]
+
+      ## Sample so that, in total, we get mean(nt)*30 sized sample. In the case
+      ## of binned data, nt is the number of bins.
+      if(nrow(y) > 500) nsize = nrow(y) / TT * 30 else nsize = nrow(y)
+      some_rows = sample(1:nrow(y), size = nsize, prob = counts/sum(counts))
+      y[some_rows,, drop=FALSE]
+    })
+
+    yy = do.call(rbind, ylist_downsampled)
+    new_means = yy[sample(1:nrow(yy), numclust),, drop=FALSE]
+    jitter_sd = apply(yy, 2, sd) / 100
+    jitter_means = MASS::mvrnorm(n = nrow(new_means),
+                                 mu = rep(0, dimdat),
+                                 Sigma = diag(jitter_sd, ncol = dimdat))
+    new_means = new_means + jitter_means
+
+    ## Repeat TT times.
+    mulist = lapply(1:TT, function(tt){ new_means })
+
+  } else {
+
+    TT = length(ylist)
+    ylist_downsampled <- lapply(1:TT, function(tt){
+      y = ylist[[tt]]
+      counts = countslist[[tt]]
+      nsize = pmin(nrow(y) / TT * 30, nrow(y))
+      y[sample(1:nrow(y), size = nsize),, drop=FALSE]
+    })
+
+    ## Combine all the particles
+    yy = do.call(rbind, ylist_downsampled)
+
+    ## Get K new means from these
+    inds = sample(1:nrow(yy), numclust)
+    new_means = yy[inds,, drop=FALSE]
+    mulist = lapply(1:TT, function(tt){ new_means })
+
+  }
+
+  ## New (T x dimdat x numclust) array is created.
+  muarray = array(NA, dim=c(TT, dimdat, numclust))
+  for(tt in 1:TT){
+    muarray[tt,,] = as.matrix(mulist[[tt]])
+  }
+  return(muarray)
+}
+
+
+#' Initialize the covariances.
+#'
+#' @param data The (nt by 3) datasets. There should be T of them.
+#' @param numclust Number of clusters.
+#' @param fac Value to use for the diagonal of the (dimdat x dimdat) covariance
+#'   matrix.
+#'
+#' @return An (K x dimdat x dimdat) array containing the (dimdat by dimdat)
+#'   covariances.
+#' @export
+init_sigma <- function(data, numclust, fac = 1){
+
+  ndat = nrow(data[[1]])
+  pdat = ncol(data[[1]])
+  sigmas = lapply(1:numclust, function(iclust){
+    onesigma = diag(fac * rep(1, pdat))
+    if(pdat==1) onesigma = as.matrix(fac)
+    colnames(onesigma) = paste0("datcol", 1:pdat)
+    rownames(onesigma) = paste0("datcol", 1:pdat)
+    return(onesigma)
+  })
+  sigmas = abind::abind(sigmas, along=0)
+  return(sigmas)
+}
+```
+
+Here's a helper function for printing the progress.
+
+```{r print_progress}
+#' A helper function to print the progress of a loop or simulation.
+#'
+#' @param isim Replicate number.
+#' @param nsim Total number of replicates.
+#' @param type Type of job you're running. Defaults to "simulation".
+#' @param lapsetime Lapsed time, in seconds (by default).
+#' @param lapsetimeunit "second".
+#' @param start.time start time.
+#' @param fill Whether or not to fill the line.
+#'
+#' @return No return
+print_progress <- function(isim, nsim,
+                           type = "simulation", lapsetime = NULL,
+                           lapsetimeunit = "seconds", start.time = NULL,
+                           fill = FALSE){
+
+  ## If lapse time is present, then use it
+  if(fill) cat(fill = TRUE)
+  if(is.null(lapsetime) & is.null(start.time)){
+    cat("\r", type, " ", isim, "out of", nsim)
+  } else {
+    if(!is.null(start.time)){
+      lapsetime = round(difftime(Sys.time(), start.time,
+                                 units = "secs"), 0)
+      remainingtime = round(lapsetime * (nsim-isim)/isim,0)
+      endtime = Sys.time() + remainingtime
+    }
+    cat("\r", type, " ", isim, "out of", nsim, "with lapsed time",
+        lapsetime, lapsetimeunit, "and remaining time", remainingtime,
+        lapsetimeunit, "and will finish at", strftime(endtime))
+  }
+  if(fill) cat(fill = TRUE)
+}
+```
+
+# E step
+
+```{r Estep}
+#' E step, which updates the "responsibilities", which are posterior membership probabilities of each particle.
+#'
+#' @param mn
+#' @param sigma
+#' @param prob
+#' @param ylist
+#' @param numclust
+#' @param denslist_by_clust
+#' @param first_iter
+#' @param countslist
+#'
+#' @return
+#' @export
+#'
+Estep <- function(mn, sigma, prob, ylist = NULL, numclust, denslist_by_clust = NULL,
+                  first_iter = FALSE, countslist = NULL){
+  ## Basic setup
+  TT = length(ylist)
+  ntlist = sapply(ylist, nrow)
+  resp = list()
+  dimdat = dim(mn)[2]
+  assertthat::assert_that(dim(mn)[1] == length(ylist))
+
+  ## Helper to calculate Gaussian density for each \code{N(y_{t,k},mu_{t,k} and
+  ## Sigma_k)}.
+  calculate_dens <- function(iclust, tt, y, mn, sigma, denslist_by_clust,
+                             first_iter) {
+    mu <- mn[tt, , iclust]
+    if (dimdat == 1) {
+      dens = dnorm(y, mu, sd = sqrt(sigma[iclust, , ]))
+    } else {
+       dens = dmvnorm_arma_fast(y, mu, sigma[iclust,,], FALSE)
+    }
+    return(dens)
+  }
+
+  ## Calculate posterior probability of membership of $y_{it}$.
+  ncol.prob = ncol(prob)
+  for (tt in 1:TT) {
+    ylist_tt = ylist[[tt]]
+    densmat <- sapply(1:numclust, calculate_dens, tt, ylist_tt,
+                      mn, sigma, denslist_by_clust, first_iter)
+    wt.densmat <- matrix(prob[tt, ], nrow = ntlist[tt],
+                         ncol = ncol.prob, byrow = TRUE) * densmat
+    wt.densmat = wt.densmat + 1e-10
+    wt.densmat <- wt.densmat/rowSums(wt.densmat)
+    resp[[tt]] <- wt.densmat
+  }
+
+  ## Weight the responsibilities by $C_{it}$.
+  if (!is.null(countslist)) {
+    resp <- Map(function(myresp, mycount) {
+      myresp * mycount
+    }, resp, countslist)
+  }
+  return(resp)
+}
+```
+
+The E step should return a list of exactly the same size and format as `ylist`,
+which is a $T$ -length list of matrices of size $n_t \times d$.
+
+```{r test-Estep, eval = FALSE}
+testthat::test_that("E step returns appropriately sized responsibilities.",{
+  
+  ## Generate some fake data
+  TT = 100
+  ylist = lapply(1:TT, function(tt){ runif(90) %>% matrix(ncol = 3, nrow = 30)})
+  numclust = 3
+  dimdat = 3
+
+  ## Initialize a few parameters, not carefully
+  sigma = init_sigma(ylist, numclust) ## (T x numclust x (dimdat x dimdat))
+  mn = init_mn(ylist, numclust, TT, dimdat)##, countslist = countslist)
+  prob = matrix(1/numclust, nrow = TT, ncol = numclust) ## Initialize to all 1/K.
+
+  ## Calculate responsibility
+  ## TODO: the code fails here. why?
+  resp = Estep(mn = mn, sigma = sigma, prob = prob, ylist = ylist, numclust = numclust)
+
+  ## Check these things
+  testthat::expect_equal(length(resp), length(ylist))
+  testthat::expect_equal(sapply(resp, dim), sapply(ylist, dim))
+})
+```
+
 # M step 
 
-The M step of the EM algorithm has three steps, one each for $\mu$, $\pi$, and
+The M step of the EM algorithm has three steps -- one each for $\mu$, $\pi$, and
 $\Sigma$.
 
 ## M step for $\pi$
@@ -484,9 +731,35 @@ Mstep_sigma <- function(resp, ylist, mn, numclust){
 
 ## M step for $\mu$
 
-This is a big one. It uses the ADMM written in OO, reproduced briefly here.
+This is a big one. It uses the ADMM written in section OO, reproduced briefly here.
+
+We need a convergence checker for the outer layer of LA-ADMM:
+
+```{r}
+#' LA-ADMM requires an convergence check for the outer layer.
+#' 
+#' @param objectives Objectives of the outer layer.
+#'
+#' @return TRUE if relative improvement is smaller than 1E-5 in the last four
+#'   outer iterations' objective.
+#' @export
+outer_converge <- function(objectives){
+  consec = 4
+  if(length(objectives) < consec){
+    return(FALSE)
+  } else {
+    mytail = utils::tail(objectives, consec)
+    rel_diffs = mytail[1:(consec-1)]/mytail[2:consec]
+    return(all(abs(rel_diffs) - 1 < 1E-5))
+  }
+}
+```
+
+Next, we define the main function `Mstep_mu()`.
+
 
 ```{r mstep_admm_tf}
+devtools::load_all("~/repos/FlowTF")
 #' Computes the M step for mu. TODO: use templates for the argument. As shown
 #' here:
 #' https://stackoverflow.com/questions/15100129/using-roxygen2-template-tags
@@ -700,7 +973,7 @@ Mstep_mu <- function(resp,
     ## Store the results
     mus[[iclust]] = res$mu
     yhats[[iclust]] = t(res$yhat)
-    ## fits[,iclust] = res$fits
+    ## fits[,iclust] = res$fits ## TODO: revive this, for testing? We'll see.
     admm_niters[[iclust]] = res$kk
     admm_inner_iters[[iclust]] = res$inner.iter
 
@@ -723,9 +996,8 @@ Mstep_mu <- function(resp,
   for(iclust in 1:numclust){ yhats_array[,,iclust] = yhats[[iclust]] }
 
   ## Each are lists of length |numclust|.
-  return(list(mus = mus,
-              mns = yhats_array,
-              fits = fits,
+  return(list(mns = yhats_array,
+              ## fits = fits,
               resid_mat_list = resid_mat_list,
               convergences = convergences,
               admm_niters = admm_niters, ## Temporary: Seeing the number of
@@ -750,128 +1022,190 @@ Mstep_mu <- function(resp,
 ```
 
 
-Here's a convergence checker for the outer layer of LA-ADMM. 
-
-```{r}
-# Outer convergence check -------------------------------------------------
-outer_converge <- function(objectives){
-  consec = 4
-  if(length(objectives) < consec){
-    return(FALSE)
-  } else {
-    mytail = utils::tail(objectives, consec)
-    rel_diffs = mytail[1:(consec-1)]/mytail[2:consec]
-
-
-    return(all(abs(rel_diffs) - 1 < 1E-5))
-  }
-}
-```
-
 TODO:
 
 - Right now, `sigma_eig_by_clust` is not used. When speeding up the code, do
   this first.
-
 - Likewise, `ycentered_list` isn't used, while it is clearly useful in Sigma M step
 
-Comparing it against CVXR (TODO: not written yet).
+```{r Mstep_mu_cvxr}
+#' Testing against \code{Mstep_mu()}, for ONE cluster.
+#' @param ylist
+#' @param resp
+#' @param lambda
+#' @param l
+#' @param Sigma_inv inverse of Sigma
+Mstep_mu_cvxr <- function(ylist,
+                          resp,
+                          lambda,
+                          l,
+                          Sigma_inv, 
+                          thresh = 1E-8,
+                          maxdev = NULL,
+                          dimdat,
+                          N,
+                          ecos_thresh = 1E-8,
+                          scs_eps = 1E-5){
+  
+  ## Define dimensions
+  TT = length(ylist)
+  
+  ## Responsibility Weighted Data
+  ytildes <- lapply(1:TT, FUN = function(tt){
+    yy <- ylist[[tt]]
+    g <- resp[[tt]]
+    yy <- apply(yy, MARGIN = 2, FUN = function(x) x * g)
+    colSums(yy)
+  })  %>% bind_rows() %>% as.matrix()
+  
+  
+  ## Auxiliary term, needed to make the objective interpretable
+  aux.y <- Reduce("+", lapply(1:TT, FUN = function(tt){
+    yy <- ylist[[tt]]
+    g <- sqrt(resp[[tt]])
+    yy <- apply(yy, MARGIN = 2, FUN = function(x) x * g)
+    sum(diag(yy %*% Sigma_inv %*% t(yy)))
+  }))
+  
+  ## Mu, d x T matrix
+  mumat <- CVXR::Variable(cols=dimdat, rows=TT)
+  
+  ## Summed sqrt responsibilities - needed in the objective.
+  resp.sum.sqrt <- lapply(resp, FUN = function(x) sqrt(sum(x)))
+  
+  ## Differencing Matrix, TT-l + 1 x TT 
+  Dl <- gen_diff_mat(n = TT, l = l)
+  
+  ## Forming the objective
+  obj = 1/(2*N) *( Reduce("+", lapply(1:TT, FUN = function(tt) CVXR::quad_form(resp.sum.sqrt[[tt]]*mumat[tt,], Sigma_inv))) -2 * Reduce("+", lapply(1:TT, FUN = function(tt) t(ytildes[tt,]) %*% Sigma_inv %*% mumat[tt,])) + aux.y) + lambda * sum(CVXR::sum_entries(abs(Dl %*% mumat), axis = 1))
+  
+  ## Putting together the ball constraint
+  rowmns <- matrix(rep(1, TT^2), nrow = TT)/TT
+  mu_dotdot <- rowmns %*% mumat
+  constraints = list()
+  if(!is.null(maxdev)){
+    constraints = list(CVXR::sum_entries(CVXR::square(mumat - mu_dotdot), axis = 2) <= rep(maxdev^2, TT) )
+  }
+  
+  ## Try all two CVXR solvers.
+  prob <- CVXR::Problem(CVXR::Minimize(obj), constraints)
+  result = NULL
+  result <- tryCatch({
+    CVXR::solve(prob, solver="ECOS",
+          FEASTOL = ecos_thresh, RELTOL = ecos_thresh, ABSTOL = ecos_thresh)
+  }, error=function(err){
+    err$message = paste(err$message,
+                        "\n", "Lasso solver using ECOS has failed." ,sep="")
+    cat(err$message, fill=TRUE)
+    return(NULL)
+  })
+  
+  ## If anything is wrong, flag to use SCS solver
+  scs = FALSE
+  if(is.null(result)){
+    scs = TRUE
+  } else {
+    if(result$status != "optimal") scs = TRUE
+  }
+  
+  ## Use the SCS solver
+  if(scs){
+    result = CVXR::solve(prob, solver="SCS", eps = scs_eps)
+    if(any(is.na(result$getValue(mumat)))){ ## A clumsy way to check.
+      stop("Lasso solver using both ECOS and SCS has failed.", sep="")
+    }
+  }
+  
+  ## Record Interesting Parameters
+  num_iters <- result$num_iters
+  status <- result$status
+  mumat <- result$getValue(mumat)
+  val <- result$value
+  
+  return(list(mu = mumat, value = val, status = status, num_iters = num_iters))
+}
+```
+
+This function solves the following problem:
+
+\usepackage{amsmath}
+\usepackage[long]{optidef}
+
+$$
+\begin{align*}
+&\text{minimize}_{\mu}
+{\frac{1}{2N}
+    \sum_{t=1}^T \sum_{i=1}^{n_t} \hat{\gamma}_{it} (y_i^{(t)} - \mu_{\cdot t})^\top \hat{\Sigma}^{-1} ( y_i^{(t)} - \mu_{\cdot t})
+  + \lambda \sum_{j=1}^d \|D^{(l)}\mu_{j\cdot }\|_1}\\
+&\text{subject to}\;\; {\| \mu_{\cdot t} - \bar{\mu}_{\cdot \cdot}\|_2 \le r \;\;\forall t=1,\cdots, T, }
+\end{align*}
+$$
+
+
+and is directly equivalent to `Mstep_mu()`. The resulting solution and the
+objective value should be the same. Let's check that.
+
+First, set up some objects to run `Mstep_mu()` and `Mstep_mu_cvxr()`.
+
+```{r, eval = TRUE}
+numclust = 3
+TT = 100
+dimdat = 1
+set.seed(0)
+dt = gendat_1d(TT = TT, ntlist = rep(TT, 100))
+ylist = dt %>% dt2ylist()
+sigma = init_sigma(ylist, numclust) ## (T x numclust x (dimdat x dimdat))
+mn = init_mn(ylist, numclust, TT, dimdat)##, countslist = countslist)
+prob = matrix(1/numclust, nrow = TT, ncol = numclust) ## Initialize to all 1/K.
+resp = Estep(mn, sigma, prob, ylist = ylist, numclust)
+lambda = .01
+l = 1
+x = 1:TT
+Dl = gen_diff_mat(n = TT, l = l+1, x = x)
+Dlm1 = gen_diff_mat(n = TT, l = l, x = x)
+Dlm1sqrd <- t(Dlm1) %*% Dlm1
+maxdev = NULL
+```
+
+Then, compare the result of the two implementations. They should look identical.
+
+```{r, eval = TRUE, fig.width = 7, fig.height = 5}
+## overall ADMM
+res1 = Mstep_mu(resp, ylist, lambda, l=l, sigma=sigma, Dlm1sqrd = Dlm1sqrd, Dlm1=Dlm1, Dl=Dl, TT=TT, N=N, dimdat=dimdat, e_mat=etilde_mat(TT = TT),
+                maxdev = maxdev)
+mn1 = res1$mns
+
+## CVXR just ONE cluster
+res2list = lapply(1:numclust, function(iclust){
+  Sigma_inv_oneclust = solve(sigma[iclust,,])
+  resp_oneclist = lapply(resp, function(resp_onetime){resp_onetime[,iclust, drop=FALSE]})
+  N = sum(unlist(resp))
+  res2 = Mstep_mu_cvxr(ylist, resp_oneclist, lambda, l+1,  Sigma_inv_oneclust, thresh = 1E-8, maxdev = maxdev, dimdat, N) 
+  res2$mu
+})
+mn2 = array(NA, dim=c(100, dimdat, 3))
+for(iclust in 1:numclust){
+  mn2[,,iclust] = res2list[[iclust]] %>%  as.matrix()
+}
+
+  
+## Plot!
+plot(x = dt$time, y=dt$Y, col = rgb(0,0,0,0.04), main = 'admm vs cvxr', ylab = "", xlab = "time")
+mn1[,1,] %>% matlines(lwd = 1, lty = 1)
+mn2[,1,] %>% matlines(lwd = 3, lty = 3)
+```
+
+TODO: We just need to bundle this into `testthat` style tests, and make sure to test several lambda values.
+
+TODO: maybe do this for unevenly spaced inputs. CVXR needs to take a different D matrix.
 
 ```{r test-correctness-mstep-mu, eval = FALSE}
 testthat::test_that("Test the M step of \mu against CVXR", {})
 ```
 
-# E step
-
-```{r Estep}
-#' E step, which updates the "responsibilities", which are posterior membership probabilities of each particle.
-#'
-#' @param mn
-#' @param sigma
-#' @param prob
-#' @param ylist
-#' @param numclust
-#' @param denslist_by_clust
-#' @param first_iter
-#' @param countslist
-#'
-#' @return
-#' @export
-#'
-#' @examples
-Estep <- function (mn, sigma, prob, ylist = NULL, numclust, denslist_by_clust = NULL,
-                   first_iter = FALSE, countslist = NULL){
-  ## Basic setup
-  TT = length(ylist)
-  ntlist = sapply(ylist, nrow)
-  resp = list()
-  dimdat = dim(mn)[2]
-  assertthat::assert_that(dim(mn)[1] == length(ylist))
-
-  ## Helper to calculate Gaussian density for each \code{N(y_{t,k},mu_{t,k} and
-  ## Sigma_k)}.
-  calculate_dens <- function(iclust, tt, y, mn, sigma, denslist_by_clust,
-                             first_iter) {
-    mu <- mn[tt, , iclust]
-    if (dimdat == 1) {
-      dens = dnorm(y, mu, sd = sqrt(sigma[iclust, , ]))
-    } else {
-       dens = dmvnorm_arma_fast(y, mu, sigma[iclust,,], FALSE)
-    }
-    return(dens)
-  }
-
-  ## Calculate posterior probability of membership of $y_{it}$.
-  ncol.prob = ncol(prob)
-  for (tt in 1:TT) {
-    ylist_tt = ylist[[tt]]
-    densmat <- sapply(1:numclust, calculate_dens, tt, ylist_tt,
-                      mn, sigma, denslist_by_clust, first_iter)
-    wt.densmat <- matrix(prob[tt, ], nrow = ntlist[tt],
-                         ncol = ncol.prob, byrow = TRUE) * densmat
-    wt.densmat = wt.densmat + 1e-10
-    wt.densmat <- wt.densmat/rowSums(wt.densmat)
-    resp[[tt]] <- wt.densmat
-  }
-
-  ## Weight the responsibilities by $C_{it}$.
-  if (!is.null(countslist)) {
-    resp <- Map(function(myresp, mycount) {
-      myresp * mycount
-    }, resp, countslist)
-  }
-  return(resp)
-}
-```
-
-The E step should return a list of exactly the same size and format as `ylist`,
-which is a $T$ -length list of matrices of size $n_t \times d$.
-
-```{r test-Estep, eval = FALSE}
-testthat::test_that("E step returns appropriately sized object.",{
-  
-  ## Generate some fake data
-  TT = 100
-  ylist = lapply(1:TT, function(tt){ runif(90) %>% matrix(ncol = 3, nrow = 30)})
-  numclust = 3
-  dimdat = 3
-
-  ## Initialize a few parameters, not carefully
-  sigma = init_sigma(ylist, numclust) ## (T x numclust x (dimdat x dimdat))
-  mn = init_mn(ylist, numclust, TT, dimdat)##, countslist = countslist)
-  prob = matrix(1/numclust, nrow = TT, ncol = numclust) ## Initialize to all 1/K.
-
-  ## Calculate responsibility
-  resp = Estep(mn, sigma, prob, ylist, numclust)
-
-  ## Check these things
-  testthat::expect_equal(length(resp), length(ylist))
-  testthat::expect_equal(sapply(resp, dim), sapply(ylist, dim))
-})
-```
 
 
-# Main flowsmooth function
+# `flowsmooth()`
 
 Now we've assembled all ingredients we need, we'll build the main function
 `flowsmooth_once()` to estimate a flowsmooth model. Here goes:
@@ -1059,3 +1393,4 @@ flowsmooth <- function(nrestart = 10, ...){
   return(out.models[[best.model]][["model"]])
 }
 ```
+

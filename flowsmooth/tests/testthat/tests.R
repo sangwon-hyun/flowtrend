@@ -6,6 +6,28 @@ testthat::test_that("Trend filtering regression matrix is created correctly.", {
   testthat::expect_equal(dim(H1), c(10,10))
 })
 
+testthat::test_that("E step returns appropriately sized responsibilities.",{
+  
+  ## Generate some fake data
+  TT = 100
+  ylist = lapply(1:TT, function(tt){ runif(90) %>% matrix(ncol = 3, nrow = 30)})
+  numclust = 3
+  dimdat = 3
+
+  ## Initialize a few parameters, not carefully
+  sigma = init_sigma(ylist, numclust) ## (T x numclust x (dimdat x dimdat))
+  mn = init_mn(ylist, numclust, TT, dimdat)##, countslist = countslist)
+  prob = matrix(1/numclust, nrow = TT, ncol = numclust) ## Initialize to all 1/K.
+
+  ## Calculate responsibility
+  ## TODO: the code fails here. why?
+  resp = Estep(mn = mn, sigma = sigma, prob = prob, ylist = ylist, numclust = numclust)
+
+  ## Check these things
+  testthat::expect_equal(length(resp), length(ylist))
+  testthat::expect_equal(sapply(resp, dim), sapply(ylist, dim))
+})
+
 testthat::test_that("Mstep of pi returns a (T x K) matrix.", {
 
   ## Generate some fake responsibilities and trend filtering matrix
@@ -31,27 +53,6 @@ testthat::test_that("Mstep of pi returns a (T x K) matrix.", {
 testthat::test_that("Test the M step of \pi against CVXR", {})
 
 testthat::test_that("Test the M step of \mu against CVXR", {})
-
-testthat::test_that("E step returns appropriately sized object.",{
-  
-  ## Generate some fake data
-  TT = 100
-  ylist = lapply(1:TT, function(tt){ runif(90) %>% matrix(ncol = 3, nrow = 30)})
-  numclust = 3
-  dimdat = 3
-
-  ## Initialize a few parameters, not carefully
-  sigma = init_sigma(ylist, numclust) ## (T x numclust x (dimdat x dimdat))
-  mn = init_mn(ylist, numclust, TT, dimdat)##, countslist = countslist)
-  prob = matrix(1/numclust, nrow = TT, ncol = numclust) ## Initialize to all 1/K.
-
-  ## Calculate responsibility
-  resp = Estep(mn, sigma, prob, ylist, numclust)
-
-  ## Check these things
-  testthat::expect_equal(length(resp), length(ylist))
-  testthat::expect_equal(sapply(resp, dim), sapply(ylist, dim))
-})
 
 testthat::test_that("The prediction function returns the right things", {
   ## Generate data

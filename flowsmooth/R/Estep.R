@@ -14,9 +14,8 @@
 #' @return
 #' @export
 #'
-#' @examples
-Estep <- function (mn, sigma, prob, ylist = NULL, numclust, denslist_by_clust = NULL,
-                   first_iter = FALSE, countslist = NULL){
+Estep <- function(mn, sigma, prob, ylist = NULL, numclust, denslist_by_clust = NULL,
+                  first_iter = FALSE, countslist = NULL){
   ## Basic setup
   TT = length(ylist)
   ntlist = sapply(ylist, nrow)

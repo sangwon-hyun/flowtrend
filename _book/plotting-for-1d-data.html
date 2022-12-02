@@ -23,14 +23,14 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2022-12-01" />
+<meta name="date" content="2022-12-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="main-flowsmooth-function.html"/>
+<link rel="prev" href="flowsmooth.html"/>
 <link rel="next" href="tuning-the-regularization-parameters-for-flowsmooth.html"/>
 <script src="libs/header-attrs-2.16/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -136,20 +136,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
 <li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a></li>
 <li class="chapter" data-level="3" data-path="generating-1d-data.html"><a href="generating-1d-data.html"><i class="fa fa-check"></i><b>3</b> Generating 1d data</a></li>
-<li class="chapter" data-level="4" data-path="building-the-flowmix_tf-method.html"><a href="building-the-flowmix_tf-method.html"><i class="fa fa-check"></i><b>4</b> Building the <code>flowmix_tf()</code> method</a>
+<li class="chapter" data-level="4" data-path="ingredients-for-building-the-flowmix_tf-method.html"><a href="ingredients-for-building-the-flowmix_tf-method.html"><i class="fa fa-check"></i><b>4</b> Ingredients for building the <code>flowmix_tf()</code> method</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="building-the-flowmix_tf-method.html"><a href="building-the-flowmix_tf-method.html#trend-filtering-briefly"><i class="fa fa-check"></i><b>4.1</b> Trend filtering, briefly</a></li>
-<li class="chapter" data-level="4.2" data-path="building-the-flowmix_tf-method.html"><a href="building-the-flowmix_tf-method.html#differencing-matrix"><i class="fa fa-check"></i><b>4.2</b> Differencing matrix</a></li>
-<li class="chapter" data-level="4.3" data-path="building-the-flowmix_tf-method.html"><a href="building-the-flowmix_tf-method.html#objective-data-log-likelihood"><i class="fa fa-check"></i><b>4.3</b> Objective (data log-likelihood)</a></li>
+<li class="chapter" data-level="4.1" data-path="ingredients-for-building-the-flowmix_tf-method.html"><a href="ingredients-for-building-the-flowmix_tf-method.html#trend-filtering-briefly"><i class="fa fa-check"></i><b>4.1</b> Trend filtering, briefly</a></li>
+<li class="chapter" data-level="4.2" data-path="ingredients-for-building-the-flowmix_tf-method.html"><a href="ingredients-for-building-the-flowmix_tf-method.html#differencing-matrix"><i class="fa fa-check"></i><b>4.2</b> Differencing matrix</a></li>
+<li class="chapter" data-level="4.3" data-path="ingredients-for-building-the-flowmix_tf-method.html"><a href="ingredients-for-building-the-flowmix_tf-method.html#objective-data-log-likelihood"><i class="fa fa-check"></i><b>4.3</b> Objective (data log-likelihood)</a></li>
+<li class="chapter" data-level="4.4" data-path="ingredients-for-building-the-flowmix_tf-method.html"><a href="ingredients-for-building-the-flowmix_tf-method.html#initial-parameter-values-for-em-algorithm"><i class="fa fa-check"></i><b>4.4</b> Initial parameter values for EM algorithm</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>5</b> M step</a>
+<li class="chapter" data-level="5" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>5</b> E step</a></li>
+<li class="chapter" data-level="6" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>6</b> M step</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>5.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
-<li class="chapter" data-level="5.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>5.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
-<li class="chapter" data-level="5.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>5.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
+<li class="chapter" data-level="6.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>6.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
+<li class="chapter" data-level="6.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>6.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
+<li class="chapter" data-level="6.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>6.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>6</b> E step</a></li>
-<li class="chapter" data-level="7" data-path="main-flowsmooth-function.html"><a href="main-flowsmooth-function.html"><i class="fa fa-check"></i><b>7</b> Main flowsmooth function</a></li>
+<li class="chapter" data-level="7" data-path="flowsmooth.html"><a href="flowsmooth.html"><i class="fa fa-check"></i><b>7</b> <code><a href='flowsmooth.html#flowsmooth'>flowsmooth</a>()</code></a></li>
 <li class="chapter" data-level="8" data-path="plotting-for-1d-data.html"><a href="plotting-for-1d-data.html"><i class="fa fa-check"></i><b>8</b> Plotting for 1d data</a></li>
 <li class="chapter" data-level="9" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html"><i class="fa fa-check"></i><b>9</b> Tuning the regularization parameters for <code>flowsmooth</code></a>
 <ul>
@@ -186,135 +187,135 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">8</span> Plotting for 1d data<a href="plotting-for-1d-data.html#plotting-for-1d-data" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Given 1d data <code>ylist</code> and an estimated model object <code>obj</code>, we want to plot both
 in a single plot. <code><a href='plotting-for-1d-data.html#plot_1d'>plot_1d</a>()</code> lets you do this.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="plotting-for-1d-data.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Makes 1d plot of data and model</span></span>
-<span id="cb33-2"><a href="plotting-for-1d-data.html#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb33-3"><a href="plotting-for-1d-data.html#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param ylist Data.</span></span>
-<span id="cb33-4"><a href="plotting-for-1d-data.html#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param obj flowsmooth object. Defaults to NULL.</span></span>
-<span id="cb33-5"><a href="plotting-for-1d-data.html#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param x time points. Defaults to NULL.</span></span>
-<span id="cb33-6"><a href="plotting-for-1d-data.html#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb33-7"><a href="plotting-for-1d-data.html#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return ggplot object with data, and optionally, a flowsmooth model overlaid.</span></span>
-<span id="cb33-8"><a href="plotting-for-1d-data.html#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb33-9"><a href="plotting-for-1d-data.html#cb33-9" aria-hidden="true" tabindex="-1"></a><span id='plot_1d'>plot_1d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, <span class="at">obj=</span><span class="cn">NULL</span>, <span class="at">x =</span> <span class="cn">NULL</span>){</span>
-<span id="cb33-10"><a href="plotting-for-1d-data.html#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-11"><a href="plotting-for-1d-data.html#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
-<span id="cb33-12"><a href="plotting-for-1d-data.html#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x)){</span>
-<span id="cb33-13"><a href="plotting-for-1d-data.html#cb33-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">length</span>(x) <span class="sc">==</span> <span class="fu">length</span>(ylist))</span>
-<span id="cb33-14"><a href="plotting-for-1d-data.html#cb33-14" aria-hidden="true" tabindex="-1"></a>    times <span class="ot">=</span> x</span>
-<span id="cb33-15"><a href="plotting-for-1d-data.html#cb33-15" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb33-16"><a href="plotting-for-1d-data.html#cb33-16" aria-hidden="true" tabindex="-1"></a>    times <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist)</span>
-<span id="cb33-17"><a href="plotting-for-1d-data.html#cb33-17" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb33-18"><a href="plotting-for-1d-data.html#cb33-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-19"><a href="plotting-for-1d-data.html#cb33-19" aria-hidden="true" tabindex="-1"></a>  <span class="do">## make data into long matrix</span></span>
-<span id="cb33-20"><a href="plotting-for-1d-data.html#cb33-20" aria-hidden="true" tabindex="-1"></a>  ymat <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist), <span class="at">FUN =</span> <span class="cf">function</span>(tt){</span>
-<span id="cb33-21"><a href="plotting-for-1d-data.html#cb33-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">time =</span> times[tt], <span class="at">Y =</span> ylist[[tt]])</span>
-<span id="cb33-22"><a href="plotting-for-1d-data.html#cb33-22" aria-hidden="true" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
-<span id="cb33-23"><a href="plotting-for-1d-data.html#cb33-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-24"><a href="plotting-for-1d-data.html#cb33-24" aria-hidden="true" tabindex="-1"></a>  <span class="do">## plot long matrix</span></span>
-<span id="cb33-25"><a href="plotting-for-1d-data.html#cb33-25" aria-hidden="true" tabindex="-1"></a>  gg <span class="ot">=</span> ymat <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb33-26"><a href="plotting-for-1d-data.html#cb33-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> Y), <span class="at">alpha =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb33-27"><a href="plotting-for-1d-data.html#cb33-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">&quot;Data&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&quot;Time&quot;</span>) </span>
-<span id="cb33-28"><a href="plotting-for-1d-data.html#cb33-28" aria-hidden="true" tabindex="-1"></a>    <span class="do">## theme(legend.position = &#39;none&#39;)</span></span>
-<span id="cb33-29"><a href="plotting-for-1d-data.html#cb33-29" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(obj)) <span class="fu">return</span>(gg)</span>
-<span id="cb33-30"><a href="plotting-for-1d-data.html#cb33-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-31"><a href="plotting-for-1d-data.html#cb33-31" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Add the model</span></span>
-<span id="cb33-32"><a href="plotting-for-1d-data.html#cb33-32" aria-hidden="true" tabindex="-1"></a>  <span class="do">## TT = length(ylist)</span></span>
-<span id="cb33-33"><a href="plotting-for-1d-data.html#cb33-33" aria-hidden="true" tabindex="-1"></a>  numclust <span class="ot">=</span> obj<span class="sc">$</span>numclust</span>
-<span id="cb33-34"><a href="plotting-for-1d-data.html#cb33-34" aria-hidden="true" tabindex="-1"></a>  mnmat <span class="ot">=</span> obj<span class="sc">$</span>mn <span class="sc">%&gt;%</span> .[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">setNames</span>(<span class="dv">1</span><span class="sc">:</span>numclust) <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">time =</span> times)</span>
-<span id="cb33-35"><a href="plotting-for-1d-data.html#cb33-35" aria-hidden="true" tabindex="-1"></a>  probmat <span class="ot">=</span> obj<span class="sc">$</span>prob <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">setNames</span>(<span class="dv">1</span><span class="sc">:</span>numclust) <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">time =</span> times)</span>
-<span id="cb33-36"><a href="plotting-for-1d-data.html#cb33-36" aria-hidden="true" tabindex="-1"></a>  mn_long <span class="ot">=</span> mnmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;mean&quot;</span>)</span>
-<span id="cb33-37"><a href="plotting-for-1d-data.html#cb33-37" aria-hidden="true" tabindex="-1"></a>  prob_long <span class="ot">=</span> probmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;prob&quot;</span>)</span>
-<span id="cb33-38"><a href="plotting-for-1d-data.html#cb33-38" aria-hidden="true" tabindex="-1"></a>  est_long <span class="ot">=</span> <span class="fu">full_join</span>(mn_long, prob_long)</span>
-<span id="cb33-39"><a href="plotting-for-1d-data.html#cb33-39" aria-hidden="true" tabindex="-1"></a>  gg <span class="ot">=</span> gg <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">size =</span> prob, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
-<span id="cb33-40"><a href="plotting-for-1d-data.html#cb33-40" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> est_long)</span>
-<span id="cb33-41"><a href="plotting-for-1d-data.html#cb33-41" aria-hidden="true" tabindex="-1"></a>  <span class="do">## </span><span class="al">TODO</span><span class="do">: make it ignore the missing values at the gaps; currently this is not coded as NAs.</span></span>
-<span id="cb33-42"><a href="plotting-for-1d-data.html#cb33-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-43"><a href="plotting-for-1d-data.html#cb33-43" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Add the estimated 95% probability regions for data.</span></span>
-<span id="cb33-44"><a href="plotting-for-1d-data.html#cb33-44" aria-hidden="true" tabindex="-1"></a>  stdev <span class="ot">=</span> obj<span class="sc">$</span>sigma <span class="sc">%&gt;%</span> .[,,<span class="dv">1</span>] <span class="sc">%&gt;%</span> <span class="fu">sqrt</span>()</span>
-<span id="cb33-45"><a href="plotting-for-1d-data.html#cb33-45" aria-hidden="true" tabindex="-1"></a>  band_long <span class="ot">=</span></span>
-<span id="cb33-46"><a href="plotting-for-1d-data.html#cb33-46" aria-hidden="true" tabindex="-1"></a>    mn_long <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">upper =</span> <span class="fu">case_when</span>(cluster <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">1</span>],</span>
-<span id="cb33-47"><a href="plotting-for-1d-data.html#cb33-47" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">&quot;2&quot;</span> <span class="sc">~</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">2</span>],</span>
-<span id="cb33-48"><a href="plotting-for-1d-data.html#cb33-48" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">&quot;3&quot;</span> <span class="sc">~</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">3</span>]),</span>
-<span id="cb33-49"><a href="plotting-for-1d-data.html#cb33-49" aria-hidden="true" tabindex="-1"></a>                       <span class="at">lower =</span> <span class="fu">case_when</span>(cluster <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">1</span>],</span>
-<span id="cb33-50"><a href="plotting-for-1d-data.html#cb33-50" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">&quot;2&quot;</span> <span class="sc">~</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">2</span>],</span>
-<span id="cb33-51"><a href="plotting-for-1d-data.html#cb33-51" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">&quot;3&quot;</span> <span class="sc">~</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">3</span>]))</span>
-<span id="cb33-52"><a href="plotting-for-1d-data.html#cb33-52" aria-hidden="true" tabindex="-1"></a>  gg <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> upper, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
-<span id="cb33-53"><a href="plotting-for-1d-data.html#cb33-53" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(<span class="dv">1</span>), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb33-54"><a href="plotting-for-1d-data.html#cb33-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> lower, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
-<span id="cb33-55"><a href="plotting-for-1d-data.html#cb33-55" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(<span class="dv">1</span>), <span class="at">alpha =</span> .<span class="dv">5</span>)</span>
-<span id="cb33-56"><a href="plotting-for-1d-data.html#cb33-56" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="plotting-for-1d-data.html#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Makes 1d plot of data and model</span></span>
+<span id="cb41-2"><a href="plotting-for-1d-data.html#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb41-3"><a href="plotting-for-1d-data.html#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param ylist Data.</span></span>
+<span id="cb41-4"><a href="plotting-for-1d-data.html#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param obj flowsmooth object. Defaults to NULL.</span></span>
+<span id="cb41-5"><a href="plotting-for-1d-data.html#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param x time points. Defaults to NULL.</span></span>
+<span id="cb41-6"><a href="plotting-for-1d-data.html#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb41-7"><a href="plotting-for-1d-data.html#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return ggplot object with data, and optionally, a flowsmooth model overlaid.</span></span>
+<span id="cb41-8"><a href="plotting-for-1d-data.html#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb41-9"><a href="plotting-for-1d-data.html#cb41-9" aria-hidden="true" tabindex="-1"></a><span id='plot_1d'>plot_1d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, <span class="at">obj=</span><span class="cn">NULL</span>, <span class="at">x =</span> <span class="cn">NULL</span>){</span>
+<span id="cb41-10"><a href="plotting-for-1d-data.html#cb41-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-11"><a href="plotting-for-1d-data.html#cb41-11" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb41-12"><a href="plotting-for-1d-data.html#cb41-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x)){</span>
+<span id="cb41-13"><a href="plotting-for-1d-data.html#cb41-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">length</span>(x) <span class="sc">==</span> <span class="fu">length</span>(ylist))</span>
+<span id="cb41-14"><a href="plotting-for-1d-data.html#cb41-14" aria-hidden="true" tabindex="-1"></a>    times <span class="ot">=</span> x</span>
+<span id="cb41-15"><a href="plotting-for-1d-data.html#cb41-15" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb41-16"><a href="plotting-for-1d-data.html#cb41-16" aria-hidden="true" tabindex="-1"></a>    times <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist)</span>
+<span id="cb41-17"><a href="plotting-for-1d-data.html#cb41-17" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb41-18"><a href="plotting-for-1d-data.html#cb41-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-19"><a href="plotting-for-1d-data.html#cb41-19" aria-hidden="true" tabindex="-1"></a>  <span class="do">## make data into long matrix</span></span>
+<span id="cb41-20"><a href="plotting-for-1d-data.html#cb41-20" aria-hidden="true" tabindex="-1"></a>  ymat <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist), <span class="at">FUN =</span> <span class="cf">function</span>(tt){</span>
+<span id="cb41-21"><a href="plotting-for-1d-data.html#cb41-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">time =</span> times[tt], <span class="at">Y =</span> ylist[[tt]])</span>
+<span id="cb41-22"><a href="plotting-for-1d-data.html#cb41-22" aria-hidden="true" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
+<span id="cb41-23"><a href="plotting-for-1d-data.html#cb41-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-24"><a href="plotting-for-1d-data.html#cb41-24" aria-hidden="true" tabindex="-1"></a>  <span class="do">## plot long matrix</span></span>
+<span id="cb41-25"><a href="plotting-for-1d-data.html#cb41-25" aria-hidden="true" tabindex="-1"></a>  gg <span class="ot">=</span> ymat <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb41-26"><a href="plotting-for-1d-data.html#cb41-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> Y), <span class="at">alpha =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb41-27"><a href="plotting-for-1d-data.html#cb41-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">&quot;Data&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&quot;Time&quot;</span>) </span>
+<span id="cb41-28"><a href="plotting-for-1d-data.html#cb41-28" aria-hidden="true" tabindex="-1"></a>    <span class="do">## theme(legend.position = &#39;none&#39;)</span></span>
+<span id="cb41-29"><a href="plotting-for-1d-data.html#cb41-29" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(obj)) <span class="fu">return</span>(gg)</span>
+<span id="cb41-30"><a href="plotting-for-1d-data.html#cb41-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-31"><a href="plotting-for-1d-data.html#cb41-31" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Add the model</span></span>
+<span id="cb41-32"><a href="plotting-for-1d-data.html#cb41-32" aria-hidden="true" tabindex="-1"></a>  <span class="do">## TT = length(ylist)</span></span>
+<span id="cb41-33"><a href="plotting-for-1d-data.html#cb41-33" aria-hidden="true" tabindex="-1"></a>  numclust <span class="ot">=</span> obj<span class="sc">$</span>numclust</span>
+<span id="cb41-34"><a href="plotting-for-1d-data.html#cb41-34" aria-hidden="true" tabindex="-1"></a>  mnmat <span class="ot">=</span> obj<span class="sc">$</span>mn <span class="sc">%&gt;%</span> .[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">setNames</span>(<span class="dv">1</span><span class="sc">:</span>numclust) <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">time =</span> times)</span>
+<span id="cb41-35"><a href="plotting-for-1d-data.html#cb41-35" aria-hidden="true" tabindex="-1"></a>  probmat <span class="ot">=</span> obj<span class="sc">$</span>prob <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">setNames</span>(<span class="dv">1</span><span class="sc">:</span>numclust) <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">time =</span> times)</span>
+<span id="cb41-36"><a href="plotting-for-1d-data.html#cb41-36" aria-hidden="true" tabindex="-1"></a>  mn_long <span class="ot">=</span> mnmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;mean&quot;</span>)</span>
+<span id="cb41-37"><a href="plotting-for-1d-data.html#cb41-37" aria-hidden="true" tabindex="-1"></a>  prob_long <span class="ot">=</span> probmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;prob&quot;</span>)</span>
+<span id="cb41-38"><a href="plotting-for-1d-data.html#cb41-38" aria-hidden="true" tabindex="-1"></a>  est_long <span class="ot">=</span> <span class="fu">full_join</span>(mn_long, prob_long)</span>
+<span id="cb41-39"><a href="plotting-for-1d-data.html#cb41-39" aria-hidden="true" tabindex="-1"></a>  gg <span class="ot">=</span> gg <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">size =</span> prob, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
+<span id="cb41-40"><a href="plotting-for-1d-data.html#cb41-40" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> est_long)</span>
+<span id="cb41-41"><a href="plotting-for-1d-data.html#cb41-41" aria-hidden="true" tabindex="-1"></a>  <span class="do">## </span><span class="al">TODO</span><span class="do">: make it ignore the missing values at the gaps; currently this is not coded as NAs.</span></span>
+<span id="cb41-42"><a href="plotting-for-1d-data.html#cb41-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-43"><a href="plotting-for-1d-data.html#cb41-43" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Add the estimated 95% probability regions for data.</span></span>
+<span id="cb41-44"><a href="plotting-for-1d-data.html#cb41-44" aria-hidden="true" tabindex="-1"></a>  stdev <span class="ot">=</span> obj<span class="sc">$</span>sigma <span class="sc">%&gt;%</span> .[,,<span class="dv">1</span>] <span class="sc">%&gt;%</span> <span class="fu">sqrt</span>()</span>
+<span id="cb41-45"><a href="plotting-for-1d-data.html#cb41-45" aria-hidden="true" tabindex="-1"></a>  band_long <span class="ot">=</span></span>
+<span id="cb41-46"><a href="plotting-for-1d-data.html#cb41-46" aria-hidden="true" tabindex="-1"></a>    mn_long <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">upper =</span> <span class="fu">case_when</span>(cluster <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">1</span>],</span>
+<span id="cb41-47"><a href="plotting-for-1d-data.html#cb41-47" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">&quot;2&quot;</span> <span class="sc">~</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">2</span>],</span>
+<span id="cb41-48"><a href="plotting-for-1d-data.html#cb41-48" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">&quot;3&quot;</span> <span class="sc">~</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">3</span>]),</span>
+<span id="cb41-49"><a href="plotting-for-1d-data.html#cb41-49" aria-hidden="true" tabindex="-1"></a>                       <span class="at">lower =</span> <span class="fu">case_when</span>(cluster <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">1</span>],</span>
+<span id="cb41-50"><a href="plotting-for-1d-data.html#cb41-50" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">&quot;2&quot;</span> <span class="sc">~</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">2</span>],</span>
+<span id="cb41-51"><a href="plotting-for-1d-data.html#cb41-51" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">&quot;3&quot;</span> <span class="sc">~</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">3</span>]))</span>
+<span id="cb41-52"><a href="plotting-for-1d-data.html#cb41-52" aria-hidden="true" tabindex="-1"></a>  gg <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> upper, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
+<span id="cb41-53"><a href="plotting-for-1d-data.html#cb41-53" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(<span class="dv">1</span>), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb41-54"><a href="plotting-for-1d-data.html#cb41-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> lower, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
+<span id="cb41-55"><a href="plotting-for-1d-data.html#cb41-55" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(<span class="dv">1</span>), <span class="at">alpha =</span> .<span class="dv">5</span>)</span>
+<span id="cb41-56"><a href="plotting-for-1d-data.html#cb41-56" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>The plotting function <code><a href='plotting-for-1d-data.html#plot_1d'>plot_1d</a>()</code> will be even more useful when we have a model,
 but can simply plot the data. Let’s try this out.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="plotting-for-1d-data.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
-<span id="cb34-2"><a href="plotting-for-1d-data.html#cb34-2" aria-hidden="true" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>)</span>
-<span id="cb34-3"><a href="plotting-for-1d-data.html#cb34-3" aria-hidden="true" tabindex="-1"></a>dt_model <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>, <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb34-4"><a href="plotting-for-1d-data.html#cb34-4" aria-hidden="true" tabindex="-1"></a>ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='generating-1d-data.html#dt2ylist'>dt2ylist</a>()</span>
-<span id="cb34-5"><a href="plotting-for-1d-data.html#cb34-5" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
-<span id="cb34-6"><a href="plotting-for-1d-data.html#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-7"><a href="plotting-for-1d-data.html#cb34-7" aria-hidden="true" tabindex="-1"></a><a href='plotting-for-1d-data.html#plot_1d'>plot_1d</a>(ylist, <span class="cn">NULL</span>, <span class="at">x =</span> x) <span class="sc">+</span></span>
-<span id="cb34-8"><a href="plotting-for-1d-data.html#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">group =</span> cluster),</span>
-<span id="cb34-9"><a href="plotting-for-1d-data.html#cb34-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> dt_model,</span>
-<span id="cb34-10"><a href="plotting-for-1d-data.html#cb34-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">size=</span><span class="dv">2</span>, <span class="at">alpha =</span> .<span class="dv">7</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="plotting-for-1d-data.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb42-2"><a href="plotting-for-1d-data.html#cb42-2" aria-hidden="true" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>)</span>
+<span id="cb42-3"><a href="plotting-for-1d-data.html#cb42-3" aria-hidden="true" tabindex="-1"></a>dt_model <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>, <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb42-4"><a href="plotting-for-1d-data.html#cb42-4" aria-hidden="true" tabindex="-1"></a>ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='generating-1d-data.html#dt2ylist'>dt2ylist</a>()</span>
+<span id="cb42-5"><a href="plotting-for-1d-data.html#cb42-5" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
+<span id="cb42-6"><a href="plotting-for-1d-data.html#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-7"><a href="plotting-for-1d-data.html#cb42-7" aria-hidden="true" tabindex="-1"></a><a href='plotting-for-1d-data.html#plot_1d'>plot_1d</a>(ylist, <span class="cn">NULL</span>, <span class="at">x =</span> x) <span class="sc">+</span></span>
+<span id="cb42-8"><a href="plotting-for-1d-data.html#cb42-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">group =</span> cluster),</span>
+<span id="cb42-9"><a href="plotting-for-1d-data.html#cb42-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> dt_model,</span>
+<span id="cb42-10"><a href="plotting-for-1d-data.html#cb42-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">size=</span><span class="dv">2</span>, <span class="at">alpha =</span> .<span class="dv">7</span>)</span></code></pre></div>
 <p><img src="_main_files/figure-html/test-gendat-1.png" width="672" /></p>
 <p>The following few sections show examples of how to use these plotting functions.</p>
 <p>Also, we will want to plot the estimated cluster probabilities, from <code>obj</code>.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="plotting-for-1d-data.html#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Makes cluster probability plot (lines over time).</span></span>
-<span id="cb35-2"><a href="plotting-for-1d-data.html#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb35-3"><a href="plotting-for-1d-data.html#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param obj Estimated model (from \code{<a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>(ylist)})</span></span>
-<span id="cb35-4"><a href="plotting-for-1d-data.html#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb35-5"><a href="plotting-for-1d-data.html#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb35-6"><a href="plotting-for-1d-data.html#cb35-6" aria-hidden="true" tabindex="-1"></a><span id='plot_prob'>plot_prob</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(obj, <span class="at">x =</span> <span class="cn">NULL</span>){</span>
-<span id="cb35-7"><a href="plotting-for-1d-data.html#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-8"><a href="plotting-for-1d-data.html#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
-<span id="cb35-9"><a href="plotting-for-1d-data.html#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x)){</span>
-<span id="cb35-10"><a href="plotting-for-1d-data.html#cb35-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">length</span>(x) <span class="sc">==</span> <span class="fu">length</span>(ylist))</span>
-<span id="cb35-11"><a href="plotting-for-1d-data.html#cb35-11" aria-hidden="true" tabindex="-1"></a>    times <span class="ot">=</span> x</span>
-<span id="cb35-12"><a href="plotting-for-1d-data.html#cb35-12" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb35-13"><a href="plotting-for-1d-data.html#cb35-13" aria-hidden="true" tabindex="-1"></a>    times <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist)</span>
-<span id="cb35-14"><a href="plotting-for-1d-data.html#cb35-14" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb35-15"><a href="plotting-for-1d-data.html#cb35-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-16"><a href="plotting-for-1d-data.html#cb35-16" aria-hidden="true" tabindex="-1"></a>  numclust <span class="ot">=</span> obj<span class="sc">$</span>numclust</span>
-<span id="cb35-17"><a href="plotting-for-1d-data.html#cb35-17" aria-hidden="true" tabindex="-1"></a>  probmat <span class="ot">=</span> obj<span class="sc">$</span>prob <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">setNames</span>(<span class="dv">1</span><span class="sc">:</span>numclust) <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">time =</span> times)</span>
-<span id="cb35-18"><a href="plotting-for-1d-data.html#cb35-18" aria-hidden="true" tabindex="-1"></a>  prob_long <span class="ot">=</span> probmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;prob&quot;</span>)</span>
-<span id="cb35-19"><a href="plotting-for-1d-data.html#cb35-19" aria-hidden="true" tabindex="-1"></a>  prob_long <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb35-20"><a href="plotting-for-1d-data.html#cb35-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y =</span> prob, <span class="at">group =</span> cluster, <span class="at">col =</span> cluster)) <span class="sc">+</span></span>
-<span id="cb35-21"><a href="plotting-for-1d-data.html#cb35-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">&quot;Estimated cluster probability&quot;</span>)</span>
-<span id="cb35-22"><a href="plotting-for-1d-data.html#cb35-22" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="plotting-for-1d-data.html#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Makes cluster probability plot (lines over time).</span></span>
+<span id="cb43-2"><a href="plotting-for-1d-data.html#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb43-3"><a href="plotting-for-1d-data.html#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param obj Estimated model (from \code{<a href='flowsmooth.html#flowsmooth'>flowsmooth</a>(ylist)})</span></span>
+<span id="cb43-4"><a href="plotting-for-1d-data.html#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb43-5"><a href="plotting-for-1d-data.html#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb43-6"><a href="plotting-for-1d-data.html#cb43-6" aria-hidden="true" tabindex="-1"></a><span id='plot_prob'>plot_prob</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(obj, <span class="at">x =</span> <span class="cn">NULL</span>){</span>
+<span id="cb43-7"><a href="plotting-for-1d-data.html#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="plotting-for-1d-data.html#cb43-8" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb43-9"><a href="plotting-for-1d-data.html#cb43-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x)){</span>
+<span id="cb43-10"><a href="plotting-for-1d-data.html#cb43-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">length</span>(x) <span class="sc">==</span> <span class="fu">length</span>(ylist))</span>
+<span id="cb43-11"><a href="plotting-for-1d-data.html#cb43-11" aria-hidden="true" tabindex="-1"></a>    times <span class="ot">=</span> x</span>
+<span id="cb43-12"><a href="plotting-for-1d-data.html#cb43-12" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb43-13"><a href="plotting-for-1d-data.html#cb43-13" aria-hidden="true" tabindex="-1"></a>    times <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist)</span>
+<span id="cb43-14"><a href="plotting-for-1d-data.html#cb43-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb43-15"><a href="plotting-for-1d-data.html#cb43-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-16"><a href="plotting-for-1d-data.html#cb43-16" aria-hidden="true" tabindex="-1"></a>  numclust <span class="ot">=</span> obj<span class="sc">$</span>numclust</span>
+<span id="cb43-17"><a href="plotting-for-1d-data.html#cb43-17" aria-hidden="true" tabindex="-1"></a>  probmat <span class="ot">=</span> obj<span class="sc">$</span>prob <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">setNames</span>(<span class="dv">1</span><span class="sc">:</span>numclust) <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">time =</span> times)</span>
+<span id="cb43-18"><a href="plotting-for-1d-data.html#cb43-18" aria-hidden="true" tabindex="-1"></a>  prob_long <span class="ot">=</span> probmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;prob&quot;</span>)</span>
+<span id="cb43-19"><a href="plotting-for-1d-data.html#cb43-19" aria-hidden="true" tabindex="-1"></a>  prob_long <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb43-20"><a href="plotting-for-1d-data.html#cb43-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y =</span> prob, <span class="at">group =</span> cluster, <span class="at">col =</span> cluster)) <span class="sc">+</span></span>
+<span id="cb43-21"><a href="plotting-for-1d-data.html#cb43-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">&quot;Estimated cluster probability&quot;</span>)</span>
+<span id="cb43-22"><a href="plotting-for-1d-data.html#cb43-22" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Here’s a useful function to reorder the clusters of an estimated model <code>obj</code>. This
 comes in handy when plotting and comparing model parameters.</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="plotting-for-1d-data.html#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Reorder the results of one object so that cluster 1 through</span></span>
-<span id="cb36-2"><a href="plotting-for-1d-data.html#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; \code{numclust} is in a particular order. The default is decreasing order of</span></span>
-<span id="cb36-3"><a href="plotting-for-1d-data.html#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; the averages (over time) of the cluster means.</span></span>
-<span id="cb36-4"><a href="plotting-for-1d-data.html#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb36-5"><a href="plotting-for-1d-data.html#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param res Model object.</span></span>
-<span id="cb36-6"><a href="plotting-for-1d-data.html#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param ord Defaults to NULL. Use if you have an ordering in mind.</span></span>
-<span id="cb36-7"><a href="plotting-for-1d-data.html#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb36-8"><a href="plotting-for-1d-data.html#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return Same object, but with clusters reordered.</span></span>
-<span id="cb36-9"><a href="plotting-for-1d-data.html#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb36-10"><a href="plotting-for-1d-data.html#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb36-11"><a href="plotting-for-1d-data.html#cb36-11" aria-hidden="true" tabindex="-1"></a><span id='reorder_clust'>reorder_clust</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(res, <span class="at">ord =</span> <span class="cn">NULL</span>){</span>
-<span id="cb36-12"><a href="plotting-for-1d-data.html#cb36-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-13"><a href="plotting-for-1d-data.html#cb36-13" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Find an order by sums (averages)</span></span>
-<span id="cb36-14"><a href="plotting-for-1d-data.html#cb36-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(ord)) ord <span class="ot">=</span> res<span class="sc">$</span>mn[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">colSums</span>() <span class="sc">%&gt;%</span> <span class="fu">order</span>(<span class="at">decreasing=</span><span class="cn">TRUE</span>)</span>
-<span id="cb36-15"><a href="plotting-for-1d-data.html#cb36-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(ord)) <span class="fu">all</span>(<span class="fu">sort</span>(ord) <span class="sc">==</span> <span class="dv">1</span><span class="sc">:</span>res<span class="sc">$</span>numclust)</span>
-<span id="cb36-16"><a href="plotting-for-1d-data.html#cb36-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-17"><a href="plotting-for-1d-data.html#cb36-17" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Reorder mean</span></span>
-<span id="cb36-18"><a href="plotting-for-1d-data.html#cb36-18" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>mn <span class="ot">=</span> res<span class="sc">$</span>mn[,,ord, drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
-<span id="cb36-19"><a href="plotting-for-1d-data.html#cb36-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-20"><a href="plotting-for-1d-data.html#cb36-20" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Reorder sigma</span></span>
-<span id="cb36-21"><a href="plotting-for-1d-data.html#cb36-21" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>sigma <span class="ot">=</span> res<span class="sc">$</span>sigma[ord,,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
-<span id="cb36-22"><a href="plotting-for-1d-data.html#cb36-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-23"><a href="plotting-for-1d-data.html#cb36-23" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Reorder prob</span></span>
-<span id="cb36-24"><a href="plotting-for-1d-data.html#cb36-24" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>prob <span class="ot">=</span> res<span class="sc">$</span>prob[,ord, drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
-<span id="cb36-25"><a href="plotting-for-1d-data.html#cb36-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-26"><a href="plotting-for-1d-data.html#cb36-26" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Reorder the responsibilities</span></span>
-<span id="cb36-27"><a href="plotting-for-1d-data.html#cb36-27" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="st">&#39;resp&#39;</span> <span class="sc">%in%</span> res){</span>
-<span id="cb36-28"><a href="plotting-for-1d-data.html#cb36-28" aria-hidden="true" tabindex="-1"></a>    resp_temp <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb36-29"><a href="plotting-for-1d-data.html#cb36-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT){</span>
-<span id="cb36-30"><a href="plotting-for-1d-data.html#cb36-30" aria-hidden="true" tabindex="-1"></a>      rep_temp[[tt]] <span class="ot">=</span> res<span class="sc">$</span>resp[[tt]][,ord]</span>
-<span id="cb36-31"><a href="plotting-for-1d-data.html#cb36-31" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb36-32"><a href="plotting-for-1d-data.html#cb36-32" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb36-33"><a href="plotting-for-1d-data.html#cb36-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
-<span id="cb36-34"><a href="plotting-for-1d-data.html#cb36-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="plotting-for-1d-data.html#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Reorder the results of one object so that cluster 1 through</span></span>
+<span id="cb44-2"><a href="plotting-for-1d-data.html#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; \code{numclust} is in a particular order. The default is decreasing order of</span></span>
+<span id="cb44-3"><a href="plotting-for-1d-data.html#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; the averages (over time) of the cluster means.</span></span>
+<span id="cb44-4"><a href="plotting-for-1d-data.html#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb44-5"><a href="plotting-for-1d-data.html#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param res Model object.</span></span>
+<span id="cb44-6"><a href="plotting-for-1d-data.html#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param ord Defaults to NULL. Use if you have an ordering in mind.</span></span>
+<span id="cb44-7"><a href="plotting-for-1d-data.html#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb44-8"><a href="plotting-for-1d-data.html#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return Same object, but with clusters reordered.</span></span>
+<span id="cb44-9"><a href="plotting-for-1d-data.html#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb44-10"><a href="plotting-for-1d-data.html#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb44-11"><a href="plotting-for-1d-data.html#cb44-11" aria-hidden="true" tabindex="-1"></a><span id='reorder_clust'>reorder_clust</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(res, <span class="at">ord =</span> <span class="cn">NULL</span>){</span>
+<span id="cb44-12"><a href="plotting-for-1d-data.html#cb44-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-13"><a href="plotting-for-1d-data.html#cb44-13" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Find an order by sums (averages)</span></span>
+<span id="cb44-14"><a href="plotting-for-1d-data.html#cb44-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(ord)) ord <span class="ot">=</span> res<span class="sc">$</span>mn[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">colSums</span>() <span class="sc">%&gt;%</span> <span class="fu">order</span>(<span class="at">decreasing=</span><span class="cn">TRUE</span>)</span>
+<span id="cb44-15"><a href="plotting-for-1d-data.html#cb44-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(ord)) <span class="fu">all</span>(<span class="fu">sort</span>(ord) <span class="sc">==</span> <span class="dv">1</span><span class="sc">:</span>res<span class="sc">$</span>numclust)</span>
+<span id="cb44-16"><a href="plotting-for-1d-data.html#cb44-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-17"><a href="plotting-for-1d-data.html#cb44-17" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Reorder mean</span></span>
+<span id="cb44-18"><a href="plotting-for-1d-data.html#cb44-18" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>mn <span class="ot">=</span> res<span class="sc">$</span>mn[,,ord, drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb44-19"><a href="plotting-for-1d-data.html#cb44-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-20"><a href="plotting-for-1d-data.html#cb44-20" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Reorder sigma</span></span>
+<span id="cb44-21"><a href="plotting-for-1d-data.html#cb44-21" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>sigma <span class="ot">=</span> res<span class="sc">$</span>sigma[ord,,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb44-22"><a href="plotting-for-1d-data.html#cb44-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-23"><a href="plotting-for-1d-data.html#cb44-23" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Reorder prob</span></span>
+<span id="cb44-24"><a href="plotting-for-1d-data.html#cb44-24" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>prob <span class="ot">=</span> res<span class="sc">$</span>prob[,ord, drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb44-25"><a href="plotting-for-1d-data.html#cb44-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-26"><a href="plotting-for-1d-data.html#cb44-26" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Reorder the responsibilities</span></span>
+<span id="cb44-27"><a href="plotting-for-1d-data.html#cb44-27" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="st">&#39;resp&#39;</span> <span class="sc">%in%</span> res){</span>
+<span id="cb44-28"><a href="plotting-for-1d-data.html#cb44-28" aria-hidden="true" tabindex="-1"></a>    resp_temp <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb44-29"><a href="plotting-for-1d-data.html#cb44-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT){</span>
+<span id="cb44-30"><a href="plotting-for-1d-data.html#cb44-30" aria-hidden="true" tabindex="-1"></a>      rep_temp[[tt]] <span class="ot">=</span> res<span class="sc">$</span>resp[[tt]][,ord]</span>
+<span id="cb44-31"><a href="plotting-for-1d-data.html#cb44-31" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb44-32"><a href="plotting-for-1d-data.html#cb44-32" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb44-33"><a href="plotting-for-1d-data.html#cb44-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb44-34"><a href="plotting-for-1d-data.html#cb44-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>It’s useful to be able to reorder, or <em>permute</em>, one model’s cluster labels
 (cluster 1,2,.. of <code>newres</code> which are arbitrary) to that of another model
 <code>origres</code>. The function <code><a href='plotting-for-1d-data.html#reorder_kl'>reorder_kl</a>()</code> does this by taking the posterior
@@ -324,156 +325,157 @@ divergence between all permutations of the <span class="math inline">\(K\)</span
 <p>TODO: right now this is just copy-pasted from <code>flowmix</code>. But actually, this is
 an example of a function that can be directly borrowed; all the work is done in
 <code><a href='plotting-for-1d-data.html#reorder_clust'>reorder_clust</a>()</code>. So deal with that!!</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="plotting-for-1d-data.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Reorder the cluster numbers for a new flowsmooth object \code{newres}; the best</span></span>
-<span id="cb37-2"><a href="plotting-for-1d-data.html#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; permutation (reordering) is to match the original flowmix object</span></span>
-<span id="cb37-3"><a href="plotting-for-1d-data.html#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; \code{origres}.</span></span>
-<span id="cb37-4"><a href="plotting-for-1d-data.html#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb37-5"><a href="plotting-for-1d-data.html#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param newres New flowsmooth object to reorder.</span></span>
-<span id="cb37-6"><a href="plotting-for-1d-data.html#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param origres Original flowsmooth object.</span></span>
-<span id="cb37-7"><a href="plotting-for-1d-data.html#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param ylist_particle The particle-level data.</span></span>
-<span id="cb37-8"><a href="plotting-for-1d-data.html#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param fac Defaults to 100, to take 1/100&#39;th of the particles from each time point.</span></span>
-<span id="cb37-9"><a href="plotting-for-1d-data.html#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param verbose Loud or not?</span></span>
-<span id="cb37-10"><a href="plotting-for-1d-data.html#cb37-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb37-11"><a href="plotting-for-1d-data.html#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return Reordered res</span></span>
-<span id="cb37-12"><a href="plotting-for-1d-data.html#cb37-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb37-13"><a href="plotting-for-1d-data.html#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb37-14"><a href="plotting-for-1d-data.html#cb37-14" aria-hidden="true" tabindex="-1"></a><span id='reorder_kl'>reorder_kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(newres, origres, ylist_particle, <span class="at">fac =</span> <span class="dv">100</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>){</span>
-<span id="cb37-15"><a href="plotting-for-1d-data.html#cb37-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-16"><a href="plotting-for-1d-data.html#cb37-16" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Randomly sample  1/100 of the original particles (mainly for memory reasons)</span></span>
-<span id="cb37-17"><a href="plotting-for-1d-data.html#cb37-17" aria-hidden="true" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="fu">length</span>(ylist_particle)</span>
-<span id="cb37-18"><a href="plotting-for-1d-data.html#cb37-18" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">sapply</span>(ylist_particle, nrow) <span class="sc">%&gt;%</span> <span class="fu">sum</span>()</span>
-<span id="cb37-19"><a href="plotting-for-1d-data.html#cb37-19" aria-hidden="true" tabindex="-1"></a>  ntlist <span class="ot">=</span> <span class="fu">sapply</span>(ylist_particle, nrow)</span>
-<span id="cb37-20"><a href="plotting-for-1d-data.html#cb37-20" aria-hidden="true" tabindex="-1"></a>  indlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){</span>
-<span id="cb37-21"><a href="plotting-for-1d-data.html#cb37-21" aria-hidden="true" tabindex="-1"></a>    nt <span class="ot">=</span> ntlist[[tt]]</span>
-<span id="cb37-22"><a href="plotting-for-1d-data.html#cb37-22" aria-hidden="true" tabindex="-1"></a>    ind <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>nt, <span class="fu">round</span>(nt <span class="sc">/</span> fac), <span class="at">replace=</span><span class="cn">FALSE</span>)</span>
-<span id="cb37-23"><a href="plotting-for-1d-data.html#cb37-23" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb37-24"><a href="plotting-for-1d-data.html#cb37-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-25"><a href="plotting-for-1d-data.html#cb37-25" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Sample responsibilities</span></span>
-<span id="cb37-26"><a href="plotting-for-1d-data.html#cb37-26" aria-hidden="true" tabindex="-1"></a>  ylist_particle_small <span class="ot">=</span> <span class="fu">Map</span>(<span class="cf">function</span>(ind, y){ y[ind,,drop <span class="ot">=</span> <span class="cn">FALSE</span>]  }, indlist, ylist_particle)</span>
-<span id="cb37-27"><a href="plotting-for-1d-data.html#cb37-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-28"><a href="plotting-for-1d-data.html#cb37-28" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Calculate new responsibilities</span></span>
-<span id="cb37-29"><a href="plotting-for-1d-data.html#cb37-29" aria-hidden="true" tabindex="-1"></a>  resp_orig_small <span class="ot">&lt;-</span> <a href='e-step.html#Estep'>Estep</a>(origres<span class="sc">$</span>mn, origres<span class="sc">$</span>sigma, origres<span class="sc">$</span>prob,</span>
-<span id="cb37-30"><a href="plotting-for-1d-data.html#cb37-30" aria-hidden="true" tabindex="-1"></a>                           <span class="at">ylist =</span> ylist_particle_small,</span>
-<span id="cb37-31"><a href="plotting-for-1d-data.html#cb37-31" aria-hidden="true" tabindex="-1"></a>                           <span class="at">numclust =</span> origres<span class="sc">$</span>numclust, <span class="at">first_iter =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb37-32"><a href="plotting-for-1d-data.html#cb37-32" aria-hidden="true" tabindex="-1"></a>  resp_new_small <span class="ot">&lt;-</span> <a href='e-step.html#Estep'>Estep</a>(newres<span class="sc">$</span>mn, newres<span class="sc">$</span>sigma, newres<span class="sc">$</span>prob,</span>
-<span id="cb37-33"><a href="plotting-for-1d-data.html#cb37-33" aria-hidden="true" tabindex="-1"></a>                          <span class="at">ylist =</span> ylist_particle_small,</span>
-<span id="cb37-34"><a href="plotting-for-1d-data.html#cb37-34" aria-hidden="true" tabindex="-1"></a>                          <span class="at">numclust =</span> newres<span class="sc">$</span>numclust, <span class="at">first_iter =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb37-35"><a href="plotting-for-1d-data.html#cb37-35" aria-hidden="true" tabindex="-1"></a>  assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">all</span>(<span class="fu">sapply</span>(resp_orig_small, dim) <span class="sc">==</span> <span class="fu">sapply</span>(resp_new_small, dim)))</span>
-<span id="cb37-36"><a href="plotting-for-1d-data.html#cb37-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-37"><a href="plotting-for-1d-data.html#cb37-37" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Get best ordering (using symm. KL divergence and Hungarian algorithm for</span></span>
-<span id="cb37-38"><a href="plotting-for-1d-data.html#cb37-38" aria-hidden="true" tabindex="-1"></a>  <span class="do">## matching)</span></span>
-<span id="cb37-39"><a href="plotting-for-1d-data.html#cb37-39" aria-hidden="true" tabindex="-1"></a>  best_ord <span class="ot">&lt;-</span> <a href='plotting-for-1d-data.html#get_best_match_from_kl'>get_best_match_from_kl</a>(resp_new_small, resp_orig_small)</span>
-<span id="cb37-40"><a href="plotting-for-1d-data.html#cb37-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-41"><a href="plotting-for-1d-data.html#cb37-41" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(verbose) <span class="fu">cat</span>(<span class="st">&quot;New order is&quot;</span>, best_ord, <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
-<span id="cb37-42"><a href="plotting-for-1d-data.html#cb37-42" aria-hidden="true" tabindex="-1"></a>  newres_reordered_kl <span class="ot">=</span> newres <span class="sc">%&gt;%</span> <a href='plotting-for-1d-data.html#reorder_clust'>reorder_clust</a>(<span class="at">ord =</span> best_ord)</span>
-<span id="cb37-43"><a href="plotting-for-1d-data.html#cb37-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-44"><a href="plotting-for-1d-data.html#cb37-44" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Return the reordered object</span></span>
-<span id="cb37-45"><a href="plotting-for-1d-data.html#cb37-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(newres_reordered_kl)</span>
-<span id="cb37-46"><a href="plotting-for-1d-data.html#cb37-46" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="plotting-for-1d-data.html#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Reorder the cluster numbers for a new flowsmooth object \code{newres}; the best</span></span>
+<span id="cb45-2"><a href="plotting-for-1d-data.html#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; permutation (reordering) is to match the original flowmix object</span></span>
+<span id="cb45-3"><a href="plotting-for-1d-data.html#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; \code{origres}.</span></span>
+<span id="cb45-4"><a href="plotting-for-1d-data.html#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb45-5"><a href="plotting-for-1d-data.html#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param newres New flowsmooth object to reorder.</span></span>
+<span id="cb45-6"><a href="plotting-for-1d-data.html#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param origres Original flowsmooth object.</span></span>
+<span id="cb45-7"><a href="plotting-for-1d-data.html#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param ylist_particle The particle-level data.</span></span>
+<span id="cb45-8"><a href="plotting-for-1d-data.html#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param fac Defaults to 100, to take 1/100&#39;th of the particles from each time point.</span></span>
+<span id="cb45-9"><a href="plotting-for-1d-data.html#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param verbose Loud or not?</span></span>
+<span id="cb45-10"><a href="plotting-for-1d-data.html#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb45-11"><a href="plotting-for-1d-data.html#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return Reordered res</span></span>
+<span id="cb45-12"><a href="plotting-for-1d-data.html#cb45-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb45-13"><a href="plotting-for-1d-data.html#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb45-14"><a href="plotting-for-1d-data.html#cb45-14" aria-hidden="true" tabindex="-1"></a><span id='reorder_kl'>reorder_kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(newres, origres, ylist_particle, <span class="at">fac =</span> <span class="dv">100</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>){</span>
+<span id="cb45-15"><a href="plotting-for-1d-data.html#cb45-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-16"><a href="plotting-for-1d-data.html#cb45-16" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Randomly sample  1/100 of the original particles (mainly for memory reasons)</span></span>
+<span id="cb45-17"><a href="plotting-for-1d-data.html#cb45-17" aria-hidden="true" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="fu">length</span>(ylist_particle)</span>
+<span id="cb45-18"><a href="plotting-for-1d-data.html#cb45-18" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">sapply</span>(ylist_particle, nrow) <span class="sc">%&gt;%</span> <span class="fu">sum</span>()</span>
+<span id="cb45-19"><a href="plotting-for-1d-data.html#cb45-19" aria-hidden="true" tabindex="-1"></a>  ntlist <span class="ot">=</span> <span class="fu">sapply</span>(ylist_particle, nrow)</span>
+<span id="cb45-20"><a href="plotting-for-1d-data.html#cb45-20" aria-hidden="true" tabindex="-1"></a>  indlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){</span>
+<span id="cb45-21"><a href="plotting-for-1d-data.html#cb45-21" aria-hidden="true" tabindex="-1"></a>    nt <span class="ot">=</span> ntlist[[tt]]</span>
+<span id="cb45-22"><a href="plotting-for-1d-data.html#cb45-22" aria-hidden="true" tabindex="-1"></a>    ind <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>nt, <span class="fu">round</span>(nt <span class="sc">/</span> fac), <span class="at">replace=</span><span class="cn">FALSE</span>)</span>
+<span id="cb45-23"><a href="plotting-for-1d-data.html#cb45-23" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb45-24"><a href="plotting-for-1d-data.html#cb45-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-25"><a href="plotting-for-1d-data.html#cb45-25" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Sample responsibilities</span></span>
+<span id="cb45-26"><a href="plotting-for-1d-data.html#cb45-26" aria-hidden="true" tabindex="-1"></a>  ylist_particle_small <span class="ot">=</span> <span class="fu">Map</span>(<span class="cf">function</span>(ind, y){ y[ind,,drop <span class="ot">=</span> <span class="cn">FALSE</span>]  }, indlist, ylist_particle)</span>
+<span id="cb45-27"><a href="plotting-for-1d-data.html#cb45-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-28"><a href="plotting-for-1d-data.html#cb45-28" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Calculate new responsibilities</span></span>
+<span id="cb45-29"><a href="plotting-for-1d-data.html#cb45-29" aria-hidden="true" tabindex="-1"></a>  resp_orig_small <span class="ot">&lt;-</span> <a href='e-step.html#Estep'>Estep</a>(origres<span class="sc">$</span>mn, origres<span class="sc">$</span>sigma, origres<span class="sc">$</span>prob,</span>
+<span id="cb45-30"><a href="plotting-for-1d-data.html#cb45-30" aria-hidden="true" tabindex="-1"></a>                           <span class="at">ylist =</span> ylist_particle_small,</span>
+<span id="cb45-31"><a href="plotting-for-1d-data.html#cb45-31" aria-hidden="true" tabindex="-1"></a>                           <span class="at">numclust =</span> origres<span class="sc">$</span>numclust, <span class="at">first_iter =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb45-32"><a href="plotting-for-1d-data.html#cb45-32" aria-hidden="true" tabindex="-1"></a>  resp_new_small <span class="ot">&lt;-</span> <a href='e-step.html#Estep'>Estep</a>(newres<span class="sc">$</span>mn, newres<span class="sc">$</span>sigma, newres<span class="sc">$</span>prob,</span>
+<span id="cb45-33"><a href="plotting-for-1d-data.html#cb45-33" aria-hidden="true" tabindex="-1"></a>                          <span class="at">ylist =</span> ylist_particle_small,</span>
+<span id="cb45-34"><a href="plotting-for-1d-data.html#cb45-34" aria-hidden="true" tabindex="-1"></a>                          <span class="at">numclust =</span> newres<span class="sc">$</span>numclust, <span class="at">first_iter =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb45-35"><a href="plotting-for-1d-data.html#cb45-35" aria-hidden="true" tabindex="-1"></a>  assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">all</span>(<span class="fu">sapply</span>(resp_orig_small, dim) <span class="sc">==</span> <span class="fu">sapply</span>(resp_new_small, dim)))</span>
+<span id="cb45-36"><a href="plotting-for-1d-data.html#cb45-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-37"><a href="plotting-for-1d-data.html#cb45-37" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Get best ordering (using symm. KL divergence and Hungarian algorithm for</span></span>
+<span id="cb45-38"><a href="plotting-for-1d-data.html#cb45-38" aria-hidden="true" tabindex="-1"></a>  <span class="do">## matching)</span></span>
+<span id="cb45-39"><a href="plotting-for-1d-data.html#cb45-39" aria-hidden="true" tabindex="-1"></a>  best_ord <span class="ot">&lt;-</span> <a href='plotting-for-1d-data.html#get_best_match_from_kl'>get_best_match_from_kl</a>(resp_new_small, resp_orig_small)</span>
+<span id="cb45-40"><a href="plotting-for-1d-data.html#cb45-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-41"><a href="plotting-for-1d-data.html#cb45-41" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(verbose) <span class="fu">cat</span>(<span class="st">&quot;New order is&quot;</span>, best_ord, <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
+<span id="cb45-42"><a href="plotting-for-1d-data.html#cb45-42" aria-hidden="true" tabindex="-1"></a>  newres_reordered_kl <span class="ot">=</span> newres <span class="sc">%&gt;%</span> <a href='plotting-for-1d-data.html#reorder_clust'>reorder_clust</a>(<span class="at">ord =</span> best_ord)</span>
+<span id="cb45-43"><a href="plotting-for-1d-data.html#cb45-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-44"><a href="plotting-for-1d-data.html#cb45-44" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Return the reordered object</span></span>
+<span id="cb45-45"><a href="plotting-for-1d-data.html#cb45-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(newres_reordered_kl)</span>
+<span id="cb45-46"><a href="plotting-for-1d-data.html#cb45-46" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>This function uses <code><a href='plotting-for-1d-data.html#get_best_match_from_kl'>get_best_match_from_kl</a>()</code>, which takes two lists containing
 responsibilities (posterior probabilities of particles) – one from each model
 – and returns the cluster ordering to apply to the model that produced
 <code>resp_new</code>. We define this function and a couple of helper functions next.</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="plotting-for-1d-data.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Compute KL divergence from responsibilities between two models&#39;</span></span>
-<span id="cb38-2"><a href="plotting-for-1d-data.html#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; responsibilities \code{resp_new} and \code{resp_old}.</span></span>
-<span id="cb38-3"><a href="plotting-for-1d-data.html#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb38-4"><a href="plotting-for-1d-data.html#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param resp_new New responsibilities</span></span>
-<span id="cb38-5"><a href="plotting-for-1d-data.html#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param resp_orig Original responsiblities.</span></span>
-<span id="cb38-6"><a href="plotting-for-1d-data.html#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb38-7"><a href="plotting-for-1d-data.html#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return Calculate reordering \code{o} of the clusters in model represented</span></span>
-<span id="cb38-8"><a href="plotting-for-1d-data.html#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;   by \code{resp_new}. To be clear, \code{o[i]} of new model is the best</span></span>
-<span id="cb38-9"><a href="plotting-for-1d-data.html#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;   match with the i&#39;th cluster of the original model.</span></span>
-<span id="cb38-10"><a href="plotting-for-1d-data.html#cb38-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb38-11"><a href="plotting-for-1d-data.html#cb38-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb38-12"><a href="plotting-for-1d-data.html#cb38-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @importFrom clue solve_LSAP</span></span>
-<span id="cb38-13"><a href="plotting-for-1d-data.html#cb38-13" aria-hidden="true" tabindex="-1"></a><span id='get_best_match_from_kl'>get_best_match_from_kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(resp_new, resp_orig){</span>
-<span id="cb38-14"><a href="plotting-for-1d-data.html#cb38-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-15"><a href="plotting-for-1d-data.html#cb38-15" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
-<span id="cb38-16"><a href="plotting-for-1d-data.html#cb38-16" aria-hidden="true" tabindex="-1"></a>  . <span class="ot">=</span> <span class="cn">NULL</span> <span class="do">## Fixing check()</span></span>
-<span id="cb38-17"><a href="plotting-for-1d-data.html#cb38-17" aria-hidden="true" tabindex="-1"></a>  assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">all</span>(<span class="fu">sapply</span>(resp_new, dim) <span class="sc">==</span> <span class="fu">sapply</span>(resp_orig , dim)))</span>
-<span id="cb38-18"><a href="plotting-for-1d-data.html#cb38-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-19"><a href="plotting-for-1d-data.html#cb38-19" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Row-bind all the responsibilities to make a long matrix</span></span>
-<span id="cb38-20"><a href="plotting-for-1d-data.html#cb38-20" aria-hidden="true" tabindex="-1"></a>  distmat <span class="ot">=</span> <a href='plotting-for-1d-data.html#form_symmetric_kl_distmat'>form_symmetric_kl_distmat</a>(resp_orig <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind,.),</span>
-<span id="cb38-21"><a href="plotting-for-1d-data.html#cb38-21" aria-hidden="true" tabindex="-1"></a>                                      resp_new <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind,.))</span>
-<span id="cb38-22"><a href="plotting-for-1d-data.html#cb38-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-23"><a href="plotting-for-1d-data.html#cb38-23" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Use Hungarian algorithm to solve.</span></span>
-<span id="cb38-24"><a href="plotting-for-1d-data.html#cb38-24" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> clue<span class="sc">::</span><span class="fu">solve_LSAP</span>(distmat)</span>
-<span id="cb38-25"><a href="plotting-for-1d-data.html#cb38-25" aria-hidden="true" tabindex="-1"></a>  o <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(fit)</span>
-<span id="cb38-26"><a href="plotting-for-1d-data.html#cb38-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-27"><a href="plotting-for-1d-data.html#cb38-27" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Return the ordering</span></span>
-<span id="cb38-28"><a href="plotting-for-1d-data.html#cb38-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(o)</span>
-<span id="cb38-29"><a href="plotting-for-1d-data.html#cb38-29" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb38-30"><a href="plotting-for-1d-data.html#cb38-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-31"><a href="plotting-for-1d-data.html#cb38-31" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; From two probability matrices, form a (K x K) distance matrix of the</span></span>
-<span id="cb38-32"><a href="plotting-for-1d-data.html#cb38-32" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; (n)-vectors. The distance between the vectors is the symmetric KL</span></span>
-<span id="cb38-33"><a href="plotting-for-1d-data.html#cb38-33" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; divergence.</span></span>
-<span id="cb38-34"><a href="plotting-for-1d-data.html#cb38-34" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
-<span id="cb38-35"><a href="plotting-for-1d-data.html#cb38-35" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param mat1 Matrix 1 of size (n x K).</span></span>
-<span id="cb38-36"><a href="plotting-for-1d-data.html#cb38-36" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param mat2 Matrix 2 of size (n x K).</span></span>
-<span id="cb38-37"><a href="plotting-for-1d-data.html#cb38-37" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
-<span id="cb38-38"><a href="plotting-for-1d-data.html#cb38-38" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @return K x K matrix containing symmetric KL divergence of each column of</span></span>
-<span id="cb38-39"><a href="plotting-for-1d-data.html#cb38-39" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;   \code{mat1} and \code{mat2}.</span></span>
-<span id="cb38-40"><a href="plotting-for-1d-data.html#cb38-40" aria-hidden="true" tabindex="-1"></a><span id='form_symmetric_kl_distmat'>form_symmetric_kl_distmat</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mat1, mat2){</span>
-<span id="cb38-41"><a href="plotting-for-1d-data.html#cb38-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-42"><a href="plotting-for-1d-data.html#cb38-42" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Manually add some small, in case some columns are all zero</span></span>
-<span id="cb38-43"><a href="plotting-for-1d-data.html#cb38-43" aria-hidden="true" tabindex="-1"></a>  mat1 <span class="ot">=</span> (mat1 <span class="sc">+</span> <span class="fl">1E-10</span>) <span class="sc">%&gt;%</span> <span class="fu">pmin</span>(<span class="dv">1</span>)</span>
-<span id="cb38-44"><a href="plotting-for-1d-data.html#cb38-44" aria-hidden="true" tabindex="-1"></a>  mat2 <span class="ot">=</span> (mat2 <span class="sc">+</span> <span class="fl">1E-10</span>) <span class="sc">%&gt;%</span> <span class="fu">pmin</span>(<span class="dv">1</span>)</span>
-<span id="cb38-45"><a href="plotting-for-1d-data.html#cb38-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-46"><a href="plotting-for-1d-data.html#cb38-46" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Calculate and return distance matrix.</span></span>
-<span id="cb38-47"><a href="plotting-for-1d-data.html#cb38-47" aria-hidden="true" tabindex="-1"></a>  KK1 <span class="ot">=</span> <span class="fu">ncol</span>(mat1)</span>
-<span id="cb38-48"><a href="plotting-for-1d-data.html#cb38-48" aria-hidden="true" tabindex="-1"></a>  KK2 <span class="ot">=</span> <span class="fu">ncol</span>(mat2)</span>
-<span id="cb38-49"><a href="plotting-for-1d-data.html#cb38-49" aria-hidden="true" tabindex="-1"></a>  distmat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">ncol=</span>KK2, <span class="at">nrow=</span>KK1)</span>
-<span id="cb38-50"><a href="plotting-for-1d-data.html#cb38-50" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(kk1 <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>KK1){</span>
-<span id="cb38-51"><a href="plotting-for-1d-data.html#cb38-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(kk2 <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>KK2){</span>
-<span id="cb38-52"><a href="plotting-for-1d-data.html#cb38-52" aria-hidden="true" tabindex="-1"></a>      mydist <span class="ot">=</span> <a href='plotting-for-1d-data.html#symmetric_kl'>symmetric_kl</a>(mat1[,kk1, <span class="at">drop=</span><span class="cn">TRUE</span>], mat2[,kk2, <span class="at">drop=</span><span class="cn">TRUE</span>])</span>
-<span id="cb38-53"><a href="plotting-for-1d-data.html#cb38-53" aria-hidden="true" tabindex="-1"></a>      distmat[kk1, kk2] <span class="ot">=</span> mydist</span>
-<span id="cb38-54"><a href="plotting-for-1d-data.html#cb38-54" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb38-55"><a href="plotting-for-1d-data.html#cb38-55" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb38-56"><a href="plotting-for-1d-data.html#cb38-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(<span class="sc">!</span><span class="fu">is.na</span>(distmat)))</span>
-<span id="cb38-57"><a href="plotting-for-1d-data.html#cb38-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(distmat)</span>
-<span id="cb38-58"><a href="plotting-for-1d-data.html#cb38-58" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb38-59"><a href="plotting-for-1d-data.html#cb38-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-60"><a href="plotting-for-1d-data.html#cb38-60" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; Symmetric KL divergence, of two probability vectors.</span></span>
-<span id="cb38-61"><a href="plotting-for-1d-data.html#cb38-61" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
-<span id="cb38-62"><a href="plotting-for-1d-data.html#cb38-62" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param vec1 First probability vector.</span></span>
-<span id="cb38-63"><a href="plotting-for-1d-data.html#cb38-63" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param vec2 Second prbability vector.</span></span>
-<span id="cb38-64"><a href="plotting-for-1d-data.html#cb38-64" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
-<span id="cb38-65"><a href="plotting-for-1d-data.html#cb38-65" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @return Symmetric KL divergence (scalar).</span></span>
-<span id="cb38-66"><a href="plotting-for-1d-data.html#cb38-66" aria-hidden="true" tabindex="-1"></a><span id='symmetric_kl'>symmetric_kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(vec1, vec2){</span>
-<span id="cb38-67"><a href="plotting-for-1d-data.html#cb38-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(vec1 <span class="sc">&lt;=</span> <span class="dv">1</span>) <span class="sc">&amp;</span> <span class="fu">all</span>(vec1 <span class="sc">&gt;=</span> <span class="dv">0</span>))</span>
-<span id="cb38-68"><a href="plotting-for-1d-data.html#cb38-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(vec2 <span class="sc">&lt;=</span> <span class="dv">1</span>) <span class="sc">&amp;</span> <span class="fu">all</span>(vec2 <span class="sc">&gt;=</span> <span class="dv">0</span>))</span>
-<span id="cb38-69"><a href="plotting-for-1d-data.html#cb38-69" aria-hidden="true" tabindex="-1"></a>  <span id='kl'>kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(vec1, vec2){</span>
-<span id="cb38-70"><a href="plotting-for-1d-data.html#cb38-70" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(vec1 <span class="sc">*</span> <span class="fu">log</span>(vec1 <span class="sc">/</span> vec2))</span>
-<span id="cb38-71"><a href="plotting-for-1d-data.html#cb38-71" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb38-72"><a href="plotting-for-1d-data.html#cb38-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>((<a href='plotting-for-1d-data.html#kl'>kl</a>(vec1, vec2) <span class="sc">+</span> <a href='plotting-for-1d-data.html#kl'>kl</a>(vec2, vec1))<span class="sc">/</span><span class="dv">2</span>)</span>
-<span id="cb38-73"><a href="plotting-for-1d-data.html#cb38-73" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<p>Here’s an example of how to use it.
-TODO: this code block incurs an error because flowsmooth is not fully available to use yet, at this stage of the code. Fix this!</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="plotting-for-1d-data.html#cb39-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">&quot;~/repos/FlowTF&quot;</span>)</span>
-<span id="cb39-2"><a href="plotting-for-1d-data.html#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
-<span id="cb39-3"><a href="plotting-for-1d-data.html#cb39-3" aria-hidden="true" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>)</span>
-<span id="cb39-4"><a href="plotting-for-1d-data.html#cb39-4" aria-hidden="true" tabindex="-1"></a>dt_model <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>, <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb39-5"><a href="plotting-for-1d-data.html#cb39-5" aria-hidden="true" tabindex="-1"></a>ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='generating-1d-data.html#dt2ylist'>dt2ylist</a>()</span>
-<span id="cb39-6"><a href="plotting-for-1d-data.html#cb39-6" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
-<span id="cb39-7"><a href="plotting-for-1d-data.html#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-8"><a href="plotting-for-1d-data.html#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="do">## Fit model</span></span>
-<span id="cb39-9"><a href="plotting-for-1d-data.html#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb39-10"><a href="plotting-for-1d-data.html#cb39-10" aria-hidden="true" tabindex="-1"></a>objlist <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="cf">function</span>(isim){</span>
-<span id="cb39-11"><a href="plotting-for-1d-data.html#cb39-11" aria-hidden="true" tabindex="-1"></a>  <a href='main-flowsmooth-function.html#flowsmooth'>flowsmooth</a>(<span class="at">ylist =</span> ylist,</span>
-<span id="cb39-12"><a href="plotting-for-1d-data.html#cb39-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">x =</span> x,</span>
-<span id="cb39-13"><a href="plotting-for-1d-data.html#cb39-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
-<span id="cb39-14"><a href="plotting-for-1d-data.html#cb39-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">numclust =</span> <span class="dv">3</span>,</span>
-<span id="cb39-15"><a href="plotting-for-1d-data.html#cb39-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
-<span id="cb39-16"><a href="plotting-for-1d-data.html#cb39-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">l =</span> <span class="dv">1</span>,</span>
-<span id="cb39-17"><a href="plotting-for-1d-data.html#cb39-17" aria-hidden="true" tabindex="-1"></a>             <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
-<span id="cb39-18"><a href="plotting-for-1d-data.html#cb39-18" aria-hidden="true" tabindex="-1"></a>             <span class="at">lambda_prob =</span> .<span class="dv">005</span>,</span>
-<span id="cb39-19"><a href="plotting-for-1d-data.html#cb39-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">nrestart =</span> <span class="dv">1</span>, <span class="at">verbose =</span> <span class="cn">TRUE</span>)})</span>
-<span id="cb39-20"><a href="plotting-for-1d-data.html#cb39-20" aria-hidden="true" tabindex="-1"></a>newres <span class="ot">=</span> objlist[[<span class="dv">1</span>]]</span>
-<span id="cb39-21"><a href="plotting-for-1d-data.html#cb39-21" aria-hidden="true" tabindex="-1"></a>origres <span class="ot">=</span> objlist[[<span class="dv">2</span>]]</span>
-<span id="cb39-22"><a href="plotting-for-1d-data.html#cb39-22" aria-hidden="true" tabindex="-1"></a>newres_reordered <span class="ot">=</span> <a href='plotting-for-1d-data.html#reorder_kl'>reorder_kl</a>(newres, origres, ylist, <span class="at">fac =</span> <span class="dv">100</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb39-23"><a href="plotting-for-1d-data.html#cb39-23" aria-hidden="true" tabindex="-1"></a><a href='plotting-for-1d-data.html#plot_1d'>plot_1d</a>(ylist, newres, <span class="at">x =</span> x) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;before reordering, model 1&quot;</span>)</span>
-<span id="cb39-24"><a href="plotting-for-1d-data.html#cb39-24" aria-hidden="true" tabindex="-1"></a><a href='plotting-for-1d-data.html#plot_1d'>plot_1d</a>(ylist, origres, <span class="at">x =</span> x) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;model 2&quot;</span>)</span>
-<span id="cb39-25"><a href="plotting-for-1d-data.html#cb39-25" aria-hidden="true" tabindex="-1"></a><a href='plotting-for-1d-data.html#plot_1d'>plot_1d</a>(ylist, newres_reordered, <span class="at">x =</span> x) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;reordered model 1&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="plotting-for-1d-data.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Compute KL divergence from responsibilities between two models&#39;</span></span>
+<span id="cb46-2"><a href="plotting-for-1d-data.html#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; responsibilities \code{resp_new} and \code{resp_old}.</span></span>
+<span id="cb46-3"><a href="plotting-for-1d-data.html#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb46-4"><a href="plotting-for-1d-data.html#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param resp_new New responsibilities</span></span>
+<span id="cb46-5"><a href="plotting-for-1d-data.html#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param resp_orig Original responsiblities.</span></span>
+<span id="cb46-6"><a href="plotting-for-1d-data.html#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb46-7"><a href="plotting-for-1d-data.html#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return Calculate reordering \code{o} of the clusters in model represented</span></span>
+<span id="cb46-8"><a href="plotting-for-1d-data.html#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;   by \code{resp_new}. To be clear, \code{o[i]} of new model is the best</span></span>
+<span id="cb46-9"><a href="plotting-for-1d-data.html#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;   match with the i&#39;th cluster of the original model.</span></span>
+<span id="cb46-10"><a href="plotting-for-1d-data.html#cb46-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb46-11"><a href="plotting-for-1d-data.html#cb46-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb46-12"><a href="plotting-for-1d-data.html#cb46-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @importFrom clue solve_LSAP</span></span>
+<span id="cb46-13"><a href="plotting-for-1d-data.html#cb46-13" aria-hidden="true" tabindex="-1"></a><span id='get_best_match_from_kl'>get_best_match_from_kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(resp_new, resp_orig){</span>
+<span id="cb46-14"><a href="plotting-for-1d-data.html#cb46-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-15"><a href="plotting-for-1d-data.html#cb46-15" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb46-16"><a href="plotting-for-1d-data.html#cb46-16" aria-hidden="true" tabindex="-1"></a>  . <span class="ot">=</span> <span class="cn">NULL</span> <span class="do">## Fixing check()</span></span>
+<span id="cb46-17"><a href="plotting-for-1d-data.html#cb46-17" aria-hidden="true" tabindex="-1"></a>  assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">all</span>(<span class="fu">sapply</span>(resp_new, dim) <span class="sc">==</span> <span class="fu">sapply</span>(resp_orig , dim)))</span>
+<span id="cb46-18"><a href="plotting-for-1d-data.html#cb46-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-19"><a href="plotting-for-1d-data.html#cb46-19" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Row-bind all the responsibilities to make a long matrix</span></span>
+<span id="cb46-20"><a href="plotting-for-1d-data.html#cb46-20" aria-hidden="true" tabindex="-1"></a>  distmat <span class="ot">=</span> <a href='plotting-for-1d-data.html#form_symmetric_kl_distmat'>form_symmetric_kl_distmat</a>(resp_orig <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind,.),</span>
+<span id="cb46-21"><a href="plotting-for-1d-data.html#cb46-21" aria-hidden="true" tabindex="-1"></a>                                      resp_new <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind,.))</span>
+<span id="cb46-22"><a href="plotting-for-1d-data.html#cb46-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-23"><a href="plotting-for-1d-data.html#cb46-23" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Use Hungarian algorithm to solve.</span></span>
+<span id="cb46-24"><a href="plotting-for-1d-data.html#cb46-24" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> clue<span class="sc">::</span><span class="fu">solve_LSAP</span>(distmat)</span>
+<span id="cb46-25"><a href="plotting-for-1d-data.html#cb46-25" aria-hidden="true" tabindex="-1"></a>  o <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(fit)</span>
+<span id="cb46-26"><a href="plotting-for-1d-data.html#cb46-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-27"><a href="plotting-for-1d-data.html#cb46-27" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Return the ordering</span></span>
+<span id="cb46-28"><a href="plotting-for-1d-data.html#cb46-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(o)</span>
+<span id="cb46-29"><a href="plotting-for-1d-data.html#cb46-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-30"><a href="plotting-for-1d-data.html#cb46-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-31"><a href="plotting-for-1d-data.html#cb46-31" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; From two probability matrices, form a (K x K) distance matrix of the</span></span>
+<span id="cb46-32"><a href="plotting-for-1d-data.html#cb46-32" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; (n)-vectors. The distance between the vectors is the symmetric KL</span></span>
+<span id="cb46-33"><a href="plotting-for-1d-data.html#cb46-33" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; divergence.</span></span>
+<span id="cb46-34"><a href="plotting-for-1d-data.html#cb46-34" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
+<span id="cb46-35"><a href="plotting-for-1d-data.html#cb46-35" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param mat1 Matrix 1 of size (n x K).</span></span>
+<span id="cb46-36"><a href="plotting-for-1d-data.html#cb46-36" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param mat2 Matrix 2 of size (n x K).</span></span>
+<span id="cb46-37"><a href="plotting-for-1d-data.html#cb46-37" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
+<span id="cb46-38"><a href="plotting-for-1d-data.html#cb46-38" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @return K x K matrix containing symmetric KL divergence of each column of</span></span>
+<span id="cb46-39"><a href="plotting-for-1d-data.html#cb46-39" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;   \code{mat1} and \code{mat2}.</span></span>
+<span id="cb46-40"><a href="plotting-for-1d-data.html#cb46-40" aria-hidden="true" tabindex="-1"></a><span id='form_symmetric_kl_distmat'>form_symmetric_kl_distmat</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mat1, mat2){</span>
+<span id="cb46-41"><a href="plotting-for-1d-data.html#cb46-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-42"><a href="plotting-for-1d-data.html#cb46-42" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Manually add some small, in case some columns are all zero</span></span>
+<span id="cb46-43"><a href="plotting-for-1d-data.html#cb46-43" aria-hidden="true" tabindex="-1"></a>  mat1 <span class="ot">=</span> (mat1 <span class="sc">+</span> <span class="fl">1E-10</span>) <span class="sc">%&gt;%</span> <span class="fu">pmin</span>(<span class="dv">1</span>)</span>
+<span id="cb46-44"><a href="plotting-for-1d-data.html#cb46-44" aria-hidden="true" tabindex="-1"></a>  mat2 <span class="ot">=</span> (mat2 <span class="sc">+</span> <span class="fl">1E-10</span>) <span class="sc">%&gt;%</span> <span class="fu">pmin</span>(<span class="dv">1</span>)</span>
+<span id="cb46-45"><a href="plotting-for-1d-data.html#cb46-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-46"><a href="plotting-for-1d-data.html#cb46-46" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Calculate and return distance matrix.</span></span>
+<span id="cb46-47"><a href="plotting-for-1d-data.html#cb46-47" aria-hidden="true" tabindex="-1"></a>  KK1 <span class="ot">=</span> <span class="fu">ncol</span>(mat1)</span>
+<span id="cb46-48"><a href="plotting-for-1d-data.html#cb46-48" aria-hidden="true" tabindex="-1"></a>  KK2 <span class="ot">=</span> <span class="fu">ncol</span>(mat2)</span>
+<span id="cb46-49"><a href="plotting-for-1d-data.html#cb46-49" aria-hidden="true" tabindex="-1"></a>  distmat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">ncol=</span>KK2, <span class="at">nrow=</span>KK1)</span>
+<span id="cb46-50"><a href="plotting-for-1d-data.html#cb46-50" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(kk1 <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>KK1){</span>
+<span id="cb46-51"><a href="plotting-for-1d-data.html#cb46-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(kk2 <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>KK2){</span>
+<span id="cb46-52"><a href="plotting-for-1d-data.html#cb46-52" aria-hidden="true" tabindex="-1"></a>      mydist <span class="ot">=</span> <a href='plotting-for-1d-data.html#symmetric_kl'>symmetric_kl</a>(mat1[,kk1, <span class="at">drop=</span><span class="cn">TRUE</span>], mat2[,kk2, <span class="at">drop=</span><span class="cn">TRUE</span>])</span>
+<span id="cb46-53"><a href="plotting-for-1d-data.html#cb46-53" aria-hidden="true" tabindex="-1"></a>      distmat[kk1, kk2] <span class="ot">=</span> mydist</span>
+<span id="cb46-54"><a href="plotting-for-1d-data.html#cb46-54" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb46-55"><a href="plotting-for-1d-data.html#cb46-55" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb46-56"><a href="plotting-for-1d-data.html#cb46-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(<span class="sc">!</span><span class="fu">is.na</span>(distmat)))</span>
+<span id="cb46-57"><a href="plotting-for-1d-data.html#cb46-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(distmat)</span>
+<span id="cb46-58"><a href="plotting-for-1d-data.html#cb46-58" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-59"><a href="plotting-for-1d-data.html#cb46-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-60"><a href="plotting-for-1d-data.html#cb46-60" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; Symmetric KL divergence, of two probability vectors.</span></span>
+<span id="cb46-61"><a href="plotting-for-1d-data.html#cb46-61" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
+<span id="cb46-62"><a href="plotting-for-1d-data.html#cb46-62" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param vec1 First probability vector.</span></span>
+<span id="cb46-63"><a href="plotting-for-1d-data.html#cb46-63" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @param vec2 Second prbability vector.</span></span>
+<span id="cb46-64"><a href="plotting-for-1d-data.html#cb46-64" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39;</span></span>
+<span id="cb46-65"><a href="plotting-for-1d-data.html#cb46-65" aria-hidden="true" tabindex="-1"></a><span class="do">##&#39; @return Symmetric KL divergence (scalar).</span></span>
+<span id="cb46-66"><a href="plotting-for-1d-data.html#cb46-66" aria-hidden="true" tabindex="-1"></a><span id='symmetric_kl'>symmetric_kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(vec1, vec2){</span>
+<span id="cb46-67"><a href="plotting-for-1d-data.html#cb46-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(vec1 <span class="sc">&lt;=</span> <span class="dv">1</span>) <span class="sc">&amp;</span> <span class="fu">all</span>(vec1 <span class="sc">&gt;=</span> <span class="dv">0</span>))</span>
+<span id="cb46-68"><a href="plotting-for-1d-data.html#cb46-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(vec2 <span class="sc">&lt;=</span> <span class="dv">1</span>) <span class="sc">&amp;</span> <span class="fu">all</span>(vec2 <span class="sc">&gt;=</span> <span class="dv">0</span>))</span>
+<span id="cb46-69"><a href="plotting-for-1d-data.html#cb46-69" aria-hidden="true" tabindex="-1"></a>  <span id='kl'>kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(vec1, vec2){</span>
+<span id="cb46-70"><a href="plotting-for-1d-data.html#cb46-70" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(vec1 <span class="sc">*</span> <span class="fu">log</span>(vec1 <span class="sc">/</span> vec2))</span>
+<span id="cb46-71"><a href="plotting-for-1d-data.html#cb46-71" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb46-72"><a href="plotting-for-1d-data.html#cb46-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>((<a href='plotting-for-1d-data.html#kl'>kl</a>(vec1, vec2) <span class="sc">+</span> <a href='plotting-for-1d-data.html#kl'>kl</a>(vec2, vec1))<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb46-73"><a href="plotting-for-1d-data.html#cb46-73" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Here’s an example of how to use it. TODO: this code block incurs an error while
+rendering because flowsmooth is not fully available to use yet, at this stage of
+the code. Fix this!</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="plotting-for-1d-data.html#cb47-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">&quot;~/repos/FlowTF&quot;</span>)</span>
+<span id="cb47-2"><a href="plotting-for-1d-data.html#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb47-3"><a href="plotting-for-1d-data.html#cb47-3" aria-hidden="true" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>)</span>
+<span id="cb47-4"><a href="plotting-for-1d-data.html#cb47-4" aria-hidden="true" tabindex="-1"></a>dt_model <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>, <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb47-5"><a href="plotting-for-1d-data.html#cb47-5" aria-hidden="true" tabindex="-1"></a>ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='generating-1d-data.html#dt2ylist'>dt2ylist</a>()</span>
+<span id="cb47-6"><a href="plotting-for-1d-data.html#cb47-6" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
+<span id="cb47-7"><a href="plotting-for-1d-data.html#cb47-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-8"><a href="plotting-for-1d-data.html#cb47-8" aria-hidden="true" tabindex="-1"></a><span class="do">## Fit model</span></span>
+<span id="cb47-9"><a href="plotting-for-1d-data.html#cb47-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb47-10"><a href="plotting-for-1d-data.html#cb47-10" aria-hidden="true" tabindex="-1"></a>objlist <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="cf">function</span>(isim){</span>
+<span id="cb47-11"><a href="plotting-for-1d-data.html#cb47-11" aria-hidden="true" tabindex="-1"></a>  <a href='flowsmooth.html#flowsmooth'>flowsmooth</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb47-12"><a href="plotting-for-1d-data.html#cb47-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">x =</span> x,</span>
+<span id="cb47-13"><a href="plotting-for-1d-data.html#cb47-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
+<span id="cb47-14"><a href="plotting-for-1d-data.html#cb47-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">numclust =</span> <span class="dv">3</span>,</span>
+<span id="cb47-15"><a href="plotting-for-1d-data.html#cb47-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
+<span id="cb47-16"><a href="plotting-for-1d-data.html#cb47-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">l =</span> <span class="dv">1</span>,</span>
+<span id="cb47-17"><a href="plotting-for-1d-data.html#cb47-17" aria-hidden="true" tabindex="-1"></a>             <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
+<span id="cb47-18"><a href="plotting-for-1d-data.html#cb47-18" aria-hidden="true" tabindex="-1"></a>             <span class="at">lambda_prob =</span> .<span class="dv">005</span>,</span>
+<span id="cb47-19"><a href="plotting-for-1d-data.html#cb47-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">nrestart =</span> <span class="dv">1</span>, <span class="at">verbose =</span> <span class="cn">TRUE</span>)})</span>
+<span id="cb47-20"><a href="plotting-for-1d-data.html#cb47-20" aria-hidden="true" tabindex="-1"></a>newres <span class="ot">=</span> objlist[[<span class="dv">1</span>]]</span>
+<span id="cb47-21"><a href="plotting-for-1d-data.html#cb47-21" aria-hidden="true" tabindex="-1"></a>origres <span class="ot">=</span> objlist[[<span class="dv">2</span>]]</span>
+<span id="cb47-22"><a href="plotting-for-1d-data.html#cb47-22" aria-hidden="true" tabindex="-1"></a>newres_reordered <span class="ot">=</span> <a href='plotting-for-1d-data.html#reorder_kl'>reorder_kl</a>(newres, origres, ylist, <span class="at">fac =</span> <span class="dv">100</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb47-23"><a href="plotting-for-1d-data.html#cb47-23" aria-hidden="true" tabindex="-1"></a><a href='plotting-for-1d-data.html#plot_1d'>plot_1d</a>(ylist, newres, <span class="at">x =</span> x) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;before reordering, model 1&quot;</span>)</span>
+<span id="cb47-24"><a href="plotting-for-1d-data.html#cb47-24" aria-hidden="true" tabindex="-1"></a><a href='plotting-for-1d-data.html#plot_1d'>plot_1d</a>(ylist, origres, <span class="at">x =</span> x) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;model 2&quot;</span>)</span>
+<span id="cb47-25"><a href="plotting-for-1d-data.html#cb47-25" aria-hidden="true" tabindex="-1"></a><a href='plotting-for-1d-data.html#plot_1d'>plot_1d</a>(ylist, newres_reordered, <span class="at">x =</span> x) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;reordered model 1&quot;</span>)</span></code></pre></div>
 
 </div>
             </section>
@@ -481,7 +483,7 @@ TODO: this code block incurs an error because flowsmooth is not fully available 
           </div>
         </div>
       </div>
-<a href="main-flowsmooth-function.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="flowsmooth.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="tuning-the-regularization-parameters-for-flowsmooth.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>

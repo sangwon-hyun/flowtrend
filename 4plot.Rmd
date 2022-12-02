@@ -290,8 +290,9 @@ symmetric_kl <- function(vec1, vec2){
 }
 ```
 
-Here's an example of how to use it.
-TODO: this code block incurs an error because flowsmooth is not fully available to use yet, at this stage of the code. Fix this!
+Here's an example of how to use it.  TODO: this code block incurs an error while
+rendering because flowsmooth is not fully available to use yet, at this stage of
+the code. Fix this!
 
 ```{r test-reordering, fig.width = 7, fig.height = 5, eval = FALSE}
 devtools::load_all("~/repos/FlowTF")
