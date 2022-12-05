@@ -3,7 +3,7 @@
 #' Prediction: Given new timepoints in the original time interval,generate a set
 #' of means and probs (and return the same Sigma).
 #'
-#' @param obj Object returned from covariate EM flowmix().
+#' @param obj Object returned from covariate EM flowsmooth().
 #' @param newtimes New times at which to make predictions.
 #'
 #' @return List containing mean, prob, and sigma, and x.

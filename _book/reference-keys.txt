@@ -19,7 +19,11 @@ evaluating-data-fit-by-likelihood-in-an-out-of-sample-measurement.
 d-example-with-ends-cut-off
 d-example-with-cross-validation
 maximum-lambda_mu-lambda_pi-values-to-test
-cross-validation
+define-cv-data-folds
+cv-many-single-jobs
+running-cross-validation
+summarizing-the-output
+cv-on-your-own-computer
 testing-the-flowsmooth-method
 d-example
 d-example-with-gap

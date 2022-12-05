@@ -618,6 +618,11 @@ Mstep_prob <- function(resp, H_tf, countslist = NULL,
 
   ## If glmnet is actually needed, use it.
   } else {
+
+    lambda_range <- function(lam, nlam = 50, lam.max = 5*lam){
+      return(exp(seq(log(lam.max), log(lam), length.out = nlam)))
+    }
+
     penalty.facs <- c(rep(0, l_prob+1), rep(1, nrow(H_tf) - l_prob - 1))
     resp.predict <- do.call(rbind, lapply(resp, colSums))
     glmnet_obj <- glmnet(x = H_tf, y = resp.predict, family = "multinomial",
@@ -758,8 +763,11 @@ outer_converge <- function(objectives){
 Next, we define the main function `Mstep_mu()`.
 
 
-```{r mstep_admm_tf}
+```{r temp}
 devtools::load_all("~/repos/FlowTF")
+```
+
+```{r Mstep_mu}
 #' Computes the M step for mu. TODO: use templates for the argument. As shown
 #' here:
 #' https://stackoverflow.com/questions/15100129/using-roxygen2-template-tags
@@ -1147,7 +1155,7 @@ objective value should be the same. Let's check that.
 
 First, set up some objects to run `Mstep_mu()` and `Mstep_mu_cvxr()`.
 
-```{r, eval = TRUE}
+```{r Mstep_mu-test-setup, eval = FALSE}
 numclust = 3
 TT = 100
 dimdat = 1
@@ -1169,7 +1177,7 @@ maxdev = NULL
 
 Then, compare the result of the two implementations. They should look identical.
 
-```{r, eval = TRUE, fig.width = 7, fig.height = 5}
+```{r Mstep_mu-test, eval = FALSE, fig.width = 7, fig.height = 5}
 ## overall ADMM
 res1 = Mstep_mu(resp, ylist, lambda, l=l, sigma=sigma, Dlm1sqrd = Dlm1sqrd, Dlm1=Dlm1, Dl=Dl, TT=TT, N=N, dimdat=dimdat, e_mat=etilde_mat(TT = TT),
                 maxdev = maxdev)

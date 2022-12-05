@@ -36,6 +36,11 @@ Mstep_prob <- function(resp, H_tf, countslist = NULL,
 
   ## If glmnet is actually needed, use it.
   } else {
+
+    lambda_range <- function(lam, nlam = 50, lam.max = 5*lam){
+      return(exp(seq(log(lam.max), log(lam), length.out = nlam)))
+    }
+
     penalty.facs <- c(rep(0, l_prob+1), rep(1, nrow(H_tf) - l_prob - 1))
     resp.predict <- do.call(rbind, lapply(resp, colSums))
     glmnet_obj <- glmnet(x = H_tf, y = resp.predict, family = "multinomial",

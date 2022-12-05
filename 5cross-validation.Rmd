@@ -10,7 +10,7 @@ cross-validation. These include:
   `objective(..., unpenalized = TRUE)`.
 - Numerically estimating the maximum regularization values to test, using
   `get_max_lambda()`.
-- Making data splits, using `make_cv_tf_folds()`.
+- Making data splits, using `make_cv_folds()`.
 
 
 ## Predicting and evaluating on new time points
@@ -97,7 +97,7 @@ model object `obj`, and the new time points `newtimes`, and produces.
 #' Prediction: Given new timepoints in the original time interval,generate a set
 #' of means and probs (and return the same Sigma).
 #'
-#' @param obj Object returned from covariate EM flowmix().
+#' @param obj Object returned from covariate EM flowsmooth().
 #' @param newtimes New times at which to make predictions.
 #'
 #' @return List containing mean, prob, and sigma, and x.
@@ -294,7 +294,7 @@ TODO: Thoroughly test the selected lambda.
 ```{r, eval = FALSE}
 TT = length(ylist)
 nfold = 3
-make_cv_tf_folds(ylist, nfold, TT)
+make_cv_folds(ylist, nfold, TT)
 TT
 ```
 
@@ -322,26 +322,25 @@ obtains the value *and* saves it to a `maxres_file` (which defaults to
 `maxres.Rdata`) in the `destin` directory.
 
 ```{r get_max_lambda}
-##' A wrapper for \code{calc_max_lambda}. Saves the two maximum lambda values in
-##' a file.
-##'
-##' @param destin Where to save the output (A two-lengthed list called
-##'   "maxres").
-##' @param maxres_file Filename for output. Defaults to maxres.Rdata.
-##' @param ... Additional arguments to \code{flowmix()}.
-##' @inheritParams calc_max_lambda
-##'
-##' @return No return
-##'
-##' @export
+#' A wrapper for \code{calc_max_lambda}. Saves the two maximum lambda values in
+#' a file.
+#'
+#' @param destin Where to save the output (A two-lengthed list called
+#'   "maxres").
+#' @param maxres_file Filename for output. Defaults to maxres.Rdata.
+#' @param ... Additional arguments to \code{flowsmooth()}.
+#' @inheritParams calc_max_lambda
+#'
+#' @return No return
+#'
+#' @export
 get_max_lambda <- function(destin, maxres_file = "maxres.Rdata",
                            ylist,
                            countslist,
-                           X,
                            numclust,
                            maxdev,
-                           max_prob_lambda,
-                           max_mean_lambda,
+                           max_lambda_prob,
+                           max_lambda_mean,
                            ...){
   
   if(file.exists(file.path(destin, maxres_file))){
@@ -351,16 +350,15 @@ get_max_lambda <- function(destin, maxres_file = "maxres.Rdata",
   } else {
     print(Sys.time())
     cat("Maximum regularization values being calculated.", fill = TRUE)
-    cat("with initial lambdas values (alpha and beta):", fill = TRUE)
-    print(c(max_prob_lambda, max_mean_lambda));
+    cat("with initial lambda values (prob and mu):", fill = TRUE)
+    print(c(max_lambda_prob, max_lambda_mean));
     maxres = calc_max_lambda(ylist = ylist,
                              countslist = countslist,
-                             X = X,
                              numclust = numclust,
                              maxdev = maxdev,
                              ## This function's settings
-                             max_prob_lambda = max_prob_lambda,
-                             max_mean_lambda = max_mean_lambda,
+                             max_lambda_prob = max_lambda_prob,
+                             max_lambda_mean = max_lambda_mean,
                              ...)
     save(maxres, file = file.path(destin, maxres_file))
     cat("file was written to ", file.path(destin, maxres_file), fill=TRUE)
@@ -374,50 +372,29 @@ get_max_lambda <- function(destin, maxres_file = "maxres.Rdata",
 The aforementioned workhorse `calc_max_lambda()` is here.
 
 ```{r calc_max_lambda}
-##' Estimate maximum lambda values by brute force.  First starts with a large
-##' initial value \code{max_mean_lambda} and \code{max_prob_lambda}, and runs
-##' the EM algorithm on decreasing set of values (sequentially halved). This
-##' stops once you see any non-zero coefficients, and returns the *smallest*
-##' regularization (lambda) value pair that gives full sparsity. Note that the
-##' \code{zero_stabilize=TRUE} option is used in \code{flowmix()}, which
-##' basically means the EM algorithm runs only until the zero pattern
-##' stabilizes.
-##'
-##' @param ylist List of responses.
-##' @param X Covariates.
-##' @param numclust Number of clusters.
-##' @param max_mean_lambda Defaults to 4000.
-##' @param max_prob_lambda Defaults to 1000.
-##' @param iimax Maximum value of x for 2^{-x} factors to try.
-##' @param ... Other arguments to \code{flowmix_once()}.
-##' @return list containing the two maximum values to use.
-##' @examples
-##' \dontrun{
-##' ## Generate and bin data
-##' obj = generate_data_generic(p=5, TT=50, fac=1, nt=7000, dimdat=3)
-##' ylist = obj$ylist
-##' X = obj$X
-##' dat.gridsize = 50
-##' dat.grid = make_grid(ylist, gridsize = dat.gridsize)
-##' obj = bin_many_cytograms(ylist, dat.grid, mc.cores=4, verbose=TRUE)
-##' ybin_list = obj$ybin_list
-##' counts_list = obj$counts_list
-##'
-##' numclust = 4
-##' maxres = calc_max_lambda(ybin_list, counts_list, X, numclust, verbose=TRUE,
-##'                             nrep = 4,
-##'                             ## Function settings
-##'                             parallelize = FALSE,
-##'                             iimax = 20,
-##'                             niter = 1000,
-##'                             max_prob_lambda = 10000,
-##'                             tol = 1E-3 ## This doesn't need to be so low here.
-##'                             )
-##'
-##' }
+#' Estimate maximum lambda values numerically.  First starts with a large
+#' initial value \code{max_lambda_mean} and \code{max_lambda_prob}, and runs
+#' the EM algorithm on decreasing set of values (sequentially halved). This
+#' stops once you see non-flat probabilities or means, and returns the *smallest*
+#' regularization (lambda) value pair that gives full sparsity.
+#'
+#' Note that the \code{zero_stabilize=TRUE} option is used in
+#' \code{flowsmooth()}, which basically means the EM algorithm runs only until
+#' the zero pattern stabilizes.
+#'
+#' @param ylist List of responses.
+#' @param numclust Number of clusters.
+#' @param max_lambda_mean Defaults to 4000.
+#' @param max_lambda_prob Defaults to 1000.
+#' @param iimax Maximum value of x for 2^{-x} factors to try.
+#' @param ... Other arguments to \code{flowsmooth_once()}.
+#' 
+#' @return list containing the two maximum values to use.
+#' 
+#' @export
 calc_max_lambda <- function(ylist, countslist = NULL, numclust,
-                            max_lambda = 4000,
-                            max_lambda_pi = 1000,
+                            max_lambda_mean = 4000,
+                            max_lambda_prob = 1000,
                             verbose = FALSE,
                             iimax = 16,
                             ...){
@@ -429,22 +406,24 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
 
     ## print_progress(ii, iimax, "regularization values", fill = TRUE)
     cat("###############################################################", fill=TRUE)
-    cat("#### lambda_alpha = ", max_prob_lambda * facs[ii],
-        " and lambda_beta = ", max_mean_lambda * facs[ii], "being tested.  ", fill=TRUE)
+    cat("#### lambda_prob = ", max_lambda_prob * facs[ii],
+        " and lambda_beta = ", max_lambda_mean * facs[ii], "being tested.  ", fill=TRUE)
     cat("###############################################################", fill=TRUE)
 
     res = flowsmooth_once(ylist = ylist,
                        countslist = countslist,
                        numclust = numclust,
-                       prob_lambda = max_lambda_pi * facs[ii],
-                       mean_lambda = max_lambda * facs[ii],
+                       lambda_prob = max_lambda_prob * facs[ii],
+                       lambda_mean = max_lambda_mean * facs[ii],
                        verbose = verbose,
                        zero_stabilize = TRUE,
                        ...)
 
+    ## TODO: CHECK FLATNESS INSTEAD OF ZERONESS
+
     ## Check zero-ness
     toler = 0
-    sum_nonzero_alpha = sum(res$alpha[,-1] > toler)
+    sum_nonzero_prob = sum(res$alpha[,-1] > toler)
     sum_nonzero_beta = sum(unlist(lapply(res$beta, function(cf){ sum(cf[-1,] > toler) })))
 
 
@@ -455,8 +434,7 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
       ## If there are *any* nonzero values at the first iter, prompt a restart
       ## with higher initial lambda values.
       if(ii==1){
-        stop(paste0("Max lambdas: ", max_lambda, " and ",
-                    max_lambda_pi,
+        stop(paste0("Max lambdas: ", max_lambda_mean, " and ", max_lambda_prob,
                     " were too small as maximum reg. values. Go up and try again!!"))
 
       ## If there are *any* nonzero values, return the immediately preceding
@@ -465,21 +443,20 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
       } else {
         ## Check one more time whether the model was actually zero, by fully running it;
         res = flowsmooth_once(ylist = ylist,
-                           countslist = countslist,
-                           X = X,
-                           numclust = numclust,
-                           lambda_pi = max_lambda_pi * facs[ii],
-                           lambda = max_lambda * facs[ii],
-                           zero_stabilize = FALSE,
-                           ...)
+                              countslist = countslist,
+                              numclust = numclust,
+                              lambda_prob = max_lambda_prob * facs[ii],
+                              lambda      = max_lambda_mean * facs[ii],
+                              zero_stabilize = FALSE,
+                              ...)
         toler = 0
         sum_nonzero_alpha = sum(res$alpha[,-1] > toler)
         sum_nonzero_beta = sum(unlist(lapply(res$beta, function(cf){ sum(cf[-1,] > toler) })))
 
         ## If there are *any* nonzero values, do one of the following
         if(sum_nonzero_alpha + sum_nonzero_beta != 0){
-          return(list(beta = max_lambda * facs[ii-1],
-                      alpha = max_lambda_pi *facs[ii-1]))
+          return(list(beta = max_lambda_mean * facs[ii-1],
+                      alpha = max_lambda_prob *facs[ii-1]))
         }
         ## Otherwise, just proceed to the next iteration.
       }
@@ -490,23 +467,21 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
 ```
 
 
-## Cross-validation
+## Define CV data folds
 
-Finally, we build the immediate elements needed for cross-validation.
-
-`make_cv_tf_folds()` makes the cross-validation "folds", which are the $K$
+`make_cv_folds()` makes the cross-validation "folds", which are the $K$
 (`nfold`) list of data indices. These are not times! They simply split of
 `1:length(ylist)`.
 
 
-```{r}
-##' Define the time folds cross-validation.
-##'
-##' @param nfold Number of folds.
-##' @return List of fold indices.
-##' @export
-##'
-make_cv_tf_folds <- function(ylist=NULL, nfold, TT=NULL){
+```{r make_cv_folds}
+#' Define the time folds cross-validation.
+#'
+#' @param nfold Number of folds.
+#' @return List of fold indices.
+#' @export
+#'
+make_cv_folds <- function(ylist=NULL, nfold, TT=NULL){
 
   ## Make hour-long index list
   if(is.null(TT)) TT = length(ylist)
@@ -519,17 +494,19 @@ make_cv_tf_folds <- function(ylist=NULL, nfold, TT=NULL){
 ```
 
 We can visualize how the data is to be split. In the following plot, vertical
-lines mark data indices in each fold using different colors. For `nfold = 5`,
+lines mark data indices in each fold, using different colors . For `nfold = 5`,
 the first fold is every 5th point starting at 2, $\{2,7,\dots\}$, and the second
 fold is $\{3,8,\dots\}$, and so forth. The first index $1$ and the last $TT$ are
-intentionally left out and assumed available to folds. This is a small detail
-required because, otherwise, we cannot predictions at the either end points.
-TODO: explanation is clunky
+intentionally left out and assumed available to all folds. This small detail is
+required because, otherwise, we are unable to make predictions at either end of
+the data.
+
+TODO: explanation is clunky.
 
 ```{r, fig.width = 7, fig.height = 3}
 nfold = 5
 TT = 100
-inds = make_cv_tf_folds(nfold = nfold, TT = TT)
+inds = make_cv_folds(nfold = nfold, TT = TT)
 print(inds)
 plot(NA, xlim = c(0,TT), ylim=1:2, ylab = "", xlab = "Data index of ylist", yaxt = "n", xaxt="n")
 axis(1, at = c(1, seq(10, 100,10)))
@@ -537,3 +514,835 @@ for(ifold in 1:nfold){
   abline(v = inds[[ifold]], col = ifold, lwd = 2)
 }
 ```
+
+
+## CV = many single jobs
+
+Next, we build the immediate elements needed for cross-validation.
+
+There are two applications of `flowsmooth()` on data for cross-validation; one
+is when estimating models from held-in data folds, and the other is when
+*re-estimating* models on the full data.
+
+Estimating models on the held-in data is done by `one_job()`. Re-estimating
+models on the entire dataset is done by `one_job_refit()`.
+
+Here is `one_job()`.
+
+```{r one_job}
+#' Helper function to run ONE job for CV, in iprob, imu, ifold, irestart.
+#'
+#' @param iprob Index for prob.
+#' @param imu Index for beta.
+#' @param ifold Index for CV folds.
+#' @param irestart Index for 1 through nrestart.
+#' @param folds CV folds (from \code{make_cv_folds()}).
+#' @param destin Destination directory.
+#' @param lambda_means List of regularization parameters for mean model.
+#' @param lambda_probs List of regularization parameters for prob model.
+#' @param ylist Data.
+#' @param countslist Counts or biomass.
+#' @param ... Rest of arguments for \code{flowsmooth_once()}.
+#'
+#' @return Nothing is returned. Instead, a file named "1-1-1-1-cvscore.Rdata"
+#'   is saved in \code{destin}. (The indices here are iprob-imu-ifold-irestart).
+#'
+#' @export
+one_job <- function(iprob, imu, ifold, irestart, folds, destin,
+                       lambda_means, lambda_probs,
+                       seedtab = NULL,
+                       ## The rest that is needed explicitly for flowsmooth()
+                       ylist, countslist,
+                       l, l_prob,
+                       ...){
+
+  ## Get the train/test data
+  TT <- length(ylist)
+  test.inds = unlist(folds[ifold])
+  test.dat = ylist[test.inds]
+  test.count = countslist[test.inds]
+  train.inds = c(1, unlist(folds[-ifold]), TT)
+  train.dat = ylist[train.inds]
+  train.count = countslist[train.inds]
+
+  ## Check whether this job has been done already.
+  filename = make_cvscore_filename(iprob, imu, ifold, irestart)
+  if(file.exists(file.path(destin, filename))){
+    cat(filename, "already done", fill=TRUE)
+    return(NULL)
+  }
+
+
+  ## Get the seed ready
+  if(!is.null(seedtab)){
+    seed = seedtab %>%
+      dplyr::filter(iprob == !!iprob,
+                    imu == !!imu,
+                    ifold == !!ifold,
+                    irestart == !!irestart) %>%
+      dplyr::select(seed1, seed2, seed3, seed4, seed5, seed6, seed7) %>% unlist() %>% as.integer()
+  } else {
+    seed = NULL
+  }
+
+
+  lambda_prob = lambda_probs[iprob]
+  lambda_mean = lambda_means[imu]
+
+  ## Run the algorithm (all this trouble because of |nrestart|)
+  args = list(...)
+  args$ylist = train.dat
+  args$countslist = train.count
+  args$x = train.inds
+  args$lambda = lambda_mean
+  args$lambda_prob = lambda_prob
+  args$l = l
+  args$l_prob = l_prob
+  args$seed = seed
+  if("nrestart" %in% names(args)){
+    args = args[-which(names(args) %in% "nrestart")] ## remove |nrestart| prior to feeding to flowsmooth_once().
+  }
+
+  tryCatch({
+
+    ## Estimate model
+    argn <- lapply(names(args), as.name)
+    names(argn) <- names(args)
+    call <- as.call(c(list(as.name("flowsmooth")), argn))
+    res.train = eval(call, args)
+
+    ## Assign mn and prob
+    pred = predict_flowsmooth(res.train, newtimes = test.inds)
+    stopifnot(all(pred$prob >= 0))
+
+    ## Build Dl
+    ##
+
+    ## Evaluate on test data, by calculating objective (penalized likelihood with penalty parameters set to 0)
+    cvscore = objective(mu = pred$mn,
+                        prob = pred$prob,
+                        sigma = pred$sigma,
+                        ylist = test.dat,
+                        countslist = test.count,
+                        unpenalized = TRUE)
+                        ## Dl = diag(rep(1, length(test.count))), ## TODO: what is wrong here?
+                        ## lambda_prob = 0,
+                        ## lambda = 0)
+                        ## prob = res.train$prob,
+                        ## beta = res.train$beta)
+
+    ## Store (temporarily) the run times
+    time_per_iter = res.train$time_per_iter
+    final_iter = res.train$final.iter
+    total_time = res.train$total_time
+
+    ## Store the results.
+    mn = res.train$mn
+    prob = res.train$prob
+    objectives = res.train$objectives
+
+    ## Save the CV results
+    save(cvscore,
+         ## Time
+         time_per_iter,
+         final_iter,
+         total_time,
+         ## Results
+         lambda_mean,
+         lambda_prob,
+         lambda_means,
+         lambda_probs,
+         mn,
+         prob,
+         objectives,
+         ## Save the file
+         file = file.path(destin, filename))
+    return(NULL)
+
+  }, error = function(err) {
+    err$message = paste(err$message,
+                        "\n(No file will be saved for lambdas (",
+                        signif(lambda_probs[iprob],3), ", ", signif(lambda_means[imu],3),
+                        ") whose indices are: ",
+                        iprob, "-", imu, "-", ifold, "-", irestart,
+                        " .)",sep="")
+    cat(err$message, fill=TRUE)
+    warning(err)})
+}
+```
+
+Here is `one_job_refit()`.
+
+```{r one_job_refit}
+#' Refit model for one pair of regularization parameter values. Saves to
+#' \code{nrestart} files named like "1-4-3-fit.Rdata", for
+#' "(iprob)-(imu)-(irestart)-fit.Rdata".
+#'
+#' (Note, \code{nrestart} is not an input to this function.)
+#'
+#' @inheritParams one_job
+#'
+#' @export
+one_job_refit <- function(iprob, imu, destin,
+                          lambda_means, lambda_probs,
+                          l, l_prob,
+                          seedtab = NULL,
+                          ## The rest that is needed explicitly for flowsmooth_once()
+                          ylist, countslist,
+                          ...){
+
+  args = list(...)
+  nrestart = args$nrestart
+  assertthat::assert_that(!is.null(nrestart))
+  for(irestart in 1:nrestart){
+
+    ## Writing file
+    filename = make_refit_filename(iprob = iprob, imu = imu, irestart = irestart)
+    if(file.exists(file.path(destin, filename))){
+      cat(filename, "already done", fill=TRUE)
+      next
+    } else {
+
+     ## Get the seed ready
+     if(!is.null(seedtab)){
+       ifold = 0
+       seed = seedtab %>%
+         dplyr::filter(iprob == !!iprob,
+                       imu == !!imu,
+                       ifold == !!ifold,
+                       irestart == !!irestart) %>%
+         dplyr::select(seed1, seed2, seed3, seed4, seed5, seed6, seed7) %>% unlist() %>% as.integer()
+     } else {
+       seed = NULL
+     }
+
+      ## Get the fitted results on the entire data
+      args = list(...)
+      args$ylist = ylist
+      args$countslist = countslist
+      args$lambda_prob = lambda_probs[iprob]
+      args$lambda = lambda_means[imu]
+      args$l = l
+      args$l_prob = l_prob
+      args$seed = seed
+      if("nrestart" %in% names(args)) args = args[-which(names(args) %in% "nrestart")] ## remove |nrestart| prior to feeding
+
+      ## Call the function.
+      argn <- lapply(names(args), as.name)
+      names(argn) <- names(args)
+      call <- as.call(c(list(as.name("flowsmooth_once")), argn))
+      res = eval(call, args)
+
+      ## Save the results
+      cat("Saving file here:", file.path(destin, filename), fill=TRUE)
+      save(res, file=file.path(destin, filename))
+    }
+  }
+}
+```
+
+Since cross-validation entails running many jobs, we need to index individual
+"jobs" carefully. Here are some more helpers for indexing:
+
+- `make_iimat()`: Make a table whose rows index each "job" `(iprob, imu,
+  ifold, irestart)`, to be used by `one_job()`.
+
+- `make_iimat_small()`: Make a table whose rows index each `(iprob, imu,
+  irestart)` for re-estimating models, to be used by `one_job_refit()`.
+
+```{r make_iimat}
+#' Indices for the cross validation jobs.
+#'
+#' The resulting iimat looks like this:
+#'
+#' ind    iprob  imu ifold irestart
+#'  55      6     1     2    1 
+#'  56      7     1     2    1
+#'  57      1     2     2    1
+#'  58      2     2     2    1
+#'  59      3     2     2    1
+#'  60      4     2     2    1
+#' @param cv_gridsize CV grid size.
+#' @param nfold Number of CV folds.
+#' @param nrestart Number of random restarts of EM algorithm.
+#'
+#' @return Integer matrix.
+#'
+#' @export
+make_iimat <- function(cv_gridsize, nfold, nrestart){
+  iimat = expand.grid(iprob = 1:cv_gridsize,
+                      imu = 1:cv_gridsize,
+                      ifold = 1:nfold,
+                      irestart = 1:nrestart)
+  iimat = cbind(ind = as.numeric(rownames(iimat)), iimat)
+  return(iimat)
+}
+
+#' 2d indices for the cross validation jobs.
+#'
+#' The resulting iimat looks like this:
+#' (#, iprob, imu, irestart)
+#' 1, 1, 1, 1
+#' 2, 1, 2, 1
+#' 3, 1, 3, 1
+#'
+#' @inheritParams make_iimat
+#'
+#' @return Integer matrix.
+#'
+#' @export
+make_iimat_small <- function(cv_gridsize, nrestart){
+  iimat = expand.grid(iprob = 1:cv_gridsize,
+                      imu = 1:cv_gridsize,
+                      irestart = 1:nrestart)
+  iimat = cbind(ind = as.numeric(rownames(iimat)), iimat)
+  return(iimat)
+}
+
+```
+
+Let's see the integer matrices that these functions make.
+
+```{r make_iimat-test}
+make_iimat(cv_gridsize = 5, nfold = 5, nrestart = 10) %>% head()
+make_iimat_small(cv_gridsize = 5, nrestart = 10) %>% head()
+```
+
+Next, the functions `make_cvscore_filename()` and `make_refit_filename()` are
+used to form the names of the numerous output files.
+
+```{r make_OO_filename}
+#' Create file name (a string) for cross-validation results.
+#' @param iprob
+#' @param imu
+#' @param ifold
+#' @param irestart
+#' 
+#' @export
+make_cvscore_filename <- function(iprob, imu, ifold, irestart){
+  filename = paste0(iprob, "-", imu, "-", ifold, "-", irestart, "-cvscore.Rdata")
+  return(filename)
+}
+
+
+#' Create file name (a string) for re-estimated models for the lambda values
+#' indexed by \code{iprob} and \code{imu}.
+#' @param iprob
+#' @param imu
+#' @param irestart
+#' 
+#' @export
+make_refit_filename <- function(iprob, imu, irestart){
+  filename = paste0(iprob, "-", imu, "-", irestart, "-fit.Rdata")
+  return(filename)
+}
+```
+
+Here's a useful helper `logspace(max, min)` to make logarithmically spaced set
+of numbers, given `min` and `max`. We can use this to make a grid of lambda
+pairs to be used for cross-validation.
+
+```{r logspace}
+##' Helper function to logarithmically space out R.  \code{length} values linear
+##' on the log scale from \code{max} down to \code{min}.
+##'
+##' @param max Maximum value.
+##' @param min Minimum value.
+##' @param length Length of the output string.
+##' @param min.ratio Factor to multiply to \code{max}.
+##'
+##' @return Log spaced
+##'
+##' @export
+logspace <- function(max, min=NULL, length, min.ratio = 1E-4){
+  if(is.null(min)) min = max * min.ratio
+  vec = 10^seq(log10(min), log10(max), length = length)
+  stopifnot(abs(vec[length(vec)] - max) < 1E10)
+  return(vec)
+}
+```
+
+## Running cross-validation
+
+Putting the helpers all together, you get the main user-facing function
+`cv_flowsmooth()`.
+
+
+```{r cv_flowsmooth}
+#' Cross-validation for flowsmooth(). Saves results to separate files in
+#' \code{destin}.
+#'
+#' @param destin Directory where output files are saved.
+#' @param nfold Number of cross-validation folds. Defaults to 5.
+#' @param nrestart Number of repetitions.
+#' @param save_meta If TRUE, save meta data.
+#' @param lambda_means Regularization parameters for means.
+#' @param lambda_probs Regularization parameters for probs.
+#' @param folds Manually provide CV folds (list of time points of data to use
+#'   as CV folds). Defaults to NULL.
+#' @param mc.cores Use this many CPU cores.
+#' @param blocksize Contiguous time blocks from which to form CV time folds.
+#' @param refit If TRUE, estimate the model on the full data, for each pair of
+#'   regularization parameters.
+#' @param ... Additional arguments to flowsmooth().
+#' @inheritParams flowsmooth_once
+#'
+#' @return No return.
+#'
+#' @export
+cv_flowsmooth <- function(## Data
+                          ylist,
+                          countslist,
+                          ## Define the locations to save the CV.
+                          destin = ".",
+                          ## Regularization parameter values
+                          lambda_means,
+                          lambda_probs,
+                          l,
+                          l_prob,
+                          iimat = NULL,
+                          ## Other settings
+                          maxdev,
+                          numclust,
+                          nfold,
+                          nrestart,
+                          verbose = FALSE,
+                          refit = FALSE,
+                          save_meta = FALSE,
+                          mc.cores = 1,
+                          folds = NULL,
+                          seedtab = NULL,
+                          ...){
+
+  ## Basic checks
+  stopifnot(length(lambda_probs) == length(lambda_means))
+  cv_gridsize = length(lambda_means)
+
+  ## There's an option to input one's own iimat matrix.
+  if(is.null(iimat)){
+    ## Make an index of all jobs
+    if(!refit) iimat = make_iimat(cv_gridsize, nfold, nrestart)
+    if(refit) iimat = make_iimat_small(cv_gridsize, nrestart)
+  }
+
+  ## Define the CV folds
+  ## folds = make_cv_folds(ylist = ylist, nfold = nfold, blocksize = 1)
+  if(is.null(folds)){
+    folds = make_cv_folds(ylist = ylist, nfold = nfold)
+  } else {
+    stopifnot(length(folds) == nfold)
+  }
+
+  ## Save meta information, once.
+  if(save_meta){
+    if(!refit){
+      save(folds,
+           nfold,
+           nrestart, ## Added recently
+           cv_gridsize,
+           lambda_means,
+           lambda_probs,
+           ylist, countslist,
+           ## Save the file
+           file = file.path(destin, 'meta.Rdata'))
+      print(paste0("wrote meta data to ", file.path(destin, 'meta.Rdata')))
+    }
+  }
+
+  ## Run the EM algorithm many times, for each value of (iprob, imu, ifold, irestart)
+  start.time = Sys.time()
+  parallel::mclapply(1:nrow(iimat), function(ii){
+    print_progress(ii, nrow(iimat), "Jobs (EM replicates) assigned on this computer", start.time = start.time)
+
+    if(!refit){
+      iprob = iimat[ii,"iprob"]
+      imu = iimat[ii,"imu"]
+      ifold = iimat[ii,"ifold"]
+      irestart = iimat[ii,"irestart"]
+      ## if(verbose) cat('(iprob, imu, ifold, irestart)=', c(iprob, imu, ifold, irestart), fill=TRUE)
+    } else {
+      iprob = iimat[ii, "iprob"]
+      imu = iimat[ii, "imu"]
+      ifold = 0
+    }
+
+    if(!refit){
+      one_job(iprob = iprob,
+              imu = imu,
+              l = l,
+              l_prob = l_prob,
+              ifold = ifold,
+              irestart = irestart,
+              folds = folds,
+              destin = destin,
+              lambda_means = lambda_means,
+              lambda_probs = lambda_probs,
+              ## Arguments for flowsmooth()
+              ylist = ylist, countslist = countslist, 
+              ## Additional arguments for flowsmooth().
+              numclust = numclust,
+              maxdev = maxdev,
+              verbose = FALSE,
+              seedtab = seedtab)
+    } else {
+      one_job_refit(iprob = iprob,
+                    imu = imu,
+                    l = l,
+                    l_prob = l_prob,
+                    destin = destin,
+                    lambda_means = lambda_means,
+                    lambda_probs = lambda_probs,
+                    ## Arguments to flowsmooth()
+                    ylist = ylist, countslist = countslist, 
+                    ## Additional arguments for flowsmooth().
+                    numclust = numclust,
+                    maxdev = maxdev,
+                    nrestart = nrestart,
+                    verbose = FALSE,
+                    seedtab = seedtab)
+    }
+    return(NULL)
+  }, mc.cores = mc.cores)
+}
+```
+
+
+## Summarizing the output
+
+Once the cross-validation is finished (and saved into many files called e.g.
+`1-1-1-1-cvscore.Rdata` or `1-1-1-fit.Rdata`), we can use `cv_summary()` to
+summarize the results. 
+
+If you look closely, you'll notice that `cv_aggregate()` is the workhorse.
+
+```{r cv_summary}
+#' Main function for summarizing the cross-validation results.
+#'
+#' @inheritParams cv_flowsmooth
+#' @param save If TRUE, save to \code{file.path(destin, filename)}.
+#' @param filename File name to save to.
+#'
+#' @return List containing summarized results from cross-validation. Here are
+#'   some objects in this list: \code{bestres} is the the overall best model
+#'   chosen from the cross-validation; \code{cvscoremat} is a 2d matrix of CV
+#'   scores from all pairs of regularization parameters; \code{bestreslist} is a
+#'   list of all the best models (out of \code{nrestart} EM replications) from the
+#'   each pair of lambda values. If \code{isTRUE(save)}, nothing is returned.
+#'
+#' @export
+cv_summary <- function(destin = ".",
+                       save = FALSE,
+                       filename = "summary.RDS"
+                       ){
+  ####################
+  ## Load data #######
+  ####################
+  load(file = file.path(destin, 'meta.Rdata'), verbose = FALSE)
+
+  ## This loads all the necessary things: nrestart, nfold, cv_gridsize
+  stopifnot(exists("nrestart"))
+  stopifnot(exists("nfold"))
+  stopifnot(exists("cv_gridsize"))
+
+  ##########################
+  ## Get the CV results. ###
+  ##########################
+  a = cv_aggregate(destin)
+  cvscore.mat = a$cvscore.mat
+  min.inds = a$min.inds
+  
+
+  ## Get results from refitting
+  bestreslist = cv_aggregate_res(destin = destin)
+  bestres = bestreslist[[paste0(min.inds[1] , "-", min.inds[2])]]
+  if(is.null(bestres)){
+    stop(paste0("The model with lambda indices (",
+                min.inds[1], ",", min.inds[2], ") is not available."))
+  }
+
+  ## ########################
+  ## ## Get coefficients ####
+  ## ########################
+  ## betalist =  lapply(1:bestres$numclust, function(iclust){
+  ##   ## Get all betas
+  ##   rownames(bestres$beta[[iclust]])[-1] = colnames(bestres$X)
+  ##   cf = bestres$beta[[iclust]][-1,, drop=FALSE]
+
+  ##   ## Remove the rows that are all zero
+  ##   all.zero.rows = which(apply(cf, 1, function(myrow)all(myrow == 0)))
+  ##   if(length(all.zero.rows) > 0){
+  ##     cf = cf[-all.zero.rows,, drop=FALSE]
+  ##   }
+  ##   round(Matrix::Matrix(cf, sparse=TRUE),3)
+  ## })
+  ## names(betalist) = paste0("Beta matrix, cluster ", 1:bestres$numclust)
+  ## pretty.betas = betalist
+  ## colnames(bestres$alpha)[-1 ] = colnames(bestres$X)
+  ## alpha = t(bestres$alpha)
+  ## alpha[which(abs(alpha) < 1E-5)] = 0
+  ## pretty.alphas = round(Matrix::Matrix(alpha, sparse=TRUE),3)
+
+  ######################
+  ## Get the output ####
+  ######################
+  ## pretty.mns = .
+  ## pretty.probs = .
+  ## pretty.sigmas = .
+
+  ######################
+  ## Get the sigmas ####
+  ######################
+  if(bestres$dimdat == 1){
+    pretty.sigmas = sqrt(bestres$sigma[,1,])
+    names(pretty.sigmas) = paste0("Cluster ", 1:bestres$numclust)
+  } else {
+    sigmas = lapply(1:bestres$numclust, function(iclust){
+      diag(bestres$sigma[iclust,,])
+    })
+    names(sigmas) = paste0("Cluster ", 1:bestres$numclust)
+    pretty.sigmas = lapply(sigmas, sqrt)
+  }
+
+  out = list(bestres = bestres,
+             cvscore.mat = cvscore.mat,
+             min.inds = min.inds,
+             ## ## Pretty formatted data ## Todo: get this done.
+             ## pretty.mns = pretty.mns,
+             ## pretty.probs = pretty.probs,
+             ## pretty.sigmas = pretty.sigmas,
+             ## List of all best models for all lambda pairs.
+             bestreslist = bestreslist,
+             destin = destin)
+
+  if(save){ saveRDS(out, file=file.path(destin, filename))}
+  return(out)
+}
+```
+
+
+```{r cv_aggregate}
+#' Aggregate CV scores from the results, saved in \code{destin}.
+#'
+#' @param destin Directory with cross-validation output.
+#'
+#' @export
+cv_aggregate <- function(destin){
+
+  ## ## Read the meta data (for |nfold|, |cv_gridsize|, |nrestart|, |lambda_means|,
+  ## ## |lambda_probs|)
+  load(file = file.path(destin, 'meta.Rdata'), verbose = FALSE)
+  
+  ## This loads all the necessary things; just double-checking.
+  stopifnot(exists("nrestart"))
+  stopifnot(exists("nfold"))
+  stopifnot(exists("cv_gridsize"))
+  stopifnot(exists(c("lambda_probs")))
+  stopifnot(exists(c("lambda_means")))
+
+  ## Aggregate the results
+  cvscore.array = array(NA, dim = c(cv_gridsize, cv_gridsize, nfold, nrestart))
+  cvscore.mat = matrix(NA, nrow = cv_gridsize, ncol = cv_gridsize)
+  for(iprob in 1:cv_gridsize){
+    for(imu in 1:cv_gridsize){
+      obj = matrix(NA, nrow=nfold, ncol=nrestart)
+      for(ifold in 1:nfold){
+        for(irestart in 1:nrestart){
+          filename = make_cvscore_filename(iprob, imu, ifold, irestart)
+          tryCatch({
+            load(file.path(destin, filename), verbose = FALSE)
+            cvscore.array[iprob, imu, ifold, irestart] = cvscore
+            obj[ifold, irestart] = objectives[length(objectives)]
+          }, error = function(e){})
+        }
+      }
+
+      ## Pick out the CV scores with the *best* (lowest) objective value
+      cvscores = cvscore.array[iprob, imu , ,]
+      best.models = apply(obj, 1, function(myrow){
+        ind = which(myrow == min(myrow, na.rm=TRUE))
+        if(length(ind)>1) ind = ind[1]  ## Just choose one, if there is a tie.
+        return(ind)
+      })
+      final.cvscores = sapply(1:nfold, function(ifold){
+        #cvscores[ifold, best.models[ifold]]
+        cvscores[ifold]
+      })
+      cvscore.mat[iprob, imu] = mean(final.cvscores)
+    }
+  }
+
+  ## Clean a bit
+  cvscore.mat[which(is.nan(cvscore.mat), arr.ind=TRUE)] = NA
+
+  ## ## Read the meta data (for |nfold|, |cv_gridsize|, |nrestart|)
+  rownames(cvscore.mat) = signif(lambda_probs,3)
+  colnames(cvscore.mat) = signif(lambda_means,3)
+
+
+  ## Find the minimum
+  mat = cvscore.mat
+  min.inds = which(mat == min(mat, na.rm = TRUE), arr.ind = TRUE)
+
+  ## Return the results
+  out = list(cvscore.array = cvscore.array,
+              cvscore.mat = cvscore.mat,
+              lambda_means = lambda_means,
+              lambda_probs = lambda_probs,
+              min.inds = min.inds)
+  return(out)
+}
+
+
+#' Helper to aggregate parallelized CV results and obtain the |res| object, all
+#' saved in |destin|.
+#'
+#' @inheritParams cv_aggregate
+#'
+#' @return List containing, for every (iprob, imu), the "best" estimated
+#'   model out of the |nrestart| replicates (best in the sense that it had the best
+#'   likelihood value out of the |nrestart| replicates.)
+cv_aggregate_res <- function(destin){
+
+  load(file.path(destin, "meta.Rdata"))
+
+  ## df.mat = matrix(NA, ncol=cv_gridsize, nrow=cv_gridsize)
+  res.list = list()
+  for(iprob in 1:cv_gridsize){
+    for(imu in 1:cv_gridsize){
+
+      ## Objective values, over nrestart
+      obj = rep(NA, nrestart)
+      ## df = rep(NA, nrestart) #
+      res.list.inner = list()
+      for(irestart in 1:nrestart){
+        filename = make_refit_filename(iprob, imu, irestart)
+        tryCatch({
+          ## Load fitted result
+          load(file.path(destin, filename))
+          res.list.inner[[irestart]] = res
+
+          ## Also store objective
+          obj[irestart] = res$objectives[length(res$objectives)]
+
+        }, error = function(e){})
+      }
+
+      ## Calculate the df of the best model
+      if(!all(is.na(obj))){
+        res.list[[paste0(iprob, "-", imu)]] = res.list.inner[[which.min(obj)]] ## which.min?
+      }
+    }
+  }
+  return(res.list)
+}
+```
+
+
+
+## CV on your own computer
+
+Using all this functionality, we'd like to be able to cross-validate on our own
+laptop, using `cv_flowsmooth()`.
+
+Let's try it out.
+
+```{r, eval = FALSE}
+ll()
+cv_gridsize = 3
+l = 1
+l_prob = 1
+set.seed(332)
+ylist = gendat_1d(100, rep(100,100)) %>% dt2ylist()
+folds = make_cv_folds(lapply(1:100, function(ii)cbind(runif(10))), nfold = 5, TT = length(ylist))
+lambda_means =  lambda_probs = logspace(min = 1E-5, max = 1, length = cv_gridsize)
+for(refit in c(FALSE, TRUE)){
+  cv_flowsmooth(ylist = ylist, countslist = NULL, 
+                destin = "~/repos/flowsmooth/tempoutput", 
+                lambda_means = lambda_means,
+                lambda_probs = lambda_probs,
+                l = l, l_prob = l_prob, maxdev = NULL, numclust = 3, nfold = 5, nrestart = 5,
+                verbose = TRUE, refit = refit, save_meta = TRUE, mc.cores = 6)
+}
+
+## Test out the summary
+obj = cv_summary(destin = "~/repos/flowsmooth/tempoutput")
+plot_1d(ylist, obj$bestres)
+```
+
+Okay, now we know it's *possible* to run on a laptop.
+  
+A more realistic application would go something like this (noting that
+`get_max_lambda()` is not written yet TODO: write it.):
+
+```{r, eval = FALSE}
+get_max_lambda("~/repos/flowsmooth/tempoutput",
+               maxres_file = "maxres.Rdata",
+               ylist,
+               countslist = NULL,
+               numclust = 3,
+               maxdev = 1)
+lambda_probs = logspace(max = 1, length = 5)
+lambda_means = logspace(max = 1, length = 5)
+
+for(refit in c(FALSE, TRUE)){
+  cv_flowsmooth(ylist = ylist,
+                countslist = NULL, 
+                destin = "~/repos/flowsmooth/tempoutput", 
+                lambda_means = lambda_means,
+                lambda_probs = lambda_probs,
+                l = 2,
+                l_prob = 1,
+                maxdev = 2,
+                numclust = 3,
+                nfold = 5,
+                nrestart = 5,
+                verbose = TRUE,
+                refit = refit,
+                save_meta = TRUE,
+                mc.cores = 8)
+}
+```
+
+But we can't run this because it's really, really slow. 
+
+Which parts make it slow, and can we speed this up?  Let's see next.
+
+
+```{r, eval = FALSE}
+library(profvis)
+
+## Generate test data
+ll()
+set.seed(100)
+dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
+dt_model <- gendat_1d(100, rep(100, 100), die_off_time = 0.45, return_model = TRUE)
+ylist = dt %>% dt2ylist()
+x = dt %>% pull(time) %>% unique()
+
+
+obj = profvis({
+  set.seed(0)
+  obj <- flowsmooth(ylist = ylist,
+                    x = x,
+                    maxdev = 5,
+                    numclust = 3,
+                    lambda = 0.02,
+                    l = 1,
+                    l_prob = 2,
+                    lambda_prob = .005,
+                    nrestart = 1)
+})
+obj
+
+```
+
+Some notes so far:
+- 
+
+
+TODO: Things to check out
+- ADMM convergence <-- detailed look
+- ADMM sub-steps
+- density calculation
+
+
