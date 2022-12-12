@@ -13,7 +13,7 @@
 gen_diff_mat <- function(n, l, x = NULL){
 
   ## Basic check
-  if(!is.null(x))  stopifnot(length(x) == n)
+  if(!is.null(x))  stopifnot(length(x) == n) 
 
   get_D1 <- function(t) {do.call(rbind, lapply(1:(t-1), FUN = function(x){
     v <- rep(0, t)

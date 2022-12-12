@@ -16,6 +16,9 @@
 gendat_1d <- function(TT, ntlist, die_off_time = 0.45,
                       return_model = FALSE){
 
+  ## Basic checks
+  stopifnot(length(ntlist) == TT)
+
   ## Make cluster probabilities, by time
   probs <- sapply(1:TT, FUN = function(tt){
     if(TT * die_off_time < tt & tt < (1-die_off_time) * TT){

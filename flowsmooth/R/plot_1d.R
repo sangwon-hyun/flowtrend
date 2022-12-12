@@ -31,7 +31,6 @@ plot_1d <- function(ylist, obj=NULL, x = NULL){
   if(is.null(obj)) return(gg)
 
   ## Add the model
-  ## TT = length(ylist)
   numclust = obj$numclust
   mnmat = obj$mn %>% .[,1,] %>% as_tibble() %>% setNames(1:numclust) %>% add_column(time = times)
   probmat = obj$prob %>% as_tibble() %>% setNames(1:numclust) %>% add_column(time = times)
@@ -39,7 +38,10 @@ plot_1d <- function(ylist, obj=NULL, x = NULL){
   prob_long = probmat %>% pivot_longer(-time, names_to = "cluster", values_to = "prob")
   est_long = full_join(mn_long, prob_long)
   gg = gg + geom_line(aes(x = time, y = mean, size = prob, group = cluster, color = cluster),
-                      data = est_long)
+                      data = est_long) +
+    geom_point(aes(x = time, y = mean, size = prob, group = cluster),
+              data = est_long, size = rel(1), shape = 17)
+
   ## TODO: make it ignore the missing values at the gaps; currently this is not coded as NAs.
 
   ## Add the estimated 95% probability regions for data.

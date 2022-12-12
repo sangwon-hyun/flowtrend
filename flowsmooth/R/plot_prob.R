@@ -2,7 +2,7 @@
 
 #' Makes cluster probability plot (lines over time).
 #'
-#' @param obj Estimated model (from \code{flowsmooth(ylist)})
+#' @param obj Estimated model (from e.g. \code{flowsmooth()})
 #'
 #' @export
 plot_prob <- function(obj, x = NULL){
@@ -20,5 +20,6 @@ plot_prob <- function(obj, x = NULL){
   prob_long = probmat %>% pivot_longer(-time, names_to = "cluster", values_to = "prob")
   prob_long %>% ggplot() +
     geom_line(aes(x=time, y = prob, group = cluster, col = cluster)) +
+    geom_point(aes(x=time, y = prob, group = cluster, col = cluster)) +
     xlab("Estimated cluster probability")
 }

@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>5 E step | Creating the flowsmooth R package</title>
-  <meta name="description" content="5 E step | Creating the flowsmooth R package" />
+  <title>8 E step | Creating the flowsmooth R package</title>
+  <meta name="description" content="8 E step | Creating the flowsmooth R package" />
   <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="5 E step | Creating the flowsmooth R package" />
+  <meta property="og:title" content="8 E step | Creating the flowsmooth R package" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="5 E step | Creating the flowsmooth R package" />
+  <meta name="twitter:title" content="8 E step | Creating the flowsmooth R package" />
   
   
   
@@ -23,14 +23,14 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2022-12-05" />
+<meta name="date" content="2022-12-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ingredients-for-building-the-flowmix_tf-method.html"/>
+<link rel="prev" href="initial-parameters-for-em-algorithm.html"/>
 <link rel="next" href="m-step.html"/>
 <script src="libs/header-attrs-2.16/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -136,39 +136,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
 <li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a></li>
 <li class="chapter" data-level="3" data-path="generating-1d-data.html"><a href="generating-1d-data.html"><i class="fa fa-check"></i><b>3</b> Generating 1d data</a></li>
-<li class="chapter" data-level="4" data-path="ingredients-for-building-the-flowmix_tf-method.html"><a href="ingredients-for-building-the-flowmix_tf-method.html"><i class="fa fa-check"></i><b>4</b> Ingredients for building the <code>flowmix_tf()</code> method</a>
+<li class="chapter" data-level="4" data-path="plotting-1d-data.html"><a href="plotting-1d-data.html"><i class="fa fa-check"></i><b>4</b> Plotting 1d data</a></li>
+<li class="chapter" data-level="5" data-path="trend-filtering.html"><a href="trend-filtering.html"><i class="fa fa-check"></i><b>5</b> Trend filtering</a></li>
+<li class="chapter" data-level="6" data-path="objective-data-log-likelihood.html"><a href="objective-data-log-likelihood.html"><i class="fa fa-check"></i><b>6</b> Objective (data log-likelihood)</a></li>
+<li class="chapter" data-level="7" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html"><i class="fa fa-check"></i><b>7</b> Initial parameters for EM algorithm</a></li>
+<li class="chapter" data-level="8" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>8</b> E step</a></li>
+<li class="chapter" data-level="9" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>9</b> M step</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="ingredients-for-building-the-flowmix_tf-method.html"><a href="ingredients-for-building-the-flowmix_tf-method.html#trend-filtering-briefly"><i class="fa fa-check"></i><b>4.1</b> Trend filtering, briefly</a></li>
-<li class="chapter" data-level="4.2" data-path="ingredients-for-building-the-flowmix_tf-method.html"><a href="ingredients-for-building-the-flowmix_tf-method.html#differencing-matrix"><i class="fa fa-check"></i><b>4.2</b> Differencing matrix</a></li>
-<li class="chapter" data-level="4.3" data-path="ingredients-for-building-the-flowmix_tf-method.html"><a href="ingredients-for-building-the-flowmix_tf-method.html#objective-data-log-likelihood"><i class="fa fa-check"></i><b>4.3</b> Objective (data log-likelihood)</a></li>
-<li class="chapter" data-level="4.4" data-path="ingredients-for-building-the-flowmix_tf-method.html"><a href="ingredients-for-building-the-flowmix_tf-method.html#initial-parameter-values-for-em-algorithm"><i class="fa fa-check"></i><b>4.4</b> Initial parameter values for EM algorithm</a></li>
+<li class="chapter" data-level="9.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>9.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
+<li class="chapter" data-level="9.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>9.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
+<li class="chapter" data-level="9.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>9.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>5</b> E step</a></li>
-<li class="chapter" data-level="6" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>6</b> M step</a>
+<li class="chapter" data-level="10" data-path="flowsmooth.html"><a href="flowsmooth.html"><i class="fa fa-check"></i><b>10</b> flowsmooth</a></li>
+<li class="chapter" data-level="11" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>11</b> Reordering clusters</a></li>
+<li class="chapter" data-level="12" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html"><i class="fa fa-check"></i><b>12</b> Tuning the regularization parameters for <code>flowsmooth</code></a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>6.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
-<li class="chapter" data-level="6.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>6.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
-<li class="chapter" data-level="6.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>6.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
+<li class="chapter" data-level="12.1" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>12.1</b> Predicting and evaluating on new time points</a></li>
+<li class="chapter" data-level="12.2" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>12.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
+<li class="chapter" data-level="12.3" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#define-cv-data-folds"><i class="fa fa-check"></i><b>12.3</b> Define CV data folds</a></li>
+<li class="chapter" data-level="12.4" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cv-many-single-jobs"><i class="fa fa-check"></i><b>12.4</b> CV = many single jobs</a></li>
+<li class="chapter" data-level="12.5" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#running-cross-validation"><i class="fa fa-check"></i><b>12.5</b> Running cross-validation</a></li>
+<li class="chapter" data-level="12.6" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#summarizing-the-output"><i class="fa fa-check"></i><b>12.6</b> Summarizing the output</a></li>
+<li class="chapter" data-level="12.7" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>12.7</b> CV on your own computer</a></li>
+<li class="chapter" data-level="12.8" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#next-up"><i class="fa fa-check"></i><b>12.8</b> Next up</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="flowsmooth.html"><a href="flowsmooth.html"><i class="fa fa-check"></i><b>7</b> flowsmooth</a></li>
-<li class="chapter" data-level="8" data-path="plotting-for-1d-data.html"><a href="plotting-for-1d-data.html"><i class="fa fa-check"></i><b>8</b> Plotting for 1d data</a></li>
-<li class="chapter" data-level="9" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html"><i class="fa fa-check"></i><b>9</b> Tuning the regularization parameters for <code>flowsmooth</code></a>
+<li class="chapter" data-level="13" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html"><i class="fa fa-check"></i><b>13</b> Testing the flowsmooth method</a>
 <ul>
-<li class="chapter" data-level="9.1" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>9.1</b> Predicting and evaluating on new time points</a></li>
-<li class="chapter" data-level="9.2" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#evaluating-data-fit-by-likelihood-in-an-out-of-sample-measurement."><i class="fa fa-check"></i><b>9.2</b> Evaluating data fit (by likelihood) in an out-of-sample measurement.</a></li>
-<li class="chapter" data-level="9.3" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#d-example-with-ends-cut-off"><i class="fa fa-check"></i><b>9.3</b> 1d example with ends cut off</a></li>
-<li class="chapter" data-level="9.4" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#d-example-with-cross-validation"><i class="fa fa-check"></i><b>9.4</b> 1d example with cross-validation</a></li>
-<li class="chapter" data-level="9.5" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>9.5</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
-<li class="chapter" data-level="9.6" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#define-cv-data-folds"><i class="fa fa-check"></i><b>9.6</b> Define CV data folds</a></li>
-<li class="chapter" data-level="9.7" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cv-many-single-jobs"><i class="fa fa-check"></i><b>9.7</b> CV = many single jobs</a></li>
-<li class="chapter" data-level="9.8" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#running-cross-validation"><i class="fa fa-check"></i><b>9.8</b> Running cross-validation</a></li>
-<li class="chapter" data-level="9.9" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#summarizing-the-output"><i class="fa fa-check"></i><b>9.9</b> Summarizing the output</a></li>
-<li class="chapter" data-level="9.10" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>9.10</b> CV on your own computer</a></li>
-</ul></li>
-<li class="chapter" data-level="10" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html"><i class="fa fa-check"></i><b>10</b> Testing the flowsmooth method</a>
-<ul>
-<li class="chapter" data-level="10.1" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html#d-example"><i class="fa fa-check"></i><b>10.1</b> 1d example</a></li>
-<li class="chapter" data-level="10.2" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html#d-example-with-gap"><i class="fa fa-check"></i><b>10.2</b> 1d example with gap</a></li>
+<li class="chapter" data-level="13.1" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html#id_1d-example"><i class="fa fa-check"></i><b>13.1</b> 1d example</a></li>
+<li class="chapter" data-level="13.2" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html#d-example-with-gap"><i class="fa fa-check"></i><b>13.2</b> 1d example with gap</a></li>
 </ul></li>
 </ul>
 
@@ -187,95 +182,95 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="e-step" class="section level1 hasAnchor" number="5">
-<h1><span class="header-section-number">5</span> E step<a href="e-step.html#e-step" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="e-step.html#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; E step, which updates the &quot;responsibilities&quot;, which are posterior membership probabilities of each particle.</span></span>
-<span id="cb24-2"><a href="e-step.html#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb24-3"><a href="e-step.html#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param mn</span></span>
-<span id="cb24-4"><a href="e-step.html#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param sigma</span></span>
-<span id="cb24-5"><a href="e-step.html#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param prob</span></span>
-<span id="cb24-6"><a href="e-step.html#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param ylist</span></span>
-<span id="cb24-7"><a href="e-step.html#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param numclust</span></span>
-<span id="cb24-8"><a href="e-step.html#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param denslist_by_clust</span></span>
-<span id="cb24-9"><a href="e-step.html#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param first_iter</span></span>
-<span id="cb24-10"><a href="e-step.html#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param countslist</span></span>
-<span id="cb24-11"><a href="e-step.html#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb24-12"><a href="e-step.html#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return</span></span>
-<span id="cb24-13"><a href="e-step.html#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb24-14"><a href="e-step.html#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb24-15"><a href="e-step.html#cb24-15" aria-hidden="true" tabindex="-1"></a><span id='Estep'>Estep</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mn, sigma, prob, <span class="at">ylist =</span> <span class="cn">NULL</span>, numclust, <span class="at">denslist_by_clust =</span> <span class="cn">NULL</span>,</span>
-<span id="cb24-16"><a href="e-step.html#cb24-16" aria-hidden="true" tabindex="-1"></a>                  <span class="at">first_iter =</span> <span class="cn">FALSE</span>, <span class="at">countslist =</span> <span class="cn">NULL</span>){</span>
-<span id="cb24-17"><a href="e-step.html#cb24-17" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic setup</span></span>
-<span id="cb24-18"><a href="e-step.html#cb24-18" aria-hidden="true" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="fu">length</span>(ylist)</span>
-<span id="cb24-19"><a href="e-step.html#cb24-19" aria-hidden="true" tabindex="-1"></a>  ntlist <span class="ot">=</span> <span class="fu">sapply</span>(ylist, nrow)</span>
-<span id="cb24-20"><a href="e-step.html#cb24-20" aria-hidden="true" tabindex="-1"></a>  resp <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb24-21"><a href="e-step.html#cb24-21" aria-hidden="true" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="fu">dim</span>(mn)[<span class="dv">2</span>]</span>
-<span id="cb24-22"><a href="e-step.html#cb24-22" aria-hidden="true" tabindex="-1"></a>  assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">dim</span>(mn)[<span class="dv">1</span>] <span class="sc">==</span> <span class="fu">length</span>(ylist))</span>
-<span id="cb24-23"><a href="e-step.html#cb24-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-24"><a href="e-step.html#cb24-24" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Helper to calculate Gaussian density for each \code{N(y_{t,k},mu_{t,k} and</span></span>
-<span id="cb24-25"><a href="e-step.html#cb24-25" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Sigma_k)}.</span></span>
-<span id="cb24-26"><a href="e-step.html#cb24-26" aria-hidden="true" tabindex="-1"></a>  <span id='calculate_dens'>calculate_dens</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(iclust, tt, y, mn, sigma, denslist_by_clust,</span>
-<span id="cb24-27"><a href="e-step.html#cb24-27" aria-hidden="true" tabindex="-1"></a>                             first_iter) {</span>
-<span id="cb24-28"><a href="e-step.html#cb24-28" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> mn[tt, , iclust]</span>
-<span id="cb24-29"><a href="e-step.html#cb24-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (dimdat <span class="sc">==</span> <span class="dv">1</span>) {</span>
-<span id="cb24-30"><a href="e-step.html#cb24-30" aria-hidden="true" tabindex="-1"></a>      dens <span class="ot">=</span> <span class="fu">dnorm</span>(y, mu, <span class="at">sd =</span> <span class="fu">sqrt</span>(sigma[iclust, , ]))</span>
-<span id="cb24-31"><a href="e-step.html#cb24-31" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb24-32"><a href="e-step.html#cb24-32" aria-hidden="true" tabindex="-1"></a>       dens <span class="ot">=</span> <span class="fu">dmvnorm_arma_fast</span>(y, mu, sigma[iclust,,], <span class="cn">FALSE</span>)</span>
-<span id="cb24-33"><a href="e-step.html#cb24-33" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb24-34"><a href="e-step.html#cb24-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(dens)</span>
-<span id="cb24-35"><a href="e-step.html#cb24-35" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb24-36"><a href="e-step.html#cb24-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-37"><a href="e-step.html#cb24-37" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Calculate posterior probability of membership of $y_{it}$.</span></span>
-<span id="cb24-38"><a href="e-step.html#cb24-38" aria-hidden="true" tabindex="-1"></a>  ncol.prob <span class="ot">=</span> <span class="fu">ncol</span>(prob)</span>
-<span id="cb24-39"><a href="e-step.html#cb24-39" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT) {</span>
-<span id="cb24-40"><a href="e-step.html#cb24-40" aria-hidden="true" tabindex="-1"></a>    ylist_tt <span class="ot">=</span> ylist[[tt]]</span>
-<span id="cb24-41"><a href="e-step.html#cb24-41" aria-hidden="true" tabindex="-1"></a>    densmat <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, calculate_dens, tt, ylist_tt,</span>
-<span id="cb24-42"><a href="e-step.html#cb24-42" aria-hidden="true" tabindex="-1"></a>                      mn, sigma, denslist_by_clust, first_iter)</span>
-<span id="cb24-43"><a href="e-step.html#cb24-43" aria-hidden="true" tabindex="-1"></a>    wt.densmat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(prob[tt, ], <span class="at">nrow =</span> ntlist[tt],</span>
-<span id="cb24-44"><a href="e-step.html#cb24-44" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ncol =</span> ncol.prob, <span class="at">byrow =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> densmat</span>
-<span id="cb24-45"><a href="e-step.html#cb24-45" aria-hidden="true" tabindex="-1"></a>    wt.densmat <span class="ot">=</span> wt.densmat <span class="sc">+</span> <span class="fl">1e-10</span></span>
-<span id="cb24-46"><a href="e-step.html#cb24-46" aria-hidden="true" tabindex="-1"></a>    wt.densmat <span class="ot">&lt;-</span> wt.densmat<span class="sc">/</span><span class="fu">rowSums</span>(wt.densmat)</span>
-<span id="cb24-47"><a href="e-step.html#cb24-47" aria-hidden="true" tabindex="-1"></a>    resp[[tt]] <span class="ot">&lt;-</span> wt.densmat</span>
-<span id="cb24-48"><a href="e-step.html#cb24-48" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb24-49"><a href="e-step.html#cb24-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-50"><a href="e-step.html#cb24-50" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Weight the responsibilities by $C_{it}$.</span></span>
-<span id="cb24-51"><a href="e-step.html#cb24-51" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(countslist)) {</span>
-<span id="cb24-52"><a href="e-step.html#cb24-52" aria-hidden="true" tabindex="-1"></a>    resp <span class="ot">&lt;-</span> <span class="fu">Map</span>(<span class="cf">function</span>(myresp, mycount) {</span>
-<span id="cb24-53"><a href="e-step.html#cb24-53" aria-hidden="true" tabindex="-1"></a>      myresp <span class="sc">*</span> mycount</span>
-<span id="cb24-54"><a href="e-step.html#cb24-54" aria-hidden="true" tabindex="-1"></a>    }, resp, countslist)</span>
-<span id="cb24-55"><a href="e-step.html#cb24-55" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb24-56"><a href="e-step.html#cb24-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(resp)</span>
-<span id="cb24-57"><a href="e-step.html#cb24-57" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div id="e-step" class="section level1 hasAnchor" number="8">
+<h1><span class="header-section-number">8</span> E step<a href="e-step.html#e-step" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="e-step.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; E step, which updates the &quot;responsibilities&quot;, which are posterior membership probabilities of each particle.</span></span>
+<span id="cb34-2"><a href="e-step.html#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb34-3"><a href="e-step.html#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param mn</span></span>
+<span id="cb34-4"><a href="e-step.html#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param sigma</span></span>
+<span id="cb34-5"><a href="e-step.html#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param prob</span></span>
+<span id="cb34-6"><a href="e-step.html#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param ylist</span></span>
+<span id="cb34-7"><a href="e-step.html#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param numclust</span></span>
+<span id="cb34-8"><a href="e-step.html#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param denslist_by_clust</span></span>
+<span id="cb34-9"><a href="e-step.html#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param first_iter</span></span>
+<span id="cb34-10"><a href="e-step.html#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param countslist</span></span>
+<span id="cb34-11"><a href="e-step.html#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb34-12"><a href="e-step.html#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return</span></span>
+<span id="cb34-13"><a href="e-step.html#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb34-14"><a href="e-step.html#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb34-15"><a href="e-step.html#cb34-15" aria-hidden="true" tabindex="-1"></a><span id='Estep'>Estep</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mn, sigma, prob, <span class="at">ylist =</span> <span class="cn">NULL</span>, numclust, <span class="at">denslist_by_clust =</span> <span class="cn">NULL</span>,</span>
+<span id="cb34-16"><a href="e-step.html#cb34-16" aria-hidden="true" tabindex="-1"></a>                  <span class="at">first_iter =</span> <span class="cn">FALSE</span>, <span class="at">countslist =</span> <span class="cn">NULL</span>){</span>
+<span id="cb34-17"><a href="e-step.html#cb34-17" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic setup</span></span>
+<span id="cb34-18"><a href="e-step.html#cb34-18" aria-hidden="true" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="fu">length</span>(ylist)</span>
+<span id="cb34-19"><a href="e-step.html#cb34-19" aria-hidden="true" tabindex="-1"></a>  ntlist <span class="ot">=</span> <span class="fu">sapply</span>(ylist, nrow)</span>
+<span id="cb34-20"><a href="e-step.html#cb34-20" aria-hidden="true" tabindex="-1"></a>  resp <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb34-21"><a href="e-step.html#cb34-21" aria-hidden="true" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="fu">dim</span>(mn)[<span class="dv">2</span>]</span>
+<span id="cb34-22"><a href="e-step.html#cb34-22" aria-hidden="true" tabindex="-1"></a>  assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">dim</span>(mn)[<span class="dv">1</span>] <span class="sc">==</span> <span class="fu">length</span>(ylist))</span>
+<span id="cb34-23"><a href="e-step.html#cb34-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-24"><a href="e-step.html#cb34-24" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Helper to calculate Gaussian density for each \code{N(y_{t,k},mu_{t,k} and</span></span>
+<span id="cb34-25"><a href="e-step.html#cb34-25" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Sigma_k)}.</span></span>
+<span id="cb34-26"><a href="e-step.html#cb34-26" aria-hidden="true" tabindex="-1"></a>  <span id='calculate_dens'>calculate_dens</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(iclust, tt, y, mn, sigma, denslist_by_clust,</span>
+<span id="cb34-27"><a href="e-step.html#cb34-27" aria-hidden="true" tabindex="-1"></a>                             first_iter) {</span>
+<span id="cb34-28"><a href="e-step.html#cb34-28" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> mn[tt, , iclust]</span>
+<span id="cb34-29"><a href="e-step.html#cb34-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (dimdat <span class="sc">==</span> <span class="dv">1</span>) {</span>
+<span id="cb34-30"><a href="e-step.html#cb34-30" aria-hidden="true" tabindex="-1"></a>      dens <span class="ot">=</span> <span class="fu">dnorm</span>(y, mu, <span class="at">sd =</span> <span class="fu">sqrt</span>(sigma[iclust, , ]))</span>
+<span id="cb34-31"><a href="e-step.html#cb34-31" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb34-32"><a href="e-step.html#cb34-32" aria-hidden="true" tabindex="-1"></a>       dens <span class="ot">=</span> <span class="fu">dmvnorm_arma_fast</span>(y, mu, sigma[iclust,,], <span class="cn">FALSE</span>)</span>
+<span id="cb34-33"><a href="e-step.html#cb34-33" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb34-34"><a href="e-step.html#cb34-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(dens)</span>
+<span id="cb34-35"><a href="e-step.html#cb34-35" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb34-36"><a href="e-step.html#cb34-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-37"><a href="e-step.html#cb34-37" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Calculate posterior probability of membership of $y_{it}$.</span></span>
+<span id="cb34-38"><a href="e-step.html#cb34-38" aria-hidden="true" tabindex="-1"></a>  ncol.prob <span class="ot">=</span> <span class="fu">ncol</span>(prob)</span>
+<span id="cb34-39"><a href="e-step.html#cb34-39" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT) {</span>
+<span id="cb34-40"><a href="e-step.html#cb34-40" aria-hidden="true" tabindex="-1"></a>    ylist_tt <span class="ot">=</span> ylist[[tt]]</span>
+<span id="cb34-41"><a href="e-step.html#cb34-41" aria-hidden="true" tabindex="-1"></a>    densmat <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, calculate_dens, tt, ylist_tt,</span>
+<span id="cb34-42"><a href="e-step.html#cb34-42" aria-hidden="true" tabindex="-1"></a>                      mn, sigma, denslist_by_clust, first_iter)</span>
+<span id="cb34-43"><a href="e-step.html#cb34-43" aria-hidden="true" tabindex="-1"></a>    wt.densmat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(prob[tt, ], <span class="at">nrow =</span> ntlist[tt],</span>
+<span id="cb34-44"><a href="e-step.html#cb34-44" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ncol =</span> ncol.prob, <span class="at">byrow =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> densmat</span>
+<span id="cb34-45"><a href="e-step.html#cb34-45" aria-hidden="true" tabindex="-1"></a>    wt.densmat <span class="ot">=</span> wt.densmat <span class="sc">+</span> <span class="fl">1e-10</span></span>
+<span id="cb34-46"><a href="e-step.html#cb34-46" aria-hidden="true" tabindex="-1"></a>    wt.densmat <span class="ot">&lt;-</span> wt.densmat<span class="sc">/</span><span class="fu">rowSums</span>(wt.densmat)</span>
+<span id="cb34-47"><a href="e-step.html#cb34-47" aria-hidden="true" tabindex="-1"></a>    resp[[tt]] <span class="ot">&lt;-</span> wt.densmat</span>
+<span id="cb34-48"><a href="e-step.html#cb34-48" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb34-49"><a href="e-step.html#cb34-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-50"><a href="e-step.html#cb34-50" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Weight the responsibilities by $C_{it}$.</span></span>
+<span id="cb34-51"><a href="e-step.html#cb34-51" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(countslist)) {</span>
+<span id="cb34-52"><a href="e-step.html#cb34-52" aria-hidden="true" tabindex="-1"></a>    resp <span class="ot">&lt;-</span> <span class="fu">Map</span>(<span class="cf">function</span>(myresp, mycount) {</span>
+<span id="cb34-53"><a href="e-step.html#cb34-53" aria-hidden="true" tabindex="-1"></a>      myresp <span class="sc">*</span> mycount</span>
+<span id="cb34-54"><a href="e-step.html#cb34-54" aria-hidden="true" tabindex="-1"></a>    }, resp, countslist)</span>
+<span id="cb34-55"><a href="e-step.html#cb34-55" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb34-56"><a href="e-step.html#cb34-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(resp)</span>
+<span id="cb34-57"><a href="e-step.html#cb34-57" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>The E step should return a list of exactly the same size and format as <code>ylist</code>,
 which is a <span class="math inline">\(T\)</span> -length list of matrices of size <span class="math inline">\(n_t \times d\)</span>.</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="e-step.html#cb25-1" aria-hidden="true" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;E step returns appropriately sized responsibilities.&quot;</span>,{</span>
-<span id="cb25-2"><a href="e-step.html#cb25-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb25-3"><a href="e-step.html#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Generate some fake data</span></span>
-<span id="cb25-4"><a href="e-step.html#cb25-4" aria-hidden="true" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="dv">100</span></span>
-<span id="cb25-5"><a href="e-step.html#cb25-5" aria-hidden="true" tabindex="-1"></a>  ylist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){ <span class="fu">runif</span>(<span class="dv">90</span>) <span class="sc">%&gt;%</span> <span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">nrow =</span> <span class="dv">30</span>)})</span>
-<span id="cb25-6"><a href="e-step.html#cb25-6" aria-hidden="true" tabindex="-1"></a>  numclust <span class="ot">=</span> <span class="dv">3</span></span>
-<span id="cb25-7"><a href="e-step.html#cb25-7" aria-hidden="true" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="dv">3</span></span>
-<span id="cb25-8"><a href="e-step.html#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-9"><a href="e-step.html#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Initialize a few parameters, not carefully</span></span>
-<span id="cb25-10"><a href="e-step.html#cb25-10" aria-hidden="true" tabindex="-1"></a>  sigma <span class="ot">=</span> <a href='ingredients-for-building-the-flowmix_tf-method.html#init_sigma'>init_sigma</a>(ylist, numclust) <span class="do">## (T x numclust x (dimdat x dimdat))</span></span>
-<span id="cb25-11"><a href="e-step.html#cb25-11" aria-hidden="true" tabindex="-1"></a>  mn <span class="ot">=</span> <a href='ingredients-for-building-the-flowmix_tf-method.html#init_mn'>init_mn</a>(ylist, numclust, TT, dimdat)<span class="do">##, countslist = countslist)</span></span>
-<span id="cb25-12"><a href="e-step.html#cb25-12" aria-hidden="true" tabindex="-1"></a>  prob <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">/</span>numclust, <span class="at">nrow =</span> TT, <span class="at">ncol =</span> numclust) <span class="do">## Initialize to all 1/K.</span></span>
-<span id="cb25-13"><a href="e-step.html#cb25-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-14"><a href="e-step.html#cb25-14" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Calculate responsibility</span></span>
-<span id="cb25-15"><a href="e-step.html#cb25-15" aria-hidden="true" tabindex="-1"></a>  <span class="do">## </span><span class="al">TODO</span><span class="do">: the code fails here. why?</span></span>
-<span id="cb25-16"><a href="e-step.html#cb25-16" aria-hidden="true" tabindex="-1"></a>  resp <span class="ot">=</span> <a href='e-step.html#Estep'>Estep</a>(<span class="at">mn =</span> mn, <span class="at">sigma =</span> sigma, <span class="at">prob =</span> prob, <span class="at">ylist =</span> ylist, <span class="at">numclust =</span> numclust)</span>
-<span id="cb25-17"><a href="e-step.html#cb25-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-18"><a href="e-step.html#cb25-18" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Check these things</span></span>
-<span id="cb25-19"><a href="e-step.html#cb25-19" aria-hidden="true" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_equal</span>(<span class="fu">length</span>(resp), <span class="fu">length</span>(ylist))</span>
-<span id="cb25-20"><a href="e-step.html#cb25-20" aria-hidden="true" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_equal</span>(<span class="fu">sapply</span>(resp, dim), <span class="fu">sapply</span>(ylist, dim))</span>
-<span id="cb25-21"><a href="e-step.html#cb25-21" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="e-step.html#cb35-1" aria-hidden="true" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;E step returns appropriately sized responsibilities.&quot;</span>,{</span>
+<span id="cb35-2"><a href="e-step.html#cb35-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb35-3"><a href="e-step.html#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Generate some fake data</span></span>
+<span id="cb35-4"><a href="e-step.html#cb35-4" aria-hidden="true" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="dv">100</span></span>
+<span id="cb35-5"><a href="e-step.html#cb35-5" aria-hidden="true" tabindex="-1"></a>  ylist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){ <span class="fu">runif</span>(<span class="dv">90</span>) <span class="sc">%&gt;%</span> <span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">nrow =</span> <span class="dv">30</span>)})</span>
+<span id="cb35-6"><a href="e-step.html#cb35-6" aria-hidden="true" tabindex="-1"></a>  numclust <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb35-7"><a href="e-step.html#cb35-7" aria-hidden="true" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb35-8"><a href="e-step.html#cb35-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-9"><a href="e-step.html#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Initialize a few parameters, not carefully</span></span>
+<span id="cb35-10"><a href="e-step.html#cb35-10" aria-hidden="true" tabindex="-1"></a>  sigma <span class="ot">=</span> <a href='initial-parameters-for-em-algorithm.html#init_sigma'>init_sigma</a>(ylist, numclust) <span class="do">## (T x numclust x (dimdat x dimdat))</span></span>
+<span id="cb35-11"><a href="e-step.html#cb35-11" aria-hidden="true" tabindex="-1"></a>  mn <span class="ot">=</span> <a href='initial-parameters-for-em-algorithm.html#init_mn'>init_mn</a>(ylist, numclust, TT, dimdat)<span class="do">##, countslist = countslist)</span></span>
+<span id="cb35-12"><a href="e-step.html#cb35-12" aria-hidden="true" tabindex="-1"></a>  prob <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">/</span>numclust, <span class="at">nrow =</span> TT, <span class="at">ncol =</span> numclust) <span class="do">## Initialize to all 1/K.</span></span>
+<span id="cb35-13"><a href="e-step.html#cb35-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-14"><a href="e-step.html#cb35-14" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Calculate responsibility</span></span>
+<span id="cb35-15"><a href="e-step.html#cb35-15" aria-hidden="true" tabindex="-1"></a>  <span class="do">## </span><span class="al">TODO</span><span class="do">: the code fails here. why?</span></span>
+<span id="cb35-16"><a href="e-step.html#cb35-16" aria-hidden="true" tabindex="-1"></a>  resp <span class="ot">=</span> <a href='e-step.html#Estep'>Estep</a>(<span class="at">mn =</span> mn, <span class="at">sigma =</span> sigma, <span class="at">prob =</span> prob, <span class="at">ylist =</span> ylist, <span class="at">numclust =</span> numclust)</span>
+<span id="cb35-17"><a href="e-step.html#cb35-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-18"><a href="e-step.html#cb35-18" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Check these things</span></span>
+<span id="cb35-19"><a href="e-step.html#cb35-19" aria-hidden="true" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_equal</span>(<span class="fu">length</span>(resp), <span class="fu">length</span>(ylist))</span>
+<span id="cb35-20"><a href="e-step.html#cb35-20" aria-hidden="true" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_equal</span>(<span class="fu">sapply</span>(resp, dim), <span class="fu">sapply</span>(ylist, dim))</span>
+<span id="cb35-21"><a href="e-step.html#cb35-21" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="ingredients-for-building-the-flowmix_tf-method.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="initial-parameters-for-em-algorithm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="m-step.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>

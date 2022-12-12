@@ -19,7 +19,7 @@ First, let's write a couple of functions `interpolate_mn()` and
 `interpolate_prob()` which linearly interpolate the means and probabilities at
 new time points.
 
-```{r interpolate_mn, eval = FALSE}
+```{r interpolate_mn, eval = TRUE}
 #' Do a linear interpolation of the cluster means.
 #'
 #' @param x Training times.
@@ -53,7 +53,7 @@ interpolate_mn <- function(x, tt, iclust, mn){
 }
 ```
 
-```{r interpolate_prob, eval = FALSE}
+```{r interpolate_prob, eval = TRUE}
 #' Do a linear interpolation of the cluster means.
 #'
 #' @param x Training times.
@@ -93,7 +93,7 @@ interpolate_prob <- function(x, tt, iclust, prob){
 Next, let's build a prediction function `predict_flowsmooth()` which takes the
 model object `obj`, and the new time points `newtimes`, and produces.
 
-```{r predict_flowsmooth, eval = FALSE}
+```{r predict_flowsmooth, eval = TRUE}
 #' Prediction: Given new timepoints in the original time interval,generate a set
 #' of means and probs (and return the same Sigma).
 #'
@@ -153,11 +153,9 @@ predict_flowsmooth <- function(obj, newtimes = NULL){
 Here's a quick test (no new data) to make sure this function returns a list
 containing: the mean, probability, covariance, and new times.
 
-```{r test-predict_flowsmooth, eval = FALSE}
+```{r test-predict_flowsmooth, eval = TRUE}
 testthat::test_that("The prediction function returns the right things", {
   ## Generate data
-  ## ll()
-  ## devtools::load_all('~/repos/FlowTF')
   set.seed(100)
   dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
   ylist = dt %>% dt2ylist()
@@ -181,33 +179,34 @@ testthat::test_that("The prediction function returns the right things", {
 Now, we try to make predictions at *new* held-out time points `held_out=25:35`,
 from a model that is estimated without those time points.
 
-```{r test-predict_flowsmooth2, eval = FALSE}
-testthat::test_that("prediction function returns the right things", {
-  ## Generate data
-  set.seed(100)
-  dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
-  dt_model       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45, return_model = TRUE)
-  held_out = 25:35
-  dt_subset = dt %>% subset(time %ni% held_out)
-  ylist = dt_subset %>% dt2ylist()
-  x = dt_subset %>% pull(time) %>% unique()
-  obj <- flowsmooth(ylist = ylist, 
-                    x = x,
-                    maxdev = 5,
-                    numclust = 3,
-                    lambda = 0.02,
-                    l = 1,
-                    l_prob = 2,
-                    lambda_prob = .005, ## 
-                    nrestart = 1)
+```{r test-predict_flowsmooth2, eval = TRUE}
+## Generate data
+set.seed(100)
+dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
+dt_model       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45, return_model = TRUE)
+held_out = 25:35
+dt_subset = dt %>% subset(time %ni% held_out)
+ylist = dt_subset %>% dt2ylist()
+x = dt_subset %>% pull(time) %>% unique()
+obj <- flowsmooth(ylist = ylist, 
+                  x = x,
+                  maxdev = 5,
+                  numclust = 3,
+                  lambda = 0.02,
+                  l = 1,
+                  l_prob = 2,
+                  lambda_prob = .005, ## 
+                  nrestart = 1)
 
-  ## Also reorder the cluster labels of the truth, to match the fitted model.
-  ord = obj$mn[,1,] %>% colSums() %>% order(decreasing=TRUE)
-  lookup <- setNames(c(1:obj$numclust), ord)
-  dt_model$cluster = lookup[as.numeric(dt_model$cluster)] %>% as.factor()
-  
-  ## Reorder the cluster lables of the fitted model.
-  obj = reorder_clust(obj)
+## Also reorder the cluster labels of the truth, to match the fitted model.
+ord = obj$mn[,1,] %>% colSums() %>% order(decreasing=TRUE)
+lookup <- setNames(c(1:obj$numclust), ord)
+dt_model$cluster = lookup[as.numeric(dt_model$cluster)] %>% as.factor()
+
+## Reorder the cluster lables of the fitted model.
+obj = reorder_clust(obj)
+
+testthat::test_that("prediction function returns the right things", {
    
   predobj = predict_flowsmooth(obj, newtimes = held_out)
 
@@ -221,7 +220,9 @@ testthat::test_that("prediction function returns the right things", {
 Plot the predicted means and probabilities, with purple points at the
 interpolated means.  We can see that it works as expected.
 
-```{r predict-plot-mean, eval = FALSE, fig.width = 7, fig.height = 5}
+```{r predict-plot-mean, eval = TRUE, fig.width = 7, fig.height = 5}
+predobj = predict_flowsmooth(obj, newtimes = held_out)
+
 g = plot_1d(ylist, obj, x = x) +
   geom_line(aes(x = time, y = mean, group = cluster),
             data = dt_model,## %>% subset(time %ni% held_out),
@@ -234,23 +235,108 @@ preds = lapply(1:3, function(iclust){
          time = held_out,
          cluster = iclust)
 }) %>% bind_rows() 
-g + geom_point(aes(x=time, y=mn, group = cluster), data = preds, col = 'purple', alpha = .8) 
+g + geom_line(aes(x=time, y=mn, group = cluster), data = preds, col = 'yellow', size = 2)##, alpha = .8) 
 ```
 
 The estimated probabilities are shown here, with purple points showing the
 interpolation. It works as expected.
 
-```{r predict-plot-prob, eval = FALSE, fig.width = 7, fig.height = 5}
+```{r predict-plot-prob, eval = TRUE, fig.width = 7, fig.height = 5}
 plot_prob(obj, x=x) +
   geom_line(aes(x = time, y = prob, group = cluster, color = cluster),
             data = dt_model, linetype = "dashed")  +
   facet_wrap(~cluster) +
-  geom_point(aes(x = time, y = prob), data = preds, col = 'purple')
+  geom_line(aes(x = time, y = prob), data = preds, col = 'yellow', size = 3)
 ```
 
-## Evaluating data fit (by likelihood) in an out-of-sample measurement. 
+Let's just try to space inputs unevenly, by `x`.
 
-```{r predict-example, eval = FALSE}
+```{r uneven-space, eval = TRUE}
+set.seed(100)
+dt       <- gendat_1d(1000, rep(100, 1000), die_off_time = 0.45)
+dt_model       <- gendat_1d(1000, rep(100, 1000), die_off_time = 0.45, return_model = TRUE)
+## held_out = 25:35
+## dt_subset = dt %>% subset(time %ni% held_out)
+ylist_orig = dt %>% dt2ylist()
+## x = dt %>% pull(time) %>% unique()
+## x = runif(min = 1, max = 100, n = 100) %>% sort()
+x = sample(1:1000, 100) %>% sort()
+ylist = ylist_orig[x]
+obj <- flowsmooth(ylist = ylist, 
+                  x = x,
+                  maxdev = 5,
+                  numclust = 3,
+                  lambda = 0.02,
+                  l = 1,
+                  l_prob = 2,
+                  lambda_prob = .005, ## 
+                  nrestart = 1)
+
+## Also reorder the cluster labels of the truth, to match the fitted model.
+ord = obj$mn[,1,] %>% colSums() %>% order(decreasing=TRUE)
+lookup <- setNames(c(1:obj$numclust), ord)
+dt_model$cluster = lookup[as.numeric(dt_model$cluster)] %>% as.factor()
+
+## Reorder the cluster lables of the fitted model.
+obj = reorder_clust(obj)
+
+## Make mean predictions
+newtimes  = seq(from=min(x),to=max(x),length=10000)
+predobj = predict_flowsmooth(obj, newtimes = newtimes)
+
+## Plot the predicted means
+preds = lapply(1:3, function(iclust){
+  tibble(mn = predobj$mn %>% .[,,iclust, drop = TRUE],
+         prob = predobj$prob %>% .[,iclust, drop = TRUE],
+         time = newtimes,
+         cluster = iclust)
+}) %>% bind_rows() 
+```
+
+The estimated $\mu$ in the training data are shown as solid triangle points. The
+out-of-sample $\mu$ predictions made on a fine grid of time points (shown by the
+yellow lines) look fine.
+
+
+```{r uneven-mean-plot, eval = TRUE, fig.width = 7, fig.height = 5}
+g = plot_1d(ylist, obj, x = x)
+g + ggtitle("Fitted model")
+g + geom_line(aes(x=time, y=mn, group = cluster), data = preds, col = 'yellow', size = rel(1), alpha = .7) + ggtitle("Predictions on fine grid of times") 
+```
+
+The out-of-sample $\pi$ predictions are the lines that connect the points. They
+look great as well.
+
+```{r uneven-prob-plot, eval = TRUE, fig.width = 7, fig.height = 5}
+plot_prob(obj, x=x) +
+  geom_line(aes(x = time, y = prob, group = cluster, color = cluster),
+            data = dt_model, linetype = "dashed")  +
+  facet_wrap(~cluster) 
+  ## geom_line(aes(x = time, y = prob), data = preds, col = 'yellow', size = rel(1), alpha = .7)
+```
+
+Next, evaluating data fit (by likelihood) in an out-of-sample measurement.
+
+```{r predict-example, eval = TRUE}
+## Generate data
+set.seed(100)
+dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
+dt_model       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45, return_model = TRUE)
+held_out = 25:35
+dt_subset = dt %>% subset(time %ni% held_out)
+ylist = dt_subset %>% dt2ylist()
+x = dt_subset %>% pull(time) %>% unique()
+obj <- flowsmooth(ylist = ylist, 
+                  x = x,
+                  maxdev = 5,
+                  numclust = 3,
+                  lambda = 0.02,
+                  l = 1,
+                  l_prob = 2,
+                  lambda_prob = .005, ## 
+                  nrestart = 1)
+
+## Make prediction
 predobj = predict_flowsmooth(obj, newtimes = held_out)
 
 ## Use the predicted (interpolated) model parameters
@@ -265,37 +351,32 @@ truemn[,1,] =
 ## Use the true mean
 obj_better = objective(mu = truemn, prob = predobj$prob, sigma = predobj$sigma, ylist = ylist[held_out],
                        unpenalized = TRUE)
-
-## Make sure using the true mean is better (lower is better)
-stopifnot(obj_better < obj_pred)
-obj$objectives %>% plot(type = 'o')
-
-## matplot(truemn[,1,], type = 'l')
-## matlines(predobj$mn[,1,], lwd = 2)
 ```
 
+The fit is similar for the predicted model and the estimated model.
 
+```{r before-push-away, fig.width = 7, fig.height = 5})
+matplot(truemn[,1,], type = 'l', col = 'black', main = paste0(round(obj_pred,3), " (red) vs ", round(obj_better, 3)))
+matlines(predobj$mn[,1,], lwd = 2, col = 'red')
+```
 
-## 1d example with ends cut off
+If you push one of the cluster means away, the fit worsens.
+
+```{r push-away, fig.width = 7, fig.height = 5}
+predobj$mn[,1,] = predobj$mn[,1,] + .5
+obj_pred = objective(mu = predobj$mn, prob = predobj$prob, sigma = predobj$sigma, ylist = ylist[held_out],
+                     unpenalized = TRUE)
+matplot(truemn[,1,], type = 'l', col = 'black', main = paste0(round(obj_pred,3), " (red) vs ", round(obj_better,3)))
+matlines(predobj$mn[,1,], lwd = 2, col = 'red')
+```
+
+Next, try a 1d example with ends cut off.
 
 ```{r 1d-example-ends-cut-off, eval = FALSE}
 set.seed(100)
 dt <-       gendat_1d(TT, ntlist, die_off_time = 0.45)
 dt1 = dt %>% subset(time <= 50)
 dt2 = dt %>% subset(time > 50)
-```
-
-
-## 1d example with cross-validation
-
-TODO: Thoroughly test the selected lambda.
-
-
-```{r, eval = FALSE}
-TT = length(ylist)
-nfold = 3
-make_cv_folds(ylist, nfold, TT)
-TT
 ```
 
 
@@ -843,17 +924,17 @@ of numbers, given `min` and `max`. We can use this to make a grid of lambda
 pairs to be used for cross-validation.
 
 ```{r logspace}
-##' Helper function to logarithmically space out R.  \code{length} values linear
-##' on the log scale from \code{max} down to \code{min}.
-##'
-##' @param max Maximum value.
-##' @param min Minimum value.
-##' @param length Length of the output string.
-##' @param min.ratio Factor to multiply to \code{max}.
-##'
-##' @return Log spaced
-##'
-##' @export
+#' Helper function to logarithmically space out R.  \code{length} values linear
+#' on the log scale from \code{max} down to \code{min}.
+#'
+#' @param max Maximum value.
+#' @param min Minimum value.
+#' @param length Length of the output string.
+#' @param min.ratio Factor to multiply to \code{max}.
+#'
+#' @return Log spaced
+#'
+#' @export
 logspace <- function(max, min=NULL, length, min.ratio = 1E-4){
   if(is.null(min)) min = max * min.ratio
   vec = 10^seq(log10(min), log10(max), length = length)
@@ -1321,28 +1402,26 @@ x = dt %>% pull(time) %>% unique()
 
 
 obj = profvis({
-  set.seed(0)
+  set.seed(100)
   obj <- flowsmooth(ylist = ylist,
                     x = x,
                     maxdev = 5,
                     numclust = 3,
                     lambda = 0.02,
                     l = 1,
-                    l_prob = 2,
+                    l_prob = 1,
                     lambda_prob = .005,
-                    nrestart = 1)
+                    nrestart = 3)
 })
 obj
 
+
 ```
 
-Some notes so far:
-- 
-
+## Next up
 
 TODO: Things to check out
 - ADMM convergence <-- detailed look
 - ADMM sub-steps
 - density calculation
-
-
+- spaced CV correctness check.

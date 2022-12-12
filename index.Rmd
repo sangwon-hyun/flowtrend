@@ -4,7 +4,9 @@ author: "Sangwon Hyun"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 knit: litr::render
-output: litr::litr_gitbook
+output: 
+  litr::litr_gitbook:
+    theme: architect
 params:
   package_name: "flowsmooth" # <-- change this to your package name
   package_parent_dir: "." # <-- relative to this file's location

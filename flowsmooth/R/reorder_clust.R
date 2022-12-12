@@ -13,7 +13,7 @@
 reorder_clust <- function(res, ord = NULL){
 
   ## Find an order by sums (averages)
-  if(is.null(ord)) ord = res$mn[,1,] %>% colSums() %>% order(decreasing=TRUE)
+  if(is.null(ord)) ord = res$mn[,1,] %>% colSums() %>% order(decreasing = TRUE)
   if(!is.null(ord)) all(sort(ord) == 1:res$numclust)
 
   ## Reorder mean

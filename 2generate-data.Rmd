@@ -21,6 +21,9 @@ the true underlying parameters.
 gendat_1d <- function(TT, ntlist, die_off_time = 0.45,
                       return_model = FALSE){
 
+  ## Basic checks
+  stopifnot(length(ntlist) == TT)
+
   ## Make cluster probabilities, by time
   probs <- sapply(1:TT, FUN = function(tt){
     if(TT * die_off_time < tt & tt < (1-die_off_time) * TT){
@@ -105,4 +108,134 @@ dt2ylist <- function(dt){
 }
 ```
 
+Let's generate some data using these functions.
+
+```{r test-generate-data}
+dt = gendat_1d(TT = 100, ntlist =rep(100,100))
+print(dt)
+```
+
+```{r test-ylist}
+ylist = dt2ylist(dt)
+print(head(str(ylist[1:5])))
+```
+
+```{r test-ylist2}
+print(head(ylist[[1]]))
+```
+
 Next, we'll make some plotting functions 1d model and data.
+
+
+# Plotting 1d data
+
+Given 1d data `ylist` and an estimated model object `obj`, we want to plot both
+in a single plot. `plot_1d()` lets you do this.
+
+```{r plot_1d}
+#' Makes 1d plot of data and model
+#'
+#' @param ylist Data.
+#' @param obj flowsmooth object. Defaults to NULL.
+#' @param x time points. Defaults to NULL.
+#'
+#' @return ggplot object with data, and optionally, a flowsmooth model overlaid.
+#' @export
+plot_1d <- function(ylist, obj=NULL, x = NULL){
+
+  ## Basic checks
+  if(!is.null(x)){
+    stopifnot(length(x) == length(ylist))
+    times = x
+  } else {
+    times = 1:length(ylist)
+  }
+
+  ## make data into long matrix
+  ymat <- lapply(1:length(ylist), FUN = function(tt){
+    data.frame(time = times[tt], Y = ylist[[tt]])
+  }) %>% bind_rows() %>% as_tibble()
+
+  ## plot long matrix
+  gg = ymat %>% ggplot() +
+    geom_point(aes(x = time, y = Y), alpha = .1) +
+    theme_bw() + ylab("Data") + xlab("Time") 
+    ## theme(legend.position = 'none')
+  if(is.null(obj)) return(gg)
+
+  ## Add the model
+  numclust = obj$numclust
+  mnmat = obj$mn %>% .[,1,] %>% as_tibble() %>% setNames(1:numclust) %>% add_column(time = times)
+  probmat = obj$prob %>% as_tibble() %>% setNames(1:numclust) %>% add_column(time = times)
+  mn_long = mnmat %>% pivot_longer(-time, names_to = "cluster", values_to = "mean")
+  prob_long = probmat %>% pivot_longer(-time, names_to = "cluster", values_to = "prob")
+  est_long = full_join(mn_long, prob_long)
+  gg = gg + geom_line(aes(x = time, y = mean, size = prob, group = cluster, color = cluster),
+                      data = est_long) +
+    geom_point(aes(x = time, y = mean, size = prob, group = cluster),
+              data = est_long, size = rel(1), shape = 17)
+
+  ## TODO: make it ignore the missing values at the gaps; currently this is not coded as NAs.
+
+  ## Add the estimated 95% probability regions for data.
+  stdev = obj$sigma %>% .[,,1] %>% sqrt()
+  band_long =
+    mn_long %>% mutate(upper = case_when(cluster == "1" ~ mean + 1.96 * stdev[1],
+                                         cluster == "2" ~ mean + 1.96 * stdev[2],
+                                         cluster == "3" ~ mean + 1.96 * stdev[3]),
+                       lower = case_when(cluster == "1" ~ mean - 1.96 * stdev[1],
+                                         cluster == "2" ~ mean - 1.96 * stdev[2],
+                                         cluster == "3" ~ mean - 1.96 * stdev[3]))
+  gg + geom_line(aes(x = time, y = upper, group = cluster, color = cluster),
+                 data = band_long, size = rel(1), alpha = .5) +
+    geom_line(aes(x = time, y = lower, group = cluster, color = cluster),
+              data = band_long, size = rel(1), alpha = .5)
+}
+```
+
+The plotting function `plot_1d()` will be even more useful when we have a model,
+but can also simply plot the data `ylist`. Let's try this out.
+
+```{r test-gendat}
+set.seed(100)
+dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
+dt_model <- gendat_1d(100, rep(100, 100), die_off_time = 0.45, return_model = TRUE)
+ylist = dt %>% dt2ylist()
+x = dt %>% pull(time) %>% unique()
+
+plot_1d(ylist, NULL, x = x) +
+  geom_line(aes(x = time, y = mean, group = cluster),
+            data = dt_model,
+            linetype = "dashed", size=2, alpha = .7)
+```
+Voilà!
+
+Also, we will want to plot the estimated cluster probabilities of a model `obj`.
+
+```{r}
+#' Makes cluster probability plot (lines over time).
+#'
+#' @param obj Estimated model (from e.g. \code{flowsmooth()})
+#'
+#' @export
+plot_prob <- function(obj, x = NULL){
+
+  ## Basic checks
+  if(!is.null(x)){
+    stopifnot(length(x) == length(ylist))
+    times = x
+  } else {
+    times = 1:length(ylist)
+  }
+
+  numclust = obj$numclust
+  probmat = obj$prob %>% as_tibble() %>% setNames(1:numclust) %>% add_column(time = times)
+  prob_long = probmat %>% pivot_longer(-time, names_to = "cluster", values_to = "prob")
+  prob_long %>% ggplot() +
+    geom_line(aes(x=time, y = prob, group = cluster, col = cluster)) +
+    geom_point(aes(x=time, y = prob, group = cluster, col = cluster)) +
+    xlab("Estimated cluster probability")
+}
+```
+
+We can't test it out now, but we'll use it later in [1d-example](#1d-example).

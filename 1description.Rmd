@@ -41,5 +41,4 @@ library(ggplot2)
 usethis::use_package("tidyverse", type = "depends") 
 usethis::use_package("ggplot2") 
 usethis::use_package("clue") 
-## Temporary loading of the old package
 ```

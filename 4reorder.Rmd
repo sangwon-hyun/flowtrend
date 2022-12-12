@@ -1,117 +1,9 @@
-# Plotting for 1d data
-
-Given 1d data `ylist` and an estimated model object `obj`, we want to plot both
-in a single plot. `plot_1d()` lets you do this.
-
-```{r plot_1d}
-#' Makes 1d plot of data and model
-#'
-#' @param ylist Data.
-#' @param obj flowsmooth object. Defaults to NULL.
-#' @param x time points. Defaults to NULL.
-#'
-#' @return ggplot object with data, and optionally, a flowsmooth model overlaid.
-#' @export
-plot_1d <- function(ylist, obj=NULL, x = NULL){
-
-  ## Basic checks
-  if(!is.null(x)){
-    stopifnot(length(x) == length(ylist))
-    times = x
-  } else {
-    times = 1:length(ylist)
-  }
-
-  ## make data into long matrix
-  ymat <- lapply(1:length(ylist), FUN = function(tt){
-    data.frame(time = times[tt], Y = ylist[[tt]])
-  }) %>% bind_rows() %>% as_tibble()
-
-  ## plot long matrix
-  gg = ymat %>% ggplot() +
-    geom_point(aes(x = time, y = Y), alpha = .1) +
-    theme_bw() + ylab("Data") + xlab("Time") 
-    ## theme(legend.position = 'none')
-  if(is.null(obj)) return(gg)
-
-  ## Add the model
-  ## TT = length(ylist)
-  numclust = obj$numclust
-  mnmat = obj$mn %>% .[,1,] %>% as_tibble() %>% setNames(1:numclust) %>% add_column(time = times)
-  probmat = obj$prob %>% as_tibble() %>% setNames(1:numclust) %>% add_column(time = times)
-  mn_long = mnmat %>% pivot_longer(-time, names_to = "cluster", values_to = "mean")
-  prob_long = probmat %>% pivot_longer(-time, names_to = "cluster", values_to = "prob")
-  est_long = full_join(mn_long, prob_long)
-  gg = gg + geom_line(aes(x = time, y = mean, size = prob, group = cluster, color = cluster),
-                      data = est_long)
-  ## TODO: make it ignore the missing values at the gaps; currently this is not coded as NAs.
-
-  ## Add the estimated 95% probability regions for data.
-  stdev = obj$sigma %>% .[,,1] %>% sqrt()
-  band_long =
-    mn_long %>% mutate(upper = case_when(cluster == "1" ~ mean + 1.96 * stdev[1],
-                                         cluster == "2" ~ mean + 1.96 * stdev[2],
-                                         cluster == "3" ~ mean + 1.96 * stdev[3]),
-                       lower = case_when(cluster == "1" ~ mean - 1.96 * stdev[1],
-                                         cluster == "2" ~ mean - 1.96 * stdev[2],
-                                         cluster == "3" ~ mean - 1.96 * stdev[3]))
-  gg + geom_line(aes(x = time, y = upper, group = cluster, color = cluster),
-                 data = band_long, size = rel(1), alpha = .5) +
-    geom_line(aes(x = time, y = lower, group = cluster, color = cluster),
-              data = band_long, size = rel(1), alpha = .5)
-}
-```
-
-The plotting function `plot_1d()` will be even more useful when we have a model,
-but can simply plot the data. Let's try this out.
-
-```{r test-gendat}
-set.seed(100)
-dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
-dt_model <- gendat_1d(100, rep(100, 100), die_off_time = 0.45, return_model = TRUE)
-ylist = dt %>% dt2ylist()
-x = dt %>% pull(time) %>% unique()
-
-plot_1d(ylist, NULL, x = x) +
-  geom_line(aes(x = time, y = mean, group = cluster),
-            data = dt_model,
-            linetype = "dashed", size=2, alpha = .7)
-```
-
-The following few sections show examples of how to use these plotting functions.
-
-
-Also, we will want to plot the estimated cluster probabilities, from `obj`.
-
-```{r}
-#' Makes cluster probability plot (lines over time).
-#'
-#' @param obj Estimated model (from \code{flowsmooth(ylist)})
-#'
-#' @export
-plot_prob <- function(obj, x = NULL){
-
-  ## Basic checks
-  if(!is.null(x)){
-    stopifnot(length(x) == length(ylist))
-    times = x
-  } else {
-    times = 1:length(ylist)
-  }
-
-  numclust = obj$numclust
-  probmat = obj$prob %>% as_tibble() %>% setNames(1:numclust) %>% add_column(time = times)
-  prob_long = probmat %>% pivot_longer(-time, names_to = "cluster", values_to = "prob")
-  prob_long %>% ggplot() +
-    geom_line(aes(x=time, y = prob, group = cluster, col = cluster)) +
-    xlab("Estimated cluster probability")
-}
-```
+# Reordering clusters
 
 Here's a useful function to reorder the clusters of an estimated model `obj`. This
 comes in handy when plotting and comparing model parameters.
 
-```{r}
+```{r reorder_clust}
 #' Reorder the results of one object so that cluster 1 through
 #' \code{numclust} is in a particular order. The default is decreasing order of
 #' the averages (over time) of the cluster means.
@@ -125,7 +17,7 @@ comes in handy when plotting and comparing model parameters.
 reorder_clust <- function(res, ord = NULL){
 
   ## Find an order by sums (averages)
-  if(is.null(ord)) ord = res$mn[,1,] %>% colSums() %>% order(decreasing=TRUE)
+  if(is.null(ord)) ord = res$mn[,1,] %>% colSums() %>% order(decreasing = TRUE)
   if(!is.null(ord)) all(sort(ord) == 1:res$numclust)
 
   ## Reorder mean
@@ -160,7 +52,7 @@ TODO: right now this is just copy-pasted from `flowmix`. But actually, this is
 an example of a function that can be directly borrowed; all the work is done in
 `reorder_clust()`. So deal with that!!
 
-```{r}
+```{r reorder_kl}
 #' Reorder the cluster numbers for a new flowsmooth object \code{newres}; the best
 #' permutation (reordering) is to match the original flowmix object
 #' \code{origres}.
@@ -214,7 +106,7 @@ responsibilities (posterior probabilities of particles) -- one from each model
 -- and returns the cluster ordering to apply to the model that produced
 `resp_new`. We define this function and a couple of helper functions next.
 
-```{r}
+```{r reorder_kl-helpers}
 #' Compute KL divergence from responsibilities between two models'
 #' responsibilities \code{resp_new} and \code{resp_old}.
 #'
@@ -291,7 +183,7 @@ symmetric_kl <- function(vec1, vec2){
 ```
 
 Here's an example of how to use it.  TODO: this code block incurs an error while
-rendering because flowsmooth is not fully available to use yet, at this stage of
+rendering because flowsmooth is not yet fully available to use at this stage of
 the code. Fix this!
 
 ```{r test-reordering, fig.width = 7, fig.height = 5, eval = FALSE}

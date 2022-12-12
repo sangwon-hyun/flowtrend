@@ -1,23 +1,19 @@
-# Ingredients for building the `flowmix_tf()` method
+# Trend filtering
 
 \def\E{\mathbb{E}}
 \def\R{\mathbb{R}}
 \newcommand{\argmin}{\mathop{\mathrm{argmin}}}
 
 
-## Trend filtering, briefly
-
-Trend filtering \citep{steidl2006splines, kim2009ell_1} is a tool for
-non-parametric regression on a sequence of output points $y = (y_1,..., y_T)$
+Trend filtering \citep{steidl2006splines, kim2009ell_1} is a
+non-parametric regression technique for a sequence of output points $y = (y_1,..., y_T)$
 observed at locations $x = (x_1, ..., x_T)$. It is usually assumed that $x_1,
 ..., x_T$ are evenly spaced points, though this can be relaxed. The trend
 filtering estimate of order $l$ of the time series $\mu_t = \E(y_t), t \in x$ is
 obtained by calculating $$\hat{\mu} = \argmin_{\mu \in \mathbb{R}^T}
-\frac{1}{2}\| \mu - y\|_2^2 + \lambda \| D^{(l+1)} \mu\|_1$$, where $\lambda$ is
+\frac{1}{2}\| \mu - y\|_2^2 + \lambda \| D^{(l+1)} \mu\|_1,$$ where $\lambda$ is
 a tuning parameter and $D^{(l+1)} \in \R^{T-l}$ is the $(l+1)^\text{th}$ order
 discrete differencing matrix. 
-
-## Differencing matrix
 
 We first need to be able to construct the trend filtering "differencing matrix"
 used for smoothing the mixture parameters over time. The general idea of the
@@ -53,7 +49,7 @@ $D^{(l+1)} = D^{(1)} D^{(l)}$, starting with $D^{(1)}$.
 gen_diff_mat <- function(n, l, x = NULL){
 
   ## Basic check
-  if(!is.null(x))  stopifnot(length(x) == n)
+  if(!is.null(x))  stopifnot(length(x) == n) 
 
   get_D1 <- function(t) {do.call(rbind, lapply(1:(t-1), FUN = function(x){
     v <- rep(0, t)
@@ -183,11 +179,12 @@ testthat::test_that("Trend filtering regression matrix is created correctly.", {
 ```
 
 
-## Objective (data log-likelihood)
+# Objective (data log-likelihood)
 
-First, `loglik_tt()` calculates the log-likelihood of one cytogram, which is:
 
-$$\sum_{i=1}^{n_t} C_i^{(t)} \log\left( \sum_{k=1}^K \pi_{itk} \phi(y_i^{(t)}; \mu_{kt}, \Sigma_k) \right) $$
+The function `loglik_tt()` calculates the log-likelihood of one cytogram, which is:
+
+$$\sum_{i=1}^{n_t} C_i^{(t)} \log\left( \sum_{k=1}^K \pi_{itk} \phi(y_i^{(t)}; \mu_{kt}, \Sigma_k) \right). $$
 
 ```{r}
 #' @param mu Cluster means.
@@ -310,7 +307,7 @@ check_converge_rel <- function(old, new, tol=1E-6){
 Here's also a helper function to do the softmax-ing of $\alpha_t \in
 \mathbb{R}^K$.
 
-```{r softmax}
+```{r softmax, send_to="R/softmax.R"}
 #' Converts the Xbeta to softmax(Xbeta), so to speak. Xbeta is the linear functional of X from a multinomial regression; in our notation, it's alpha.
 #' 
 #' @param prob_link alpha, which is a (T x K) matrix.
@@ -320,7 +317,9 @@ softmax <- function(prob_link){
   exp_prob_link = exp(prob_link)
   prob = exp_prob_link / rowSums(exp_prob_link)
 }
+```
 
+```{r test-softmax}
 testthat::test_that("Test for softmax",{
   link = runif(100, min = -10, max = 10) %>% matrix(nrow = 10, ncol = 10)
   testthat::expect_true(all(abs(rowSums(softmax(link)) - 1) < 1E-13))
@@ -328,11 +327,11 @@ testthat::test_that("Test for softmax",{
 ```
 
 
-## Initial parameter values for EM algorithm
+# Initial parameters for EM algorithm
 
 The EM algorithm requires some initial values for $\mu$, $\pi$ and $\Sigma$. 
 
-Initializing $\pi$ is one line.  `prob = matrix(1/numclust, nrow = TT, ncol =
+Initializing $\pi$ is done in one line, `prob = matrix(1/numclust, nrow = TT, ncol =
 numclust)`, which sets everything to $1/K$.
   
 For $\mu$ and $\Sigma$, we write some functions. Essentially, initial means

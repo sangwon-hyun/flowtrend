@@ -6,6 +6,11 @@ testthat::test_that("Trend filtering regression matrix is created correctly.", {
   testthat::expect_equal(dim(H1), c(10,10))
 })
 
+testthat::test_that("Test for softmax",{
+  link = runif(100, min = -10, max = 10) %>% matrix(nrow = 10, ncol = 10)
+  testthat::expect_true(all(abs(rowSums(softmax(link)) - 1) < 1E-13))
+})
+
 testthat::test_that("E step returns appropriately sized responsibilities.",{
   
   ## Generate some fake data
@@ -56,8 +61,6 @@ testthat::test_that("Test the M step of \mu against CVXR", {})
 
 testthat::test_that("The prediction function returns the right things", {
   ## Generate data
-  ## ll()
-  ## devtools::load_all('~/repos/FlowTF')
   set.seed(100)
   dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
   ylist = dt %>% dt2ylist()
@@ -77,32 +80,33 @@ testthat::test_that("The prediction function returns the right things", {
   testthat::expect_named(predobj, c("mn", "prob", "sigma", "x"))
 })
 
-testthat::test_that("prediction function returns the right things", {
-  ## Generate data
-  set.seed(100)
-  dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
-  dt_model       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45, return_model = TRUE)
-  held_out = 25:35
-  dt_subset = dt %>% subset(time %ni% held_out)
-  ylist = dt_subset %>% dt2ylist()
-  x = dt_subset %>% pull(time) %>% unique()
-  obj <- flowsmooth(ylist = ylist, 
-                    x = x,
-                    maxdev = 5,
-                    numclust = 3,
-                    lambda = 0.02,
-                    l = 1,
-                    l_prob = 2,
-                    lambda_prob = .005, ## 
-                    nrestart = 1)
+## Generate data
+set.seed(100)
+dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
+dt_model       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45, return_model = TRUE)
+held_out = 25:35
+dt_subset = dt %>% subset(time %ni% held_out)
+ylist = dt_subset %>% dt2ylist()
+x = dt_subset %>% pull(time) %>% unique()
+obj <- flowsmooth(ylist = ylist, 
+                  x = x,
+                  maxdev = 5,
+                  numclust = 3,
+                  lambda = 0.02,
+                  l = 1,
+                  l_prob = 2,
+                  lambda_prob = .005, ## 
+                  nrestart = 1)
 
-  ## Also reorder the cluster labels of the truth, to match the fitted model.
-  ord = obj$mn[,1,] %>% colSums() %>% order(decreasing=TRUE)
-  lookup <- setNames(c(1:obj$numclust), ord)
-  dt_model$cluster = lookup[as.numeric(dt_model$cluster)] %>% as.factor()
-  
-  ## Reorder the cluster lables of the fitted model.
-  obj = reorder_clust(obj)
+## Also reorder the cluster labels of the truth, to match the fitted model.
+ord = obj$mn[,1,] %>% colSums() %>% order(decreasing=TRUE)
+lookup <- setNames(c(1:obj$numclust), ord)
+dt_model$cluster = lookup[as.numeric(dt_model$cluster)] %>% as.factor()
+
+## Reorder the cluster lables of the fitted model.
+obj = reorder_clust(obj)
+
+testthat::test_that("prediction function returns the right things", {
    
   predobj = predict_flowsmooth(obj, newtimes = held_out)
 
