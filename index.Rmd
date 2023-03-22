@@ -4,9 +4,7 @@ author: "Sangwon Hyun"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 knit: litr::render
-output: 
-  litr::litr_gitbook:
-    theme: architect
+output: litr::litr_gitbook
 params:
   package_name: "flowsmooth" # <-- change this to your package name
   package_parent_dir: "." # <-- relative to this file's location
@@ -18,7 +16,6 @@ documentclass: book
 This package implements `flowsmooth`, a model used for smooth estimation of
 mixture models across time. The documentation and package are both created using
 one simple command:
-
 
 ```{r render, eval = FALSE}
 litr::render("index.Rmd", output_format = litr::litr_gitbook())

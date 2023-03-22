@@ -1,7 +1,7 @@
 # Tuning the regularization parameters for `flowsmooth`
 
 
-We're going to take a huge leap, and assume the `flowsmooth()` function has been
+We're going to take a (huge) leap, and assume the `flowsmooth()` function has been
 built. We need to build up quite a few functions before we're able to do
 cross-validation. These include:
 
@@ -154,6 +154,7 @@ Here's a quick test (no new data) to make sure this function returns a list
 containing: the mean, probability, covariance, and new times.
 
 ```{r test-predict_flowsmooth, eval = TRUE}
+devtools::load_all("~/repos/FlowTF") ## Temporary! flowsmooth hasn't fully ported over the m-step yet.
 testthat::test_that("The prediction function returns the right things", {
   ## Generate data
   set.seed(100)
@@ -203,7 +204,7 @@ ord = obj$mn[,1,] %>% colSums() %>% order(decreasing=TRUE)
 lookup <- setNames(c(1:obj$numclust), ord)
 dt_model$cluster = lookup[as.numeric(dt_model$cluster)] %>% as.factor()
 
-## Reorder the cluster lables of the fitted model.
+## Reorder the cluster labels of the fitted model.
 obj = reorder_clust(obj)
 
 testthat::test_that("prediction function returns the right things", {
@@ -217,8 +218,8 @@ testthat::test_that("prediction function returns the right things", {
 })
 ```
 
-Plot the predicted means and probabilities, with purple points at the
-interpolated means.  We can see that it works as expected.
+Plot the predicted means $\mu$ and probabilities $\pi$, with purple points at
+the interpolated means.  We can see that it works as expected.
 
 ```{r predict-plot-mean, eval = TRUE, fig.width = 7, fig.height = 5}
 predobj = predict_flowsmooth(obj, newtimes = held_out)
@@ -249,7 +250,7 @@ plot_prob(obj, x=x) +
   geom_line(aes(x = time, y = prob), data = preds, col = 'yellow', size = 3)
 ```
 
-Let's just try to space inputs unevenly, by `x`.
+Let's now try to space inputs unevenly, by `x`.
 
 ```{r uneven-space, eval = TRUE}
 set.seed(100)
@@ -293,9 +294,9 @@ preds = lapply(1:3, function(iclust){
 }) %>% bind_rows() 
 ```
 
-The estimated $\mu$ in the training data are shown as solid triangle points. The
-out-of-sample $\mu$ predictions made on a fine grid of time points (shown by the
-yellow lines) look fine.
+The estimated means $\mu$ in the training data are shown as solid triangle
+points. The out-of-sample $\mu$ predictions made on a fine grid of time points
+(shown by the yellow lines) look fine.
 
 
 ```{r uneven-mean-plot, eval = TRUE, fig.width = 7, fig.height = 5}
