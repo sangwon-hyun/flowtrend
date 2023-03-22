@@ -129,9 +129,9 @@ to solve an equivalent problem as the trend filtering of the \code{k}'th degree.
 #' A lasso regressor matrix H that can be used to solve an equivalent problem as the trend filtering of the \code{k}'th degree.
 #'
 #' @param n Total number of time points.
-#' @param k Degree of trend filtering for cluster probabilities.
+#' @param k Degree of trend filtering for cluster probabilities. $k=0$ is fused lasso, $k=1$ is linear trend filtering, and so on.
 #' @param x Time points
-#'
+#' 
 #' @return $n$ by $n$ matrix.
 #' 
 #' @export
@@ -146,13 +146,26 @@ gen_tf_mat <- function(n, k, x = NULL){
 
   ## For every i,j'th entry, use this helper function (from eq 25 of Tibshirani
   ## (2014)).
-  gen_ij <- function(i,j){
+  gen_ij <- function(i, j, k){
     xi <- x[i]
     if(j %in% 1:(k+1)){
       return(xi^(j-1))
     }
     if(j %in% (k+2):n){
-      return(prod(xi - x[(j-k):(j-1)]) * ifelse(xi >= x[(j-1)], 1, 0))
+
+      ## Special handling for k==0, See lemma 4 eq 25
+      if(k == 0){
+        prd = 1 
+        ind = j
+      }
+      if(k>=1){
+        ind = j - (1:k)
+        prd = prod(xi - x[ind]) 
+
+      }
+      return(prd * ifelse(xi >= x[max(ind)], 1, 0))
+      ## if(k >= 1) prd = prod(xi - x[(j-k):(j-1)]) 
+      ## return(prd * ifelse(xi >= x[(j-1)], 1, 0)) 
     }
   }
 
@@ -160,21 +173,73 @@ gen_tf_mat <- function(n, k, x = NULL){
   H <- matrix(nrow = n, ncol = n)
   for(i in 1:n){
     for(j in 1:n){
-      H[i,j] <- gen_ij(i,j)
+      H[i,j] <- gen_ij(i,j, k)
     }
   }
   return(H)
 }
 ```
 
-Here's a simple test.
+Here's a simple test, against an alternative function that only works for
+equally spaced data.
 
 ```{r}
+#' Creates trendfiltering regression matrix using Lemma 2 of Ryan Tibshirani's
+#' trendfilter paper (2014); works on equally spaced data only.
+#'
+#' @param n Number of data points
+#' @param k Order of trend filter. 0 is fused lasso, and so on.
+#' @examples 
+#' ord = 1
+#' H_tf <- gen_tf_mat_equalspace(n = 100, k = ord)
+#' H_tf[,1] * 100
+#' H_tf[,2] * 100
+#' H_tf[,3] * 100
+#' H_tf[,4] * 100
+#' H_tf[,99] * 100
+#' H_tf[,100] * 100
+#' @return n by n matrix.
+gen_tf_mat_equalspace <- function(n, k){
+  nn = n
+  kk = k
+  ##' Connects kk to kk-1.
+  sigm <- function(ii, kk){
+    if(kk == 0) return(rep(1, ii))
+    cumsum(sigm(ii, kk-1))
+  }
+
+  mat = matrix(NA, ncol = nn, nrow = nn)
+  for(ii in 1:nn){
+    for(jj in 1:nn){
+      if(jj <= kk+1) mat[ii,jj] = ii^(jj-1) / nn^(jj-1)
+      if(ii <= jj-1 & jj >= kk+2) mat[ii, jj] = 0
+      if(ii > jj-1 & jj >= kk+2){
+        mat[ii, jj] = (sigm(ii-jj+1, kk) %>% tail(1)) * factorial(kk) / nn^kk
+      }
+    }
+  }
+  return(mat)
+}
+```
+
+
+```{r, eval = FALSE}
 testthat::test_that("Trend filtering regression matrix is created correctly.", {
+
+  ## Check that equally spaced data creates same trendfilter regression matrix
   H1 <- gen_tf_mat(10, 1)
-  H2 <- gen_tf_mat(10, 1, x=(1:10)/10)
-  testthat::expect_equal(H1, H2)
+  H1_other <- gen_tf_mat(10, 1, x=(1:10)/10)
+  testthat::expect_equal(H1, H1_other)
+
+  ## Check the dimension
   testthat::expect_equal(dim(H1), c(10,10))
+
+  ## Check against an alternative function.
+  for(ord in c(0,1,2,3,4)){
+    H <- gen_tf_mat(10, ord)
+    H_eq = gen_tf_mat_equalspace(10, ord)
+    testthat::expect_true(max(abs(H_eq- H)) < 1E-10)
+  }
 })
 ```
 
