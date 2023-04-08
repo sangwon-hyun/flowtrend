@@ -17,8 +17,8 @@ get_max_lambda <- function(destin, maxres_file = "maxres.Rdata",
                            countslist,
                            numclust,
                            maxdev,
-                           max_lambda_prob,
                            max_lambda_mean,
+                           max_lambda_prob,
                            ...){
   
   if(file.exists(file.path(destin, maxres_file))){

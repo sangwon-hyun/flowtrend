@@ -1,3 +1,5 @@
+# Generated from _main.Rmd: do not edit by hand
+
 #' Converts the Xbeta to softmax(Xbeta), so to speak. Xbeta is the linear functional of X from a multinomial regression; in our notation, it's alpha.
 #' 
 #' @param prob_link alpha, which is a (T x K) matrix.

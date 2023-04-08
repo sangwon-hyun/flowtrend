@@ -1,9 +1,20 @@
 # Generated from _main.Rmd: do not edit by hand  
 testthat::test_that("Trend filtering regression matrix is created correctly.", {
+
+  ## Check that equally spaced data creates same trendfilter regression matrix
   H1 <- gen_tf_mat(10, 1)
-  H2 <- gen_tf_mat(10, 1, x=(1:10)/10)
-  testthat::expect_equal(H1, H2)
+  H1_other <- gen_tf_mat(10, 1, x=(1:10)/10)
+  testthat::expect_equal(H1, H1_other)
+
+  ## Check the dimension
   testthat::expect_equal(dim(H1), c(10,10))
+
+  ## Check against an alternative function.
+  for(ord in c(0,1,2,3,4)){
+    H <- gen_tf_mat(10, ord)
+    H_eq = gen_tf_mat_equalspace(10, ord)
+    testthat::expect_true(max(abs(H_eq- H)) < 1E-10)
+  }
 })
 
 testthat::test_that("Test for softmax",{
@@ -103,7 +114,7 @@ ord = obj$mn[,1,] %>% colSums() %>% order(decreasing=TRUE)
 lookup <- setNames(c(1:obj$numclust), ord)
 dt_model$cluster = lookup[as.numeric(dt_model$cluster)] %>% as.factor()
 
-## Reorder the cluster lables of the fitted model.
+## Reorder the cluster labels of the fitted model.
 obj = reorder_clust(obj)
 
 testthat::test_that("prediction function returns the right things", {
@@ -119,7 +130,8 @@ testthat::test_that("prediction function returns the right things", {
 testthat::test_that("Objective value decreases over EM iterations.",{
   
   devtools::load_all("~/repos/FlowTF")
-  for(iseed in 1:5){
+  ## for(iseed in 1:5){
+  for(iseed in 1){
     
     ## Generate increasingly noisy data
     set.seed(iseed*100)

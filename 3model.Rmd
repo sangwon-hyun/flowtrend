@@ -94,7 +94,6 @@ gen_diff_mat <- function(n, l, x = NULL){
 For equally spaced inputs:
 
 ```{r, eval = TRUE}
-devtools::load_all("~/repos/flowsmooth/flowsmooth")
 TT = 10
 
 l = 1
@@ -1275,13 +1274,13 @@ testthat::test_that("Test the M step of \mu against CVXR", {})
 
 
 
-# flowsmooth
+# flowtrend
 
 Now we've assembled all ingredients we need, we'll build the main function
-`flowsmooth_once()` to estimate a flowsmooth model. Here goes:
+`flowtrend_once()` to estimate a flowtrend model. Here goes:
 
-```{r flowsmooth_once}
-#' Estimate flowsmooth model once.
+```{r flowtrend_once}
+#' Estimate flowtrend model once.
 #'
 #' @param ylist Data.
 #' @param countslist Counts corresponding to multiplicities.
@@ -1305,11 +1304,11 @@ Now we've assembled all ingredients we need, we'll build the main function
 #' @param admm_local_adapt
 #' @param admm_local_adapt_niter
 #'
-#' @return List object with flowsmooth model estimates.
+#' @return List object with flowtrend model estimates.
 #' @export
 #'
 #' @examples
-flowsmooth_once <- function(ylist,
+flowtrend_once <- function(ylist,
                        countslist = NULL,
                        x = NULL,
                        numclust, niter = 1000, l, l_prob = NULL,
@@ -1421,6 +1420,7 @@ flowsmooth_once <- function(ylist,
 
   return(structure(list(mn = mn,
                         prob = prob,
+                        prob_link = prob_link,
                         sigma = sigma,
                         objectives = objectives[2:iter],
                         final.iter = iter,
@@ -1433,28 +1433,29 @@ flowsmooth_once <- function(ylist,
                         x = x,
                         numclust = numclust,
                         lambda = lambda,
+                        lambda_prob = lambda_prob,
                         maxdev = maxdev,
                         niter = niter
-  ), class = "flowsmooth"))
+  ), class = "flowtrend"))
 }
 ```
 
-Next, `flowsmooth()` is the main user-facing function.
+Next, `flowtrend()` is the main user-facing function.
 
 
-```{r flowsmooth}
-#' Main function. Repeats the EM algorithm (\code{flowsmooth_once()}) with |nrep| restarts (5 by default).
+```{r flowtrend}
+#' Main function. Repeats the EM algorithm (\code{flowtrend_once()}) with |nrep| restarts (5 by default).
 #'
 #' @param nrestart : number of random restarts
-#' @param ... : arguments for \code{flowsmooth_once()}
+#' @param ... : arguments for \code{flowtrend_once()}
 #'
 #' @return
 #' @export
 #'
 #' @examples
-flowsmooth <- function(nrestart = 10, ...){
+flowtrend <- function(nrestart = 10, ...){
   out.models <- lapply(1:nrestart, FUN = function(x){
-    model.temp <- flowsmooth_once(...)
+    model.temp <- flowtrend_once(...)
     model.obj <- tail(model.temp$objectives, n = 1)
     return(list(model = model.temp, objective = model.obj))
   })

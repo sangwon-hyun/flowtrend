@@ -94,7 +94,7 @@ splits it by the `time` column to create a `ylist` object, which is a $T$-length
 list of $n_t \times d$ matrices.
 
 ```{r dt2ylist}
-#' Converting to a list of matrices, \code{ylist}, to input to \code{flowsmooth()}.
+#' Converting to a list of matrices, \code{ylist}, to input to \code{flowtrend()}.
 #'
 #' @param dt Output from \code{gendat_1d()}.
 #'
@@ -136,10 +136,10 @@ in a single plot. `plot_1d()` lets you do this.
 #' Makes 1d plot of data and model
 #'
 #' @param ylist Data.
-#' @param obj flowsmooth object. Defaults to NULL.
+#' @param obj flowtrend object. Defaults to NULL.
 #' @param x time points. Defaults to NULL.
 #'
-#' @return ggplot object with data, and optionally, a flowsmooth model overlaid.
+#' @return ggplot object with data, and optionally, a flowtrend model overlaid.
 #' @export
 plot_1d <- function(ylist, obj=NULL, x = NULL, add_point = TRUE){
 
@@ -219,7 +219,7 @@ Also, we will want to plot the estimated cluster probabilities of a model `obj`.
 ```{r}
 #' Makes cluster probability plot (lines over time).
 #'
-#' @param obj Estimated model (from e.g. \code{flowsmooth()})
+#' @param obj Estimated model (from e.g. \code{flowtrend()})
 #'
 #' @export
 plot_prob <- function(obj, x = NULL){

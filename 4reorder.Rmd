@@ -14,12 +14,12 @@ an example of a function that can be directly borrowed; all the work is done in
 `reorder_clust()`. So we'll deal with that!)
 
 ```{r reorder_kl}
-#' Reorder the cluster numbers for a new flowsmooth object \code{newres}; the best
+#' Reorder the cluster numbers for a new flowtrend object \code{newres}; the best
 #' permutation (reordering) is to match the original flowmix object
 #' \code{origres}.
 #'
-#' @param newres New flowsmooth object to reorder.
-#' @param origres Original flowsmooth object.
+#' @param newres New flowtrend object to reorder.
+#' @param origres Original flowtrend object.
 #' @param ylist_particle The particle-level data.
 #' @param fac Defaults to 100, to take 1/100'th of the particles from each time point.
 #' @param verbose Loud or not?
@@ -185,7 +185,7 @@ reorder_clust <- function(res, ord = NULL){
 
 Here's an example of how to use this. 
 
-```{r test-reordering, fig.width = 7, fig.height = 5, eval = TRUE}
+```{r test-reordering, fig.width = 7, fig.height = 5, eval = FALSE}
 devtools::load_all("~/repos/FlowTF")
 set.seed(100)
 dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
@@ -196,7 +196,7 @@ x = dt %>% pull(time) %>% unique()
 ## Fit model twice.
 set.seed(2)
 objlist <- lapply(1:2, function(isim){
-  flowsmooth(ylist = ylist,
+  flowtrend(ylist = ylist,
              x = x,
              maxdev = 5,
              numclust = 3,

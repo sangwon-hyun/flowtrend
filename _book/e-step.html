@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>8 E step | Creating the flowsmooth R package</title>
-  <meta name="description" content="8 E step | Creating the flowsmooth R package" />
-  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+  <title>9 E step | Creating the flowtrend R package</title>
+  <meta name="description" content="9 E step | Creating the flowtrend R package" />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="8 E step | Creating the flowsmooth R package" />
+  <meta property="og:title" content="9 E step | Creating the flowtrend R package" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="8 E step | Creating the flowsmooth R package" />
+  <meta name="twitter:title" content="9 E step | Creating the flowtrend R package" />
   
   
   
@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2022-12-12" />
+<meta name="date" content="2023-04-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="initial-parameters-for-em-algorithm.html"/>
 <link rel="next" href="m-step.html"/>
-<script src="libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="libs/header-attrs-2.20/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -137,34 +137,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a></li>
 <li class="chapter" data-level="3" data-path="generating-1d-data.html"><a href="generating-1d-data.html"><i class="fa fa-check"></i><b>3</b> Generating 1d data</a></li>
 <li class="chapter" data-level="4" data-path="plotting-1d-data.html"><a href="plotting-1d-data.html"><i class="fa fa-check"></i><b>4</b> Plotting 1d data</a></li>
-<li class="chapter" data-level="5" data-path="trend-filtering.html"><a href="trend-filtering.html"><i class="fa fa-check"></i><b>5</b> Trend filtering</a></li>
-<li class="chapter" data-level="6" data-path="objective-data-log-likelihood.html"><a href="objective-data-log-likelihood.html"><i class="fa fa-check"></i><b>6</b> Objective (data log-likelihood)</a></li>
-<li class="chapter" data-level="7" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html"><i class="fa fa-check"></i><b>7</b> Initial parameters for EM algorithm</a></li>
-<li class="chapter" data-level="8" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>8</b> E step</a></li>
-<li class="chapter" data-level="9" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>9</b> M step</a>
+<li class="chapter" data-level="5" data-path="generating-2d-data.html"><a href="generating-2d-data.html"><i class="fa fa-check"></i><b>5</b> Generating 2d data</a></li>
+<li class="chapter" data-level="6" data-path="trend-filtering.html"><a href="trend-filtering.html"><i class="fa fa-check"></i><b>6</b> Trend filtering</a></li>
+<li class="chapter" data-level="7" data-path="objective-data-log-likelihood.html"><a href="objective-data-log-likelihood.html"><i class="fa fa-check"></i><b>7</b> Objective (data log-likelihood)</a></li>
+<li class="chapter" data-level="8" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html"><i class="fa fa-check"></i><b>8</b> Initial parameters for EM algorithm</a></li>
+<li class="chapter" data-level="9" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>9</b> E step</a></li>
+<li class="chapter" data-level="10" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>10</b> M step</a>
 <ul>
-<li class="chapter" data-level="9.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>9.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
-<li class="chapter" data-level="9.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>9.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
-<li class="chapter" data-level="9.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>9.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
+<li class="chapter" data-level="10.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>10.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
+<li class="chapter" data-level="10.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>10.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
+<li class="chapter" data-level="10.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>10.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="flowsmooth.html"><a href="flowsmooth.html"><i class="fa fa-check"></i><b>10</b> flowsmooth</a></li>
-<li class="chapter" data-level="11" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>11</b> Reordering clusters</a></li>
-<li class="chapter" data-level="12" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html"><i class="fa fa-check"></i><b>12</b> Tuning the regularization parameters for <code>flowsmooth</code></a>
+<li class="chapter" data-level="11" data-path="flowtrend.html"><a href="flowtrend.html"><i class="fa fa-check"></i><b>11</b> flowtrend</a></li>
+<li class="chapter" data-level="12" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>12</b> Reordering clusters</a></li>
+<li class="chapter" data-level="13" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html"><i class="fa fa-check"></i><b>13</b> Tuning the regularization parameters for <code>flowtrend</code></a>
 <ul>
-<li class="chapter" data-level="12.1" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>12.1</b> Predicting and evaluating on new time points</a></li>
-<li class="chapter" data-level="12.2" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>12.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
-<li class="chapter" data-level="12.3" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#define-cv-data-folds"><i class="fa fa-check"></i><b>12.3</b> Define CV data folds</a></li>
-<li class="chapter" data-level="12.4" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cv-many-single-jobs"><i class="fa fa-check"></i><b>12.4</b> CV = many single jobs</a></li>
-<li class="chapter" data-level="12.5" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#running-cross-validation"><i class="fa fa-check"></i><b>12.5</b> Running cross-validation</a></li>
-<li class="chapter" data-level="12.6" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#summarizing-the-output"><i class="fa fa-check"></i><b>12.6</b> Summarizing the output</a></li>
-<li class="chapter" data-level="12.7" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>12.7</b> CV on your own computer</a></li>
-<li class="chapter" data-level="12.8" data-path="tuning-the-regularization-parameters-for-flowsmooth.html"><a href="tuning-the-regularization-parameters-for-flowsmooth.html#next-up"><i class="fa fa-check"></i><b>12.8</b> Next up</a></li>
+<li class="chapter" data-level="13.1" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>13.1</b> Predicting and evaluating on new time points</a></li>
+<li class="chapter" data-level="13.2" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>13.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
+<li class="chapter" data-level="13.3" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#define-cv-data-folds"><i class="fa fa-check"></i><b>13.3</b> Define CV data folds</a></li>
+<li class="chapter" data-level="13.4" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-many-single-jobs"><i class="fa fa-check"></i><b>13.4</b> CV = many single jobs</a></li>
+<li class="chapter" data-level="13.5" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#running-cross-validation"><i class="fa fa-check"></i><b>13.5</b> Running cross-validation</a></li>
+<li class="chapter" data-level="13.6" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#summarizing-the-output"><i class="fa fa-check"></i><b>13.6</b> Summarizing the output</a></li>
+<li class="chapter" data-level="13.7" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>13.7</b> CV on your own computer</a></li>
+<li class="chapter" data-level="13.8" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#next-up"><i class="fa fa-check"></i><b>13.8</b> Next up</a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html"><i class="fa fa-check"></i><b>13</b> Testing the flowsmooth method</a>
+<li class="chapter" data-level="14" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>14</b> Testing the flowtrend method</a>
 <ul>
-<li class="chapter" data-level="13.1" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html#id_1d-example"><i class="fa fa-check"></i><b>13.1</b> 1d example</a></li>
-<li class="chapter" data-level="13.2" data-path="testing-the-flowsmooth-method.html"><a href="testing-the-flowsmooth-method.html#d-example-with-gap"><i class="fa fa-check"></i><b>13.2</b> 1d example with gap</a></li>
+<li class="chapter" data-level="14.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>14.1</b> 1d example</a></li>
+<li class="chapter" data-level="14.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#d-example-with-gap"><i class="fa fa-check"></i><b>14.2</b> 1d example with gap</a></li>
 </ul></li>
+<li class="chapter" data-level="15" data-path="d-to-1d.html"><a href="d-to-1d.html"><i class="fa fa-check"></i><b>15</b> 2d to 1d</a></li>
 </ul>
 
       </nav>
@@ -174,7 +176,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating the <code>flowsmooth</code> R package</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating the <code>flowtrend</code> R package</a>
           </h1>
         </div>
 
@@ -182,8 +184,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="e-step" class="section level1 hasAnchor" number="8">
-<h1><span class="header-section-number">8</span> E step<a href="e-step.html#e-step" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="e-step" class="section level1 hasAnchor" number="9">
+<h1><span class="header-section-number">9</span> E step<a href="e-step.html#e-step" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="e-step.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; E step, which updates the &quot;responsibilities&quot;, which are posterior membership probabilities of each particle.</span></span>
 <span id="cb34-2"><a href="e-step.html#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
 <span id="cb34-3"><a href="e-step.html#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param mn</span></span>

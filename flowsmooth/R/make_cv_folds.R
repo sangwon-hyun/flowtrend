@@ -10,9 +10,11 @@ make_cv_folds <- function(ylist=NULL, nfold, TT=NULL){
 
   ## Make hour-long index list
   if(is.null(TT)) TT = length(ylist)
-
   folds <- rep(1:nfold, ceiling( (TT-2)/nfold))[1:(TT-2)]
   inds <- lapply(1:nfold, FUN = function(k) (2:(TT-1))[folds == k])
+  plot(NA, ylim=c(0,1), xlim=c(1,100))
+  abline(v=inds[[1]])
   names(inds) = paste0("Fold", 1:nfold)
+
   return(inds)
 } 

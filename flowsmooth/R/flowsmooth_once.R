@@ -140,6 +140,7 @@ flowsmooth_once <- function(ylist,
 
   return(structure(list(mn = mn,
                         prob = prob,
+                        prob_link = prob_link,
                         sigma = sigma,
                         objectives = objectives[2:iter],
                         final.iter = iter,
@@ -152,6 +153,7 @@ flowsmooth_once <- function(ylist,
                         x = x,
                         numclust = numclust,
                         lambda = lambda,
+                        lambda_prob = lambda_prob,
                         maxdev = maxdev,
                         niter = niter
   ), class = "flowsmooth"))

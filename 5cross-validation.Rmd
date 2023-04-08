@@ -1,11 +1,11 @@
-# Tuning the regularization parameters for `flowsmooth`
+# Tuning the regularization parameters for `flowtrend`
 
 
-We're going to take a (huge) leap, and assume the `flowsmooth()` function has been
+We're going to take a (huge) leap, and assume the `flowtrend()` function has been
 built. We need to build up quite a few functions before we're able to do
 cross-validation. These include:
 
-- Predicting out-of-sample, using `predict_flowsmooth()`.
+- Predicting out-of-sample, using `predict_flowtrend()`.
 - Evaluating data fit (by likelihood) in an out-of-sample measurement, using
   `objective(..., unpenalized = TRUE)`.
 - Numerically estimating the maximum regularization values to test, using
@@ -90,28 +90,28 @@ interpolate_prob <- function(x, tt, iclust, prob){
 }
 ```
 
-Next, let's build a prediction function `predict_flowsmooth()` which takes the
+Next, let's build a prediction function `predict_flowtrend()` which takes the
 model object `obj`, and the new time points `newtimes`, and produces.
 
-```{r predict_flowsmooth, eval = TRUE}
+```{r predict_flowtrend, eval = TRUE}
 #' Prediction: Given new timepoints in the original time interval,generate a set
 #' of means and probs (and return the same Sigma).
 #'
-#' @param obj Object returned from covariate EM flowsmooth().
+#' @param obj Object returned from covariate EM flowtrend().
 #' @param newtimes New times at which to make predictions.
 #'
 #' @return List containing mean, prob, and sigma, and x.
 #'
 #' @export
 #'
-predict_flowsmooth <- function(obj, newtimes = NULL){
+predict_flowtrend <- function(obj, newtimes = NULL){
 
   ## Check the dimensions
   newx <- newtimes
   if(is.null(newtimes)){ newx = obj$x }
 
-  ## Check if the new times are within the time range of the original data (why is this important)?
-  if(FALSE) stopifnot(all(sapply(newx, FUN = function(t) t >= min(obj$x) & t <= max(obj$x))))
+  ## Check if the new times are within the time range of the original data 
+  stopifnot(all(sapply(newx, FUN = function(t) t >= min(obj$x) & t <= max(obj$x))))
 
   ## Setup some things
   x <- obj$x
@@ -153,15 +153,19 @@ predict_flowsmooth <- function(obj, newtimes = NULL){
 Here's a quick test (no new data) to make sure this function returns a list
 containing: the mean, probability, covariance, and new times.
 
-```{r test-predict_flowsmooth, eval = TRUE}
-devtools::load_all("~/repos/FlowTF") ## Temporary! flowsmooth hasn't fully ported over the m-step yet.
+
+```{r temp-load-flowtf}
+devtools::load_all("~/repos/FlowTF") ## Temporary! flowtrend hasn't fully ported over the m-step yet.
+```
+
+```{r test-predict_flowtrend, eval = FALSE}
 testthat::test_that("The prediction function returns the right things", {
   ## Generate data
   set.seed(100)
   dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
   ylist = dt %>% dt2ylist()
   x = dt %>% pull(time) %>% unique()
-  obj <- flowsmooth(ylist = ylist,
+  obj <- flowtrend(ylist = ylist,
                     x = x,
                     maxdev = 5,
                     numclust = 3,
@@ -172,7 +176,7 @@ testthat::test_that("The prediction function returns the right things", {
                     nrestart = 1,
                     niter = 3)
 
-  predobj = predict_flowsmooth(obj)
+  predobj = predict_flowtrend(obj)
   testthat::expect_named(predobj, c("mn", "prob", "sigma", "x"))
 })
 ```
@@ -180,7 +184,7 @@ testthat::test_that("The prediction function returns the right things", {
 Now, we try to make predictions at *new* held-out time points `held_out=25:35`,
 from a model that is estimated without those time points.
 
-```{r test-predict_flowsmooth2, eval = TRUE}
+```{r test-predict_flowtrend2, eval = FALSE}
 ## Generate data
 set.seed(100)
 dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
@@ -189,7 +193,7 @@ held_out = 25:35
 dt_subset = dt %>% subset(time %ni% held_out)
 ylist = dt_subset %>% dt2ylist()
 x = dt_subset %>% pull(time) %>% unique()
-obj <- flowsmooth(ylist = ylist, 
+obj <- flowtrend(ylist = ylist, 
                   x = x,
                   maxdev = 5,
                   numclust = 3,
@@ -209,7 +213,7 @@ obj = reorder_clust(obj)
 
 testthat::test_that("prediction function returns the right things", {
    
-  predobj = predict_flowsmooth(obj, newtimes = held_out)
+  predobj = predict_flowtrend(obj, newtimes = held_out)
 
   ## Check a few things
   testthat::expect_equal(predobj$x,  held_out)
@@ -221,8 +225,8 @@ testthat::test_that("prediction function returns the right things", {
 Plot the predicted means $\mu$ and probabilities $\pi$, with purple points at
 the interpolated means.  We can see that it works as expected.
 
-```{r predict-plot-mean, eval = TRUE, fig.width = 7, fig.height = 5}
-predobj = predict_flowsmooth(obj, newtimes = held_out)
+```{r predict-plot-mean, fig.width = 7, fig.height = 5, eval = FALSE}
+predobj = predict_flowtrend(obj, newtimes = held_out)
 
 g = plot_1d(ylist, obj, x = x) +
   geom_line(aes(x = time, y = mean, group = cluster),
@@ -242,7 +246,7 @@ g + geom_line(aes(x=time, y=mn, group = cluster), data = preds, col = 'yellow', 
 The estimated probabilities are shown here, with purple points showing the
 interpolation. It works as expected.
 
-```{r predict-plot-prob, eval = TRUE, fig.width = 7, fig.height = 5}
+```{r predict-plot-prob, eval = TRUE, fig.width = 7, fig.height = 5, eval = FALSE}
 plot_prob(obj, x=x) +
   geom_line(aes(x = time, y = prob, group = cluster, color = cluster),
             data = dt_model, linetype = "dashed")  +
@@ -252,7 +256,7 @@ plot_prob(obj, x=x) +
 
 Let's now try to space inputs unevenly, by `x`.
 
-```{r uneven-space, eval = TRUE}
+```{r uneven-space, eval = FALSE}
 set.seed(100)
 dt       <- gendat_1d(1000, rep(100, 1000), die_off_time = 0.45)
 dt_model       <- gendat_1d(1000, rep(100, 1000), die_off_time = 0.45, return_model = TRUE)
@@ -263,7 +267,7 @@ ylist_orig = dt %>% dt2ylist()
 ## x = runif(min = 1, max = 100, n = 100) %>% sort()
 x = sample(1:1000, 100) %>% sort()
 ylist = ylist_orig[x]
-obj <- flowsmooth(ylist = ylist, 
+obj <- flowtrend(ylist = ylist, 
                   x = x,
                   maxdev = 5,
                   numclust = 3,
@@ -283,7 +287,7 @@ obj = reorder_clust(obj)
 
 ## Make mean predictions
 newtimes  = seq(from=min(x),to=max(x),length=10000)
-predobj = predict_flowsmooth(obj, newtimes = newtimes)
+predobj = predict_flowtrend(obj, newtimes = newtimes)
 
 ## Plot the predicted means
 preds = lapply(1:3, function(iclust){
@@ -299,8 +303,8 @@ points. The out-of-sample $\mu$ predictions made on a fine grid of time points
 (shown by the yellow lines) look fine.
 
 
-```{r uneven-mean-plot, eval = TRUE, fig.width = 7, fig.height = 5}
-g = plot_1d(ylist, obj, x = x)
+```{r uneven-mean-plot, fig.width = 7, fig.height = 5, eval = FALSE}
+g = plot_1d(ylist, obj, x = x, add_point = FALSE)
 g + ggtitle("Fitted model")
 g + geom_line(aes(x=time, y=mn, group = cluster), data = preds, col = 'yellow', size = rel(1), alpha = .7) + ggtitle("Predictions on fine grid of times") 
 ```
@@ -308,7 +312,7 @@ g + geom_line(aes(x=time, y=mn, group = cluster), data = preds, col = 'yellow', 
 The out-of-sample $\pi$ predictions are the lines that connect the points. They
 look great as well.
 
-```{r uneven-prob-plot, eval = TRUE, fig.width = 7, fig.height = 5}
+```{r uneven-prob-plot, eval = TRUE, fig.width = 7, fig.height = 5, eval = FALSE}
 plot_prob(obj, x=x) +
   geom_line(aes(x = time, y = prob, group = cluster, color = cluster),
             data = dt_model, linetype = "dashed")  +
@@ -316,9 +320,11 @@ plot_prob(obj, x=x) +
   ## geom_line(aes(x = time, y = prob), data = preds, col = 'yellow', size = rel(1), alpha = .7)
 ```
 
-Next, evaluating data fit (by likelihood) in an out-of-sample measurement.
+Next, we'll try evaluating an estimated model's prediction in an out-of-sample
+measurement. This will be measured by the model prediction's out-of-sample
+objective (negative log-likelihood).
 
-```{r predict-example, eval = TRUE}
+```{r predict-example, eval = FALSE}
 ## Generate data
 set.seed(100)
 dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
@@ -327,7 +333,7 @@ held_out = 25:35
 dt_subset = dt %>% subset(time %ni% held_out)
 ylist = dt_subset %>% dt2ylist()
 x = dt_subset %>% pull(time) %>% unique()
-obj <- flowsmooth(ylist = ylist, 
+obj <- flowtrend(ylist = ylist, 
                   x = x,
                   maxdev = 5,
                   numclust = 3,
@@ -335,10 +341,10 @@ obj <- flowsmooth(ylist = ylist,
                   l = 1,
                   l_prob = 2,
                   lambda_prob = .005, ## 
-                  nrestart = 1)
+                  nrestart = 5)
 
 ## Make prediction
-predobj = predict_flowsmooth(obj, newtimes = held_out)
+predobj = predict_flowtrend(obj, newtimes = held_out)
 
 ## Use the predicted (interpolated) model parameters
 obj_pred = objective(mu = predobj$mn, prob = predobj$prob, sigma = predobj$sigma, ylist = ylist[held_out],
@@ -352,48 +358,38 @@ truemn[,1,] =
 ## Use the true mean
 obj_better = objective(mu = truemn, prob = predobj$prob, sigma = predobj$sigma, ylist = ylist[held_out],
                        unpenalized = TRUE)
+
+## Here is the estimated model
+plot_1d(ylist, obj, x= (1:100)[-held_out], add_point = FALSE)
 ```
 
-The fit is similar for the predicted model and the estimated model.
+The out-of-sample prediction is similar for the predicted model and the
+estimated model. Below, we're showing just the predicted means at the held-out
+points, overlaid with data.
 
-```{r before-push-away, fig.width = 7, fig.height = 5})
-matplot(truemn[,1,], type = 'l', col = 'black', main = paste0(round(obj_pred,3), " (red) vs ", round(obj_better, 3)))
-matlines(predobj$mn[,1,], lwd = 2, col = 'red')
+(This is measured by the objective (= negative log likelihood), so lower is
+better! Red is worse than black, naturally.)
+
+```{r fit, fig.width = 7, fig.height = 5})
+g = plot_1d(ylist = dt %>% subset(time %in% held_out) %>% dt2ylist(), x= held_out) + xlim(c(0,100))
+g + geom_line(aes(x=time, y = value, group = name), data = data.frame(truemn[,1,]) %>% add_column(time = held_out) %>% pivot_longer(-time)) +
+  geom_line(aes(x=time, y = value, group = name), data = data.frame(predobj$mn[,1,]) %>% add_column(time = held_out) %>% pivot_longer(-time), col = 'red') +
+ggtitle(paste0(round(obj_pred,3), " (red, predicted)   vs.   ", round(obj_better, 3), "(black, truth)"))
 ```
-
-If you push one of the cluster means away, the fit worsens.
-
-```{r push-away, fig.width = 7, fig.height = 5}
-predobj$mn[,1,] = predobj$mn[,1,] + .5
-obj_pred = objective(mu = predobj$mn, prob = predobj$prob, sigma = predobj$sigma, ylist = ylist[held_out],
-                     unpenalized = TRUE)
-matplot(truemn[,1,], type = 'l', col = 'black', main = paste0(round(obj_pred,3), " (red) vs ", round(obj_better,3)))
-matlines(predobj$mn[,1,], lwd = 2, col = 'red')
-```
-
-Next, try a 1d example with ends cut off.
-
-```{r 1d-example-ends-cut-off, eval = FALSE}
-set.seed(100)
-dt <-       gendat_1d(TT, ntlist, die_off_time = 0.45)
-dt1 = dt %>% subset(time <= 50)
-dt2 = dt %>% subset(time > 50)
-```
-
 
 ## Maximum $(\lambda_\mu, \lambda_\pi)$ values to test
 
 What should the maximum value of regularization parameters to use? It's useful
 to be able to calculate the *smallest* value of regularization parameters that
 result in fully flat $\mu$ and $\pi$ over time, in all clusters. Call these
-$\lambda_\mu^{\text{max}}$ and $\lambda_{\pi}^{\text{max}}$. Then, as candidates
-for cross-validation, we can use a grid of logarithmically-spaced pairs of
-values between (0,0) and $(\lambda_{\mu}^{\text{max}},
-\lambda_{\pi}^{\text{max}})$.
+$\lambda_\mu^{\text{max}}$ and $\lambda_{\pi}^{\text{max}}$. We use these to
+form a 2d grid of candidate $\lambda$ values -- logarithmically-spaced pairs of
+values between starting at $(\lambda_{\mu}^{\text{max}},
+\lambda_{\pi}^{\text{max}})$ decreasing to some small pair of values.
 
 The function `get_max_lambda()` numerically estimates this maximum pair
 $(\lambda_{\mu}^{\text{max}}, \lambda_{\pi}^{\text{max}})$. It proceeds by first
-running `flowsmooth()` on a very large pair $(\lambda_\mu, \lambda_\pi)$, then
+running `flowtrend()` on a very large pair $(\lambda_\mu, \lambda_\pi)$, then
 sequentially halving both values while checking if the resulting estimated $\mu$
 and $\pi$ are *all* flat over time. As soon as they cease to be flat, we stop
 and take the immediately previous pair of values of $(\lambda_\mu,
@@ -410,7 +406,7 @@ obtains the value *and* saves it to a `maxres_file` (which defaults to
 #' @param destin Where to save the output (A two-lengthed list called
 #'   "maxres").
 #' @param maxres_file Filename for output. Defaults to maxres.Rdata.
-#' @param ... Additional arguments to \code{flowsmooth()}.
+#' @param ... Additional arguments to \code{flowtrend()}.
 #' @inheritParams calc_max_lambda
 #'
 #' @return No return
@@ -421,8 +417,8 @@ get_max_lambda <- function(destin, maxres_file = "maxres.Rdata",
                            countslist,
                            numclust,
                            maxdev,
-                           max_lambda_prob,
                            max_lambda_mean,
+                           max_lambda_prob,
                            ...){
   
   if(file.exists(file.path(destin, maxres_file))){
@@ -461,7 +457,7 @@ The aforementioned workhorse `calc_max_lambda()` is here.
 #' regularization (lambda) value pair that gives full sparsity.
 #'
 #' Note that the \code{zero_stabilize=TRUE} option is used in
-#' \code{flowsmooth()}, which basically means the EM algorithm runs only until
+#' \code{flowtrend()}, which basically means the EM algorithm runs only until
 #' the zero pattern stabilizes.
 #'
 #' @param ylist List of responses.
@@ -469,7 +465,7 @@ The aforementioned workhorse `calc_max_lambda()` is here.
 #' @param max_lambda_mean Defaults to 4000.
 #' @param max_lambda_prob Defaults to 1000.
 #' @param iimax Maximum value of x for 2^{-x} factors to try.
-#' @param ... Other arguments to \code{flowsmooth_once()}.
+#' @param ... Other arguments to \code{flowtrend_once()}.
 #' 
 #' @return list containing the two maximum values to use.
 #' 
@@ -489,19 +485,44 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
     ## print_progress(ii, iimax, "regularization values", fill = TRUE)
     cat("###############################################################", fill=TRUE)
     cat("#### lambda_prob = ", max_lambda_prob * facs[ii],
-        " and lambda_beta = ", max_lambda_mean * facs[ii], "being tested.  ", fill=TRUE)
+        " and lambda = ", max_lambda_mean * facs[ii], "being tested.  ", fill=TRUE)
     cat("###############################################################", fill=TRUE)
 
-    res = flowsmooth_once(ylist = ylist,
-                       countslist = countslist,
-                       numclust = numclust,
-                       lambda_prob = max_lambda_prob * facs[ii],
-                       lambda_mean = max_lambda_mean * facs[ii],
-                       verbose = verbose,
-                       zero_stabilize = TRUE,
-                       ...)
+    res = flowtrend_once(ylist = ylist,
+                          countslist = countslist,
+                          numclust = numclust,
+                          lambda_prob = max_lambda_prob * facs[ii],
+                          lambda = max_lambda_mean * facs[ii],
+                          verbose = verbose,
+                          ...)
 
     ## TODO: CHECK FLATNESS INSTEAD OF ZERONESS
+    ## In each dimension, the data should only vary by a relatively small amount (say 1/100)
+    browser()
+    idim = 1
+    toler_by_dim = sapply(1:res$dimdat, function(idim){
+      datrange = ylist %>% sapply(FUN = function(y) y %>% .[,idim] %>% range()) %>% range()
+      toler = (datrange[2] - datrange[1]) / (100 * length(ylist))
+    })
+    mean_is_flat = sapply(1:res$dimdat, FUN = function(idim){
+      all(abs(diff(res$mn[,idim,])) < toler_by_dim)
+    })
+
+    toler_prob = 0.01 / length(ylist)
+    prob_is_flat =  all(abs(diff(res$prob)) < toler_prob)
+    if(all(mean_is_flat) & prob_is_flat) ## I think this is it?
+
+    abs_range / 100
+    plot_1d(ylist, res)
+    plot_prob(res) + ylim(c(0,1))
+    names(res)
+    res$lambda
+    res$lmbda_prob
+    res$prob[,1] %>% plot()
+    res$objectives %>% plot(type = 'o', cex=.5)
+
+
+    ## End of the flatness
 
     ## Check zero-ness
     toler = 0
@@ -524,21 +545,26 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
       ## full sparsity.
       } else {
         ## Check one more time whether the model was actually zero, by fully running it;
-        res = flowsmooth_once(ylist = ylist,
+        res = flowtrend_once(ylist = ylist,
                               countslist = countslist,
                               numclust = numclust,
                               lambda_prob = max_lambda_prob * facs[ii],
                               lambda      = max_lambda_mean * facs[ii],
-                              zero_stabilize = FALSE,
                               ...)
+
+        ## Check if both curves are basically flat
+        if(FALSE){
         toler = 0
         sum_nonzero_alpha = sum(res$alpha[,-1] > toler)
         sum_nonzero_beta = sum(unlist(lapply(res$beta, function(cf){ sum(cf[-1,] > toler) })))
+        }
+        res$mean
+        res$prob
 
         ## If there are *any* nonzero values, do one of the following
         if(sum_nonzero_alpha + sum_nonzero_beta != 0){
-          return(list(beta = max_lambda_mean * facs[ii-1],
-                      alpha = max_lambda_prob *facs[ii-1]))
+          return(list(mean = max_lambda_mean * facs[ii-1],
+                      prob = max_lambda_prob *facs[ii-1]))
         }
         ## Otherwise, just proceed to the next iteration.
       }
@@ -567,10 +593,12 @@ make_cv_folds <- function(ylist=NULL, nfold, TT=NULL){
 
   ## Make hour-long index list
   if(is.null(TT)) TT = length(ylist)
-
   folds <- rep(1:nfold, ceiling( (TT-2)/nfold))[1:(TT-2)]
   inds <- lapply(1:nfold, FUN = function(k) (2:(TT-1))[folds == k])
+  plot(NA, ylim=c(0,1), xlim=c(1,100))
+  abline(v=inds[[1]])
   names(inds) = paste0("Fold", 1:nfold)
+
   return(inds)
 } 
 ```
@@ -578,12 +606,12 @@ make_cv_folds <- function(ylist=NULL, nfold, TT=NULL){
 We can visualize how the data is to be split. In the following plot, vertical
 lines mark data indices in each fold, using different colors . For `nfold = 5`,
 the first fold is every 5th point starting at 2, $\{2,7,\dots\}$, and the second
-fold is $\{3,8,\dots\}$, and so forth. The first index $1$ and the last $TT$ are
-intentionally left out and assumed available to all folds. This small detail is
-required because, otherwise, we are unable to make predictions at either end of
-the data.
+fold is $\{3,8,\dots\}$, and so forth. 
 
-TODO: explanation is clunky.
+Note: the first index $1$ and the last $TT$ are left out at this stage, and
+instead made available to all folds at training time (in
+`cv_flowtrend()`). This is because, otherwise, it would be impossible to make
+predictions at either *ends* of the data.
 
 ```{r, fig.width = 7, fig.height = 3}
 nfold = 5
@@ -597,12 +625,11 @@ for(ifold in 1:nfold){
 }
 ```
 
-
 ## CV = many single jobs
 
 Next, we build the immediate elements needed for cross-validation.
 
-There are two applications of `flowsmooth()` on data for cross-validation; one
+There are two applications of `flowtrend()` on data for cross-validation; one
 is when estimating models from held-in data folds, and the other is when
 *re-estimating* models on the full data.
 
@@ -624,7 +651,7 @@ Here is `one_job()`.
 #' @param lambda_probs List of regularization parameters for prob model.
 #' @param ylist Data.
 #' @param countslist Counts or biomass.
-#' @param ... Rest of arguments for \code{flowsmooth_once()}.
+#' @param ... Rest of arguments for \code{flowtrend_once()}.
 #'
 #' @return Nothing is returned. Instead, a file named "1-1-1-1-cvscore.Rdata"
 #'   is saved in \code{destin}. (The indices here are iprob-imu-ifold-irestart).
@@ -633,7 +660,7 @@ Here is `one_job()`.
 one_job <- function(iprob, imu, ifold, irestart, folds, destin,
                        lambda_means, lambda_probs,
                        seedtab = NULL,
-                       ## The rest that is needed explicitly for flowsmooth()
+                       ## The rest that is needed explicitly for flowtrend()
                        ylist, countslist,
                        l, l_prob,
                        ...){
@@ -682,7 +709,7 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
   args$l_prob = l_prob
   args$seed = seed
   if("nrestart" %in% names(args)){
-    args = args[-which(names(args) %in% "nrestart")] ## remove |nrestart| prior to feeding to flowsmooth_once().
+    args = args[-which(names(args) %in% "nrestart")] ## remove |nrestart| prior to feeding to flowtrend_once().
   }
 
   tryCatch({
@@ -690,11 +717,11 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
     ## Estimate model
     argn <- lapply(names(args), as.name)
     names(argn) <- names(args)
-    call <- as.call(c(list(as.name("flowsmooth")), argn))
+    call <- as.call(c(list(as.name("flowtrend")), argn))
     res.train = eval(call, args)
 
     ## Assign mn and prob
-    pred = predict_flowsmooth(res.train, newtimes = test.inds)
+    pred = predict_flowtrend(res.train, newtimes = test.inds)
     stopifnot(all(pred$prob >= 0))
 
     ## Build Dl
@@ -769,7 +796,7 @@ one_job_refit <- function(iprob, imu, destin,
                           lambda_means, lambda_probs,
                           l, l_prob,
                           seedtab = NULL,
-                          ## The rest that is needed explicitly for flowsmooth_once()
+                          ## The rest that is needed explicitly for flowtrend_once()
                           ylist, countslist,
                           ...){
 
@@ -812,7 +839,7 @@ one_job_refit <- function(iprob, imu, destin,
       ## Call the function.
       argn <- lapply(names(args), as.name)
       names(argn) <- names(args)
-      call <- as.call(c(list(as.name("flowsmooth_once")), argn))
+      call <- as.call(c(list(as.name("flowtrend_once")), argn))
       res = eval(call, args)
 
       ## Save the results
@@ -947,11 +974,11 @@ logspace <- function(max, min=NULL, length, min.ratio = 1E-4){
 ## Running cross-validation
 
 Putting the helpers all together, you get the main user-facing function
-`cv_flowsmooth()`.
+`cv_flowtrend()`.
 
 
-```{r cv_flowsmooth}
-#' Cross-validation for flowsmooth(). Saves results to separate files in
+```{r cv_flowtrend}
+#' Cross-validation for flowtrend(). Saves results to separate files in
 #' \code{destin}.
 #'
 #' @param destin Directory where output files are saved.
@@ -966,13 +993,13 @@ Putting the helpers all together, you get the main user-facing function
 #' @param blocksize Contiguous time blocks from which to form CV time folds.
 #' @param refit If TRUE, estimate the model on the full data, for each pair of
 #'   regularization parameters.
-#' @param ... Additional arguments to flowsmooth().
-#' @inheritParams flowsmooth_once
+#' @param ... Additional arguments to flowtrend().
+#' @inheritParams flowtrend_once
 #'
 #' @return No return.
 #'
 #' @export
-cv_flowsmooth <- function(## Data
+cv_flowtrend <- function(## Data
                           ylist,
                           countslist,
                           ## Define the locations to save the CV.
@@ -1059,9 +1086,9 @@ cv_flowsmooth <- function(## Data
               destin = destin,
               lambda_means = lambda_means,
               lambda_probs = lambda_probs,
-              ## Arguments for flowsmooth()
+              ## Arguments for flowtrend()
               ylist = ylist, countslist = countslist, 
-              ## Additional arguments for flowsmooth().
+              ## Additional arguments for flowtrend().
               numclust = numclust,
               maxdev = maxdev,
               verbose = FALSE,
@@ -1074,9 +1101,9 @@ cv_flowsmooth <- function(## Data
                     destin = destin,
                     lambda_means = lambda_means,
                     lambda_probs = lambda_probs,
-                    ## Arguments to flowsmooth()
+                    ## Arguments to flowtrend()
                     ylist = ylist, countslist = countslist, 
-                    ## Additional arguments for flowsmooth().
+                    ## Additional arguments for flowtrend().
                     numclust = numclust,
                     maxdev = maxdev,
                     nrestart = nrestart,
@@ -1100,7 +1127,7 @@ If you look closely, you'll notice that `cv_aggregate()` is the workhorse.
 ```{r cv_summary}
 #' Main function for summarizing the cross-validation results.
 #'
-#' @inheritParams cv_flowsmooth
+#' @inheritParams cv_flowtrend
 #' @param save If TRUE, save to \code{file.path(destin, filename)}.
 #' @param filename File name to save to.
 #'
@@ -1324,52 +1351,57 @@ cv_aggregate_res <- function(destin){
 ## CV on your own computer
 
 Using all this functionality, we'd like to be able to cross-validate on our own
-laptop, using `cv_flowsmooth()`.
+laptop, using `cv_flowtrend()`.
 
 Let's try it out.
 
 ```{r, eval = FALSE}
-ll()
 cv_gridsize = 3
 l = 1
 l_prob = 1
 set.seed(332)
-ylist = gendat_1d(100, rep(100,100)) %>% dt2ylist()
+ylist = gendat_1d(10, rep(100,10)) %>% dt2ylist()
+plot_1d(ylist)
 folds = make_cv_folds(lapply(1:100, function(ii)cbind(runif(10))), nfold = 5, TT = length(ylist))
 lambda_means =  lambda_probs = logspace(min = 1E-5, max = 1, length = cv_gridsize)
 for(refit in c(FALSE, TRUE)){
-  cv_flowsmooth(ylist = ylist, countslist = NULL, 
-                destin = "~/repos/flowsmooth/tempoutput", 
+  cv_flowtrend(ylist = ylist, countslist = NULL, 
+                destin = "~/repos/flowtrend/tempoutput", 
                 lambda_means = lambda_means,
                 lambda_probs = lambda_probs,
-                l = l, l_prob = l_prob, maxdev = NULL, numclust = 3, nfold = 5, nrestart = 5,
+                l = l, l_prob = l_prob,
+                maxdev = NULL, numclust = 3, nfold = 5, nrestart = 5,
                 verbose = TRUE, refit = refit, save_meta = TRUE, mc.cores = 6)
 }
 
 ## Test out the summary
-obj = cv_summary(destin = "~/repos/flowsmooth/tempoutput")
+obj = cv_summary(destin = "~/repos/flowtrend/tempoutput")
 plot_1d(ylist, obj$bestres)
 ```
 
-Okay, now we know it's *possible* to run on a laptop.
-  
-A more realistic application would go something like this (noting that
-`get_max_lambda()` is not written yet TODO: write it.):
+Okay, now we know it's *possible* to run on (say) a laptop. A more realistic
+application would go something like this:
 
 ```{r, eval = FALSE}
-get_max_lambda("~/repos/flowsmooth/tempoutput",
+litr::load_all("~/repos/flowtrend/index.Rmd")
+get_max_lambda("~/repos/flowtrend/tempoutput",
                maxres_file = "maxres.Rdata",
                ylist,
                countslist = NULL,
                numclust = 3,
-               maxdev = 1)
-lambda_probs = logspace(max = 1, length = 5)
-lambda_means = logspace(max = 1, length = 5)
+               maxdev = 1,
+               max_lambda_prob = 3000000,
+               max_lambda_mean = 3000000,
+               verbose = TRUE,
+               l = 1, l_prob = 1)
+load("maxres.Rdata", verbose = TRUE) ## Loads "maxres" object
+lambda_means = logspace(max = maxres$means, length = 5)
+lambda_probs = logspace(max = maxres$prob, length = 5)
 
 for(refit in c(FALSE, TRUE)){
-  cv_flowsmooth(ylist = ylist,
+  cv_flowtrend(ylist = ylist,
                 countslist = NULL, 
-                destin = "~/repos/flowsmooth/tempoutput", 
+                destin = "~/repos/flowtrend/tempoutput", 
                 lambda_means = lambda_means,
                 lambda_probs = lambda_probs,
                 l = 2,
@@ -1381,48 +1413,12 @@ for(refit in c(FALSE, TRUE)){
                 verbose = TRUE,
                 refit = refit,
                 save_meta = TRUE,
-                mc.cores = 8)
+                mc.cores = 6)
 }
-```
-
-But we can't run this because it's really, really slow. 
-
-Which parts make it slow, and can we speed this up?  Let's see next.
-
-
-```{r, eval = FALSE}
-library(profvis)
-
-## Generate test data
-ll()
-set.seed(100)
-dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
-dt_model <- gendat_1d(100, rep(100, 100), die_off_time = 0.45, return_model = TRUE)
-ylist = dt %>% dt2ylist()
-x = dt %>% pull(time) %>% unique()
-
-
-obj = profvis({
-  set.seed(100)
-  obj <- flowsmooth(ylist = ylist,
-                    x = x,
-                    maxdev = 5,
-                    numclust = 3,
-                    lambda = 0.02,
-                    l = 1,
-                    l_prob = 1,
-                    lambda_prob = .005,
-                    nrestart = 3)
-})
-obj
-
-
 ```
 
 ## Next up
 
 TODO: Things to check out
-- ADMM convergence <-- detailed look
-- ADMM sub-steps
-- density calculation
+- ADMM convergence <-- take a detailed look
 - spaced CV correctness check.
