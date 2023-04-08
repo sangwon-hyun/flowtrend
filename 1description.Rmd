@@ -8,7 +8,7 @@ usethis::create_package(
   fields = list(
     Package = params$package_name,
     Version = "0.0.0.9000",
-    Title = "flowsmooth",
+    Title = "flowtrend",
     Description = "Time-smooth mixture modeling for flow cytometry data.",
     `Authors@R` = person(
       given = "Sangwon",
@@ -21,13 +21,13 @@ usethis::create_package(
 usethis::use_mit_license(copyright_holder = "Sangwon Hyun")
 ```
 
-The following is what will show up when someone types `package?flowsmooth` in
+The following is what will show up when someone types `package?flowtrend` in
 the console.
 
 ```{package_doc}
-#' flowsmooth
+#' flowtrend
 #'
-#' This package implements the `flowsmooth` method for automatic gating of flow cytometry data over time and space.
+#' This package implements the `flowtrend` method for automatic gating of flow cytometry data using trend filtering.
 #' 
 #' @docType package
 ```

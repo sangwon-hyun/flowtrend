@@ -8,7 +8,7 @@
 #'
 #' @return ggplot object with data, and optionally, a flowsmooth model overlaid.
 #' @export
-plot_1d <- function(ylist, obj=NULL, x = NULL){
+plot_1d <- function(ylist, obj=NULL, x = NULL, add_point = TRUE){
 
   ## Basic checks
   if(!is.null(x)){
@@ -37,10 +37,14 @@ plot_1d <- function(ylist, obj=NULL, x = NULL){
   mn_long = mnmat %>% pivot_longer(-time, names_to = "cluster", values_to = "mean")
   prob_long = probmat %>% pivot_longer(-time, names_to = "cluster", values_to = "prob")
   est_long = full_join(mn_long, prob_long)
-  gg = gg + geom_line(aes(x = time, y = mean, size = prob, group = cluster, color = cluster),
-                      data = est_long) +
-    geom_point(aes(x = time, y = mean, size = prob, group = cluster),
-              data = est_long, size = rel(1), shape = 17)
+  gg = gg + geom_path(aes(x = time, y = mean, size = prob, group = cluster, color = cluster),
+                      data = est_long,
+                      lineend = "round", linejoin="mitre")
+  if(add_point){
+    gg = gg + geom_line(aes(x = time, y = mean, size = prob, group = cluster),
+                        data = est_long, size = rel(1), shape = 17,
+                        col = 'black')
+  }
 
   ## TODO: make it ignore the missing values at the gaps; currently this is not coded as NAs.
 

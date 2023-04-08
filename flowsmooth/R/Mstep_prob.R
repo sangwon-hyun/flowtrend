@@ -47,7 +47,9 @@ Mstep_prob <- function(resp, H_tf, countslist = NULL,
                          penalty.factor = penalty.facs, maxit = 1e7,
                          lambda =  mean(penalty.facs)*lambda_range(lambda_prob),
                          standardize = F, intercept = FALSE) ## todo: replicate the parameters.
-    pred_link <- predict(glmnet_obj, newx = H_tf, type = "link", s = mean(penalty.facs)*lambda_prob)[,,1]
+    pred_link <- predict(glmnet_obj, newx = H_tf, type = "link", s = mean(penalty.facs) * lambda_prob)[,,1]
     return(pred_link)
   }
 }
+
+## Things TODO: (1) check whether the resp.avg and result from penalized regression match, and (2) check if the scaling has entered the lambdas.

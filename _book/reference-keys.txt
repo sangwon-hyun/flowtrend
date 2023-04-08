@@ -2,6 +2,7 @@ introduction
 package-setup
 generating-1d-data
 plotting-1d-data
+generating-2d-data
 trend-filtering
 objective-data-log-likelihood
 initial-parameters-for-em-algorithm
@@ -10,9 +11,9 @@ m-step
 m-step-for-pi
 m-step-for-sigma
 m-step-for-mu
-flowsmooth
+flowtrend
 reordering-clusters
-tuning-the-regularization-parameters-for-flowsmooth
+tuning-the-regularization-parameters-for-flowtrend
 predicting-and-evaluating-on-new-time-points
 maximum-lambda_mu-lambda_pi-values-to-test
 define-cv-data-folds
@@ -21,6 +22,7 @@ running-cross-validation
 summarizing-the-output
 cv-on-your-own-computer
 next-up
-testing-the-flowsmooth-method
+testing-the-flowtrend-method
 id_1d-example
 d-example-with-gap
+d-to-1d

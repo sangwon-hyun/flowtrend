@@ -19,7 +19,6 @@ plot_prob <- function(obj, x = NULL){
   probmat = obj$prob %>% as_tibble() %>% setNames(1:numclust) %>% add_column(time = times)
   prob_long = probmat %>% pivot_longer(-time, names_to = "cluster", values_to = "prob")
   prob_long %>% ggplot() +
-    geom_line(aes(x=time, y = prob, group = cluster, col = cluster)) +
-    geom_point(aes(x=time, y = prob, group = cluster, col = cluster)) +
-    xlab("Estimated cluster probability")
+    geom_line(aes(x=time, y = prob, group = cluster, col = cluster), size = rel(1)) +
+    ggtitle("Estimated cluster probability")
 }

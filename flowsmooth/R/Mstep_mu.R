@@ -198,7 +198,7 @@ Mstep_mu <- function(resp,
                            zerothresh = zerothresh,
                            sigma_eig_by_clust = sigma_eig_by_clust,
                            space = space,
-                           objective = F, norms = F,
+                           objective = F, 
 
                            ## Warm starts from previous *EM* iteration
                            first_iter = first_iter,

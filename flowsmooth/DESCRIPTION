@@ -7,7 +7,7 @@ Description: Time-smooth mixture modeling for flow cytometry data.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Depends: 
     tidyverse
 Imports: 
@@ -17,4 +17,4 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 LitrVersionUsed: 0.7.0
-LitrId: 9db34df23e1adf322af54ae03ab8c8df
+LitrId: a1de0b9261a7c4556af6a416d8c4dcad
