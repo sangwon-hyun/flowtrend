@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>5 Generating 2d data | Creating the flowtrend R package</title>
   <meta name="description" content="5 Generating 2d data | Creating the flowtrend R package" />
-  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
 
   <meta property="og:title" content="5 Generating 2d data | Creating the flowtrend R package" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2023-04-08" />
+<meta name="date" content="2023-04-18" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="plotting-1d-data.html"/>
 <link rel="next" href="trend-filtering.html"/>
-<script src="libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="libs/header-attrs-2.21/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -147,6 +147,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>10.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
 <li class="chapter" data-level="10.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>10.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
 <li class="chapter" data-level="10.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>10.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
+<li class="chapter" data-level="10.4" data-path="m-step.html"><a href="m-step.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>10.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
+<li class="chapter" data-level="10.5" data-path="m-step.html"><a href="m-step.html#all-rcpp-functions"><i class="fa fa-check"></i><b>10.5</b> All Rcpp functions</a></li>
+<li class="chapter" data-level="10.6" data-path="m-step.html"><a href="m-step.html#ported-over-from-flowmix"><i class="fa fa-check"></i><b>10.6</b> Ported over from flowmix</a></li>
 </ul></li>
 <li class="chapter" data-level="11" data-path="flowtrend.html"><a href="flowtrend.html"><i class="fa fa-check"></i><b>11</b> flowtrend</a></li>
 <li class="chapter" data-level="12" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>12</b> Reordering clusters</a></li>
@@ -164,9 +167,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="14" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>14</b> Testing the flowtrend method</a>
 <ul>
 <li class="chapter" data-level="14.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>14.1</b> 1d example</a></li>
-<li class="chapter" data-level="14.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#d-example-with-gap"><i class="fa fa-check"></i><b>14.2</b> 1d example with gap</a></li>
 </ul></li>
-<li class="chapter" data-level="15" data-path="d-to-1d.html"><a href="d-to-1d.html"><i class="fa fa-check"></i><b>15</b> 2d to 1d</a></li>
+<li class="chapter" data-level="15" data-path="d-to-1d.html"><a href="d-to-1d.html"><i class="fa fa-check"></i><b>15</b> 2d to 1d</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="d-to-1d.html"><a href="d-to-1d.html#documenting-the-package-and-building"><i class="fa fa-check"></i><b>15.1</b> Documenting the package and building</a></li>
+</ul></li>
 </ul>
 
       </nav>

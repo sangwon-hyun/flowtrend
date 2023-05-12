@@ -1,8 +1,9 @@
 introduction
 package-setup
-generating-1d-data
 plotting-1d-data
+d-data
 generating-2d-data
+plotting-2d-data
 trend-filtering
 objective-data-log-likelihood
 initial-parameters-for-em-algorithm
@@ -11,6 +12,9 @@ m-step
 m-step-for-pi
 m-step-for-sigma
 m-step-for-mu
+helpers-for-m-step-mu
+all-rcpp-functions
+ported-over-from-flowmix
 flowtrend
 reordering-clusters
 tuning-the-regularization-parameters-for-flowtrend
@@ -21,8 +25,8 @@ cv-many-single-jobs
 running-cross-validation
 summarizing-the-output
 cv-on-your-own-computer
-next-up
 testing-the-flowtrend-method
 id_1d-example
-d-example-with-gap
-d-to-1d
+testing-monotonicity-of-objective-values
+id_2d-example
+documenting-the-package-and-building

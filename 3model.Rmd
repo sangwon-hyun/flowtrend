@@ -35,7 +35,7 @@ The differencing matrix is formed by recursion, starting with $D^{(1)}$.
 For $l>1$, the differencing matrox $D^{(l+1)}$ is defined recursively as
 $D^{(l+1)} = D^{(1)} D^{(l)}$, starting with $D^{(1)}$.
 
-```{r}
+```{r gen_diff_mat}
 #' Generating Difference Matrix of Specified Order
 #'
 #' @param n length of vector to be differenced
@@ -93,7 +93,7 @@ gen_diff_mat <- function(n, l, x = NULL){
 
 For equally spaced inputs:
 
-```{r, eval = TRUE}
+```{r test_gen_diff_mat, eval = TRUE}
 TT = 10
 
 l = 1
@@ -111,7 +111,7 @@ print(Dl)
 
 When the inputs have a gap in it:
 
-```{r, eval = FALSE}
+```{r test_gen_diff_mat2, eval=TRUE}
 x = (1:10)[-(4:6)]
 l = 2
 TT = length(x)
@@ -122,9 +122,10 @@ print(Dl)
 
 Next, here's a function to build a lasso regressor matrix $H$ that can be used
 to solve an equivalent problem as the trend filtering of the \code{k}'th degree.
+
 (This is stated in Lemma 4, equation (25) from Tibshirani (2014))
 
-```{r}
+```{r gen_tf_mat}
 #' A lasso regressor matrix H that can be used to solve an equivalent problem as the trend filtering of the \code{k}'th degree.
 #'
 #' @param n Total number of time points.
@@ -182,7 +183,7 @@ gen_tf_mat <- function(n, k, x = NULL){
 Here's a simple test, against an alternative function that only works for
 equally spaced data.
 
-```{r}
+```{r gen_tf_mat_equalspace}
 #' Creates trendfiltering regression matrix using Lemma 2 of Ryan Tibshirani's
 #' trendfilter paper (2014); works on equally spaced data only.
 #'
@@ -222,9 +223,8 @@ gen_tf_mat_equalspace <- function(n, k){
 ```
 
 
-```{r, eval = FALSE}
+```{r test_gen_tf_mat_equalspace, eval = FALSE}
 testthat::test_that("Trend filtering regression matrix is created correctly.", {
-
   ## Check that equally spaced data creates same trendfilter regression matrix
   H1 <- gen_tf_mat(10, 1)
   H1_other <- gen_tf_mat(10, 1, x=(1:10)/10)
@@ -248,9 +248,12 @@ testthat::test_that("Trend filtering regression matrix is created correctly.", {
 
 The function `loglik_tt()` calculates the log-likelihood of one cytogram, which is:
 
-$$\sum_{i=1}^{n_t} C_i^{(t)} \log\left( \sum_{k=1}^K \pi_{itk} \phi(y_i^{(t)}; \mu_{kt}, \Sigma_k) \right). $$
+$$\sum_{i=1}^{n_t} C_i^{(t)} \log\left( \sum_{k=1}^K \pi_{itk} \phi(y_i^{(t)};
+\mu_{kt}, \Sigma_k) \right). $$
 
-```{r}
+```{r loglik_tt}
+#' Log likelihood for a single time point's data.
+#'
 #' @param mu Cluster means.
 #' @param prob Cluster probabilities.
 #' @param prob Cluster variances.
@@ -280,7 +283,7 @@ loglik_tt <- function(ylist, tt, mu, sigma, prob, dimdat = NULL, countslist = NU
 Next, here is the function that calculates the entire objective from all
 cytograms, given model parameter `mu`, `prob`, and `sigma`.
 
-```{r}
+```{r objective}
 #' Evaluating the penalized data log-likelihood on all data \code{ylist} given parameters \code{mu}, \code{prob}, and \code{sigma}.
 #'
 #' @param mu
@@ -357,7 +360,7 @@ objective <- function(mu, prob, prob_link = NULL, sigma,
 
 Here's a helper to check numerical convergence of the EM algorithm.
 
-```{r}
+```{r check_converg_rel}
 #' Checks numerical improvement in objective value. Returns TRUE if |old-new|/|old| is smaller than tol.
 #'
 #' @param old Objective value from previous iteration.
@@ -372,7 +375,7 @@ Here's also a helper function to do the softmax-ing of $\alpha_t \in
 \mathbb{R}^K$.
 
 ```{r softmax, send_to="R/softmax.R"}
-#' Converts the Xbeta to softmax(Xbeta), so to speak. Xbeta is the linear functional of X from a multinomial regression; in our notation, it's alpha.
+#'  Softmax function.
 #' 
 #' @param prob_link alpha, which is a (T x K) matrix.
 #' 
@@ -382,6 +385,7 @@ softmax <- function(prob_link){
   prob = exp_prob_link / rowSums(exp_prob_link)
 }
 ```
+
 
 ```{r test-softmax}
 testthat::test_that("Test for softmax",{
@@ -405,7 +409,8 @@ of particles). $\Sigma$ is $d\times d$ identity matrices, with `fac=1` diagonal
 by default. 
 
 TODO: better downsampling for binned data.
-TODO: think hard about best way to design sigma
+
+TODO: think about best way to design sigma
   * TODO: this could be a good student project; best initialization
     techniques. How much does it take to get to the optimum?
 
@@ -688,7 +693,7 @@ Mstep_prob <- function(resp, H_tf, countslist = NULL,
 
     penalty.facs <- c(rep(0, l_prob+1), rep(1, nrow(H_tf) - l_prob - 1))
     resp.predict <- do.call(rbind, lapply(resp, colSums))
-    glmnet_obj <- glmnet(x = H_tf, y = resp.predict, family = "multinomial",
+    glmnet_obj <- glmnet::glmnet(x = H_tf, y = resp.predict, family = "multinomial",
                          penalty.factor = penalty.facs, maxit = 1e7,
                          lambda =  mean(penalty.facs)*lambda_range(lambda_prob),
                          standardize = F, intercept = FALSE) ## todo: replicate the parameters.
@@ -823,9 +828,12 @@ outer_converge <- function(objectives){
     return(all(abs(rel_diffs) - 1 < 1E-5))
   }
 }
+
 ```
 
-Next, we define the main function `Mstep_mu()`.
+Next, we define the main function `Mstep_mu()`.  This uses a "locally-adaptive"
+ADMM [TODO: add source]. `M-step_mu()` calls `la_admm_oneclust()` on each
+cluster $k=1,\cdots, K$; this function will be introduced shortly.
 
 
 ```{r Mstep_mu}
@@ -901,7 +909,7 @@ Mstep_mu <- function(resp,
   dimdat = ncol(ylist[[1]])
   ntlist = sapply(ylist, nrow)
   resp.sum = lapply(resp, colSums) %>% do.call(rbind, .)
-  N = sum(unlist(resp.sum)) ## NEW (make more efficient, later)
+  N = sum(unlist(resp.sum)) ## NEW (TODO: make more efficient, later)
 
   # starting rho for LA-ADMM
   if(local_adapt){
@@ -910,7 +918,6 @@ Mstep_mu <- function(resp,
   else{
     if(!is.null(x)){
       rho.init = lambda*((max(x) - min(x))/length(x))^l
-      #print(rho.init)
       rho.init = lambda
     }else{
     rho.init = lambda
@@ -937,7 +944,7 @@ Mstep_mu <- function(resp,
     resp.iclust <- lapply(resp, FUN = function(r) matrix(r[,iclust]))
 
     ## Center y and X
-   # obj <- weight_ylist(iclust, resp, resp.sum, ylist)
+    # obj <- weight_ylist(iclust, resp, resp.sum, ylist)
     #ycentered <- obj$ycentered
 
     ## Form the Sylvester equation coefficients in AX + XB + C = 0
@@ -945,8 +952,10 @@ Mstep_mu <- function(resp,
     # Q = 1/N * t(Xcentered) %*% D %*% Xcentered
     # syl_B = Q %*% Xinv
 
-    AB <- get_AB_mats(y = y, resp = resp.iclust, Sigma_inv = sigmainv, e_mat = e_mat, N = N, Dl = Dl,
-                      Dlm1 = Dlm1, Dlm1sqrd = Dlm1sqrd, rho = rho.init, z = NULL, w = NULL, uz = NULL, uw = NULL)
+    AB <- get_AB_mats(y = y, resp = resp.iclust, Sigma_inv = sigmainv,
+                      e_mat = e_mat, N = N, Dl = Dl, Dlm1 = Dlm1,
+                      Dlm1sqrd = Dlm1sqrd, rho = rho.init, z = NULL, w = NULL,
+                      uz = NULL, uw = NULL)
 
     ## Store the Schur decomposition
     schur_syl_A_by_clust[[iclust]] = myschur(AB$A)
@@ -989,8 +998,6 @@ Mstep_mu <- function(resp,
  # }
 
   fits = matrix(NA, ncol = numclust, nrow = ceiling(niter / space))
-
-  #browser()
 
   ## For every cluster, run LA-ADMM
   resid_mat_list = list()
@@ -1052,8 +1059,7 @@ Mstep_mu <- function(resp,
     uws[[iclust]] = res$uw
     Ws[[iclust]] = res$W
 
-    ## The upper triangular matrix remains the same.
-    ## The upper triangular matrix remains the same.
+    ## The upper triangular matrix remains the same. (code missing?)
 
     resid_mat_list[[iclust]] = res$resid_mat ## temporary
     convergences[[iclust]] = res$converge
@@ -1091,11 +1097,896 @@ Mstep_mu <- function(resp,
 ```
 
 
-TODO:
+The locally adaptive admm for a single cluster involves an inner and outer
+loop. The inner loop is an ADMM for a fixed $\rho$. The outer loop is written
+here in `la_admm_oneclust`, and runs the inner ADMM with a fixed step-size
+$\rho$ while sequentially doubling $\rho$.
 
+
+```{r}
+#' Locally adaptive ADMM.
+#'
+#' @param K
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+la_admm_oneclust <- function(K,
+                             ...){
+
+  ## Initialize arguments for ADMM.
+  args <- list(...)
+  p = args$p
+  l = args$l
+  TT = args$TT
+  dimdat = args$dimdat
+
+  ## This initialization can come from the previous *EM* iteration.
+  if(args$first_iter){
+    mu = matrix(0, nrow = TT, ncol = dimdat)
+    Z <- matrix(0, nrow = TT, ncol = dimdat)
+    W <- matrix(0, nrow = dimdat, ncol = TT - l )
+    uz <- matrix(0, nrow = TT, ncol = dimdat)
+    uw <- matrix(0, nrow = dimdat, ncol = TT - l )
+
+    #args[['beta']] <- beta
+    args[['z']] <- Z
+    args[['w']] <- W
+    args[['uz']] <- uz
+    args[['uw']] <- uw
+  }
+
+  cols = c()
+  objectives = c()
+
+  ## Temporary
+  all_fits = c()
+  all_cols = c()
+
+  ## Run ADMM repeatedly with (1) double rho, and (2) previous b
+  for(kk in 1:K){
+    if(kk > 1){
+      Z = matrix(0, nrow = TT, ncol = dimdat)
+      W = matrix(0, ncol = TT - l , nrow = dimdat)
+      uz = matrix(0, nrow = TT, ncol = dimdat)
+      uw = matrix(0, ncol = TT - l , nrow = dimdat)
+      args[['mu.warm']] <- mu
+      args[['warmstart']] <- T
+      args[['z']] <- Z
+      args[['w']] <- W
+      args[['uz']] <- uz
+      args[['uw']] <- uw
+      args[['rho']] <- rho
+      args[['schurB']][['tQ']] <- tQ
+      print(kk)
+    }
+
+    ## Run ADMM
+    args[['outer_iter']] <- kk
+    ## Call main function
+    argn <- lapply(names(args), as.name)
+    names(argn) <- names(args)
+    call <- as.call(c(list(as.name("admm_oneclust")), argn))
+    res = eval(call, args)
+
+    ## ## Temporary (uncomment for plotting objectives)
+    ## fits = as.numeric(na.omit(res$fits))
+    ## all_fits = c(all_fits, fits)
+    ## all_cols = c(all_cols, rep(kk, length(fits)))
+    ## print(all_fits)
+    ## if(length(all_fits)!=0){
+    ##   plot(all_fits %>% log10(), col=all_cols, type='o', lwd=2, main = paste0("outer iter = ", kk))
+    ## }
+    ## ## End temporary
+
+    objectives = c(objectives, res$obj)
+
+    ## Handling the scenario where the objectives are all zero
+    padding = 1E-12
+    objectives = objectives + padding
+
+    if(args$objective){
+      print(objectives)
+    }
+    ## See if outer iterations should terminate
+    if(res$converge | outer_converge(objectives)){
+      res$converge <- T
+      break
+    }
+
+    #browser()
+
+    ## Update some parameters; double the rho value, and update the B matrix
+    rho = 2 * args$rho
+    tQ = 2 * args$schurB$tQ
+    mu = res$mu
+    Z = res$Z
+    W = res$W
+    uz = res$uz
+    uw = res$uw
+    # browser()
+    # print(kk)
+
+  }
+  ## if(!res$converge) warning("Didn't converge at all")
+
+  ## Record how long the admm took; in terms of # iterations.
+  res$kk = kk
+
+  return(res)
+}
+```
+
+
+Next, the inner loop. The workhorse `admm_oneclust()` actually performs the ADMM
+update for one cluster for a fixed step-size $\rho$ across optimization
+iterations `iter=1,...,n`.
+
+This `admm_oneclust()` uses the following helpers:
+
+- `W_update_fused()`: this uses the `prox` function, which uses a RCpp function.
+  `prox_dp`.
+- `Z_update()`
+- `U_update_Z()`
+- `U_update_W()`
+
+
+```{r}
+#' Solve a fused lasso problem for the W update. Internally, a fused lasso dynamic
+#' programming solver \code{prox()} (which calls \code{prox_dp()} written in C)
+#' is used.
+#' 
+W_update_fused <- function(lm1, TT, mu, uw, rho, lambda){
+
+  # modified lambda for fused lasso routine
+  mod_lam <- lambda/rho
+
+  # generating pseudo response xi
+  #xi <- Dlm1 %*% mu + 1/rho * uw
+  xi <- diff(mu, differences = lm1) + 1/rho * uw
+
+  # running the fused LASSO
+  ## fit <- prox(z = xi, lam = mod_lam)
+  fit <- FlowTF::prox(z = xi, lam = mod_lam)
+
+  return(fit)
+}
+
+## This function is in FlowTF now. It's the last function there!
+## #' Fused LASSO for scalar inputs.
+## #'
+## #' @param z scalar input to be smoothed via the fused LASSO
+## #' @param lam  Fused LASSO smoothing parameter
+## #'
+## #' @return Estimates of the fused LASSO solution
+## #' @export prox
+## #'
+## #' @references All credit for writing this function goes to Ryan Tibshirani. See
+## #'   the original code for calling this function at
+## #'
+## #' @useDynLib FlowTF prox_dp 
+## prox <-  function(z, lam) {
+##   o <- .C("prox_dp",
+##           as.integer(length(z)),
+##           as.double(z),
+##           as.double(lam),
+##           as.double(numeric(length(z))),
+##           #  dup=FALSE,
+##           PACKAGE="FlowTF")
+
+##   return(o[[4]])
+## }
+
+
+Z_update  <- function(m, Uz, C, rho){
+  mat = m + Uz/rho
+  Z = projCmat(mat, C)
+  return(Z)
+}
+
+projCmat <- function(mat, C){
+  if(!is.null(C)){
+    vlens = sqrt(rowSums(mat * mat))
+    inds = which(vlens > C)
+    if(length(inds) > 0){
+      mat[inds,] = mat[inds,] * C / vlens[inds]
+    }
+  }
+  return(mat)
+}
+
+U_update_Z <- function(U, rho, mu, Z){
+ # return(U + rho * (scale(mu, scale = F) - Z))
+  return(U + rho * (t(t(mu) - rowMeans(t(mu))) - Z))
+}
+
+U_update_W <- function(U, rho, mu, W, Dlm1, l){
+  return(U +  rho * ( t(diff(t(mu), differences = l)) - W))
+}
+```
+
+A `prox_dp` function, written in C, will be used: 
+[TODO: I might rewrite this into Cpp]
+
+```{C prox_dp, eval = FALSE}
+#include <R.h>
+#include <Rinternals.h>
+#include <stdlib.h>
+
+// Dynamic programming algorithm for the 1d fused lasso problem
+// (Ryan's implementation of Nick Johnson's algorithm)
+
+void prox_dp(int *pn, double *y, double *plam, double *beta) {
+
+  int n = *pn;
+  double lam = *plam;
+
+  // Take care of a few trivial cases
+  if (n==0) return;
+  if (n==1 || lam==0) {
+    for (int i=0; i<n; i++) {
+      beta[i] = y[i];
+    }
+    return;
+  }
+
+  // These are used to store the derivative of the
+  // piecewise quadratic function of interest
+  double afirst, alast, bfirst, blast;
+  double *x = (double*)malloc(2*n*sizeof(double));
+  double *a = (double*)malloc(2*n*sizeof(double));
+  double *b = (double*)malloc(2*n*sizeof(double));
+  int l,r;
+
+  // These are the knots of the back-pointers
+  double *tm = (double*)malloc((n-1)*sizeof(double));
+  double *tp = (double*)malloc((n-1)*sizeof(double));
+
+  // We step through the first iteration manually
+  tm[0] = -lam+y[0];
+  tp[0] = lam+y[0];
+  l = n-1;
+  r = n;
+  x[l] = tm[0];
+  x[r] = tp[0];
+  a[l] = 1;
+  b[l] = -y[0]+lam;
+  a[r] = -1;
+  b[r] = y[0]+lam;
+  afirst = 1;
+  bfirst = -lam-y[1];
+  alast = -1;
+  blast = -lam+y[1];
+
+  // Now iterations 2 through n-1
+  int lo, hi;
+  double alo, blo, ahi, bhi;
+  for (int k=1; k<n-1; k++) {
+    // Compute lo: step up from l until the
+    // derivative is greater than -lam
+    alo = afirst;
+    blo = bfirst;
+    for (lo=l; lo<=r; lo++) {
+      if (alo*x[lo]+blo > -lam) break;
+      alo += a[lo];
+      blo += b[lo];
+    }
+
+    // Compute the negative knot
+    tm[k] = (-lam-blo)/alo;
+    l = lo-1;
+    x[l] = tm[k];
+
+    // Compute hi: step down from r until the
+    // derivative is less than lam
+    ahi = alast;
+    bhi = blast;
+    for (hi=r; hi>=l; hi--) {
+      if (-ahi*x[hi]-bhi < lam) break;
+      ahi += a[hi];
+      bhi += b[hi];
+    }
+
+    // Compute the positive knot
+    tp[k] = (lam+bhi)/(-ahi);
+    r = hi+1;
+    x[r] = tp[k];
+
+    // Update a and b
+    a[l] = alo;
+    b[l] = blo+lam;
+    a[r] = ahi;
+    b[r] = bhi+lam;
+    afirst = 1;
+    bfirst = -lam-y[k+1];
+    alast = -1;
+    blast = -lam+y[k+1];
+  }
+
+  // Compute the last coefficient: this is where
+  // the function has zero derivative
+
+  alo = afirst;
+  blo = bfirst;
+  for (lo=l; lo<=r; lo++) {
+    if (alo*x[lo]+blo > 0) break;
+    alo += a[lo];
+    blo += b[lo];
+  }
+  beta[n-1] = -blo/alo;
+
+  // Compute the rest of the coefficients, by the
+  // back-pointers
+  for (int k=n-2; k>=0; k--) {
+    if (beta[k+1]>tp[k]) beta[k] = tp[k];
+    else if (beta[k+1]<tm[k]) beta[k] = tm[k];
+    else beta[k] = beta[k+1];
+  }
+
+  // Done! Free up memory
+  free(x);
+  free(a);
+  free(b);
+  free(tm);
+  free(tp);
+}
+```
+
+
+
+Here is that main workhorse `admm_oneclust()`.
+
+```{r}
+#' One cluster's admm for a fixed step size (rho).
+admm_oneclust <- function(iclust = 1, niter, y,
+                          Dlm1, Dl, l = NULL,
+                          TT, N, dimdat, maxdev,
+                          rho,
+                          rhoinit = rho,
+                          Xinv,
+                          schurA,
+                          schurB,
+                          sigmainv,
+                          lambda,
+                          resp,
+                          ylist, err_rel = 1e-3, err_abs = 0,
+                          zerothresh,
+                          z,
+                          w,
+                          uw,
+                          uz,
+                          warmstart = FALSE,
+                          mu.warm = if(!warmstart) NULL,
+                          first_iter,## Not used
+                          outer_iter,
+                          local_adapt,
+                          sigma,
+                          sigma_eig_by_clust,
+                          space = 20,
+                          ## diagnostics
+                          norms = F, objective  = F){
+
+  ## Initialize the variables ###
+  resid_mat = matrix(NA, nrow = ceiling(niter/5), ncol = 4)
+  colnames(resid_mat) = c("primresid", "primerr", "dualresid", "dualerr")
+
+  rhofac = rho / rhoinit
+
+  ## Main inner LA-ADMM loop
+  fits = rep(NA, ceiling(niter/space))
+  converge = FALSE
+  start.time = Sys.time()
+  Zlist = list()
+
+  ## This doesn't change over iterations
+  schurA = myschur(schurA$orig * rhofac)
+  TA = schurA$T ##* rhofac
+  TB = schurB$T
+  UA = schurA$Q
+  UB = schurB$Q
+  tUA = schurA$tQ
+  tUB = schurB$tQ
+
+  ## This also doesn't change over iterations
+  C1 <- do.call(cbind, lapply(1:TT, FUN = function(t){
+      multmat <- apply(y[[t]], FUN = function(yy) yy*resp[[t]], MARGIN = 2)
+      sigmainv %*% colSums(multmat)
+    }))
+
+  resp_sum <- lapply(resp, sum)
+
+  for(iter in 1:niter){
+
+    syl_C <- get_C_mat(C1 = C1, resp_sum = resp_sum, TT = TT, d = dimdat,
+                       Sigma_inv = sigmainv, N = N, Dlm1 = Dlm1, rho = rho,
+                       z = z, w = w, uz = uz, uw = uw)
+    FF =  (-1) * tUA %*% syl_C %*% UB
+    mu = UA %*% matrix_function_solve_triangular_sylvester_barebonesC2(TA, TB, FF) %*% tUB
+    #mu = -1 *  matrix_function_solve_triangular_sylvester_barebones(schurA$orig, schurB$orig, syl_C)
+
+    if(warmstart & iter == 1){
+      print("warmed up mu!")
+      mu = mu.warm
+    }
+
+    #z <- Z_update( scale(t(mu), scale = F), Uz = uz, C = maxdev, rho = rho)
+    z <- Z_update( t(mu - rowMeans(mu)), Uz = uz, C = maxdev, rho = rho)
+
+    wlist = lapply(1:dimdat, function(j){
+      W_update_fused(lm1 = l, TT = TT, mu = mu[j,], rho = rho, lambda = lambda,
+                     uw = uw[j,])})
+    w <- do.call(rbind, wlist)
+    uz = U_update_Z(uz, rho, t(mu), z)
+    uw = U_update_W(uw, rho, mu, w, Dlm1, l = l)
+
+    if(norms & iter %% 1 == 0){
+      print(round(c("mu" = norm(mu, "F"),
+                    "C" = norm(syl_C, "F"),
+                    "FF" = norm(FF, "F"),
+                    "z" = norm(z, "F"),
+                    "w" = norm(w, "F"),
+                    "uz" = norm(uz, "F"),
+                    "uw" = norm(uw, "F")),3))
+    }
+
+    ## Check convergence
+    if( iter > 1  & iter %% 5 == 0){## & !local_adapt){
+
+      ## Calculate convergence criterion
+      obj = converge(mu, rho,
+                     w, z,
+                     w_prev, z_prev,
+                     uw, uz,
+                     Dlm1, err_rel = err_rel, err_abs = err_abs)
+
+      jj = (iter/ 5)
+      resid_mat[jj,] = c(norm(obj$primal_resid, "F"),
+                         obj$primal_err,
+                         norm(obj$dual_resid,"F"),
+                         obj$dual_err)
+
+      if(is.na(obj$converge)){
+        obj$converge <- FALSE
+        warning("Convergence was NA")
+      }
+      if(obj$converge){
+        converge = TRUE
+        break
+      }
+    }
+
+    ## ## 3. Calculate objective values for this cluster.
+    w_prev = w
+    z_prev = z
+
+  }
+
+  ## Gather results.
+  mu = mu
+  yhat = mu
+  fit <- NULL
+  fits <- NULL
+  obj.value <- NULL
+
+  if(objective){
+    obj.value <- obj(y = y, mu = mu, resp = resp, Sigma_inv = sigmainv, TT = TT,
+                     d = dimdat, Dl = Dl, Dlm1 = Dlm1, l = l, maxdev = maxdev,
+                     lambda = lambda, rho = rho, N = N)
+  }
+
+  return(list(mu = mu,
+              yhat = yhat,
+              resid_mat = resid_mat,
+              fits = fits,
+              converge = converge,
+              fit = obj.value,
+              ## Other variables to return.
+              Z = z,
+              W = w,
+              uz = uz,
+              uw = uw,
+              inner.iter = iter,
+              objective = obj.value
+  ))
+}
+```
+
+
+
+## Helpers for M step ($\mu$)
+
+First, let's start with a few R functions.
+
+```{r}
+#' @param TT Number of time points.
+etilde_mat <- function(TT){
+
+  mats <- lapply(1:TT, FUN = function(t){
+    e_vec <- rep(0, TT)
+    e_vec[t] <- 1
+    (e_vec - 1/TT) %*% t(e_vec - 1/TT)
+  })
+  Reduce('+', mats)
+}
+
+get_AB_mats <- function(y, resp, Sigma_inv, e_mat, Dlm1sqrd, N, Dl, Dlm1, rho, z, w, uz, uw){
+
+  # A matrix
+  A <- 1/N * Sigma_inv
+
+  # B matrix
+  sum_resp <- sapply(resp, sum)
+  #B <- rho*(t(Dlm1)%*%Dlm1 + e_mat)%*% diag(1/unlist(sum_resp))
+  B <- rho*(Dlm1sqrd + e_mat)
+  B <- B/sum_resp[col(B)]
+  #B <- rho*(Dlm1sqrd + e_mat)  %*% diag(1/unlist(sum_resp))
+
+  return(list(A = A, B = B))
+}
+
+get_C_mat <- function(C1, resp_sum, TT, d, Sigma_inv, e_mat, N, Dl, Dlm1, rho, z, w, uz, uw){
+
+  C2 <- t(uz - rho*z)
+
+  # averaging
+  C2 <- C2 - rowMeans(C2)
+
+  # third component
+  C3 <- do.call(rbind, lapply(1:d, FUN = function(j){
+    (uw[j,] - rho*w[j,]) %*% Dlm1
+  }))
+
+  # combining
+  C <-  (-1/N*C1 + C2 + C3)
+  C <- C/unlist(resp_sum)[col(C)]
+
+  return(C)
+}
+
+
+#' @param mat Matrix to Schur-decompose.
+myschur <- function(mat){
+  stopifnot(nrow(mat) == ncol(mat))
+  if(is.numeric(mat) & length(mat)==1) mat = mat %>% as.matrix()
+  obj = Matrix::Schur(mat)
+  obj$tQ = t(obj$Q)
+  obj$orig = mat
+  return(obj)
+}
+```
+
+Here's a function to check convergence of the ADMM with a fixed step size.
+
+```{r}
+#' Check convergence of ADMM with a fixed step size (rho).
+converge <- function(mu, rho, w, z, w_prev, z_prev, uw, uz, Dlm1,
+                     err_rel = 1E-4,
+                     err_abs = 0
+){
+
+  prim1 = rbind(t(mu - rowMeans(mu)), Dlm1 %*% t(mu))
+  prim2 = rbind(z, t(w))
+  primal_resid = prim1 - prim2
+
+
+  dual_resid = -rho * rbind((z-z_prev - colMeans(z-z_prev)), t(Dlm1) %*% t(w - w_prev))
+  tAU = rbind(uz, -t(uw))
+
+  ## Form primal and dual tolerances.
+  primal_err = sqrt(length(primal_resid)) * err_abs +
+    err_rel * max(norm(prim1, "F"), norm(prim2, "F"))
+  dual_err = sqrt(length(dual_resid)) * err_abs +
+    err_rel * norm(tAU, "F")
+
+  ## Check convergence.
+  primal_resid_size = norm(primal_resid, "F")
+  dual_resid_size = norm(dual_resid, "F")
+  primal_converge = ( primal_resid_size  <= primal_err )
+  dual_converge = ( dual_resid_size <= dual_err )
+
+  ## Some checks (trying to address problems with |converge|).
+  assertthat::assert_that(is.numeric(primal_resid_size))
+  assertthat::assert_that(is.numeric(primal_err))
+  assertthat::assert_that(is.numeric(dual_resid_size))
+  assertthat::assert_that(is.numeric(dual_err))
+
+  ## return(primal_converge & dual_converge)
+  converge = primal_converge & dual_converge
+
+  return(list(primal_resid = primal_resid,
+              primal_err = primal_err,
+              dual_resid = dual_resid,
+              dual_err = dual_err,
+              converge = converge))
+}
+```
+
+Here's a function to compute the augmented Lagrangian.
+[TODO: write the augmented Lagrangian here]
+
+```{r}
+#' computes the Augmented lagrangian.
+aug_lagr <- function(y, TT, d, z, w, l, uz, uw, mu, resp, Sigma_inv, Dl, Dlm1, maxdev, lambda, rho, N){
+  mu_dd <- rowMeans(mu)
+
+  # Check the Z's for ball constraint, up to a tolerance of 1e-4
+  znorms <- apply(z, FUN = function(zz) sqrt(sum(zz^2)), MARGIN = 1)
+  if(any(is.na(znorms))) browser()
+  if(any(znorms > (maxdev + 1e-4))){
+    warning("||z||_2 > maxdev, current iterate not feasible.")
+    return(Inf)
+  }
+
+  aug1 <- sum(do.call(cbind, lapply(1:TT, FUN = function(t){
+    multmat <- apply(y[[t]], FUN = function(yy){
+      t(yy - mu[,t]) %*% Sigma_inv %*% (yy - mu[,t])}, MARGIN = 1)
+    sum(1/(2*N) * resp[[t]]*multmat)
+  })))
+
+  aug2 <- lambda*sum(do.call(rbind, lapply(1:d, FUN = function(j)
+    sum(abs(diff(w[j,], differences = 1))))))
+
+  aug3 <- sum(do.call(cbind, lapply(1:TT, FUN = function(t){
+    uz[t,]%*%(mu[,t] - mu_dd - z[t,]) + rho/2 * sum((mu[,t] - mu_dd - z[t,])^2)
+  })))
+
+
+  aug4 <- sum(do.call(rbind, lapply(1:d, FUN = function(j){
+    uw[j,] %*% (Dlm1 %*% mu[j,]  - w[j,]) + rho/2 * sum((Dlm1 %*% mu[j,] - w[j,])^2)
+  })))
+
+  total <- aug1 + aug2 + aug3 + aug4
+
+  return(total)
+}
+```
+
+Here's a function to calculate the ADMM objective.
+
+[TODO: write the admm objective here]
+
+```{r}
+obj <- function(y, TT, d, l, mu, resp, Sigma_inv, Dl, Dlm1, maxdev, lambda, rho, N){
+  mu_dd <- rowMeans(mu)
+
+  aug1 <- sum(do.call(cbind, lapply(1:TT, FUN = function(t){
+    multmat <- apply(y[[t]], FUN = function(yy){
+      t(yy - mu[,t]) %*% Sigma_inv %*% (yy - mu[,t])}, MARGIN = 1)
+    sum(1/(2*N) * resp[[t]]*multmat)
+  })))
+
+  aug2 <- lambda*sum(do.call(rbind, lapply(1:d, FUN = function(j)
+    sum(abs(diff(mu[j,], differences = l))))))
+
+  total <- aug1 + aug2
+
+  return(total)
+}
+```
+
+## All Rcpp functions
+
+The main function we write in Rcpp is the "barebones" Sylvester equation solver
+that takes upper-triangular coefficient matrices.
+
+```{Rcpp sylvester-solver-rcpp, eval = TRUE}
+// [[Rcpp::depends(RcppArmadillo)]]
+// [[Rcpp::depends(RcppEigen)]]
+#include <RcppArmadillo.h>
+#include <RcppEigen.h>
+#include <numeric>
+
+using namespace arma;
+using namespace Eigen;
+
+using Eigen::Map;                       // 'maps' rather than copies
+using Eigen::MatrixXd;                  // variable size matrix, double precision
+
+//' Solve "barebones" sylvester equation that takes upper triangular matrices as coefficients.
+//' 
+//' @param TA Upper-triangular matrix
+//' @param TB Upper-triangular matrix
+//' @param C matrix
+//' @export
+// [[Rcpp::export]]
+Eigen::MatrixXd matrix_function_solve_triangular_sylvester_barebonesC2(const Eigen::MatrixXd & TA,
+								     const Eigen::MatrixXd & TB,
+								     const Eigen::MatrixXd & C){
+  // Eigen::eigen_assert(TA.rows() == TA.cols());
+  // Eigen::eigen_assert(TA.Eigen::isUpperTriangular());
+  // Eigen::eigen_assert(TB.rows() == TB.cols());
+  // Eigen::eigen_assert(TB.Eigen::isUpperTriangular());
+  // Eigen::eigen_assert(C.rows() == TA.rows());
+  // Eigen::eigen_assert(C.cols() == TB.rows());
+
+  // typedef typename MatrixType::Index Index;
+  // typedef typename MatrixType::Scalar Scalar;
+
+  int m = TA.rows();
+  int n = TB.rows();
+  Eigen::MatrixXd X(m, n);
+
+  for (int i = m - 1; i >= 0; --i) {
+    for (int j = 0; j < n; ++j) {
+
+      // Compute T_A X = \sum_{k=i+1}^m T_A_{ik} X_{kj}
+      double TAX;
+      if (i == m - 1) {
+      	TAX = 0;
+      } else {
+	MatrixXd TAXmatrix = TA.row(i).tail(m-1-i) * X.col(j).tail(m-1-i);
+      	TAX = TAXmatrix(0,0);
+      }
+
+      // Compute X T_B = \sum_{k=1}^{j-1} X_{ik} T_B_{kj}
+      double XTB;
+      if (j == 0) {
+      	XTB = 0;
+      } else {
+      	MatrixXd XTBmatrix = X.row(i).head(j) * TB.col(j).head(j);
+      	XTB = XTBmatrix(0,0);
+      }
+
+      X(i,j) = (C(i,j) - TAX - XTB) / (TA(i,i) + TB(j,j));
+    }
+  }
+  return X;
+}
+```
+
+Also, we define a faster `dmvnorm` function written in C++.
+
+```{Rcpp}
+// [[Rcpp::depends(RcppArmadillo)]]
+#include <RcppArmadillo.h>
+
+static double const log2pi = std::log(2.0 * M_PI);
+
+/* C++ version of the dtrmv BLAS function */
+void inplace_tri_mat_mult(arma::rowvec &x, arma::mat const &trimat){
+  arma::uword const n = trimat.n_cols;
+
+  for(unsigned j = n; j-- > 0;){
+    double tmp(0.);
+    for(unsigned i = 0; i <= j; ++i)
+      tmp += trimat.at(i, j) * x[i];
+    x[j] = tmp;
+  }
+}
+
+
+// [[Rcpp::export]]
+arma::vec dmvnorm_arma_fast(arma::mat const &x,
+                           arma::rowvec const &mean,
+                           arma::mat const &sigma,
+                           bool const logd = false) {
+    using arma::uword;
+    uword const n = x.n_rows,
+             xdim = x.n_cols;
+    arma::vec out(n);
+    arma::mat const rooti = arma::inv(trimatu(arma::chol(sigma)));
+    double const rootisum = arma::sum(log(rooti.diag())),
+                constants = -(double)xdim/2.0 * log2pi,
+              other_terms = rootisum + constants;
+
+    arma::rowvec z;
+    for (uword i = 0; i < n; i++) {
+        z = (x.row(i) - mean);
+        inplace_tri_mat_mult(z, rooti);
+        out(i) = other_terms - 0.5 * arma::dot(z, z);
+    }
+
+    if (logd)
+      return out;
+    return exp(out);
+}
+
+// All credit goes to https://gallery.rcpp.org/articles/dmvnorm_arma/
+```
+
+We need this blob
+(from https://github.com/jacobbien/litr-project/blob/main/examples/make-an-r-package-with-armadillo/create-witharmadillo.Rmd ):
+
+```{r}
+usethis::use_rcpp_armadillo()
+usethis::use_rcpp_eigen()
+```
+
+
+
+
+## Ported over from flowmix
+
+There are some potentially useful computational tricks from flowmix (e.g. the
+eigendecomposition of the Sigmas) that could still be useful for flowtrend. But
+flowtrend's computation is dominated by the M-step of alpha, so these gains may
+not matter as much.
+
+```{r}
+##' Helper for making list of densities. Returns list by cluster then time
+##' e.g. access by \code{denslist_by_clust[[iclust]][[tt]]}
+##'
+##' @param ylist T-length list each containing response matrices of size (nt x
+##'   3), which contains coordinates of the 3-variate particles, organized over
+##'   time (T) and with (nt) particles at every time.
+##' @param mu (T x dimdat x numclust) array.
+##' @param dimdat dimension of data.
+##' @param numclust number of clusters.
+##' @param TT number of time points
+##' @param sigma_eig_by_clust Result of running
+##'   \code{eigendecomp_sigma_array(sigma.list[[iter]])}.
+##'
+##' @return numclust-lengthed list of TT-lengthed.
+##'
+make_denslist_eigen <- function(ylist, mu,
+                                TT, dimdat, numclust,
+                                sigma_eig_by_clust,
+                                countslist){ ## Temporary
+
+  ## Basic checks
+  assertthat::assert_that(!is.null(sigma_eig_by_clust))
+
+  ## Calculate densities (note to self: nested for loop poses no problems)
+  lapply(1:numclust, function(iclust){
+    mysigma_eig <- sigma_eig_by_clust[[iclust]]
+      lapply(1:TT, function(tt){
+        ## return(dmvnorm_fast(ylist[[tt]],
+        ##                     mu[tt,,iclust],
+        ##                     sigma_eig=mysigma_eig))
+        mn = mu[tt,,iclust]
+        sgm = mysigma_eig$sigma
+        if(dimdat == 1){
+          mn = as.matrix(mn)
+          sgm = sgm %>% as.matrix()
+        }
+        return(dmvnorm_arma_fast(ylist[[tt]],
+                                 mn,
+                                 sgm))
+    })
+  })
+}
+
+
+#' We might not use this. Legacy from flowmix.
+weight_ylist <- function(iclust, resp, resp.sum, ylist){
+
+  ## Setup
+  dimdat = ncol(ylist[[1]])
+  TT = length(ylist)
+
+  ## All weighted data
+  weighted_ylist = Map(function(myresp, y){
+    myresp[,iclust, drop = TRUE] * y
+  }, resp, ylist)
+
+  ## All weighted data SUMs
+  weighted_ysum = lapply(weighted_ylist, colSums)
+
+  ## Grand mean of data
+  resp.sum.thisclust = sum(resp.sum[,iclust])
+  ybar = Reduce("+", weighted_ysum) / resp.sum.thisclust
+
+  ## Centered weighted ylist
+  weighted_ybar = resp.sum[,iclust] * matrix(ybar, TT, dimdat, byrow=TRUE)
+  ycentered = do.call(rbind, weighted_ysum) - weighted_ybar##sweep(do.call(cbind, centered_y), 1, ybar)
+  return(list(weighted_ylist = weighted_ylist,
+              weighted_ysum = weighted_ysum,
+              ybar = ybar,
+              ycentered = t(ycentered)))
+}
+```
+
+
+TODO:
 - Right now, `sigma_eig_by_clust` is not used. When speeding up the code, do
   this first.
-- Likewise, `ycentered_list` isn't used, while it is clearly useful in Sigma M step
+- Likewise, `ycentered_list` isn't used, while it is clearly useful in Sigma M
+  step <-- IS IT? Revisit the actual form of it.
+- Read the document and ADMM details carefully. Then, write down the appropriate
+  math.
+
 
 ```{r Mstep_mu_cvxr}
 #' Testing against \code{Mstep_mu()}, for ONE cluster.
@@ -1163,7 +2054,7 @@ Mstep_mu_cvxr <- function(ylist,
     CVXR::solve(prob, solver="ECOS",
           FEASTOL = ecos_thresh, RELTOL = ecos_thresh, ABSTOL = ecos_thresh)
   }, error=function(err){
-    err$message = paste(err$message,
+    err$message = paste(err$message, 
                         "\n", "Lasso solver using ECOS has failed." ,sep="")
     cat(err$message, fill=TRUE)
     return(NULL)
@@ -1464,4 +2355,8 @@ flowtrend <- function(nrestart = 10, ...){
   return(out.models[[best.model]][["model"]])
 }
 ```
+
+
+
+
 

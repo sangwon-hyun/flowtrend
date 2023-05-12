@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>3 Generating 1d data | Creating the flowtrend R package</title>
   <meta name="description" content="3 Generating 1d data | Creating the flowtrend R package" />
-  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
 
   <meta property="og:title" content="3 Generating 1d data | Creating the flowtrend R package" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2023-04-08" />
+<meta name="date" content="2023-04-18" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="package-setup.html"/>
 <link rel="next" href="plotting-1d-data.html"/>
-<script src="libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="libs/header-attrs-2.21/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -147,6 +147,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>10.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
 <li class="chapter" data-level="10.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>10.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
 <li class="chapter" data-level="10.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>10.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
+<li class="chapter" data-level="10.4" data-path="m-step.html"><a href="m-step.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>10.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
+<li class="chapter" data-level="10.5" data-path="m-step.html"><a href="m-step.html#all-rcpp-functions"><i class="fa fa-check"></i><b>10.5</b> All Rcpp functions</a></li>
+<li class="chapter" data-level="10.6" data-path="m-step.html"><a href="m-step.html#ported-over-from-flowmix"><i class="fa fa-check"></i><b>10.6</b> Ported over from flowmix</a></li>
 </ul></li>
 <li class="chapter" data-level="11" data-path="flowtrend.html"><a href="flowtrend.html"><i class="fa fa-check"></i><b>11</b> flowtrend</a></li>
 <li class="chapter" data-level="12" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>12</b> Reordering clusters</a></li>
@@ -164,9 +167,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="14" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>14</b> Testing the flowtrend method</a>
 <ul>
 <li class="chapter" data-level="14.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>14.1</b> 1d example</a></li>
-<li class="chapter" data-level="14.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#d-example-with-gap"><i class="fa fa-check"></i><b>14.2</b> 1d example with gap</a></li>
 </ul></li>
-<li class="chapter" data-level="15" data-path="d-to-1d.html"><a href="d-to-1d.html"><i class="fa fa-check"></i><b>15</b> 2d to 1d</a></li>
+<li class="chapter" data-level="15" data-path="d-to-1d.html"><a href="d-to-1d.html"><i class="fa fa-check"></i><b>15</b> 2d to 1d</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="d-to-1d.html"><a href="d-to-1d.html#documenting-the-package-and-building"><i class="fa fa-check"></i><b>15.1</b> Documenting the package and building</a></li>
+</ul></li>
 </ul>
 
       </nav>
@@ -291,49 +296,49 @@ list of <span class="math inline">\(n_t \times d\)</span> matrices.</p>
 <pre><code>## # A tibble: 10,000 × 4
 ##     time       Y    mu cluster
 ##    &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;int&gt;
-##  1     1  0.793   0.51       1
-##  2     1  0.365   0.51       1
-##  3     1 -0.395   0.51       1
-##  4     1  0.869   0.51       1
-##  5     1  0.452   0.51       1
-##  6     1  0.226   0.51       1
-##  7     1  0.341   0.51       1
-##  8     1  0.981   0.51       1
-##  9     1  1.24    0.51       1
-## 10     1  0.0614  0.51       1
-## # … with 9,990 more rows</code></pre>
+##  1     1  0.678   0.51       1
+##  2     1 -0.206   0.51       1
+##  3     1  0.753   0.51       1
+##  4     1  0.0167  0.51       1
+##  5     1  0.201   0.51       1
+##  6     1  0.795   0.51       1
+##  7     1  0.0126  0.51       1
+##  8     1  0.426   0.51       1
+##  9     1 -0.0461  0.51       1
+## 10     1  0.790   0.51       1
+## # ℹ 9,990 more rows</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="generating-1d-data.html#cb9-1" aria-hidden="true" tabindex="-1"></a>ylist <span class="ot">=</span> <a href='generating-1d-data.html#dt2ylist'>dt2ylist</a>(dt)</span>
 <span id="cb9-2"><a href="generating-1d-data.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(<span class="fu">str</span>(ylist[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])))</span></code></pre></div>
 <pre><code>## List of 5
-##  $ : num [1:100, 1] 0.793 0.365 -0.395 0.869 0.452 ...
+##  $ : num [1:100, 1] 0.678 -0.2065 0.7531 0.0167 0.2005 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] -0.0346 0.7322 0.6269 1.6358 0.3124 ...
+##  $ : num [1:100, 1] 1.126 0.608 0.335 0.273 0.774 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] -0.1544 0.687 0.6731 0.7829 0.0236 ...
+##  $ : num [1:100, 1] 0.574 0.367 0.316 0.813 0.227 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] 0.646 0.459 -0.187 0.649 0.39 ...
+##  $ : num [1:100, 1] 1.097 0.495 0.796 0.607 1.56 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] 0.772 0.7316 0.4177 0.7267 0.0709 ...
+##  $ : num [1:100, 1] 0.732 0.847 0.428 1.326 1.048 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
 ## NULL</code></pre>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="generating-1d-data.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(ylist[[<span class="dv">1</span>]]))</span></code></pre></div>
 <pre><code>##               Y
-## [1,]  0.7928696
-## [2,]  0.3645849
-## [3,] -0.3953053
-## [4,]  0.8687907
-## [5,]  0.4523815
-## [6,]  0.2259644</code></pre>
+## [1,]  0.6780241
+## [2,] -0.2064830
+## [3,]  0.7531408
+## [4,]  0.0166843
+## [5,]  0.2005335
+## [6,]  0.7954760</code></pre>
 <p>Next, we’ll make some plotting functions 1d model and data.</p>
 </div>
             </section>
