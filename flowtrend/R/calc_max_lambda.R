@@ -20,19 +20,26 @@
 #' @return list containing the two maximum values to use.
 #' 
 #' @export
-calc_max_lambda <- function(ylist, countslist = NULL, numclust,
+calc_max_lambda <- function(ylist, countslist = NULL, numclust, 
                             max_lambda_mean = 4000,
                             max_lambda_prob = 1000,
                             verbose = FALSE,
                             iimax = 16,
                             ...){
 
+  ## Basic setup
+  dimdat = ncol(ylist[[1]])
+  toler_by_dim = sapply(1:dimdat, function(idim){
+    datrange = ylist %>% sapply(FUN = function(y) y %>% .[,idim] %>% range()) %>% range()
+    toler = (datrange[2] - datrange[1]) / (100 * length(ylist))
+  })
+  toler_prob = 0.01 / length(ylist)
+
   ## Get range of regularization parameters.
   facs = sapply(1:iimax, function(ii) 2^(-ii+1)) ## DECREASING order
   print("running the models once")
   for(ii in 1:iimax){
 
-    ## print_progress(ii, iimax, "regularization values", fill = TRUE)
     cat("###############################################################", fill=TRUE)
     cat("#### lambda_prob = ", max_lambda_prob * facs[ii],
         " and lambda = ", max_lambda_mean * facs[ii], "being tested.  ", fill=TRUE)
@@ -43,50 +50,20 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
                           numclust = numclust,
                           lambda_prob = max_lambda_prob * facs[ii],
                           lambda = max_lambda_mean * facs[ii],
-                          verbose = verbose,
-                          ...)
+                          verbose = verbose, ...)
 
-    ## TODO: CHECK FLATNESS INSTEAD OF ZERONESS
     ## In each dimension, the data should only vary by a relatively small amount (say 1/100)
-    browser()
-    idim = 1
-    toler_by_dim = sapply(1:res$dimdat, function(idim){
-      datrange = ylist %>% sapply(FUN = function(y) y %>% .[,idim] %>% range()) %>% range()
-      toler = (datrange[2] - datrange[1]) / (100 * length(ylist))
-    })
-    mean_is_flat = sapply(1:res$dimdat, FUN = function(idim){
-      all(abs(diff(res$mn[,idim,])) < toler_by_dim)
-    })
-
-    toler_prob = 0.01 / length(ylist)
+    mean_is_flat = sapply(1:dimdat, FUN = function(idim){
+      all(abs(diff(res$mn[,idim,])) < toler_by_dim[idim])  })
     prob_is_flat =  all(abs(diff(res$prob)) < toler_prob)
-    if(all(mean_is_flat) & prob_is_flat) ## I think this is it?
+    all_are_flat = (all(mean_is_flat) & prob_is_flat)
 
-    abs_range / 100
-    plot_1d(ylist, res)
-    plot_prob(res) + ylim(c(0,1))
-    names(res)
-    res$lambda
-    res$lmbda_prob
-    res$prob[,1] %>% plot()
-    res$objectives %>% plot(type = 'o', cex=.5)
-
-
-    ## End of the flatness
-
-    ## Check zero-ness
-    toler = 0
-    sum_nonzero_prob = sum(res$alpha[,-1] > toler)
-    sum_nonzero_beta = sum(unlist(lapply(res$beta, function(cf){ sum(cf[-1,] > toler) })))
-
-
-    ## If there are *any* nonzero values, do one of the following
-    if(sum_nonzero_alpha + sum_nonzero_beta != 0){
-
+    if(!all_are_flat){
 
       ## If there are *any* nonzero values at the first iter, prompt a restart
       ## with higher initial lambda values.
-      if(ii==1){
+      if(ii == 1){
+        browser()
         stop(paste0("Max lambdas: ", max_lambda_mean, " and ", max_lambda_prob,
                     " were too small as maximum reg. values. Go up and try again!!"))
 
@@ -103,20 +80,17 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
                               ...)
 
         ## Check if both curves are basically flat
-        if(FALSE){
-        toler = 0
-        sum_nonzero_alpha = sum(res$alpha[,-1] > toler)
-        sum_nonzero_beta = sum(unlist(lapply(res$beta, function(cf){ sum(cf[-1,] > toler) })))
-        }
-        res$mean
-        res$prob
+        mean_is_flat = sapply(1:res$dimdat, FUN = function(idim){
+          all(abs(diff(res$mn[,idim,])) < toler_by_dim[idim]) })
+        prob_is_flat =  all(abs(diff(res$prob)) < toler_prob)
+        all_are_flat = (all(mean_is_flat) & prob_is_flat)
 
-        ## If there are *any* nonzero values, do one of the following
-        if(sum_nonzero_alpha + sum_nonzero_beta != 0){
+        ## If there are *any* nonzero values, stop.
+        ## (Otherwise, just proceed to try a smaller set of lambdas.)
+        if(!all_are_flat){
           return(list(mean = max_lambda_mean * facs[ii-1],
-                      prob = max_lambda_prob *facs[ii-1]))
+                      prob = max_lambda_prob * facs[ii-1]))
         }
-        ## Otherwise, just proceed to the next iteration.
       }
     }
     cat(fill=TRUE)

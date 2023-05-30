@@ -11,7 +11,11 @@ W_update_fused <- function(lm1, TT, mu, uw, rho, lambda){
 
   # generating pseudo response xi
   #xi <- Dlm1 %*% mu + 1/rho * uw
-  xi <- diff(mu, differences = lm1) + 1/rho * uw
+  if(lm1 == 0){
+    xi <- mu + 1/rho * uw
+  } else {
+    xi <- diff(mu, differences = lm1) + 1/rho * uw
+  }
 
   # running the fused LASSO
   ## fit <- prox(z = xi, lam = mod_lam)
@@ -69,5 +73,10 @@ U_update_Z <- function(U, rho, mu, Z){
 }
 
 U_update_W <- function(U, rho, mu, W, Dlm1, l){
-  return(U +  rho * ( t(diff(t(mu), differences = l)) - W))
+
+  if(l==0){
+    return(U +  rho * (mu - W)) ## This /seems/ like it will work.
+  } else {
+    return(U +  rho * ( t(diff(t(mu), differences = l)) - W))
+  }
 }

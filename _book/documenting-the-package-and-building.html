@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2023-05-11" />
+<meta name="date" content="2023-05-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -195,7 +195,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="documenting-the-package-and-building" class="section level1 hasAnchor" number="13">
 <h1><span class="header-section-number">13</span> Documenting the package and building<a href="documenting-the-package-and-building.html#documenting-the-package-and-building" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>We finish by running commands that will document, build, and install the package. It may also be a good idea to check the package from within this file.</p>
-<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="documenting-the-package-and-building.html#cb110-1" aria-hidden="true" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">document</span>() <span class="co"># &lt;-- use instead of devtools::document()</span></span></code></pre></div>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="documenting-the-package-and-building.html#cb113-1" aria-hidden="true" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">document</span>() <span class="co"># &lt;-- use instead of devtools::document()</span></span></code></pre></div>
 <pre><code>## ℹ Updating flowtrend documentation
 ## ℹ Loading flowtrend
 ## ℹ Re-compiling flowtrend (debug build)</code></pre>
@@ -251,8 +251,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## Warning: [make_cvscore_filename.R:4] @param requires name and description</code></pre>
 <pre><code>## Warning: [make_cvscore_filename.R:5] @param requires name and description</code></pre>
 <pre><code>## Warning: [make_cvscore_filename.R:6] @param requires name and description</code></pre>
+<pre><code>## Warning: [make_cvscore_filename.R:16] @param requires name and description</code></pre>
+<pre><code>## Warning: [make_cvscore_filename.R:17] @param requires name and description</code></pre>
 <pre><code>## Warning: [make_cvscore_filename.R:18] @param requires name and description</code></pre>
-<pre><code>## Warning: [make_cvscore_filename.R:19] @param requires name and description</code></pre>
+<pre><code>## Warning: [make_cvscore_filename.R:30] @param requires name and description</code></pre>
+<pre><code>## Warning: [make_cvscore_filename.R:31] @param requires name and description</code></pre>
+<pre><code>## Warning: [make_cvscore_filename.R:42] @param requires name and description</code></pre>
 <pre><code>## Warning: [objective.R:5] @param requires name and description</code></pre>
 <pre><code>## Warning: [objective.R:6] @param requires name and description</code></pre>
 <pre><code>## Warning: [objective.R:7] @param requires name and description</code></pre>
@@ -291,6 +295,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## Writing &#39;cv_aggregate.Rd&#39;
 ## Writing &#39;cv_aggregate_res.Rd&#39;
 ## Writing &#39;cv_flowtrend.Rd&#39;
+## Writing &#39;cv_makebest.Rd&#39;
+## Writing &#39;load_all_objectives.Rd&#39;
+## Writing &#39;load_all_refit_objectives.Rd&#39;
+## Writing &#39;keep_only_best.Rd&#39;
+## Writing &#39;keep_only_best_refit.Rd&#39;
 ## Writing &#39;cv_summary.Rd&#39;
 ## Writing &#39;dt2ylist.Rd&#39;
 ## Writing &#39;flowtrend-package.Rd&#39;
@@ -314,7 +323,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## Writing &#39;logspace.Rd&#39;
 ## Writing &#39;make_cv_folds.Rd&#39;
 ## Writing &#39;make_cvscore_filename.Rd&#39;
+## Writing &#39;make_best_cvscore_filename.Rd&#39;
 ## Writing &#39;make_refit_filename.Rd&#39;
+## Writing &#39;make_best_refit_filename.Rd&#39;
 ## Writing &#39;make_iimat.Rd&#39;
 ## Writing &#39;make_iimat_small.Rd&#39;
 ## Writing &#39;objective.Rd&#39;

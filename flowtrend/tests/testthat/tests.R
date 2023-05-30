@@ -72,7 +72,7 @@ testthat::test_that("Test the M step of \mu against CVXR", {})
 testthat::test_that("The prediction function returns the right things", {
   ## Generate data
   set.seed(100)
-  dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
+  dt       <- gendat_1d(100, rep(100, 100))
   ylist = dt %>% dt2ylist()
   x = dt %>% pull(time) %>% unique()
   obj <- flowtrend(ylist = ylist,
@@ -92,8 +92,8 @@ testthat::test_that("The prediction function returns the right things", {
 
 ## Generate data
 set.seed(100)
-dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
-dt_model       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45, return_model = TRUE)
+dt       <- gendat_1d(100, rep(100, 100))
+dt_model       <- gendat_1d(100, rep(100, 100), return_model = TRUE)
 held_out = 25:35
 dt_subset = dt %>% subset(time %ni% held_out)
 ylist = dt_subset %>% dt2ylist()

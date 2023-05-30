@@ -2,8 +2,8 @@
 % Please edit documentation in _main.Rmd.
 \name{cv_aggregate_res}
 \alias{cv_aggregate_res}
-\title{Helper to aggregate parallelized CV results and obtain the |res| object, all
-saved in |destin|.}
+\title{Helper to aggregate CV results and obtain the |res| object, all saved in
+|destin|.}
 \usage{
 cv_aggregate_res(destin)
 }
@@ -11,11 +11,11 @@ cv_aggregate_res(destin)
 \item{destin}{Directory with cross-validation output.}
 }
 \value{
-List containing, for every (iprob, imu), the "best" estimated
-model out of the |nrestart| replicates (best in the sense that it had the best
+List containing, for every (iprob, imu), the "best" estimated model
+out of the |nrestart| replicates (best in the sense that it had the best
 likelihood value out of the |nrestart| replicates.)
 }
 \description{
-Helper to aggregate parallelized CV results and obtain the |res| object, all
-saved in |destin|.
+Helper to aggregate CV results and obtain the |res| object, all saved in
+|destin|.
 }

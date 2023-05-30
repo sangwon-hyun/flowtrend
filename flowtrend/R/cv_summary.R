@@ -30,16 +30,15 @@ cv_summary <- function(destin = ".",
   a = cv_aggregate(destin)
   cvscore.mat = a$cvscore.mat
   min.inds = a$min.inds
-  
 
   ## Get results from refitting
   bestreslist = cv_aggregate_res(destin = destin)
   bestres = bestreslist[[paste0(min.inds[1] , "-", min.inds[2])]]
   if(is.null(bestres)){
+    if(min.inds[1]==2 & min.inds[2]==3) browser()
     stop(paste0("The model with lambda indices (",
                 min.inds[1], ",", min.inds[2], ") is not available."))
   }
-
   out = list(bestres = bestres,
              cvscore.mat = cvscore.mat,
              min.inds = min.inds,

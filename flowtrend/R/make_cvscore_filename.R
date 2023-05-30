@@ -12,6 +12,18 @@ make_cvscore_filename <- function(iprob, imu, ifold, irestart){
   return(filename)
 }
 
+#' Create file name (a string) for cross-validation results.
+#' @param iprob
+#' @param imu
+#' @param ifold
+#' @param irestart
+#' 
+#' @export
+make_best_cvscore_filename <- function(iprob, imu, ifold){
+  filename = paste0(iprob, "-", imu, "-", ifold, "-best-cvscore.Rdata")
+  return(filename)
+}
+
 
 #' Create file name (a string) for re-estimated models for the lambda values
 #' indexed by \code{iprob} and \code{imu}.
@@ -22,5 +34,16 @@ make_cvscore_filename <- function(iprob, imu, ifold, irestart){
 #' @export
 make_refit_filename <- function(iprob, imu, irestart){
   filename = paste0(iprob, "-", imu, "-", irestart, "-fit.Rdata")
+  return(filename)
+}
+
+#' Create file name (a string) for re-estimated models for the lambda values
+#' indexed by \code{iprob} and \code{imu}.
+#' @param iprob
+#' @param imu
+#' 
+#' @export
+make_best_refit_filename <- function(iprob, imu){
+  filename = paste0(iprob, "-", imu, "-best-fit.Rdata")
   return(filename)
 }

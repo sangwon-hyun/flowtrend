@@ -23,7 +23,8 @@ flowtrend_once(
   admm_err_rel = 0.001,
   admm_err_abs = 1e-04,
   admm_local_adapt = FALSE,
-  admm_local_adapt_niter = if (admm_local_adapt) 10 else 1
+  admm_local_adapt_niter = if (admm_local_adapt) 10 else 1,
+  seed = NULL
 )
 }
 \arguments{

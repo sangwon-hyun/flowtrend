@@ -42,7 +42,9 @@ flowtrend_once <- function(ylist,
                        admm_err_abs = 1E-4,
                        ## Mean M step (Locally Adaptive ADMM) settings
                        admm_local_adapt = FALSE,
-                       admm_local_adapt_niter = if(admm_local_adapt) 10 else 1){
+                       admm_local_adapt_niter = if(admm_local_adapt) 10 else 1,
+                       ## Random seed
+                       seed = NULL){
 
   ## Basic checks
   if(!is.null(maxdev)){
@@ -56,6 +58,10 @@ flowtrend_once <- function(ylist,
     ntlist = sapply(ylist, nrow)
     countslist = lapply(ntlist, FUN = function(nt) rep(1, nt))
   }
+  if(!is.null(seed)){
+    assertthat::assert_that(all((seed %>% sapply(., class)) == "integer"))
+    assertthat::assert_that(length(seed) == 7)
+  }
 
   ## Setup for EM algorithm
   TT = length(ylist)
@@ -67,7 +73,7 @@ flowtrend_once <- function(ylist,
   e_mat <- etilde_mat(TT = TT) # needed to generate B
   Dl_prob = gen_diff_mat(n = TT, l = l_prob+1, x = x)
   H_tf <- gen_tf_mat(n = length(countslist), k = l_prob, x = x)
-  if(is.null(mn)) mn = init_mn(ylist, numclust, TT, dimdat, countslist = countslist)
+  if(is.null(mn)) mn = init_mn(ylist, numclust, TT, dimdat, countslist = countslist, seed = seed)
   ntlist = sapply(ylist, nrow)
   N = sum(ntlist)
 

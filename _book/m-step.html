@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2023-05-11" />
+<meta name="date" content="2023-05-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -755,66 +755,75 @@ iterations <code>iter=1,...,n</code>.</p>
 <span id="cb47-9"><a href="m-step.html#cb47-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb47-10"><a href="m-step.html#cb47-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># generating pseudo response xi</span></span>
 <span id="cb47-11"><a href="m-step.html#cb47-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#xi &lt;- Dlm1 %*% mu + 1/rho * uw</span></span>
-<span id="cb47-12"><a href="m-step.html#cb47-12" aria-hidden="true" tabindex="-1"></a>  xi <span class="ot">&lt;-</span> <span class="fu">diff</span>(mu, <span class="at">differences =</span> lm1) <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span>rho <span class="sc">*</span> uw</span>
-<span id="cb47-13"><a href="m-step.html#cb47-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-14"><a href="m-step.html#cb47-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># running the fused LASSO</span></span>
-<span id="cb47-15"><a href="m-step.html#cb47-15" aria-hidden="true" tabindex="-1"></a>  <span class="do">## fit &lt;- <a href='m-step.html#prox'>prox</a>(z = xi, lam = mod_lam)</span></span>
-<span id="cb47-16"><a href="m-step.html#cb47-16" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> FlowTF<span class="sc">::</span><a href='m-step.html#prox'>prox</a>(<span class="at">z =</span> xi, <span class="at">lam =</span> mod_lam)</span>
+<span id="cb47-12"><a href="m-step.html#cb47-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(lm1 <span class="sc">==</span> <span class="dv">0</span>){</span>
+<span id="cb47-13"><a href="m-step.html#cb47-13" aria-hidden="true" tabindex="-1"></a>    xi <span class="ot">&lt;-</span> mu <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span>rho <span class="sc">*</span> uw</span>
+<span id="cb47-14"><a href="m-step.html#cb47-14" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb47-15"><a href="m-step.html#cb47-15" aria-hidden="true" tabindex="-1"></a>    xi <span class="ot">&lt;-</span> <span class="fu">diff</span>(mu, <span class="at">differences =</span> lm1) <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span>rho <span class="sc">*</span> uw</span>
+<span id="cb47-16"><a href="m-step.html#cb47-16" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb47-17"><a href="m-step.html#cb47-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-18"><a href="m-step.html#cb47-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(fit)</span>
-<span id="cb47-19"><a href="m-step.html#cb47-19" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb47-20"><a href="m-step.html#cb47-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-21"><a href="m-step.html#cb47-21" aria-hidden="true" tabindex="-1"></a><span class="do">## This function is in FlowTF now. It&#39;s the last function there!</span></span>
-<span id="cb47-22"><a href="m-step.html#cb47-22" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39; Fused LASSO for scalar inputs.</span></span>
-<span id="cb47-23"><a href="m-step.html#cb47-23" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39;</span></span>
-<span id="cb47-24"><a href="m-step.html#cb47-24" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39; @param z scalar input to be smoothed via the fused LASSO</span></span>
-<span id="cb47-25"><a href="m-step.html#cb47-25" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39; @param lam  Fused LASSO smoothing parameter</span></span>
-<span id="cb47-26"><a href="m-step.html#cb47-26" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39;</span></span>
-<span id="cb47-27"><a href="m-step.html#cb47-27" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39; @return Estimates of the fused LASSO solution</span></span>
-<span id="cb47-28"><a href="m-step.html#cb47-28" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39; @export prox</span></span>
-<span id="cb47-29"><a href="m-step.html#cb47-29" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39;</span></span>
-<span id="cb47-30"><a href="m-step.html#cb47-30" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39; @references All credit for writing this function goes to Ryan Tibshirani. See</span></span>
-<span id="cb47-31"><a href="m-step.html#cb47-31" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39;   the original code for calling this function at</span></span>
-<span id="cb47-32"><a href="m-step.html#cb47-32" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39;</span></span>
-<span id="cb47-33"><a href="m-step.html#cb47-33" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39; @useDynLib FlowTF prox_dp </span></span>
-<span id="cb47-34"><a href="m-step.html#cb47-34" aria-hidden="true" tabindex="-1"></a><span class="do">## <span id='prox'>prox</span> &lt;-  function(z, lam) {</span></span>
-<span id="cb47-35"><a href="m-step.html#cb47-35" aria-hidden="true" tabindex="-1"></a><span class="do">##   o &lt;- .C(&quot;prox_dp&quot;,</span></span>
-<span id="cb47-36"><a href="m-step.html#cb47-36" aria-hidden="true" tabindex="-1"></a><span class="do">##           as.integer(length(z)),</span></span>
-<span id="cb47-37"><a href="m-step.html#cb47-37" aria-hidden="true" tabindex="-1"></a><span class="do">##           as.double(z),</span></span>
-<span id="cb47-38"><a href="m-step.html#cb47-38" aria-hidden="true" tabindex="-1"></a><span class="do">##           as.double(lam),</span></span>
-<span id="cb47-39"><a href="m-step.html#cb47-39" aria-hidden="true" tabindex="-1"></a><span class="do">##           as.double(numeric(length(z))),</span></span>
-<span id="cb47-40"><a href="m-step.html#cb47-40" aria-hidden="true" tabindex="-1"></a><span class="do">##           #  dup=FALSE,</span></span>
-<span id="cb47-41"><a href="m-step.html#cb47-41" aria-hidden="true" tabindex="-1"></a><span class="do">##           PACKAGE=&quot;FlowTF&quot;)</span></span>
-<span id="cb47-42"><a href="m-step.html#cb47-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-43"><a href="m-step.html#cb47-43" aria-hidden="true" tabindex="-1"></a><span class="do">##   return(o[[4]])</span></span>
-<span id="cb47-44"><a href="m-step.html#cb47-44" aria-hidden="true" tabindex="-1"></a><span class="do">## }</span></span>
-<span id="cb47-45"><a href="m-step.html#cb47-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-18"><a href="m-step.html#cb47-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># running the fused LASSO</span></span>
+<span id="cb47-19"><a href="m-step.html#cb47-19" aria-hidden="true" tabindex="-1"></a>  <span class="do">## fit &lt;- <a href='m-step.html#prox'>prox</a>(z = xi, lam = mod_lam)</span></span>
+<span id="cb47-20"><a href="m-step.html#cb47-20" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> FlowTF<span class="sc">::</span><a href='m-step.html#prox'>prox</a>(<span class="at">z =</span> xi, <span class="at">lam =</span> mod_lam)</span>
+<span id="cb47-21"><a href="m-step.html#cb47-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-22"><a href="m-step.html#cb47-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(fit)</span>
+<span id="cb47-23"><a href="m-step.html#cb47-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb47-24"><a href="m-step.html#cb47-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-25"><a href="m-step.html#cb47-25" aria-hidden="true" tabindex="-1"></a><span class="do">## This function is in FlowTF now. It&#39;s the last function there!</span></span>
+<span id="cb47-26"><a href="m-step.html#cb47-26" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39; Fused LASSO for scalar inputs.</span></span>
+<span id="cb47-27"><a href="m-step.html#cb47-27" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39;</span></span>
+<span id="cb47-28"><a href="m-step.html#cb47-28" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39; @param z scalar input to be smoothed via the fused LASSO</span></span>
+<span id="cb47-29"><a href="m-step.html#cb47-29" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39; @param lam  Fused LASSO smoothing parameter</span></span>
+<span id="cb47-30"><a href="m-step.html#cb47-30" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39;</span></span>
+<span id="cb47-31"><a href="m-step.html#cb47-31" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39; @return Estimates of the fused LASSO solution</span></span>
+<span id="cb47-32"><a href="m-step.html#cb47-32" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39; @export prox</span></span>
+<span id="cb47-33"><a href="m-step.html#cb47-33" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39;</span></span>
+<span id="cb47-34"><a href="m-step.html#cb47-34" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39; @references All credit for writing this function goes to Ryan Tibshirani. See</span></span>
+<span id="cb47-35"><a href="m-step.html#cb47-35" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39;   the original code for calling this function at</span></span>
+<span id="cb47-36"><a href="m-step.html#cb47-36" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39;</span></span>
+<span id="cb47-37"><a href="m-step.html#cb47-37" aria-hidden="true" tabindex="-1"></a><span class="do">## #&#39; @useDynLib FlowTF prox_dp </span></span>
+<span id="cb47-38"><a href="m-step.html#cb47-38" aria-hidden="true" tabindex="-1"></a><span class="do">## <span id='prox'>prox</span> &lt;-  function(z, lam) {</span></span>
+<span id="cb47-39"><a href="m-step.html#cb47-39" aria-hidden="true" tabindex="-1"></a><span class="do">##   o &lt;- .C(&quot;prox_dp&quot;,</span></span>
+<span id="cb47-40"><a href="m-step.html#cb47-40" aria-hidden="true" tabindex="-1"></a><span class="do">##           as.integer(length(z)),</span></span>
+<span id="cb47-41"><a href="m-step.html#cb47-41" aria-hidden="true" tabindex="-1"></a><span class="do">##           as.double(z),</span></span>
+<span id="cb47-42"><a href="m-step.html#cb47-42" aria-hidden="true" tabindex="-1"></a><span class="do">##           as.double(lam),</span></span>
+<span id="cb47-43"><a href="m-step.html#cb47-43" aria-hidden="true" tabindex="-1"></a><span class="do">##           as.double(numeric(length(z))),</span></span>
+<span id="cb47-44"><a href="m-step.html#cb47-44" aria-hidden="true" tabindex="-1"></a><span class="do">##           #  dup=FALSE,</span></span>
+<span id="cb47-45"><a href="m-step.html#cb47-45" aria-hidden="true" tabindex="-1"></a><span class="do">##           PACKAGE=&quot;FlowTF&quot;)</span></span>
 <span id="cb47-46"><a href="m-step.html#cb47-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-47"><a href="m-step.html#cb47-47" aria-hidden="true" tabindex="-1"></a><span id='Z_update'>Z_update</span>  <span class="ot">&lt;-</span> <span class="cf">function</span>(m, Uz, C, rho){</span>
-<span id="cb47-48"><a href="m-step.html#cb47-48" aria-hidden="true" tabindex="-1"></a>  mat <span class="ot">=</span> m <span class="sc">+</span> Uz<span class="sc">/</span>rho</span>
-<span id="cb47-49"><a href="m-step.html#cb47-49" aria-hidden="true" tabindex="-1"></a>  Z <span class="ot">=</span> <a href='m-step.html#projCmat'>projCmat</a>(mat, C)</span>
-<span id="cb47-50"><a href="m-step.html#cb47-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(Z)</span>
-<span id="cb47-51"><a href="m-step.html#cb47-51" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb47-52"><a href="m-step.html#cb47-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-53"><a href="m-step.html#cb47-53" aria-hidden="true" tabindex="-1"></a><span id='projCmat'>projCmat</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mat, C){</span>
-<span id="cb47-54"><a href="m-step.html#cb47-54" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(C)){</span>
-<span id="cb47-55"><a href="m-step.html#cb47-55" aria-hidden="true" tabindex="-1"></a>    vlens <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">rowSums</span>(mat <span class="sc">*</span> mat))</span>
-<span id="cb47-56"><a href="m-step.html#cb47-56" aria-hidden="true" tabindex="-1"></a>    inds <span class="ot">=</span> <span class="fu">which</span>(vlens <span class="sc">&gt;</span> C)</span>
-<span id="cb47-57"><a href="m-step.html#cb47-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">length</span>(inds) <span class="sc">&gt;</span> <span class="dv">0</span>){</span>
-<span id="cb47-58"><a href="m-step.html#cb47-58" aria-hidden="true" tabindex="-1"></a>      mat[inds,] <span class="ot">=</span> mat[inds,] <span class="sc">*</span> C <span class="sc">/</span> vlens[inds]</span>
-<span id="cb47-59"><a href="m-step.html#cb47-59" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb47-60"><a href="m-step.html#cb47-60" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb47-61"><a href="m-step.html#cb47-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(mat)</span>
-<span id="cb47-62"><a href="m-step.html#cb47-62" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb47-63"><a href="m-step.html#cb47-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-64"><a href="m-step.html#cb47-64" aria-hidden="true" tabindex="-1"></a><span id='U_update_Z'>U_update_Z</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(U, rho, mu, Z){</span>
-<span id="cb47-65"><a href="m-step.html#cb47-65" aria-hidden="true" tabindex="-1"></a> <span class="co"># return(U + rho * (scale(mu, scale = F) - Z))</span></span>
-<span id="cb47-66"><a href="m-step.html#cb47-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(U <span class="sc">+</span> rho <span class="sc">*</span> (<span class="fu">t</span>(<span class="fu">t</span>(mu) <span class="sc">-</span> <span class="fu">rowMeans</span>(<span class="fu">t</span>(mu))) <span class="sc">-</span> Z))</span>
-<span id="cb47-67"><a href="m-step.html#cb47-67" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb47-68"><a href="m-step.html#cb47-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-69"><a href="m-step.html#cb47-69" aria-hidden="true" tabindex="-1"></a><span id='U_update_W'>U_update_W</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(U, rho, mu, W, Dlm1, l){</span>
-<span id="cb47-70"><a href="m-step.html#cb47-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(U <span class="sc">+</span>  rho <span class="sc">*</span> ( <span class="fu">t</span>(<span class="fu">diff</span>(<span class="fu">t</span>(mu), <span class="at">differences =</span> l)) <span class="sc">-</span> W))</span>
-<span id="cb47-71"><a href="m-step.html#cb47-71" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb47-47"><a href="m-step.html#cb47-47" aria-hidden="true" tabindex="-1"></a><span class="do">##   return(o[[4]])</span></span>
+<span id="cb47-48"><a href="m-step.html#cb47-48" aria-hidden="true" tabindex="-1"></a><span class="do">## }</span></span>
+<span id="cb47-49"><a href="m-step.html#cb47-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-50"><a href="m-step.html#cb47-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-51"><a href="m-step.html#cb47-51" aria-hidden="true" tabindex="-1"></a><span id='Z_update'>Z_update</span>  <span class="ot">&lt;-</span> <span class="cf">function</span>(m, Uz, C, rho){</span>
+<span id="cb47-52"><a href="m-step.html#cb47-52" aria-hidden="true" tabindex="-1"></a>  mat <span class="ot">=</span> m <span class="sc">+</span> Uz<span class="sc">/</span>rho</span>
+<span id="cb47-53"><a href="m-step.html#cb47-53" aria-hidden="true" tabindex="-1"></a>  Z <span class="ot">=</span> <a href='m-step.html#projCmat'>projCmat</a>(mat, C)</span>
+<span id="cb47-54"><a href="m-step.html#cb47-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(Z)</span>
+<span id="cb47-55"><a href="m-step.html#cb47-55" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb47-56"><a href="m-step.html#cb47-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-57"><a href="m-step.html#cb47-57" aria-hidden="true" tabindex="-1"></a><span id='projCmat'>projCmat</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mat, C){</span>
+<span id="cb47-58"><a href="m-step.html#cb47-58" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(C)){</span>
+<span id="cb47-59"><a href="m-step.html#cb47-59" aria-hidden="true" tabindex="-1"></a>    vlens <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fu">rowSums</span>(mat <span class="sc">*</span> mat))</span>
+<span id="cb47-60"><a href="m-step.html#cb47-60" aria-hidden="true" tabindex="-1"></a>    inds <span class="ot">=</span> <span class="fu">which</span>(vlens <span class="sc">&gt;</span> C)</span>
+<span id="cb47-61"><a href="m-step.html#cb47-61" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">length</span>(inds) <span class="sc">&gt;</span> <span class="dv">0</span>){</span>
+<span id="cb47-62"><a href="m-step.html#cb47-62" aria-hidden="true" tabindex="-1"></a>      mat[inds,] <span class="ot">=</span> mat[inds,] <span class="sc">*</span> C <span class="sc">/</span> vlens[inds]</span>
+<span id="cb47-63"><a href="m-step.html#cb47-63" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb47-64"><a href="m-step.html#cb47-64" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb47-65"><a href="m-step.html#cb47-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(mat)</span>
+<span id="cb47-66"><a href="m-step.html#cb47-66" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb47-67"><a href="m-step.html#cb47-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-68"><a href="m-step.html#cb47-68" aria-hidden="true" tabindex="-1"></a><span id='U_update_Z'>U_update_Z</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(U, rho, mu, Z){</span>
+<span id="cb47-69"><a href="m-step.html#cb47-69" aria-hidden="true" tabindex="-1"></a> <span class="co"># return(U + rho * (scale(mu, scale = F) - Z))</span></span>
+<span id="cb47-70"><a href="m-step.html#cb47-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(U <span class="sc">+</span> rho <span class="sc">*</span> (<span class="fu">t</span>(<span class="fu">t</span>(mu) <span class="sc">-</span> <span class="fu">rowMeans</span>(<span class="fu">t</span>(mu))) <span class="sc">-</span> Z))</span>
+<span id="cb47-71"><a href="m-step.html#cb47-71" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb47-72"><a href="m-step.html#cb47-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-73"><a href="m-step.html#cb47-73" aria-hidden="true" tabindex="-1"></a><span id='U_update_W'>U_update_W</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(U, rho, mu, W, Dlm1, l){</span>
+<span id="cb47-74"><a href="m-step.html#cb47-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-75"><a href="m-step.html#cb47-75" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(l<span class="sc">==</span><span class="dv">0</span>){</span>
+<span id="cb47-76"><a href="m-step.html#cb47-76" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(U <span class="sc">+</span>  rho <span class="sc">*</span> (mu <span class="sc">-</span> W)) <span class="do">## This /seems/ like it will work.</span></span>
+<span id="cb47-77"><a href="m-step.html#cb47-77" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb47-78"><a href="m-step.html#cb47-78" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(U <span class="sc">+</span>  rho <span class="sc">*</span> ( <span class="fu">t</span>(<span class="fu">diff</span>(<span class="fu">t</span>(mu), <span class="at">differences =</span> l)) <span class="sc">-</span> W))</span>
+<span id="cb47-79"><a href="m-step.html#cb47-79" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb47-80"><a href="m-step.html#cb47-80" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>A <code>prox_dp</code> function, written in C, will be used:
 [TODO: I might rewrite this into Cpp]</p>
 <div class="sourceCode" id="cb48"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb48-1"><a href="m-step.html#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>

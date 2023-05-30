@@ -158,7 +158,7 @@ containing: the mean, probability, covariance, and new times.
 testthat::test_that("The prediction function returns the right things", {
   ## Generate data
   set.seed(100)
-  dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
+  dt       <- gendat_1d(100, rep(100, 100))
   ylist = dt %>% dt2ylist()
   x = dt %>% pull(time) %>% unique()
   obj <- flowtrend(ylist = ylist,
@@ -183,8 +183,8 @@ from a model that is estimated without those time points.
 ```{r test-predict_flowtrend2, eval = FALSE}
 ## Generate data
 set.seed(100)
-dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
-dt_model       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45, return_model = TRUE)
+dt       <- gendat_1d(100, rep(100, 100))
+dt_model       <- gendat_1d(100, rep(100, 100), return_model = TRUE)
 held_out = 25:35
 dt_subset = dt %>% subset(time %ni% held_out)
 ylist = dt_subset %>% dt2ylist()
@@ -254,8 +254,8 @@ Let's now try to space inputs unevenly, by `x`.
 
 ```{r uneven-space, eval = FALSE}
 set.seed(100)
-dt       <- gendat_1d(1000, rep(100, 1000), die_off_time = 0.45)
-dt_model       <- gendat_1d(1000, rep(100, 1000), die_off_time = 0.45, return_model = TRUE)
+dt       <- gendat_1d(1000, rep(100, 1000))
+dt_model       <- gendat_1d(1000, rep(100, 1000), return_model = TRUE)
 ## held_out = 25:35
 ## dt_subset = dt %>% subset(time %ni% held_out)
 ylist_orig = dt %>% dt2ylist()
@@ -466,19 +466,26 @@ The aforementioned workhorse `calc_max_lambda()` is here.
 #' @return list containing the two maximum values to use.
 #' 
 #' @export
-calc_max_lambda <- function(ylist, countslist = NULL, numclust,
+calc_max_lambda <- function(ylist, countslist = NULL, numclust, 
                             max_lambda_mean = 4000,
                             max_lambda_prob = 1000,
                             verbose = FALSE,
                             iimax = 16,
                             ...){
 
+  ## Basic setup
+  dimdat = ncol(ylist[[1]])
+  toler_by_dim = sapply(1:dimdat, function(idim){
+    datrange = ylist %>% sapply(FUN = function(y) y %>% .[,idim] %>% range()) %>% range()
+    toler = (datrange[2] - datrange[1]) / (100 * length(ylist))
+  })
+  toler_prob = 0.01 / length(ylist)
+
   ## Get range of regularization parameters.
   facs = sapply(1:iimax, function(ii) 2^(-ii+1)) ## DECREASING order
   print("running the models once")
   for(ii in 1:iimax){
 
-    ## print_progress(ii, iimax, "regularization values", fill = TRUE)
     cat("###############################################################", fill=TRUE)
     cat("#### lambda_prob = ", max_lambda_prob * facs[ii],
         " and lambda = ", max_lambda_mean * facs[ii], "being tested.  ", fill=TRUE)
@@ -489,50 +496,20 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
                           numclust = numclust,
                           lambda_prob = max_lambda_prob * facs[ii],
                           lambda = max_lambda_mean * facs[ii],
-                          verbose = verbose,
-                          ...)
+                          verbose = verbose, ...)
 
-    ## TODO: CHECK FLATNESS INSTEAD OF ZERONESS
     ## In each dimension, the data should only vary by a relatively small amount (say 1/100)
-    browser()
-    idim = 1
-    toler_by_dim = sapply(1:res$dimdat, function(idim){
-      datrange = ylist %>% sapply(FUN = function(y) y %>% .[,idim] %>% range()) %>% range()
-      toler = (datrange[2] - datrange[1]) / (100 * length(ylist))
-    })
-    mean_is_flat = sapply(1:res$dimdat, FUN = function(idim){
-      all(abs(diff(res$mn[,idim,])) < toler_by_dim)
-    })
-
-    toler_prob = 0.01 / length(ylist)
+    mean_is_flat = sapply(1:dimdat, FUN = function(idim){
+      all(abs(diff(res$mn[,idim,])) < toler_by_dim[idim])  })
     prob_is_flat =  all(abs(diff(res$prob)) < toler_prob)
-    if(all(mean_is_flat) & prob_is_flat) ## I think this is it?
+    all_are_flat = (all(mean_is_flat) & prob_is_flat)
 
-    abs_range / 100
-    plot_1d(ylist, res)
-    plot_prob(res) + ylim(c(0,1))
-    names(res)
-    res$lambda
-    res$lmbda_prob
-    res$prob[,1] %>% plot()
-    res$objectives %>% plot(type = 'o', cex=.5)
-
-
-    ## End of the flatness
-
-    ## Check zero-ness
-    toler = 0
-    sum_nonzero_prob = sum(res$alpha[,-1] > toler)
-    sum_nonzero_beta = sum(unlist(lapply(res$beta, function(cf){ sum(cf[-1,] > toler) })))
-
-
-    ## If there are *any* nonzero values, do one of the following
-    if(sum_nonzero_alpha + sum_nonzero_beta != 0){
-
+    if(!all_are_flat){
 
       ## If there are *any* nonzero values at the first iter, prompt a restart
       ## with higher initial lambda values.
-      if(ii==1){
+      if(ii == 1){
+        browser()
         stop(paste0("Max lambdas: ", max_lambda_mean, " and ", max_lambda_prob,
                     " were too small as maximum reg. values. Go up and try again!!"))
 
@@ -549,20 +526,17 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
                               ...)
 
         ## Check if both curves are basically flat
-        if(FALSE){
-        toler = 0
-        sum_nonzero_alpha = sum(res$alpha[,-1] > toler)
-        sum_nonzero_beta = sum(unlist(lapply(res$beta, function(cf){ sum(cf[-1,] > toler) })))
-        }
-        res$mean
-        res$prob
+        mean_is_flat = sapply(1:res$dimdat, FUN = function(idim){
+          all(abs(diff(res$mn[,idim,])) < toler_by_dim[idim]) })
+        prob_is_flat =  all(abs(diff(res$prob)) < toler_prob)
+        all_are_flat = (all(mean_is_flat) & prob_is_flat)
 
-        ## If there are *any* nonzero values, do one of the following
-        if(sum_nonzero_alpha + sum_nonzero_beta != 0){
+        ## If there are *any* nonzero values, stop.
+        ## (Otherwise, just proceed to try a smaller set of lambdas.)
+        if(!all_are_flat){
           return(list(mean = max_lambda_mean * facs[ii-1],
-                      prob = max_lambda_prob *facs[ii-1]))
+                      prob = max_lambda_prob * facs[ii-1]))
         }
-        ## Otherwise, just proceed to the next iteration.
       }
     }
     cat(fill=TRUE)
@@ -591,8 +565,6 @@ make_cv_folds <- function(ylist=NULL, nfold, TT=NULL){
   if(is.null(TT)) TT = length(ylist)
   folds <- rep(1:nfold, ceiling( (TT-2)/nfold))[1:(TT-2)]
   inds <- lapply(1:nfold, FUN = function(k) (2:(TT-1))[folds == k])
-  plot(NA, ylim=c(0,1), xlim=c(1,100))
-  abline(v=inds[[1]])
   names(inds) = paste0("Fold", 1:nfold)
 
   return(inds)
@@ -929,6 +901,18 @@ make_cvscore_filename <- function(iprob, imu, ifold, irestart){
   return(filename)
 }
 
+#' Create file name (a string) for cross-validation results.
+#' @param iprob
+#' @param imu
+#' @param ifold
+#' @param irestart
+#' 
+#' @export
+make_best_cvscore_filename <- function(iprob, imu, ifold){
+  filename = paste0(iprob, "-", imu, "-", ifold, "-best-cvscore.Rdata")
+  return(filename)
+}
+
 
 #' Create file name (a string) for re-estimated models for the lambda values
 #' indexed by \code{iprob} and \code{imu}.
@@ -939,6 +923,17 @@ make_cvscore_filename <- function(iprob, imu, ifold, irestart){
 #' @export
 make_refit_filename <- function(iprob, imu, irestart){
   filename = paste0(iprob, "-", imu, "-", irestart, "-fit.Rdata")
+  return(filename)
+}
+
+#' Create file name (a string) for re-estimated models for the lambda values
+#' indexed by \code{iprob} and \code{imu}.
+#' @param iprob
+#' @param imu
+#' 
+#' @export
+make_best_refit_filename <- function(iprob, imu){
+  filename = paste0(iprob, "-", imu, "-best-fit.Rdata")
   return(filename)
 }
 ```
@@ -1151,16 +1146,15 @@ cv_summary <- function(destin = ".",
   a = cv_aggregate(destin)
   cvscore.mat = a$cvscore.mat
   min.inds = a$min.inds
-  
 
   ## Get results from refitting
   bestreslist = cv_aggregate_res(destin = destin)
   bestres = bestreslist[[paste0(min.inds[1] , "-", min.inds[2])]]
   if(is.null(bestres)){
+    if(min.inds[1]==2 & min.inds[2]==3) browser()
     stop(paste0("The model with lambda indices (",
                 min.inds[1], ",", min.inds[2], ") is not available."))
   }
-
   out = list(bestres = bestres,
              cvscore.mat = cvscore.mat,
              min.inds = min.inds,
@@ -1173,17 +1167,17 @@ cv_summary <- function(destin = ".",
 }
 ```
 
-
-```{r cv_aggregate}
-#' Aggregate CV scores from the results, saved in \code{destin}.
+```{r cv_makebest}
+#' From the results saved in \code{destin}, aggregate all |nrestart| files to retain only the "best" restart, and delete the rest.
+#' 
+#' All meta information (|nfold|, |cv_gridsize|, |nrestart|, |lambda_means|, |lambda_probs|) comes from \code{meta.Rdata}.
 #'
 #' @param destin Directory with cross-validation output.
 #'
 #' @export
-cv_aggregate <- function(destin){
+cv_makebest <- function(destin){  
 
-  ## ## Read the meta data (for |nfold|, |cv_gridsize|, |nrestart|, |lambda_means|,
-  ## ## |lambda_probs|)
+  ## ## Read the meta data (for |nfold|, |cv_gridsize|, |nrestart|, |lambda_means|, |lambda_probs|)
   load(file = file.path(destin, 'meta.Rdata'), verbose = FALSE)
   
   ## This loads all the necessary things; just double-checking.
@@ -1198,40 +1192,178 @@ cv_aggregate <- function(destin){
   cvscore.mat = matrix(NA, nrow = cv_gridsize, ncol = cv_gridsize)
   for(iprob in 1:cv_gridsize){
     for(imu in 1:cv_gridsize){
+      for(ifold in 1:nfold){
+
+        ## If the "best" flowtrend object has already been created, do nothing.
+        best_filename = make_best_cvscore_filename(iprob, imu, ifold)
+        if(file.exists(file.path(destin, best_filename))){
+          next
+
+        ## Otherwise, attempt to load from all |nrestart| replicates
+        } else {
+          objectives = load_all_objectives(destin, iprob, imu, ifold, nrestart)
+
+          ## If all |nrestart| files exist, delete all files but the best model.
+          if(all(!is.na(objectives))){
+            best_irestart = which(objectives == min(objectives))
+            keep_only_best(destin, iprob, imu, ifold, nrestart, best_irestart)
+          }
+          else {
+            browser()
+            print(paste0("iprob=", iprob, " imu=", imu, " ifold=", ifold, " had objectives:  ", objectives))
+          }
+        }
+      }
+    }
+  }
+
+  ## Also go over the "refit" files
+  for(iprob in 1:cv_gridsize){
+    for(imu in 1:cv_gridsize){
+
+      ## If the "best" flowtrend object has already been created, do nothing.
+      best_filename = make_best_refit_filename(iprob, imu)
+      if(file.exists(file.path(destin, best_filename))){
+        next
+        
+      ## Otherwise, attempt to load from all |nrestart| replicates
+      } else {
+        objectives = load_all_refit_objectives(destin=destin, iprob=iprob, imu=imu, nrestart=nrestart)
+        if(all(!is.na(objectives))){
+          best_irestart = which(objectives == min(objectives))
+          keep_only_best_refit(destin, iprob, imu, nrestart, best_irestart)
+        } else {
+          print(paste0("iprob=", iprob, " imu=", imu, " had /refit/ objectives:  ", objectives))
+        }
+      }
+    }
+  }
+}
+
+
+#' Loading all objectives, with NA's for missing files
+load_all_objectives <- function(destin, iprob, imu, ifold, nrestart){
+  objectives = sapply(1:nrestart, function(irestart){
+    filename = make_cvscore_filename(iprob, imu, ifold, irestart)
+    tryCatch({
+      load(file.path(destin, filename), verbose = FALSE)
+      return(objectives[length(objectives)])
+    }, error = function(e){ NA })
+  })
+  return(objectives)
+}
+
+#' Loading all objectives, with NA's for missing files
+load_all_refit_objectives <- function(destin, iprob, imu, ifold, nrestart){
+  objectives = sapply(1:nrestart, function(irestart){ 
+    filename = make_best_cvscore_filename(iprob, imu, ifold)
+    tryCatch({
+      load(file.path(destin, filename), verbose = FALSE)
+      return(objectives[length(objectives)])
+    }, error = function(e){ NA })
+  })
+  return(objectives)
+}
+
+#' Keeping only the output files for the "best" restart, and deleting the rest.
+keep_only_best <- function(destin, iprob, imu, ifold, nrestart, best_irestart){
+  for(irestart in 1:nrestart){
+    filename = make_cvscore_filename(iprob, imu, ifold, irestart)
+    if(irestart == best_irestart){
+      best_filename = make_best_cvscore_filename(iprob, imu, ifold)
+      file.rename(from = file.path(destin, filename),
+                    to = file.path(destin, best_filename))
+    } else {
+      file.remove(file.path(destin, filename))
+    }
+  }
+}
+
+#' Keeping only the output files (among refit models) for the "best" restart,
+#' and deleting the rest.
+keep_only_best_refit <- function(destin, iprob, imu, nrestart, best_irestart){ 
+  for(irestart in 1:nrestart){
+    filename = make_refit_filename(iprob, imu, irestart)
+    if(irestart == best_irestart){
+      best_filename = make_best_refit_filename(iprob, imu)
+      file.rename(from = file.path(destin, filename),
+                    to = file.path(destin, best_filename))
+    } else {
+      file.remove(file.path(destin, filename))
+    }
+  }
+}
+```
+
+
+```{r cv_aggregate}
+#' Aggregate CV scores from the results, saved in \code{destin}.
+#'
+#' @param destin Directory with cross-validation output.
+#'
+#' @export
+cv_aggregate <- function(destin){ 
+ 
+  ## ## Read the meta data (for |nfold|, |cv_gridsize|, |nrestart|, |lambda_means|,
+  ## ## |lambda_probs|)
+  load(file = file.path(destin, 'meta.Rdata'), verbose = FALSE)
+  
+  ## This loads all the necessary things; just double-checking.
+  stopifnot(exists("nrestart"))
+  stopifnot(exists("nfold"))
+  stopifnot(exists("cv_gridsize"))
+  stopifnot(exists(c("lambda_probs")))
+  stopifnot(exists(c("lambda_means")))
+
+  ## Aggregate the results
+  cvscore.array = array(NA, dim = c(cv_gridsize, cv_gridsize, nfold, nrestart)) 
+  cvscore.mat = matrix(NA, nrow = cv_gridsize, ncol = cv_gridsize)
+  for(iprob in 1:cv_gridsize){
+    for(imu in 1:cv_gridsize){
       obj = matrix(NA, nrow=nfold, ncol=nrestart)
       for(ifold in 1:nfold){
-        for(irestart in 1:nrestart){
-          filename = make_cvscore_filename(iprob, imu, ifold, irestart)
-          tryCatch({
-            load(file.path(destin, filename), verbose = FALSE)
-            cvscore.array[iprob, imu, ifold, irestart] = cvscore
-            obj[ifold, irestart] = objectives[length(objectives)]
-          }, error = function(e){})
+
+        ## If the "best" flowtrend object has already been created, use it.
+        best_filename = make_best_cvscore_filename(iprob, imu, ifold)
+        if(file.exists(file.path(destin, best_filename))){
+          load(file.path(destin, best_filename), verbose = FALSE)
+          cvscore.array[iprob, imu, ifold, 1] = cvscore
+          obj[ifold, 1] = objectives[length(objectives)]
+
+        ## Otherwise, aggregate directly from the individual files
+        } else {
+          for(irestart in 1:nrestart){
+            filename = make_cvscore_filename(iprob, imu, ifold, irestart)
+            tryCatch({
+              load(file.path(destin, filename), verbose = FALSE)
+              cvscore.array[iprob, imu, ifold, irestart] = cvscore
+              obj[ifold, irestart] = objectives[length(objectives)]
+            }, error = function(e){})
+          }
         }
       }
 
       ## Pick out the CV scores with the *best* (lowest) objective value
-      cvscores = cvscore.array[iprob, imu , ,]
+      cvscores = cvscore.array[iprob, imu , , ]
       best.models = apply(obj, 1, function(myrow){
         ind = which(myrow == min(myrow, na.rm=TRUE))
         if(length(ind)>1) ind = ind[1]  ## Just choose one, if there is a tie.
         return(ind)
       })
       final.cvscores = sapply(1:nfold, function(ifold){
-        #cvscores[ifold, best.models[ifold]]
-        cvscores[ifold]
+        cvscores[ifold, best.models[ifold]] ## Why did we get rid of this?
+        ## cvscores[ifold]
       })
       cvscore.mat[iprob, imu] = mean(final.cvscores)
     }
   }
 
   ## Clean a bit
-  cvscore.mat[which(is.nan(cvscore.mat), arr.ind=TRUE)] = NA
+  cvscore.mat[which(is.nan(cvscore.mat), arr.ind = TRUE)] = NA
 
   ## ## Read the meta data (for |nfold|, |cv_gridsize|, |nrestart|)
   rownames(cvscore.mat) = signif(lambda_probs,3)
   colnames(cvscore.mat) = signif(lambda_means,3)
-
 
   ## Find the minimum
   mat = cvscore.mat
@@ -1245,15 +1377,17 @@ cv_aggregate <- function(destin){
               min.inds = min.inds)
   return(out)
 }
+```
 
 
-#' Helper to aggregate parallelized CV results and obtain the |res| object, all
-#' saved in |destin|.
+```{r cv_aggregate_res}
+#' Helper to aggregate CV results and obtain the |res| object, all saved in
+#' |destin|.
 #'
 #' @inheritParams cv_aggregate
 #'
-#' @return List containing, for every (iprob, imu), the "best" estimated
-#'   model out of the |nrestart| replicates (best in the sense that it had the best
+#' @return List containing, for every (iprob, imu), the "best" estimated model
+#'   out of the |nrestart| replicates (best in the sense that it had the best
 #'   likelihood value out of the |nrestart| replicates.)
 cv_aggregate_res <- function(destin){
 
@@ -1262,33 +1396,39 @@ cv_aggregate_res <- function(destin){
   ## df.mat = matrix(NA, ncol=cv_gridsize, nrow=cv_gridsize)
   res.list = list()
   for(iprob in 1:cv_gridsize){
-    for(imu in 1:cv_gridsize){
+    for(imu in 1:cv_gridsize){ 
 
-      ## Objective values, over nrestart
-      obj = rep(NA, nrestart)
-      ## df = rep(NA, nrestart) #
-      res.list.inner = list()
-      for(irestart in 1:nrestart){
-        filename = make_refit_filename(iprob, imu, irestart)
-        tryCatch({
-          ## Load fitted result
-          load(file.path(destin, filename))
-          res.list.inner[[irestart]] = res
+      ## If the "best" object has already been created, use it.
+      best_refit_filename = make_best_refit_filename(iprob, imu)
+      if(file.exists(file.path(destin, best_refit_filename))){
+        load(file.path(destin, best_refit_filename), verbose = FALSE)
+        bestres = res
 
-          ## Also store objective
-          obj[irestart] = res$objectives[length(res$objectives)]
-
-        }, error = function(e){})
+      ## Otherwise, aggregate directly from the individual files
+      } else {
+        obj = rep(NA, nrestart)
+        res.list.inner = list()
+        for(irestart in 1:nrestart){
+          filename = make_refit_filename(iprob, imu, irestart)
+          tryCatch({
+            load(file.path(destin, filename))
+            res.list.inner[[irestart]] = res
+            obj[irestart] = res$objectives[length(res$objectives)]
+          }, error = function(e){ NULL })
+        }
+        if(!all(is.na(obj))){
+          bestres = res.list.inner[[which.min(obj)]] ## which.min?
+        }
       }
 
-      ## Calculate the df of the best model
-      if(!all(is.na(obj))){
-        res.list[[paste0(iprob, "-", imu)]] = res.list.inner[[which.min(obj)]] ## which.min?
-      }
+      ## Add the "best" object to a list.
+      res.list[[paste0(iprob, "-", imu)]] = bestres
     }
   }
   return(res.list)
 }
+
+
 ```
 
 
@@ -1300,27 +1440,39 @@ laptop, using `cv_flowtrend()`.
 Let's try it out.
 
 ```{r, eval = FALSE}
+litr::load_all("~/repos/flowtrend/index.Rmd")
+library(tidyverse)
 cv_gridsize = 3
 l = 1
 l_prob = 1
 set.seed(332)
 ylist = gendat_1d(10, rep(100,10)) %>% dt2ylist()
 plot_1d(ylist)
-folds = make_cv_folds(lapply(1:100, function(ii)cbind(runif(10))), nfold = 5, TT = length(ylist))
+folds = make_cv_folds(lapply(1:100, function(ii) cbind(runif(10))), nfold = 5, TT = length(ylist)) ## What is this doing? FISHY
 lambda_means =  lambda_probs = logspace(min = 1E-5, max = 1, length = cv_gridsize)
 for(refit in c(FALSE, TRUE)){
   cv_flowtrend(ylist = ylist, countslist = NULL, 
-                destin = "~/repos/flowtrend/tempoutput", 
+                destin = "~/repos/flowtrend/inst/output/test", 
                 lambda_means = lambda_means,
                 lambda_probs = lambda_probs,
                 l = l, l_prob = l_prob,
-                maxdev = NULL, numclust = 3, nfold = 5, nrestart = 5,
+                maxdev = NULL, numclust = 3, nfold = 3, nrestart = 3,
+                niter = 3,
                 verbose = TRUE, refit = refit, save_meta = TRUE, mc.cores = 6)
 }
+```
 
-## Test out the summary
-obj = cv_summary(destin = "~/repos/flowtrend/tempoutput")
-plot_1d(ylist, obj$bestres)
+Once all jobs are run, use `cv_makebest()` to go over all the output, and (1)
+retain the best model out of the 5 replicates (random restarts), and (2) delete
+4 of the the 5 replicates.
+
+```{r, eval = FALSE}
+## Clean the output directory to keep only the "best" results
+cv_makebest(destin = "~/repos/flowtrend/inst/output/test")
+
+## Plot the final result
+obj = cv_summary(destin = "~/repos/flowtrend/inst/output/test")
+plot_1d(ylist, obj$bestres, add_point=FALSE)
 ```
 
 Okay, now we know it's *possible* to run on (say) a laptop. A more realistic
@@ -1328,7 +1480,7 @@ application would go something like this:
 
 ```{r, eval = FALSE}
 litr::load_all("~/repos/flowtrend/index.Rmd")
-get_max_lambda("~/repos/flowtrend/tempoutput",
+get_max_lambda("~/repos/flowtrend/inst/output/test",
                maxres_file = "maxres.Rdata",
                ylist,
                countslist = NULL,
@@ -1344,20 +1496,20 @@ lambda_probs = logspace(max = maxres$prob, length = 5)
 
 for(refit in c(FALSE, TRUE)){
   cv_flowtrend(ylist = ylist,
-                countslist = NULL, 
-                destin = "~/repos/flowtrend/tempoutput", 
-                lambda_means = lambda_means,
-                lambda_probs = lambda_probs,
-                l = 2,
-                l_prob = 1,
-                maxdev = 2,
-                numclust = 3,
-                nfold = 5,
-                nrestart = 5,
-                verbose = TRUE,
-                refit = refit,
-                save_meta = TRUE,
-                mc.cores = 6)
+               countslist = NULL, 
+               destin = "~/repos/flowtrend/tempoutput", 
+               lambda_means = lambda_means,
+               lambda_probs = lambda_probs,
+               l = 2,
+               l_prob = 1,
+               maxdev = 2,
+               numclust = 3,
+               nfold = 5,
+               nrestart = 5,
+               verbose = TRUE,
+               refit = refit,
+               save_meta = TRUE,
+               mc.cores = 6)
 }
 ```
 
