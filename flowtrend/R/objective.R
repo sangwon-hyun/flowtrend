@@ -26,10 +26,10 @@
 objective <- function(mu, prob, prob_link = NULL, sigma,
                       ## TT, N, dimdat, numclust,
                       ylist,
-                      Dl, l = NULL,
+                      Dlp1, l = NULL,
                       lambda = 0,
                       l_prob = NULL,
-                      Dl_prob = NULL,
+                      Dlp1_prob = NULL,
                       lambda_prob = 0,
                       alpha = NULL, beta = NULL,
                       denslist_by_clust = NULL,
@@ -64,9 +64,9 @@ objective <- function(mu, prob, prob_link = NULL, sigma,
 
     ## Return penalized likelihood
     mu.splt <- asplit(mu, MARGIN = 3)
-    diff_mu <- sum(unlist(lapply(mu.splt, FUN = function(m) sum(abs(Dl %*% m)))))
+    diff_mu <- sum(unlist(lapply(mu.splt, FUN = function(m) sum(abs(Dlp1 %*% m)))))
     ## diff_prob <- sum(abs(Dl_prob %*% log(prob * sapply(countslist, sum))))
-    diff_prob <- sum(abs(Dl_prob %*% prob_link))
+    diff_prob <- sum(abs(Dlp1_prob %*% prob_link))
     obj =  -1/N * sum(unlist(loglik)) + lambda * diff_mu + lambda_prob * diff_prob
     return(obj)
   }

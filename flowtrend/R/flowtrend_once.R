@@ -8,8 +8,8 @@
 #'   case the value becomes \code{1:T}, for the $T==length(ylist)$.
 #' @param numclust Number of clusters.
 #' @param niter Maximum number of EM iterations.
-#' @param l Degree of differencing for the mean trend filtering
-#' @param l_prob Degree of differencing for the probability trend filtering
+#' @param l Degree of differencing for the mean trend filtering.
+#' @param l_prob Degree of differencing for the probability trend filtering.
 #' @param mn Initial value for cluster means. Defaults to NULL, in which case
 #'   initial values are randomly chosen from the data.
 #' @param lambda Smoothing parameter for means
@@ -67,11 +67,15 @@ flowtrend_once <- function(ylist,
   TT = length(ylist)
   dimdat = ncol(ylist[[1]])
   if(is.null(x)) x <- 1:TT
-  Dl = gen_diff_mat(n = TT, l = l+1, x = x)
-  Dlm1 = gen_diff_mat(n = TT, l = l, x = x)
-  Dlm1sqrd <- t(Dlm1) %*% Dlm1
+  # l = 2 is quadratic trend filtering
+  # l = 1 is linear trend filtering
+  # l = 0 is fused lasso
+  # D^{(1)} is first differences, so it correponds to l=0
+  Dlp1 = gen_diff_mat(n = TT, l = l+1, x = x)
+  Dl = gen_diff_mat(n = TT, l = l, x = x)
+  Dlsqrd <- t(Dl) %*% Dl
   e_mat <- etilde_mat(TT = TT) # needed to generate B
-  Dl_prob = gen_diff_mat(n = TT, l = l_prob+1, x = x)
+  Dlp1_prob = gen_diff_mat(n = TT, l = l_prob+1, x = x)
   H_tf <- gen_tf_mat(n = length(countslist), k = l_prob, x = x)
   if(is.null(mn)) mn = init_mn(ylist, numclust, TT, dimdat, countslist = countslist, seed = seed)
   ntlist = sapply(ylist, nrow)
@@ -106,8 +110,8 @@ flowtrend_once <- function(ylist,
     res.mu = Mstep_mu(resp, ylist,
                       lambda = lambda,
                       first_iter = (iter == 2),
-                      l = l, Dl = Dl, Dlm1 = Dlm1,
-                      Dlm1sqrd = Dlm1sqrd,
+                      l = l, Dlp1 = Dlp1, Dl = Dl,
+                      Dlsqrd = Dlsqrd,
                       sigma_eig_by_clust = sigma_eig_by_clust,
                       sigma = sigma, maxdev = maxdev,
                       e_mat = e_mat,
@@ -135,8 +139,8 @@ flowtrend_once <- function(ylist,
     prob = softmax(prob_link)
 
     objectives[iter] = objective(ylist = ylist, mu = mn, sigma = sigma, prob = prob, prob_link = prob_link,
-                                 lambda = lambda, Dl = Dl, l = l, countslist = countslist,
-                                 Dl_prob = Dl_prob,
+                                 lambda = lambda, Dlp1 = Dlp1, l = l, countslist = countslist,
+                                 Dlp1_prob = Dlp1_prob,
                                  l_prob = l_prob,
                                  lambda_prob = lambda_prob)
 

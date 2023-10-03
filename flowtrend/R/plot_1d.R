@@ -8,7 +8,7 @@
 #'
 #' @return ggplot object with data, and optionally, a flowtrend model overlaid.
 #' @export
-plot_1d <- function(ylist, obj=NULL, x = NULL, add_point = TRUE){
+plot_1d <- function(ylist, obj=NULL, x = NULL, add_point = FALSE){
 
   ## Basic checks
   if(!is.null(x)){

@@ -13,7 +13,7 @@ converge(
   z_prev,
   uw,
   uz,
-  Dlm1,
+  Dl,
   err_rel = 1e-04,
   err_abs = 0
 )

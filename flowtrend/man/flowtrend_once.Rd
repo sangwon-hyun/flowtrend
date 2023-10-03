@@ -39,9 +39,9 @@ case the value becomes \code{1:T}, for the $T==length(ylist)$.}
 
 \item{niter}{Maximum number of EM iterations.}
 
-\item{l}{Degree of differencing for the mean trend filtering}
+\item{l}{Degree of differencing for the mean trend filtering.}
 
-\item{l_prob}{Degree of differencing for the probability trend filtering}
+\item{l_prob}{Degree of differencing for the probability trend filtering.}
 
 \item{mn}{Initial value for cluster means. Defaults to NULL, in which case
 initial values are randomly chosen from the data.}

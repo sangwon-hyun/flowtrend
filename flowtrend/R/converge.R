@@ -1,18 +1,30 @@
 # Generated from _main.Rmd: do not edit by hand
 
 #' Check convergence of ADMM with a fixed step size (rho).
-converge <- function(mu, rho, w, z, w_prev, z_prev, uw, uz, Dlm1,
+converge <- function(mu, rho, w, z, w_prev, z_prev, uw, uz, Dl,
                      err_rel = 1E-4,
                      err_abs = 0
 ){
 
-  prim1 = rbind(t(mu - rowMeans(mu)), Dlm1 %*% t(mu))
-  prim2 = rbind(z, t(w))
-  primal_resid = prim1 - prim2
+  ## Old
+  if(FALSE){
+    prim1 = rbind(mu - colMeans(mu), Dl %*% mu)
+    prim2 = rbind(z, w)
+    primal_resid = prim1 - prim2
 
+    dual_resid = -rho * rbind((z-z_prev - colMeans(z-z_prev)), t(Dl) %*% (w - w_prev))
+    tAU = rbind(uz, -uw)  ## This line is definitely wrong, and is identical to the line in flowmix
+  }
 
-  dual_resid = -rho * rbind((z-z_prev - colMeans(z-z_prev)), t(Dlm1) %*% t(w - w_prev))
-  tAU = rbind(uz, -t(uw))
+  ## New 
+  prim1 = rbind(Dl %*% mu, mu - colMeans(mu))
+  prim2 = rbind(-w, -z)
+  primal_resid = prim1 + prim2  
+
+  change_z = z - z_prev
+  change_w = w - w_prev
+  dual_resid = rho * (-(change_z - colMeans(change_z)) - t(Dl) %*% change_w)
+  tAU = (uz - colMeans(uz)) + t(Dl) %*% uw
 
   ## Form primal and dual tolerances.
   primal_err = sqrt(length(primal_resid)) * err_abs +

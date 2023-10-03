@@ -4,7 +4,7 @@
 \alias{plot_1d}
 \title{Makes 1d plot of data and model}
 \usage{
-plot_1d(ylist, obj = NULL, x = NULL, add_point = TRUE)
+plot_1d(ylist, obj = NULL, x = NULL, add_point = FALSE)
 }
 \arguments{
 \item{ylist}{Data.}

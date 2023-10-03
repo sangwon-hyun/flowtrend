@@ -1,7 +1,7 @@
 # Generated from _main.Rmd: do not edit by hand
 
 #' computes the Augmented lagrangian.
-aug_lagr <- function(y, TT, d, z, w, l, uz, uw, mu, resp, Sigma_inv, Dl, Dlm1, maxdev, lambda, rho, N){
+aug_lagr <- function(y, TT, d, z, w, l, uz, uw, mu, resp, Sigma_inv, Dlp1, Dl, maxdev, lambda, rho, N){
   mu_dd <- rowMeans(mu)
 
   # Check the Z's for ball constraint, up to a tolerance of 1e-4
@@ -27,7 +27,7 @@ aug_lagr <- function(y, TT, d, z, w, l, uz, uw, mu, resp, Sigma_inv, Dl, Dlm1, m
 
 
   aug4 <- sum(do.call(rbind, lapply(1:d, FUN = function(j){
-    uw[j,] %*% (Dlm1 %*% mu[j,]  - w[j,]) + rho/2 * sum((Dlm1 %*% mu[j,] - w[j,])^2)
+    uw[,j] %*% (Dl %*% mu[j,]  - w[j,]) + rho/2 * sum((Dl %*% mu[j,] - w[j,])^2)
   })))
 
   total <- aug1 + aug2 + aug3 + aug4

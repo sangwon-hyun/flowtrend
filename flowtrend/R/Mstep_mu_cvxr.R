@@ -44,11 +44,14 @@ Mstep_mu_cvxr <- function(ylist,
   ## Summed sqrt responsibilities - needed in the objective.
   resp.sum.sqrt <- lapply(resp, FUN = function(x) sqrt(sum(x)))
   
-  ## Differencing Matrix, TT-l + 1 x TT 
-  Dl <- gen_diff_mat(n = TT, l = l)
+  ## Differencing Matrix, (TT-(l+1)) x TT 
+  Dlp1 <- gen_diff_mat(n = TT, l = l+1)
+  # l = 2 is quadratic trend filtering
+  # l = 1 is linear trend filtering
+  # l = 0 is fused lasso
   
   ## Forming the objective
-  obj = 1/(2*N) *( Reduce("+", lapply(1:TT, FUN = function(tt) CVXR::quad_form(resp.sum.sqrt[[tt]]*mumat[tt,], Sigma_inv))) -2 * Reduce("+", lapply(1:TT, FUN = function(tt) t(ytildes[tt,]) %*% Sigma_inv %*% mumat[tt,])) + aux.y) + lambda * sum(CVXR::sum_entries(abs(Dl %*% mumat), axis = 1))
+  obj = 1/(2*N) *( Reduce("+", lapply(1:TT, FUN = function(tt) CVXR::quad_form(resp.sum.sqrt[[tt]]*mumat[tt,], Sigma_inv))) -2 * Reduce("+", lapply(1:TT, FUN = function(tt) t(ytildes[tt,]) %*% Sigma_inv %*% mumat[tt,])) + aux.y) + lambda * sum(CVXR::sum_entries(abs(Dlp1 %*% mumat), axis = 1))
   
   ## Putting together the ball constraint
   rowmns <- matrix(rep(1, TT^2), nrow = TT)/TT

@@ -38,9 +38,9 @@ cv_flowtrend(
 
 \item{lambda_probs}{Regularization parameters for probs.}
 
-\item{l}{Degree of differencing for the mean trend filtering}
+\item{l}{Degree of differencing for the mean trend filtering.}
 
-\item{l_prob}{Degree of differencing for the probability trend filtering}
+\item{l_prob}{Degree of differencing for the probability trend filtering.}
 
 \item{maxdev}{Maximum deviation of cluster means across time..}
 

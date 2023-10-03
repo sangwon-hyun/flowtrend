@@ -10,8 +10,8 @@
 #' @param l
 #' @param sigma
 #' @param sigma_eig_by_clust
-#' @param Dlm1
 #' @param Dl
+#' @param Dlp1
 #' @param TT
 #' @param N
 #' @param dimdat
@@ -41,8 +41,8 @@ Mstep_mu <- function(resp,
                      l = 3,
                      sigma,
                      sigma_eig_by_clust = NULL,
-                     Dlm1sqrd,
-                     Dlm1, Dl,  TT, N, dimdat,
+                     Dlsqrd,
+                     Dl, Dlp1,  TT, N, dimdat,
                      first_iter = TRUE,
                      e_mat,
 
@@ -56,7 +56,7 @@ Mstep_mu <- function(resp,
 
                      maxdev = NULL,
                      x = NULL,
-                     niter = (if(local_adapt) 1e3 else 1e4),
+                     niter = (if(local_adapt) 1e2 else 1e4),
                      err_rel = 1E-3,
                      err_abs = 0,
                      zerothresh = 1E-6,
@@ -76,16 +76,15 @@ Mstep_mu <- function(resp,
 
   # starting rho for LA-ADMM
   if(local_adapt){
-    rho.init = 1e-3
-  }
-  else{
+    rho.init = .001
+  } else{
     if(!is.null(x)){
-      rho.init = lambda*((max(x) - min(x))/length(x))^l
+      rho.init = lambda*((max(x) - min(x))/length(x))^l ## Where did this come from?
+      rho.init = lambda ## Which, of the two, should one use? 
+    } else {
       rho.init = lambda
-    }else{
-    rho.init = lambda
     }
-  }
+  } 
 
 
   ## Other preliminaries
@@ -116,8 +115,8 @@ Mstep_mu <- function(resp,
     # syl_B = Q %*% Xinv
 
     AB <- get_AB_mats(y = y, resp = resp.iclust, Sigma_inv = sigmainv,
-                      e_mat = e_mat, N = N, Dl = Dl, Dlm1 = Dlm1,
-                      Dlm1sqrd = Dlm1sqrd, rho = rho.init, z = NULL, w = NULL,
+                      e_mat = e_mat, N = N, Dlp1 = Dlp1, Dl = Dl,
+                      Dlsqrd = Dlsqrd, rho = rho.init, z = NULL, w = NULL,
                       uz = NULL, uw = NULL)
 
     ## Store the Schur decomposition
@@ -149,13 +148,13 @@ Mstep_mu <- function(resp,
   ##########################################
   ## Run ADMM separately on each cluster ##
   #########################################
-  yhats = admm_niters = admm_inner_iters = vector(length = numclust, mode = "list")
+  admm_niters = admm_inner_iters = vector(length = numclust, mode = "list")
   if(first_iter) mus = vector(length = numclust, mode = "list")
  # if(first_iter){
-    Zs <- lapply(1:numclust, function(x) matrix(0, nrow = TT, ncol = dimdat) )
-    Ws <- lapply(1:numclust, function(x) matrix(0, nrow = dimdat, ncol = TT - l))
-    uzs <- lapply(1:numclust, function(x) matrix(0, nrow = TT, ncol = dimdat) )
-    uws <- lapply(1:numclust, function(x) matrix(0, nrow = dimdat, ncol = TT - l))
+    Zs <- lapply(1:numclust, function(x) matrix(0, nrow = TT, ncol = dimdat))
+    Ws <- lapply(1:numclust, function(x) matrix(0, nrow = TT - l, ncol = dimdat))
+    uzs <- lapply(1:numclust, function(x) matrix(0, nrow = TT, ncol = dimdat))
+    uws <- lapply(1:numclust, function(x) matrix(0, nrow = TT - l, ncol = dimdat))
 
    # Zs =  Ws =  Us  = vector(length = numclust, mode = "list")
  # }
@@ -188,8 +187,8 @@ Mstep_mu <- function(resp,
                            lambda = lambda,
                            resp = resp.iclust,
                            l = l,
+                           Dlp1 = Dlp1,
                            Dl = Dl,
-                           Dlm1 = Dlm1,
                           #resp.sum = resp.sum.iclust,
                            y = ylist,
                            err_rel = err_rel,
@@ -197,12 +196,10 @@ Mstep_mu <- function(resp,
                            zerothresh = zerothresh,
                            sigma_eig_by_clust = sigma_eig_by_clust,
                            space = space,
-                           objective = F, 
 
                            ## Warm starts from previous *EM* iteration
                            first_iter = first_iter,
-                          # beta = betas[[iclust]],
-                           #mu = mus[[iclust]],
+                           ## mu = mus[[iclust]], ## I think we want this.
                            uw = uws[[iclust]],
                            uz = uzs[[iclust]],
                            z = Zs[[iclust]],
@@ -211,17 +208,16 @@ Mstep_mu <- function(resp,
 
     ## Store the results
     mus[[iclust]] = res$mu
-    yhats[[iclust]] = t(res$yhat)
     ## fits[,iclust] = res$fits ## TODO: revive this, for testing? We'll see.
     admm_niters[[iclust]] = res$kk
     admm_inner_iters[[iclust]] = res$inner.iter
 
     ## Store other things for for warmstart
+    ## mus[[iclust]] = res$mu
     Zs[[iclust]] = res$Z
     uzs[[iclust]] = res$uz
     uws[[iclust]] = res$uw
     Ws[[iclust]] = res$W
-
     ## The upper triangular matrix remains the same. (code missing?)
 
     resid_mat_list[[iclust]] = res$resid_mat ## temporary
@@ -230,11 +226,11 @@ Mstep_mu <- function(resp,
   }
 
   ## Aggregate the yhats into one array
-  yhats_array = array(NA, dim = c(TT, dimdat, numclust))
-  for(iclust in 1:numclust){ yhats_array[,,iclust] = yhats[[iclust]] }
+  mu_array = array(NA, dim = c(TT, dimdat, numclust))
+  for(iclust in 1:numclust){ mu_array[,,iclust] = mus[[iclust]] }
 
   ## Each are lists of length |numclust|.
-  return(list(mns = yhats_array,
+  return(list(mns = mu_array,
               ## fits = fits,
               resid_mat_list = resid_mat_list,
               convergences = convergences,

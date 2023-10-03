@@ -33,7 +33,8 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
     datrange = ylist %>% sapply(FUN = function(y) y %>% .[,idim] %>% range()) %>% range()
     toler = (datrange[2] - datrange[1]) / (100 * length(ylist))
   })
-  toler_prob = 0.01 / length(ylist)
+  ## This is arbitrary... I found that with T=100, nt=100 examples that it's reasonable.
+  toler_prob = min(0.1 / length(ylist), 0.01)
 
   ## Get range of regularization parameters.
   facs = sapply(1:iimax, function(ii) 2^(-ii+1)) ## DECREASING order
@@ -55,15 +56,22 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
     ## In each dimension, the data should only vary by a relatively small amount (say 1/100)
     mean_is_flat = sapply(1:dimdat, FUN = function(idim){
       all(abs(diff(res$mn[,idim,])) < toler_by_dim[idim])  })
-    prob_is_flat =  all(abs(diff(res$prob)) < toler_prob)
+    prob_is_flat = all(abs(diff(res$prob)) < toler_prob)
     all_are_flat = (all(mean_is_flat) & prob_is_flat)
+
+    ## ## Temporary
+    ## par(mfrow=c(1,3))
+    ## matplot(res$prob, ylim=c(0,1))
+    ## diff(diff(res$prob)) %>% matplot()
+    ## diff(res$prob) %>% matplot()
+    ## cumsum(diff(diff(res$prob))[,1]) %>% lines(col='orange')
+    ## ## End of temporary
 
     if(!all_are_flat){
 
       ## If there are *any* nonzero values at the first iter, prompt a restart
       ## with higher initial lambda values.
       if(ii == 1){
-        browser()
         stop(paste0("Max lambdas: ", max_lambda_mean, " and ", max_lambda_prob,
                     " were too small as maximum reg. values. Go up and try again!!"))
 

@@ -4,7 +4,7 @@
 \alias{load_all_refit_objectives}
 \title{Loading all objectives, with NA's for missing files}
 \usage{
-load_all_refit_objectives(destin, iprob, imu, ifold, nrestart)
+load_all_refit_objectives(destin, iprob, imu, nrestart)
 }
 \description{
 Loading all objectives, with NA's for missing files

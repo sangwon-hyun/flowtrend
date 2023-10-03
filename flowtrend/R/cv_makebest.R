@@ -41,7 +41,6 @@ cv_makebest <- function(destin){
             keep_only_best(destin, iprob, imu, ifold, nrestart, best_irestart)
           }
           else {
-            browser()
             print(paste0("iprob=", iprob, " imu=", imu, " ifold=", ifold, " had objectives:  ", objectives))
           }
         }
@@ -60,11 +59,12 @@ cv_makebest <- function(destin){
         
       ## Otherwise, attempt to load from all |nrestart| replicates
       } else {
-        objectives = load_all_refit_objectives(destin=destin, iprob=iprob, imu=imu, nrestart=nrestart)
+        objectives = load_all_refit_objectives(destin, iprob, imu, nrestart)
         if(all(!is.na(objectives))){
           best_irestart = which(objectives == min(objectives))
           keep_only_best_refit(destin, iprob, imu, nrestart, best_irestart)
         } else {
+          browser()
           print(paste0("iprob=", iprob, " imu=", imu, " had /refit/ objectives:  ", objectives))
         }
       }
@@ -86,12 +86,13 @@ load_all_objectives <- function(destin, iprob, imu, ifold, nrestart){
 }
 
 #' Loading all objectives, with NA's for missing files
-load_all_refit_objectives <- function(destin, iprob, imu, ifold, nrestart){
+oad_all_refit_objectives <- function(destin, iprob, imu, nrestart){
   objectives = sapply(1:nrestart, function(irestart){ 
-    filename = make_best_cvscore_filename(iprob, imu, ifold)
+    filename = make_refit_filename(iprob, imu, irestart)
+    ## filename = make_best_cvscore_filename(iprob, imu, ifold)
     tryCatch({
       load(file.path(destin, filename), verbose = FALSE)
-      return(objectives[length(objectives)])
+      return(res$objectives[length(res$objectives)])
     }, error = function(e){ NA })
   })
   return(objectives)

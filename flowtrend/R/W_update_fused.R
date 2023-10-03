@@ -3,22 +3,33 @@
 #' Solve a fused lasso problem for the W update. Internally, a fused lasso dynamic
 #' programming solver \code{prox()} (which calls \code{prox_dp()} written in C)
 #' is used.
-#' 
-W_update_fused <- function(lm1, TT, mu, uw, rho, lambda){
+#'
+W_update_fused <- function(l, TT, mu, uw, rho, lambda){
 
   # modified lambda for fused lasso routine
   mod_lam <- lambda/rho
 
   # generating pseudo response xi
-  #xi <- Dlm1 %*% mu + 1/rho * uw
-  if(lm1 == 0){
-    xi <- mu + 1/rho * uw
+  if( l < 0 ){
+    stop("l should never be /below/ zero!")
+    ## xi <- mu + 1/rho * uw
+  } else if( l == 0 ){
+    xi <- mu + 1/rho * uw  ## This is faster
   } else {
-    xi <- diff(mu, differences = lm1) + 1/rho * uw
+    ## xi <- Dl %*% mu + 1/rho * uw
+    xi <- diff(mu, differences = l) + 1/rho * uw  ## This is faster
+
+    ## l = 2 is quadratic trend filtering
+    ## l = 1 is linear trend filtering
+    ## l = 0 is fused lasso
+    ## D^{(1)} is first differences, so it correponds to l=0
+    ## Dl = gen_diff_mat(n = TT, l = l, x = x)  <---  (T-l) x T matrix
   }
 
-  # running the fused LASSO
+  ## Running the fused LASSO
+  ## which solves min_zhat 1/2 |z-zhat|_2^2 + lambda |D^{(1)}zhat|
   ## fit <- prox(z = xi, lam = mod_lam)
+  if(any(is.nan(xi))) browser()
   fit <- FlowTF::prox(z = xi, lam = mod_lam)
 
   return(fit)
@@ -67,16 +78,35 @@ projCmat <- function(mat, C){
   return(mat)
 }
 
-U_update_Z <- function(U, rho, mu, Z){
+#' @param U (T x dimdat) matrix.
+U_update_Z <- function(U, rho, mu, Z, TT){
  # return(U + rho * (scale(mu, scale = F) - Z))
-  return(U + rho * (t(t(mu) - rowMeans(t(mu))) - Z))
+  stopifnot(nrow(U) == TT)
+  Unew = U + rho * (mu - colMeans(mu) - Z)
+
+  ## Expect a (T-l) x dimdat matrix.
+  stopifnot(all(dim(U) == dim(Unew))) 
+  stopifnot(nrow(U) == TT)
+  return(Unew)
 }
 
-U_update_W <- function(U, rho, mu, W, Dlm1, l){
+#' @param U ((T-l) x dimdat) matrix.
+U_update_W <- function(U, rho, mu, W, l, TT){
 
-  if(l==0){
-    return(U +  rho * (mu - W)) ## This /seems/ like it will work.
+  # l = 2 is quadratic trend filtering 
+  # l = 1 is linear trend filtering
+  # l = 0 is fused lasso
+  # D^{(1)} is first differences, so it correponds to l=0
+  # D^{(l+1)} is used for order-l trend filtering.
+  stopifnot(length(W) == TT - l)
+  if(l == 0){
+    Unew = U +  rho * (mu - W)
   } else {
-    return(U +  rho * ( t(diff(t(mu), differences = l)) - W))
+    Unew = U + rho * ( diff(mu, differences = l) - W)
   }
+
+  ## Expect a (T-l) x dimdat matrix.
+  stopifnot(all(dim(U) == dim(Unew))) 
+  stopifnot(nrow(U) == TT-l)
+  return(Unew)
 }
