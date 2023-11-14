@@ -14,7 +14,8 @@ outer_converge <- function(objectives){
   } else {
     mytail = utils::tail(objectives, consec)
     rel_diffs = mytail[1:(consec-1)]/mytail[2:consec]
-    return(all(abs(rel_diffs) - 1 < 1E-5))
+    ## return(all(abs(rel_diffs) - 1 < 1E-5))
+    return(all(abs(rel_diffs - 1) < 1E-5))
   }
 }
 

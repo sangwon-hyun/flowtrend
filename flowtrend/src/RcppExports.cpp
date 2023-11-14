@@ -40,9 +40,12 @@ BEGIN_RCPP
 END_RCPP
 }
 
+RcppExport void C_prox_dp(void *, void *, void *, void *);
+
 static const R_CallMethodDef CallEntries[] = {
     {"_flowtrend_matrix_function_solve_triangular_sylvester_barebonesC2", (DL_FUNC) &_flowtrend_matrix_function_solve_triangular_sylvester_barebonesC2, 3},
     {"_flowtrend_dmvnorm_arma_fast", (DL_FUNC) &_flowtrend_dmvnorm_arma_fast, 4},
+    {"C_prox_dp", (DL_FUNC) &C_prox_dp, 4},
     {NULL, NULL, 0}
 };
 

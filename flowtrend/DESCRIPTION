@@ -22,5 +22,5 @@ LinkingTo:
     Rcpp,
     RcppArmadillo,
     RcppEigen
-LitrVersionUsed: 0.8.0
-LitrId: 519fb5b70fe06bcd321342fdddb2cc1c
+LitrVersionUsed: 0.9.0
+LitrId: 212baf26dc10a6281a1a759575285f97

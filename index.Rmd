@@ -20,3 +20,12 @@ one simple command:
 ```{r render, eval = FALSE}
 litr::render("index.Rmd", output_format = litr::litr_gitbook())
 ```
+
+
+This line is purely for testing (to be deleted later!).
+
+```{r, eval = FALSE}
+litr::load_all("index.Rmd")##, output_format = litr::litr_gitbook())
+```
+
+

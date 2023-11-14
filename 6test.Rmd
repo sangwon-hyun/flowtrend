@@ -5,25 +5,34 @@ now.
 
 ## 1d example {#1d-example}
 
+
+Generate data.
+
 ```{r 1d-example, eval = FALSE}
-## Generate data
 set.seed(100)
 dt       <- gendat_1d(100, rep(100, 100))
 dt_model <- gendat_1d(100, rep(100, 100), return_model = TRUE)
 ylist = dt %>% dt2ylist()
 x = dt %>% pull(time) %>% unique()
+plot_1d(ylist)
+```
 
-## Fit model
+
+Next, we fit the model.
+
+```{r 1d-example2, eval = FALSE}
 set.seed(18)
 obj <- flowtrend(ylist = ylist,
-                  x = x,
-                  maxdev = 5,
-                  numclust = 3,
-                  lambda = 0.02,
-                  l = 1,
-                  l_prob = 2,
-                  lambda_prob = .05,
-                  nrestart = 10)
+                 x = x,
+                 maxdev = 5,
+                 numclust = 3,
+                 l = 2,
+                 l_prob = 2,
+                 lambda = 1,
+                 lambda_prob = .1,
+                 admm_local_adapt = TRUE,
+                 nrestart = 1,
+                 verbose = TRUE)
 
 ## Also reorder the cluster labels of the truth, to match the fitted model.
 ord = obj$mn[,1,] %>% colSums() %>% order(decreasing=TRUE)
@@ -35,6 +44,7 @@ obj = reorder_clust(obj)
 ```
 
 The data and estimated model are shown here. The dashed lines are the true means.
+
 
 ```{r 1d-example-plot-mean, fig.width = 7, fig.height = 5, eval = FALSE}
 plot_1d(ylist, obj, x = x, add_point = FALSE) +
@@ -53,10 +63,49 @@ plot_prob(obj) +
 ```
 
 
+The objectives look like this:
+
+```{r}
+set.seed(100)
+dt       <- gendat_1d(TT = 100, rep(100, 100))
+dt_model <- gendat_1d(100, rep(100, 100), return_model = TRUE)
+ylist = dt %>% dt2ylist()
+x = dt %>% pull(time) %>% unique()
+
+## Run it 10 times
+objlist = lapply(1:10, function(ii){
+  print(ii)
+  set.seed(ii+100)
+  flowtrend_once(ylist = ylist,
+                 x = x,
+                 maxdev = 5,
+                 numclust = 3,
+                 l = 2,
+                 l_prob = 2,
+                 lambda = 1,
+                 lambda_prob = .1,
+                 verbose = TRUE)
+})
+
+## Make a table with objectives
+objective_table = lapply(1:10, function(jj) tibble(objective = objlist[[jj]]$objectives) %>%
+                                            add_rownames("iter") %>%
+                                            mutate(iter = as.numeric(iter)) %>%
+                                            add_column(restart=jj)) %>%
+  bind_rows()  
+
+## Plot the objectives from the 10 runs
+ggplot(objective_table) + geom_line(aes(x=iter, y=objective, group=restart))
+```
+
+
 ## Testing monotonicity of objective values
 
 The objective value (that is, the penalized log likelihood) should be monotone
-across EM algorithm iterations.
+decreasing across EM algorithm iterations.
+
+(Note: because the admm is imperfect and stops early sometimes, the objective is
+sometimes non-monotone. See the example from a few sections up!)
 
 ```{r test-objective, fig.width = 5, fig.height = 3, eval = TRUE}
 testthat::test_that("Objective value decreases over EM iterations.",{
@@ -100,11 +149,8 @@ testthat::test_that("Objective value decreases over EM iterations.",{
 Next, we try out `flowtrend` on a synthetic 2d data example.
 
 ```{r 2d-example, fig.width = 10, fig.width = 6}
-## Generate data
 set.seed(100) 
 dt       <- gendat_2d(100, rep(100, 100))
-
-## Fit model
 set.seed(10)
 obj <- flowtrend(ylist = dt$ylist,
                  maxdev = 5,

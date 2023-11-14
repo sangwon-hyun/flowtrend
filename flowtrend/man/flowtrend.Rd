@@ -4,7 +4,7 @@
 \alias{flowtrend}
 \title{Main function. Repeats the EM algorithm (\code{flowtrend_once()}) with |nrep| restarts (5 by default).}
 \usage{
-flowtrend(nrestart = 10, ...)
+flowtrend(nrestart = 5, ...)
 }
 \arguments{
 \item{nrestart}{: number of random restarts}

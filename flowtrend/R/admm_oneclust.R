@@ -26,24 +26,20 @@ admm_oneclust <- function(iclust = 1, niter, y,
                           local_adapt,
                           sigma,
                           sigma_eig_by_clust,
-                          space = 20,
-                          ## diagnostics
-                          norms = F, objective  = F){
+                          space = 20){
 
   ## Initialize the variables ###
   resid_mat = matrix(NA, nrow = ceiling(niter/5), ncol = 4)
   colnames(resid_mat) = c("primresid", "primerr", "dualresid", "dualerr")
-
   rhofac = rho / rhoinit 
 
   ## Main inner LA-ADMM loop
-  fits = rep(NA, ceiling(niter/space)) 
-  converge = FALSE
+  converge = FALSE 
   start.time = Sys.time()
   Zlist = list()
 
   ## This doesn't change over iterations
-  schurA = myschur(schurA$orig * rhofac)
+  schurB = myschur(schurB$orig * rhofac) ## In flowmix, this is done on A. Here, it's done on B (in AX + XB + C = 0).
   TA = schurA$T ##* rhofac
   TB = schurB$T
   UA = schurA$Q
@@ -59,9 +55,7 @@ admm_oneclust <- function(iclust = 1, niter, y,
 
   resp_sum <- lapply(resp, sum)
 
-  admm_objectives = c()
   for(iter in 1:niter){
-    print_progress(iter, niter, "admm iterations", fill = FALSE)
     syl_C <- get_C_mat(C1 = C1, resp_sum = resp_sum, TT = TT, dimdat = dimdat,
                        Sigma_inv = sigmainv, N = N, Dl = Dl, rho = rho,
                        z = z, w = w, uz = uz, uw = uw, l=l)
@@ -80,7 +74,11 @@ admm_oneclust <- function(iclust = 1, niter, y,
     #z <- Z_update( scale(t(mu), scale = F), Uz = uz, C = maxdev, rho = rho)
     z <- Z_update(mu - colMeans(mu), Uz = uz, C = maxdev, rho = rho)
 
-    if(any(abs(mu)>1E2)) browser()
+    if(any(abs(mu)>1E2)){
+      print("mu is blowing up!")
+      ## browser()
+      break
+    }
     wlist = lapply(1:dimdat, function(j){
       W_update_fused(l = l, TT = TT, mu = mu[, j, drop = TRUE],
                      rho = rho, lambda = lambda,
@@ -90,16 +88,6 @@ admm_oneclust <- function(iclust = 1, niter, y,
     stopifnot(ncol(w) == dimdat)
     uz = U_update_Z(uz, rho, mu, z, TT)
     uw = U_update_W(uw, rho, mu, w, l, TT)
-
-    if(norms & iter %% 1 == 0){
-      print(round(c("mu" = norm(mu, "F"),
-                    "C" = norm(syl_C, "F"),
-                    "FF" = norm(FF, "F"),
-                    "z" = norm(z, "F"),
-                    "w" = norm(w, "F"),
-                    "uz" = norm(uz, "F"),
-                    "uw" = norm(uw, "F")),3))
-    }
 
     ## Check convergence
     if( iter > 1  & iter %% 5 == 0){## & !local_adapt){
@@ -130,32 +118,17 @@ admm_oneclust <- function(iclust = 1, niter, y,
     ## ## 3. Calculate objective values for this cluster.
     w_prev = w
     z_prev = z
+  }
 
-    ## Temporary (uncomment for plotting objectives)
-    ## 4. Calculate things related to convergence (Slow).
-    space = 1
-    if(iter %% space == 0 ){
-      ii = iter / space
-      ## beta0 <- intercept(resp, resp.sum, ylist, beta, X, N, iclust)
-      ## fits[ii] = objective_per_cluster(rbind(beta0, beta), ylist, Xa, resp,
-      ##                                  lambda, N, dimdat, iclust, sigma, iter,
-      ##                                  zerothresh, is.null(sigma_eig_by_clust),
-      ##                                  sigma_eig_by_clust)
-
-      if(FALSE){
-      admm_objectives[ii] = objective_per_cluster(y = y, mu = mu, resp = resp, Sigma_inv = sigmainv, TT = TT,
-                                                  d = dimdat, Dlp1 = Dlp1, Dl = Dl, l = l, maxdev = maxdev,
-                                                  lambda = lambda, rho = rho, N = N) 
-      }
-    }
-    ## End of temporary
-  } 
-
+  if(FALSE){
   obj.value <- objective_per_cluster(y = y, mu = mu, resp = resp,
                                      Sigma_inv = sigmainv, TT = TT,
                                      d = dimdat, Dlp1 = Dlp1, Dl = Dl, l = l,
                                      maxdev = maxdev, lambda = lambda,
-                                     rho = rho, N = N) ## This is very expensive..
+                                     rho = rho, N = N)
+    ## This is very expensive..
+  }
+  obj.value=NA
 
   return(list(mu = mu,
               resid_mat = resid_mat,
@@ -166,7 +139,5 @@ admm_oneclust <- function(iclust = 1, niter, y,
               uz = uz,
               uw = uw,
               inner.iter = iter,
-              admm_objectives = admm_objectives,
-              single_admm_objective = obj.value
-  ))
+              single_admm_objective = obj.value))
 }

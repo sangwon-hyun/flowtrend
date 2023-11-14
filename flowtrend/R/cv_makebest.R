@@ -86,7 +86,7 @@ load_all_objectives <- function(destin, iprob, imu, ifold, nrestart){
 }
 
 #' Loading all objectives, with NA's for missing files
-oad_all_refit_objectives <- function(destin, iprob, imu, nrestart){
+load_all_refit_objectives <- function(destin, iprob, imu, nrestart){
   objectives = sapply(1:nrestart, function(irestart){ 
     filename = make_refit_filename(iprob, imu, irestart)
     ## filename = make_best_cvscore_filename(iprob, imu, ifold)

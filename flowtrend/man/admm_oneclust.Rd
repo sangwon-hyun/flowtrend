@@ -37,9 +37,7 @@ admm_oneclust(
   local_adapt,
   sigma,
   sigma_eig_by_clust,
-  space = 20,
-  norms = F,
-  objective = F
+  space = 20
 )
 }
 \description{

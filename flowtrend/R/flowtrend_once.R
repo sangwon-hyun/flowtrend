@@ -41,8 +41,9 @@ flowtrend_once <- function(ylist,
                        admm_err_rel = 1E-3,
                        admm_err_abs = 1E-4,
                        ## Mean M step (Locally Adaptive ADMM) settings
-                       admm_local_adapt = FALSE,
+                       admm_local_adapt = TRUE,
                        admm_local_adapt_niter = if(admm_local_adapt) 10 else 1,
+                       rho_init = 0.1,
                        ## Random seed
                        seed = NULL){
 
@@ -95,10 +96,11 @@ flowtrend_once <- function(ylist,
   #if(!is.null(countslist)) check_trim(ylist, countslist)
 
   vals <- vector(length = niter)
+  latest_rho = NA
   start.time = Sys.time()
   for(iter in 2:niter){
     if(verbose){
-      print_progress(iter-1, niter-1, "EM iterations.", start.time = start.time)
+      print_progress(iter-1, niter-1, "EM iterations.", start.time = start.time, fill = FALSE)
     }
     resp <- Estep(mn, sigma, prob, ylist = ylist, numclust = numclust,
                   denslist_by_clust = denslist_by_clust,
@@ -107,7 +109,7 @@ flowtrend_once <- function(ylist,
     ## M step (three parts)
 
     ## 1. Means
-    res.mu = Mstep_mu(resp, ylist,
+    res_mu = Mstep_mu(resp, ylist,
                       lambda = lambda,
                       first_iter = (iter == 2),
                       l = l, Dlp1 = Dlp1, Dl = Dl,
@@ -123,8 +125,11 @@ flowtrend_once <- function(ylist,
                       err_rel = admm_err_rel,
                       err_abs = admm_err_abs,
                       local_adapt = admm_local_adapt,
-                      local_adapt_niter = admm_local_adapt_niter)
-    mn = res.mu$mns
+                      local_adapt_niter = admm_local_adapt_niter,
+                      rho_init = rho_init)
+                      ## rho_init = (if(iter == 2) rho_init else latest_rho))
+    ## latest_rho = res_mu$rho
+    mn = res_mu$mns
 
     ## 2. Sigma
     sigma = Mstep_sigma(resp, ylist, mn, numclust)

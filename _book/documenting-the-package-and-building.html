@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>13 Documenting the package and building | Creating the flowtrend R package</title>
   <meta name="description" content="13 Documenting the package and building | Creating the flowtrend R package" />
-  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
   <meta property="og:title" content="13 Documenting the package and building | Creating the flowtrend R package" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2023-05-30" />
+<meta name="date" content="2023-11-14" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="testing-the-flowtrend-method.html"/>
 
-<script src="libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -120,6 +120,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 </head>
 
@@ -195,7 +199,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="documenting-the-package-and-building" class="section level1 hasAnchor" number="13">
 <h1><span class="header-section-number">13</span> Documenting the package and building<a href="documenting-the-package-and-building.html#documenting-the-package-and-building" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>We finish by running commands that will document, build, and install the package. It may also be a good idea to check the package from within this file.</p>
-<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="documenting-the-package-and-building.html#cb113-1" aria-hidden="true" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">document</span>() <span class="co"># &lt;-- use instead of devtools::document()</span></span></code></pre></div>
+<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="documenting-the-package-and-building.html#cb191-1" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">document</span>() <span class="co"># &lt;-- use instead of devtools::document()</span></span></code></pre></div>
 <pre><code>## ℹ Updating flowtrend documentation
 ## ℹ Loading flowtrend
 ## ℹ Re-compiling flowtrend (debug build)</code></pre>
@@ -275,6 +279,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## Warning: [objective.R:22] @return requires a value</code></pre>
 <pre><code>## Warning: [objective.R:25] @examples requires a value</code></pre>
 <pre><code>## Writing &#39;NAMESPACE&#39;</code></pre>
+<pre><code>## Warning: Skipping &#39;U_update_Z.Rd&#39;
+## ℹ File lacks name and/or title</code></pre>
+<pre><code>## Warning: Skipping &#39;U_update_W.Rd&#39;
+## ℹ File lacks name and/or title</code></pre>
 <pre><code>## Warning: Skipping &#39;etilde_mat.Rd&#39;
 ## ℹ File lacks name and/or title</code></pre>
 <pre><code>## Warning: Skipping &#39;myschur.Rd&#39;
@@ -328,7 +336,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## Writing &#39;make_best_refit_filename.Rd&#39;
 ## Writing &#39;make_iimat.Rd&#39;
 ## Writing &#39;make_iimat_small.Rd&#39;
+## Writing &#39;my_prox_dp.Rd&#39;
 ## Writing &#39;objective.Rd&#39;
+## Writing &#39;objective_per_cluster.Rd&#39;
 ## Writing &#39;one_job.Rd&#39;
 ## Writing &#39;one_job_refit.Rd&#39;
 ## Writing &#39;outer_converge.Rd&#39;

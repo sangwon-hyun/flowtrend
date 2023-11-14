@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Creating the flowtrend R package</title>
   <meta name="description" content="Creating the flowtrend R package" />
-  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Creating the flowtrend R package" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2023-05-30" />
+<meta name="date" content="2023-11-14" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
 
 <link rel="next" href="package-setup.html"/>
-<script src="libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -120,6 +120,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 </head>
 
@@ -195,14 +199,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="header">
 <h1 class="title">Creating the <code>flowtrend</code> R package</h1>
 <p class="author"><em>Sangwon Hyun</em></p>
-<p class="date"><em>2023-05-30</em></p>
+<p class="date"><em>2023-11-14</em></p>
 </div>
 <div id="introduction" class="section level1 hasAnchor" number="1">
 <h1><span class="header-section-number">1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>This package implements <code>flowtrend</code>, a model used for smooth estimation of
 mixture models across time. The documentation and package are both created using
 one simple command:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" aria-hidden="true" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">render</span>(<span class="st">&quot;index.Rmd&quot;</span>, <span class="at">output_format =</span> litr<span class="sc">::</span><span class="fu">litr_gitbook</span>())</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">render</span>(<span class="st">&quot;index.Rmd&quot;</span>, <span class="at">output_format =</span> litr<span class="sc">::</span><span class="fu">litr_gitbook</span>())</span></code></pre></div>
+<p>This line is purely for testing (to be deleted later!).</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="index.html#cb2-1" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">&quot;index.Rmd&quot;</span>)<span class="do">##, output_format = litr::litr_gitbook())</span></span></code></pre></div>
 
 </div>
             </section>

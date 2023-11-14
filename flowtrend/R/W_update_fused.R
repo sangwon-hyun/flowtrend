@@ -30,7 +30,10 @@ W_update_fused <- function(l, TT, mu, uw, rho, lambda){
   ## which solves min_zhat 1/2 |z-zhat|_2^2 + lambda |D^{(1)}zhat|
   ## fit <- prox(z = xi, lam = mod_lam)
   if(any(is.nan(xi))) browser()
-  fit <- FlowTF::prox(z = xi, lam = mod_lam)
+  ## fit <- prox_dp(z = xi, lam = mod_lam) ## instead of FlowTF::prox()
+  ## fit <- flowtrendprox::prox_dp(z = xi, lam = mod_lam) 
+  fit <- FlowTF::prox(z = xi, lam = mod_lam) 
+  ## TODO: eventually change to  fit <- flowtrendprox::prox(z = xi, lam = mod_lam)
 
   return(fit)
 }
@@ -49,7 +52,7 @@ W_update_fused <- function(l, TT, mu, uw, rho, lambda){
 ## #'
 ## #' @useDynLib FlowTF prox_dp 
 ## prox <-  function(z, lam) {
-##   o <- .C("prox_dp",
+##   o <- .C("prox_dp",  
 ##           as.integer(length(z)),
 ##           as.double(z),
 ##           as.double(lam),
@@ -98,7 +101,7 @@ U_update_W <- function(U, rho, mu, W, l, TT){
   # l = 0 is fused lasso
   # D^{(1)} is first differences, so it correponds to l=0
   # D^{(l+1)} is used for order-l trend filtering.
-  stopifnot(length(W) == TT - l)
+  stopifnot(nrow(W) == TT - l)
   if(l == 0){
     Unew = U +  rho * (mu - W)
   } else {

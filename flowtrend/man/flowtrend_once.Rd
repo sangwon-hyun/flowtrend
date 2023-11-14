@@ -22,8 +22,9 @@ flowtrend_once(
   admm = TRUE,
   admm_err_rel = 0.001,
   admm_err_abs = 1e-04,
-  admm_local_adapt = FALSE,
+  admm_local_adapt = TRUE,
   admm_local_adapt_niter = if (admm_local_adapt) 10 else 1,
+  rho_init = 0.1,
   seed = NULL
 )
 }
