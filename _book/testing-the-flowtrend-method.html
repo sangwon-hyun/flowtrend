@@ -203,433 +203,225 @@ now.</p>
 <div id="id_1d-example" class="section level2 hasAnchor" number="12.1">
 <h2><span class="header-section-number">12.1</span> 1d example<a href="testing-the-flowtrend-method.html#id_1d-example" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Generate data.</p>
-<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="testing-the-flowtrend-method.html#cb103-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
-<span id="cb103-2"><a href="testing-the-flowtrend-method.html#cb103-2" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>))</span>
-<span id="cb103-3"><a href="testing-the-flowtrend-method.html#cb103-3" tabindex="-1"></a>dt_model <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb103-4"><a href="testing-the-flowtrend-method.html#cb103-4" tabindex="-1"></a>ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='package-setup.html#dt2ylist'>dt2ylist</a>()</span>
-<span id="cb103-5"><a href="testing-the-flowtrend-method.html#cb103-5" tabindex="-1"></a>x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
-<span id="cb103-6"><a href="testing-the-flowtrend-method.html#cb103-6" tabindex="-1"></a><a href='package-setup.html#plot_1d'>plot_1d</a>(ylist)</span></code></pre></div>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="testing-the-flowtrend-method.html#cb102-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb102-2"><a href="testing-the-flowtrend-method.html#cb102-2" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>))</span>
+<span id="cb102-3"><a href="testing-the-flowtrend-method.html#cb102-3" tabindex="-1"></a>dt_model <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb102-4"><a href="testing-the-flowtrend-method.html#cb102-4" tabindex="-1"></a>ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='package-setup.html#dt2ylist'>dt2ylist</a>()</span>
+<span id="cb102-5"><a href="testing-the-flowtrend-method.html#cb102-5" tabindex="-1"></a>x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
+<span id="cb102-6"><a href="testing-the-flowtrend-method.html#cb102-6" tabindex="-1"></a><a href='package-setup.html#plot_1d'>plot_1d</a>(ylist)</span></code></pre></div>
 <p>Next, we fit the model.</p>
-<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="testing-the-flowtrend-method.html#cb104-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">18</span>)</span>
-<span id="cb104-2"><a href="testing-the-flowtrend-method.html#cb104-2" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <a href='flowtrend.html#flowtrend'>flowtrend</a>(<span class="at">ylist =</span> ylist,</span>
-<span id="cb104-3"><a href="testing-the-flowtrend-method.html#cb104-3" tabindex="-1"></a>                 <span class="at">x =</span> x,</span>
-<span id="cb104-4"><a href="testing-the-flowtrend-method.html#cb104-4" tabindex="-1"></a>                 <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
-<span id="cb104-5"><a href="testing-the-flowtrend-method.html#cb104-5" tabindex="-1"></a>                 <span class="at">numclust =</span> <span class="dv">3</span>,</span>
-<span id="cb104-6"><a href="testing-the-flowtrend-method.html#cb104-6" tabindex="-1"></a>                 <span class="at">l =</span> <span class="dv">2</span>,</span>
-<span id="cb104-7"><a href="testing-the-flowtrend-method.html#cb104-7" tabindex="-1"></a>                 <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
-<span id="cb104-8"><a href="testing-the-flowtrend-method.html#cb104-8" tabindex="-1"></a>                 <span class="at">lambda =</span> <span class="dv">1</span>,</span>
-<span id="cb104-9"><a href="testing-the-flowtrend-method.html#cb104-9" tabindex="-1"></a>                 <span class="at">lambda_prob =</span> .<span class="dv">1</span>,</span>
-<span id="cb104-10"><a href="testing-the-flowtrend-method.html#cb104-10" tabindex="-1"></a>                 <span class="at">admm_local_adapt =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb104-11"><a href="testing-the-flowtrend-method.html#cb104-11" tabindex="-1"></a>                 <span class="at">nrestart =</span> <span class="dv">1</span>,</span>
-<span id="cb104-12"><a href="testing-the-flowtrend-method.html#cb104-12" tabindex="-1"></a>                 <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb104-13"><a href="testing-the-flowtrend-method.html#cb104-13" tabindex="-1"></a></span>
-<span id="cb104-14"><a href="testing-the-flowtrend-method.html#cb104-14" tabindex="-1"></a><span class="do">## Also reorder the cluster labels of the truth, to match the fitted model.</span></span>
-<span id="cb104-15"><a href="testing-the-flowtrend-method.html#cb104-15" tabindex="-1"></a>ord <span class="ot">=</span> obj<span class="sc">$</span>mn[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">colSums</span>() <span class="sc">%&gt;%</span> <span class="fu">order</span>(<span class="at">decreasing=</span><span class="cn">TRUE</span>)</span>
-<span id="cb104-16"><a href="testing-the-flowtrend-method.html#cb104-16" tabindex="-1"></a>lookup <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>obj<span class="sc">$</span>numclust), ord)</span>
-<span id="cb104-17"><a href="testing-the-flowtrend-method.html#cb104-17" tabindex="-1"></a>dt_model<span class="sc">$</span>cluster <span class="ot">=</span> lookup[<span class="fu">as.numeric</span>(dt_model<span class="sc">$</span>cluster)] <span class="sc">%&gt;%</span> <span class="fu">as.factor</span>()</span>
-<span id="cb104-18"><a href="testing-the-flowtrend-method.html#cb104-18" tabindex="-1"></a></span>
-<span id="cb104-19"><a href="testing-the-flowtrend-method.html#cb104-19" tabindex="-1"></a><span class="do">## Reorder the cluster lables of the fitted model.</span></span>
-<span id="cb104-20"><a href="testing-the-flowtrend-method.html#cb104-20" tabindex="-1"></a>obj <span class="ot">=</span> <a href='reordering-clusters.html#reorder_clust'>reorder_clust</a>(obj)</span></code></pre></div>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="testing-the-flowtrend-method.html#cb103-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">18</span>)</span>
+<span id="cb103-2"><a href="testing-the-flowtrend-method.html#cb103-2" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <a href='flowtrend.html#flowtrend'>flowtrend</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb103-3"><a href="testing-the-flowtrend-method.html#cb103-3" tabindex="-1"></a>                 <span class="at">x =</span> x,</span>
+<span id="cb103-4"><a href="testing-the-flowtrend-method.html#cb103-4" tabindex="-1"></a>                 <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
+<span id="cb103-5"><a href="testing-the-flowtrend-method.html#cb103-5" tabindex="-1"></a>                 <span class="at">numclust =</span> <span class="dv">3</span>,</span>
+<span id="cb103-6"><a href="testing-the-flowtrend-method.html#cb103-6" tabindex="-1"></a>                 <span class="at">l =</span> <span class="dv">2</span>,</span>
+<span id="cb103-7"><a href="testing-the-flowtrend-method.html#cb103-7" tabindex="-1"></a>                 <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
+<span id="cb103-8"><a href="testing-the-flowtrend-method.html#cb103-8" tabindex="-1"></a>                 <span class="at">lambda =</span> <span class="dv">1</span>,</span>
+<span id="cb103-9"><a href="testing-the-flowtrend-method.html#cb103-9" tabindex="-1"></a>                 <span class="at">lambda_prob =</span> .<span class="dv">1</span>,</span>
+<span id="cb103-10"><a href="testing-the-flowtrend-method.html#cb103-10" tabindex="-1"></a>                 <span class="at">admm_local_adapt =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb103-11"><a href="testing-the-flowtrend-method.html#cb103-11" tabindex="-1"></a>                 <span class="at">nrestart =</span> <span class="dv">1</span>,</span>
+<span id="cb103-12"><a href="testing-the-flowtrend-method.html#cb103-12" tabindex="-1"></a>                 <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb103-13"><a href="testing-the-flowtrend-method.html#cb103-13" tabindex="-1"></a></span>
+<span id="cb103-14"><a href="testing-the-flowtrend-method.html#cb103-14" tabindex="-1"></a><span class="do">## Also reorder the cluster labels of the truth, to match the fitted model.</span></span>
+<span id="cb103-15"><a href="testing-the-flowtrend-method.html#cb103-15" tabindex="-1"></a>ord <span class="ot">=</span> obj<span class="sc">$</span>mn[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">colSums</span>() <span class="sc">%&gt;%</span> <span class="fu">order</span>(<span class="at">decreasing=</span><span class="cn">TRUE</span>)</span>
+<span id="cb103-16"><a href="testing-the-flowtrend-method.html#cb103-16" tabindex="-1"></a>lookup <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>obj<span class="sc">$</span>numclust), ord)</span>
+<span id="cb103-17"><a href="testing-the-flowtrend-method.html#cb103-17" tabindex="-1"></a>dt_model<span class="sc">$</span>cluster <span class="ot">=</span> lookup[<span class="fu">as.numeric</span>(dt_model<span class="sc">$</span>cluster)] <span class="sc">%&gt;%</span> <span class="fu">as.factor</span>()</span>
+<span id="cb103-18"><a href="testing-the-flowtrend-method.html#cb103-18" tabindex="-1"></a></span>
+<span id="cb103-19"><a href="testing-the-flowtrend-method.html#cb103-19" tabindex="-1"></a><span class="do">## Reorder the cluster lables of the fitted model.</span></span>
+<span id="cb103-20"><a href="testing-the-flowtrend-method.html#cb103-20" tabindex="-1"></a>obj <span class="ot">=</span> <a href='reordering-clusters.html#reorder_clust'>reorder_clust</a>(obj)</span></code></pre></div>
 <p>The data and estimated model are shown here. The dashed lines are the true means.</p>
-<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="testing-the-flowtrend-method.html#cb105-1" tabindex="-1"></a><a href='package-setup.html#plot_1d'>plot_1d</a>(ylist, obj, <span class="at">x =</span> x, <span class="at">add_point =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb105-2"><a href="testing-the-flowtrend-method.html#cb105-2" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">group =</span> cluster),</span>
-<span id="cb105-3"><a href="testing-the-flowtrend-method.html#cb105-3" tabindex="-1"></a>            <span class="at">data =</span> dt_model,<span class="do">## %&gt;% subset(time %ni% held_out),</span></span>
-<span id="cb105-4"><a href="testing-the-flowtrend-method.html#cb105-4" tabindex="-1"></a>            <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">size=</span><span class="dv">2</span>, <span class="at">alpha =</span> .<span class="dv">7</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="testing-the-flowtrend-method.html#cb104-1" tabindex="-1"></a><a href='package-setup.html#plot_1d'>plot_1d</a>(ylist, obj, <span class="at">x =</span> x, <span class="at">add_point =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb104-2"><a href="testing-the-flowtrend-method.html#cb104-2" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">group =</span> cluster),</span>
+<span id="cb104-3"><a href="testing-the-flowtrend-method.html#cb104-3" tabindex="-1"></a>            <span class="at">data =</span> dt_model,<span class="do">## %&gt;% subset(time %ni% held_out),</span></span>
+<span id="cb104-4"><a href="testing-the-flowtrend-method.html#cb104-4" tabindex="-1"></a>            <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">size=</span><span class="dv">2</span>, <span class="at">alpha =</span> .<span class="dv">7</span>)</span></code></pre></div>
 <p>The estimated probabilities are shown here.</p>
-<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="testing-the-flowtrend-method.html#cb106-1" tabindex="-1"></a><a href='package-setup.html#plot_prob'>plot_prob</a>(obj) <span class="sc">+</span></span>
-<span id="cb106-2"><a href="testing-the-flowtrend-method.html#cb106-2" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> prob, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
-<span id="cb106-3"><a href="testing-the-flowtrend-method.html#cb106-3" tabindex="-1"></a>            <span class="at">data =</span> dt_model, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>)  <span class="sc">+</span></span>
-<span id="cb106-4"><a href="testing-the-flowtrend-method.html#cb106-4" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>cluster)</span></code></pre></div>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="testing-the-flowtrend-method.html#cb105-1" tabindex="-1"></a><a href='package-setup.html#plot_prob'>plot_prob</a>(obj) <span class="sc">+</span></span>
+<span id="cb105-2"><a href="testing-the-flowtrend-method.html#cb105-2" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> prob, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
+<span id="cb105-3"><a href="testing-the-flowtrend-method.html#cb105-3" tabindex="-1"></a>            <span class="at">data =</span> dt_model, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>)  <span class="sc">+</span></span>
+<span id="cb105-4"><a href="testing-the-flowtrend-method.html#cb105-4" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>cluster)</span></code></pre></div>
 <p>The objectives look like this:</p>
-<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="testing-the-flowtrend-method.html#cb107-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
-<span id="cb107-2"><a href="testing-the-flowtrend-method.html#cb107-2" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="at">TT =</span> <span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>))</span>
-<span id="cb107-3"><a href="testing-the-flowtrend-method.html#cb107-3" tabindex="-1"></a>dt_model <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb107-4"><a href="testing-the-flowtrend-method.html#cb107-4" tabindex="-1"></a>ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='package-setup.html#dt2ylist'>dt2ylist</a>()</span>
-<span id="cb107-5"><a href="testing-the-flowtrend-method.html#cb107-5" tabindex="-1"></a>x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
-<span id="cb107-6"><a href="testing-the-flowtrend-method.html#cb107-6" tabindex="-1"></a></span>
-<span id="cb107-7"><a href="testing-the-flowtrend-method.html#cb107-7" tabindex="-1"></a><span class="do">## Run it 10 times</span></span>
-<span id="cb107-8"><a href="testing-the-flowtrend-method.html#cb107-8" tabindex="-1"></a>objlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="cf">function</span>(ii){</span>
-<span id="cb107-9"><a href="testing-the-flowtrend-method.html#cb107-9" tabindex="-1"></a>  <span class="fu">print</span>(ii)</span>
-<span id="cb107-10"><a href="testing-the-flowtrend-method.html#cb107-10" tabindex="-1"></a>  <span class="fu">set.seed</span>(ii<span class="sc">+</span><span class="dv">100</span>)</span>
-<span id="cb107-11"><a href="testing-the-flowtrend-method.html#cb107-11" tabindex="-1"></a>  <a href='flowtrend.html#flowtrend_once'>flowtrend_once</a>(<span class="at">ylist =</span> ylist,</span>
-<span id="cb107-12"><a href="testing-the-flowtrend-method.html#cb107-12" tabindex="-1"></a>                 <span class="at">x =</span> x,</span>
-<span id="cb107-13"><a href="testing-the-flowtrend-method.html#cb107-13" tabindex="-1"></a>                 <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
-<span id="cb107-14"><a href="testing-the-flowtrend-method.html#cb107-14" tabindex="-1"></a>                 <span class="at">numclust =</span> <span class="dv">3</span>,</span>
-<span id="cb107-15"><a href="testing-the-flowtrend-method.html#cb107-15" tabindex="-1"></a>                 <span class="at">l =</span> <span class="dv">2</span>,</span>
-<span id="cb107-16"><a href="testing-the-flowtrend-method.html#cb107-16" tabindex="-1"></a>                 <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
-<span id="cb107-17"><a href="testing-the-flowtrend-method.html#cb107-17" tabindex="-1"></a>                 <span class="at">lambda =</span> <span class="dv">1</span>,</span>
-<span id="cb107-18"><a href="testing-the-flowtrend-method.html#cb107-18" tabindex="-1"></a>                 <span class="at">lambda_prob =</span> .<span class="dv">1</span>,</span>
-<span id="cb107-19"><a href="testing-the-flowtrend-method.html#cb107-19" tabindex="-1"></a>                 <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb107-20"><a href="testing-the-flowtrend-method.html#cb107-20" tabindex="-1"></a>})</span>
-<span id="cb107-21"><a href="testing-the-flowtrend-method.html#cb107-21" tabindex="-1"></a></span>
-<span id="cb107-22"><a href="testing-the-flowtrend-method.html#cb107-22" tabindex="-1"></a><span class="do">## Make a table with objectives</span></span>
-<span id="cb107-23"><a href="testing-the-flowtrend-method.html#cb107-23" tabindex="-1"></a>objective_table <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="cf">function</span>(jj) <span class="fu">tibble</span>(<span class="at">objective =</span> objlist[[jj]]<span class="sc">$</span>objectives) <span class="sc">%&gt;%</span></span>
-<span id="cb107-24"><a href="testing-the-flowtrend-method.html#cb107-24" tabindex="-1"></a>                                            <span class="fu">add_rownames</span>(<span class="st">&quot;iter&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb107-25"><a href="testing-the-flowtrend-method.html#cb107-25" tabindex="-1"></a>                                            <span class="fu">mutate</span>(<span class="at">iter =</span> <span class="fu">as.numeric</span>(iter)) <span class="sc">%&gt;%</span></span>
-<span id="cb107-26"><a href="testing-the-flowtrend-method.html#cb107-26" tabindex="-1"></a>                                            <span class="fu">add_column</span>(<span class="at">restart=</span>jj)) <span class="sc">%&gt;%</span></span>
-<span id="cb107-27"><a href="testing-the-flowtrend-method.html#cb107-27" tabindex="-1"></a>  <span class="fu">bind_rows</span>()  </span>
-<span id="cb107-28"><a href="testing-the-flowtrend-method.html#cb107-28" tabindex="-1"></a></span>
-<span id="cb107-29"><a href="testing-the-flowtrend-method.html#cb107-29" tabindex="-1"></a><span class="do">## Plot the objectives from the 10 runs</span></span>
-<span id="cb107-30"><a href="testing-the-flowtrend-method.html#cb107-30" tabindex="-1"></a><span class="fu">ggplot</span>(objective_table) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>iter, <span class="at">y=</span>objective, <span class="at">group=</span>restart))</span></code></pre></div>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="testing-the-flowtrend-method.html#cb106-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb106-2"><a href="testing-the-flowtrend-method.html#cb106-2" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="at">TT =</span> <span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">10</span>, <span class="dv">100</span>))</span>
+<span id="cb106-3"><a href="testing-the-flowtrend-method.html#cb106-3" tabindex="-1"></a>dt_model <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">10</span>, <span class="dv">100</span>), <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb106-4"><a href="testing-the-flowtrend-method.html#cb106-4" tabindex="-1"></a>ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='package-setup.html#dt2ylist'>dt2ylist</a>()</span>
+<span id="cb106-5"><a href="testing-the-flowtrend-method.html#cb106-5" tabindex="-1"></a>x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
+<span id="cb106-6"><a href="testing-the-flowtrend-method.html#cb106-6" tabindex="-1"></a></span>
+<span id="cb106-7"><a href="testing-the-flowtrend-method.html#cb106-7" tabindex="-1"></a><span class="do">## Run it 5 times</span></span>
+<span id="cb106-8"><a href="testing-the-flowtrend-method.html#cb106-8" tabindex="-1"></a>objlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="cf">function</span>(ii){</span>
+<span id="cb106-9"><a href="testing-the-flowtrend-method.html#cb106-9" tabindex="-1"></a>  <span class="fu">print</span>(ii)</span>
+<span id="cb106-10"><a href="testing-the-flowtrend-method.html#cb106-10" tabindex="-1"></a>  <span class="fu">set.seed</span>(ii<span class="sc">+</span><span class="dv">100</span>)</span>
+<span id="cb106-11"><a href="testing-the-flowtrend-method.html#cb106-11" tabindex="-1"></a>  <a href='flowtrend.html#flowtrend_once'>flowtrend_once</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb106-12"><a href="testing-the-flowtrend-method.html#cb106-12" tabindex="-1"></a>                 <span class="at">x =</span> x,</span>
+<span id="cb106-13"><a href="testing-the-flowtrend-method.html#cb106-13" tabindex="-1"></a>                 <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
+<span id="cb106-14"><a href="testing-the-flowtrend-method.html#cb106-14" tabindex="-1"></a>                 <span class="at">numclust =</span> <span class="dv">3</span>,</span>
+<span id="cb106-15"><a href="testing-the-flowtrend-method.html#cb106-15" tabindex="-1"></a>                 <span class="at">l =</span> <span class="dv">2</span>,</span>
+<span id="cb106-16"><a href="testing-the-flowtrend-method.html#cb106-16" tabindex="-1"></a>                 <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
+<span id="cb106-17"><a href="testing-the-flowtrend-method.html#cb106-17" tabindex="-1"></a>                 <span class="at">lambda =</span> <span class="dv">1</span>,</span>
+<span id="cb106-18"><a href="testing-the-flowtrend-method.html#cb106-18" tabindex="-1"></a>                 <span class="at">lambda_prob =</span> .<span class="dv">1</span>,</span>
+<span id="cb106-19"><a href="testing-the-flowtrend-method.html#cb106-19" tabindex="-1"></a>                 <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb106-20"><a href="testing-the-flowtrend-method.html#cb106-20" tabindex="-1"></a>})</span>
+<span id="cb106-21"><a href="testing-the-flowtrend-method.html#cb106-21" tabindex="-1"></a></span>
+<span id="cb106-22"><a href="testing-the-flowtrend-method.html#cb106-22" tabindex="-1"></a><span class="do">## Make a table with objectives</span></span>
+<span id="cb106-23"><a href="testing-the-flowtrend-method.html#cb106-23" tabindex="-1"></a>objective_table <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="cf">function</span>(jj) <span class="fu">tibble</span>(<span class="at">objective =</span> objlist[[jj]]<span class="sc">$</span>objectives) <span class="sc">%&gt;%</span></span>
+<span id="cb106-24"><a href="testing-the-flowtrend-method.html#cb106-24" tabindex="-1"></a>                                            <span class="fu">add_rownames</span>(<span class="st">&quot;iter&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb106-25"><a href="testing-the-flowtrend-method.html#cb106-25" tabindex="-1"></a>                                            <span class="fu">mutate</span>(<span class="at">iter =</span> <span class="fu">as.numeric</span>(iter)) <span class="sc">%&gt;%</span></span>
+<span id="cb106-26"><a href="testing-the-flowtrend-method.html#cb106-26" tabindex="-1"></a>                                            <span class="fu">add_column</span>(<span class="at">restart=</span>jj)) <span class="sc">%&gt;%</span></span>
+<span id="cb106-27"><a href="testing-the-flowtrend-method.html#cb106-27" tabindex="-1"></a>  <span class="fu">bind_rows</span>()  </span>
+<span id="cb106-28"><a href="testing-the-flowtrend-method.html#cb106-28" tabindex="-1"></a></span>
+<span id="cb106-29"><a href="testing-the-flowtrend-method.html#cb106-29" tabindex="-1"></a><span class="do">## Plot the objectives from the 10 runs</span></span>
+<span id="cb106-30"><a href="testing-the-flowtrend-method.html#cb106-30" tabindex="-1"></a><span class="fu">ggplot</span>(objective_table) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>iter, <span class="at">y=</span>objective, <span class="at">group=</span>restart))</span></code></pre></div>
 <pre><code>## [1] 1
 ## 
- EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:24:01</code></pre>
+ EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:37:41
+ EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:37:41
+ EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2023-11-14 14:43:13
+ EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2023-11-14 14:41:51
+ EM iterations.   5 out of 999 with lapsed time 2 seconds and remaining time 398 seconds and will finish at 2023-11-14 14:44:20
+ EM iterations.   6 out of 999 with lapsed time 2 seconds and remaining time 331 seconds and will finish at 2023-11-14 14:43:14
+ EM iterations.   7 out of 999 with lapsed time 2 seconds and remaining time 283 seconds and will finish at 2023-11-14 14:42:26[1] 2
+## 
+ EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:37:44</code></pre>
 <pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
 <pre><code>## 
- EM iterations.   2 out of 999 with lapsed time 1 seconds and remaining time 498 seconds and will finish at 2023-11-14 14:32:20
- EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2023-11-14 14:29:35</code></pre>
+ EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:37:44</code></pre>
 <pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
 <pre><code>## 
- EM iterations.   4 out of 999 with lapsed time 2 seconds and remaining time 498 seconds and will finish at 2023-11-14 14:32:21</code></pre>
+ EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2023-11-14 14:43:17</code></pre>
 <pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
 <pre><code>## 
- EM iterations.   5 out of 999 with lapsed time 2 seconds and remaining time 398 seconds and will finish at 2023-11-14 14:30:42</code></pre>
+ EM iterations.   4 out of 999 with lapsed time 2 seconds and remaining time 498 seconds and will finish at 2023-11-14 14:46:03</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   5 out of 999 with lapsed time 2 seconds and remaining time 398 seconds and will finish at 2023-11-14 14:44:24</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   6 out of 999 with lapsed time 3 seconds and remaining time 496 seconds and will finish at 2023-11-14 14:46:03</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   7 out of 999 with lapsed time 4 seconds and remaining time 567 seconds and will finish at 2023-11-14 14:47:14</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   8 out of 999 with lapsed time 4 seconds and remaining time 496 seconds and will finish at 2023-11-14 14:46:04</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   9 out of 999 with lapsed time 5 seconds and remaining time 550 seconds and will finish at 2023-11-14 14:46:58</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   10 out of 999 with lapsed time 5 seconds and remaining time 494 seconds and will finish at 2023-11-14 14:46:03</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   11 out of 999 with lapsed time 6 seconds and remaining time 539 seconds and will finish at 2023-11-14 14:46:48</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   12 out of 999 with lapsed time 7 seconds and remaining time 576 seconds and will finish at 2023-11-14 14:47:26</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   13 out of 999 with lapsed time 7 seconds and remaining time 531 seconds and will finish at 2023-11-14 14:46:42</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   14 out of 999 with lapsed time 8 seconds and remaining time 563 seconds and will finish at 2023-11-14 14:47:14</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   15 out of 999 with lapsed time 8 seconds and remaining time 525 seconds and will finish at 2023-11-14 14:46:37</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   16 out of 999 with lapsed time 9 seconds and remaining time 553 seconds and will finish at 2023-11-14 14:47:05</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   17 out of 999 with lapsed time 9 seconds and remaining time 520 seconds and will finish at 2023-11-14 14:46:33</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   18 out of 999 with lapsed time 10 seconds and remaining time 545 seconds and will finish at 2023-11-14 14:46:58</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   19 out of 999 with lapsed time 10 seconds and remaining time 516 seconds and will finish at 2023-11-14 14:46:30</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   20 out of 999 with lapsed time 11 seconds and remaining time 538 seconds and will finish at 2023-11-14 14:46:52</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   21 out of 999 with lapsed time 11 seconds and remaining time 512 seconds and will finish at 2023-11-14 14:46:27</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## [1] 3
+## 
+ EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:37:55
+ EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:37:56
+ EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2023-11-14 14:43:28
+ EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2023-11-14 14:42:05
+ EM iterations.   5 out of 999 with lapsed time 1 seconds and remaining time 199 seconds and will finish at 2023-11-14 14:41:15
+ EM iterations.   6 out of 999 with lapsed time 1 seconds and remaining time 166 seconds and will finish at 2023-11-14 14:40:43
+ EM iterations.   7 out of 999 with lapsed time 2 seconds and remaining time 283 seconds and will finish at 2023-11-14 14:42:40
+ EM iterations.   8 out of 999 with lapsed time 2 seconds and remaining time 248 seconds and will finish at 2023-11-14 14:42:05
+ EM iterations.   9 out of 999 with lapsed time 2 seconds and remaining time 220 seconds and will finish at 2023-11-14 14:41:37
+ EM iterations.   10 out of 999 with lapsed time 2 seconds and remaining time 198 seconds and will finish at 2023-11-14 14:41:16[1] 4
+## 
+ EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:37:58
+ EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:37:58
+ EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2023-11-14 14:43:31
+ EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2023-11-14 14:42:08
+ EM iterations.   5 out of 999 with lapsed time 2 seconds and remaining time 398 seconds and will finish at 2023-11-14 14:44:37
+ EM iterations.   6 out of 999 with lapsed time 2 seconds and remaining time 331 seconds and will finish at 2023-11-14 14:43:31
+ EM iterations.   7 out of 999 with lapsed time 2 seconds and remaining time 283 seconds and will finish at 2023-11-14 14:42:43
+ EM iterations.   8 out of 999 with lapsed time 2 seconds and remaining time 248 seconds and will finish at 2023-11-14 14:42:08
+ EM iterations.   9 out of 999 with lapsed time 3 seconds and remaining time 330 seconds and will finish at 2023-11-14 14:43:30
+ EM iterations.   10 out of 999 with lapsed time 3 seconds and remaining time 297 seconds and will finish at 2023-11-14 14:42:58
+ EM iterations.   11 out of 999 with lapsed time 3 seconds and remaining time 269 seconds and will finish at 2023-11-14 14:42:30
+ EM iterations.   12 out of 999 with lapsed time 3 seconds and remaining time 247 seconds and will finish at 2023-11-14 14:42:08
+ EM iterations.   13 out of 999 with lapsed time 4 seconds and remaining time 303 seconds and will finish at 2023-11-14 14:43:05
+ EM iterations.   14 out of 999 with lapsed time 4 seconds and remaining time 281 seconds and will finish at 2023-11-14 14:42:43
+ EM iterations.   15 out of 999 with lapsed time 4 seconds and remaining time 262 seconds and will finish at 2023-11-14 14:42:24
+ EM iterations.   16 out of 999 with lapsed time 5 seconds and remaining time 307 seconds and will finish at 2023-11-14 14:43:09[1] 5
+## 
+ EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:38:03
+ EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:38:03</code></pre>
 <pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.
 
 ## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
 <pre><code>## 
- EM iterations.   6 out of 999 with lapsed time 3 seconds and remaining time 496 seconds and will finish at 2023-11-14 14:32:20</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.
-
-## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   7 out of 999 with lapsed time 3 seconds and remaining time 425 seconds and will finish at 2023-11-14 14:31:10</code></pre>
+ EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2023-11-14 14:43:36
+ EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2023-11-14 14:42:13</code></pre>
 <pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
 <pre><code>## 
- EM iterations.   8 out of 999 with lapsed time 4 seconds and remaining time 496 seconds and will finish at 2023-11-14 14:32:21
- EM iterations.   9 out of 999 with lapsed time 4 seconds and remaining time 440 seconds and will finish at 2023-11-14 14:31:26
- EM iterations.   10 out of 999 with lapsed time 5 seconds and remaining time 494 seconds and will finish at 2023-11-14 14:32:20
- EM iterations.   11 out of 999 with lapsed time 5 seconds and remaining time 449 seconds and will finish at 2023-11-14 14:31:35
- EM iterations.   12 out of 999 with lapsed time 5 seconds and remaining time 411 seconds and will finish at 2023-11-14 14:30:58
- EM iterations.   13 out of 999 with lapsed time 6 seconds and remaining time 455 seconds and will finish at 2023-11-14 14:31:42
- EM iterations.   14 out of 999 with lapsed time 6 seconds and remaining time 422 seconds and will finish at 2023-11-14 14:31:09
- EM iterations.   15 out of 999 with lapsed time 6 seconds and remaining time 394 seconds and will finish at 2023-11-14 14:30:42
- EM iterations.   16 out of 999 with lapsed time 7 seconds and remaining time 430 seconds and will finish at 2023-11-14 14:31:18
- EM iterations.   17 out of 999 with lapsed time 7 seconds and remaining time 404 seconds and will finish at 2023-11-14 14:30:53
- EM iterations.   18 out of 999 with lapsed time 8 seconds and remaining time 436 seconds and will finish at 2023-11-14 14:31:25
- EM iterations.   19 out of 999 with lapsed time 8 seconds and remaining time 413 seconds and will finish at 2023-11-14 14:31:03
- EM iterations.   20 out of 999 with lapsed time 9 seconds and remaining time 441 seconds and will finish at 2023-11-14 14:31:31
- EM iterations.   21 out of 999 with lapsed time 9 seconds and remaining time 419 seconds and will finish at 2023-11-14 14:31:09
- EM iterations.   22 out of 999 with lapsed time 9 seconds and remaining time 400 seconds and will finish at 2023-11-14 14:30:51
- EM iterations.   23 out of 999 with lapsed time 10 seconds and remaining time 424 seconds and will finish at 2023-11-14 14:31:15
- EM iterations.   24 out of 999 with lapsed time 10 seconds and remaining time 406 seconds and will finish at 2023-11-14 14:30:57
- EM iterations.   25 out of 999 with lapsed time 10 seconds and remaining time 390 seconds and will finish at 2023-11-14 14:30:42
- EM iterations.   26 out of 999 with lapsed time 11 seconds and remaining time 412 seconds and will finish at 2023-11-14 14:31:04
- EM iterations.   27 out of 999 with lapsed time 11 seconds and remaining time 396 seconds and will finish at 2023-11-14 14:30:48
- EM iterations.   28 out of 999 with lapsed time 11 seconds and remaining time 381 seconds and will finish at 2023-11-14 14:30:34
- EM iterations.   29 out of 999 with lapsed time 12 seconds and remaining time 401 seconds and will finish at 2023-11-14 14:30:54
- EM iterations.   30 out of 999 with lapsed time 12 seconds and remaining time 388 seconds and will finish at 2023-11-14 14:30:41
- EM iterations.   31 out of 999 with lapsed time 12 seconds and remaining time 375 seconds and will finish at 2023-11-14 14:30:29
- EM iterations.   32 out of 999 with lapsed time 12 seconds and remaining time 363 seconds and will finish at 2023-11-14 14:30:17
- EM iterations.   33 out of 999 with lapsed time 13 seconds and remaining time 381 seconds and will finish at 2023-11-14 14:30:35[1] 2
-## 
- EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:24:14
- EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:24:15</code></pre>
+ EM iterations.   5 out of 999 with lapsed time 2 seconds and remaining time 398 seconds and will finish at 2023-11-14 14:44:42</code></pre>
 <pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
 <pre><code>## 
- EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2023-11-14 14:29:47
- EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2023-11-14 14:28:24
- EM iterations.   5 out of 999 with lapsed time 1 seconds and remaining time 199 seconds and will finish at 2023-11-14 14:27:35
- EM iterations.   6 out of 999 with lapsed time 2 seconds and remaining time 331 seconds and will finish at 2023-11-14 14:29:47
- EM iterations.   7 out of 999 with lapsed time 2 seconds and remaining time 283 seconds and will finish at 2023-11-14 14:29:00
- EM iterations.   8 out of 999 with lapsed time 3 seconds and remaining time 372 seconds and will finish at 2023-11-14 14:30:29</code></pre>
+ EM iterations.   6 out of 999 with lapsed time 2 seconds and remaining time 331 seconds and will finish at 2023-11-14 14:43:36</code></pre>
 <pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
 <pre><code>## 
- EM iterations.   9 out of 999 with lapsed time 3 seconds and remaining time 330 seconds and will finish at 2023-11-14 14:29:48</code></pre>
+ EM iterations.   7 out of 999 with lapsed time 3 seconds and remaining time 425 seconds and will finish at 2023-11-14 14:45:10</code></pre>
 <pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
 <pre><code>## 
- EM iterations.   10 out of 999 with lapsed time 4 seconds and remaining time 396 seconds and will finish at 2023-11-14 14:30:54</code></pre>
+ EM iterations.   8 out of 999 with lapsed time 3 seconds and remaining time 372 seconds and will finish at 2023-11-14 14:44:18</code></pre>
 <pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
 <pre><code>## 
- EM iterations.   11 out of 999 with lapsed time 4 seconds and remaining time 359 seconds and will finish at 2023-11-14 14:30:18
- EM iterations.   12 out of 999 with lapsed time 5 seconds and remaining time 411 seconds and will finish at 2023-11-14 14:31:10
- EM iterations.   13 out of 999 with lapsed time 6 seconds and remaining time 455 seconds and will finish at 2023-11-14 14:31:55
- EM iterations.   14 out of 999 with lapsed time 6 seconds and remaining time 422 seconds and will finish at 2023-11-14 14:31:22
- EM iterations.   15 out of 999 with lapsed time 6 seconds and remaining time 394 seconds and will finish at 2023-11-14 14:30:55
- EM iterations.   16 out of 999 with lapsed time 7 seconds and remaining time 430 seconds and will finish at 2023-11-14 14:31:31
- EM iterations.   17 out of 999 with lapsed time 7 seconds and remaining time 404 seconds and will finish at 2023-11-14 14:31:06
- EM iterations.   18 out of 999 with lapsed time 8 seconds and remaining time 436 seconds and will finish at 2023-11-14 14:31:38
- EM iterations.   19 out of 999 with lapsed time 8 seconds and remaining time 413 seconds and will finish at 2023-11-14 14:31:15
- EM iterations.   20 out of 999 with lapsed time 8 seconds and remaining time 392 seconds and will finish at 2023-11-14 14:30:55
- EM iterations.   21 out of 999 with lapsed time 8 seconds and remaining time 373 seconds and will finish at 2023-11-14 14:30:36
- EM iterations.   22 out of 999 with lapsed time 9 seconds and remaining time 400 seconds and will finish at 2023-11-14 14:31:03
- EM iterations.   23 out of 999 with lapsed time 9 seconds and remaining time 382 seconds and will finish at 2023-11-14 14:30:45[1] 3
-## 
- EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:24:24</code></pre>
+ EM iterations.   9 out of 999 with lapsed time 4 seconds and remaining time 440 seconds and will finish at 2023-11-14 14:45:26</code></pre>
 <pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
 <pre><code>## 
- EM iterations.   2 out of 999 with lapsed time 1 seconds and remaining time 498 seconds and will finish at 2023-11-14 14:32:42
- EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2023-11-14 14:29:57
- EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2023-11-14 14:28:34
- EM iterations.   5 out of 999 with lapsed time 2 seconds and remaining time 398 seconds and will finish at 2023-11-14 14:31:03
- EM iterations.   6 out of 999 with lapsed time 2 seconds and remaining time 331 seconds and will finish at 2023-11-14 14:29:57
- EM iterations.   7 out of 999 with lapsed time 2 seconds and remaining time 283 seconds and will finish at 2023-11-14 14:29:09
- EM iterations.   8 out of 999 with lapsed time 3 seconds and remaining time 372 seconds and will finish at 2023-11-14 14:30:38
- EM iterations.   9 out of 999 with lapsed time 3 seconds and remaining time 330 seconds and will finish at 2023-11-14 14:29:57
- EM iterations.   10 out of 999 with lapsed time 3 seconds and remaining time 297 seconds and will finish at 2023-11-14 14:29:24
- EM iterations.   11 out of 999 with lapsed time 4 seconds and remaining time 359 seconds and will finish at 2023-11-14 14:30:26
- EM iterations.   12 out of 999 with lapsed time 4 seconds and remaining time 329 seconds and will finish at 2023-11-14 14:29:57
- EM iterations.   13 out of 999 with lapsed time 4 seconds and remaining time 303 seconds and will finish at 2023-11-14 14:29:31
- EM iterations.   14 out of 999 with lapsed time 4 seconds and remaining time 281 seconds and will finish at 2023-11-14 14:29:09
- EM iterations.   15 out of 999 with lapsed time 5 seconds and remaining time 328 seconds and will finish at 2023-11-14 14:29:56
- EM iterations.   16 out of 999 with lapsed time 5 seconds and remaining time 307 seconds and will finish at 2023-11-14 14:29:36
- EM iterations.   17 out of 999 with lapsed time 5 seconds and remaining time 289 seconds and will finish at 2023-11-14 14:29:18
- EM iterations.   18 out of 999 with lapsed time 5 seconds and remaining time 272 seconds and will finish at 2023-11-14 14:29:01
- EM iterations.   19 out of 999 with lapsed time 5 seconds and remaining time 258 seconds and will finish at 2023-11-14 14:28:47[1] 4
-## 
- EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:24:29
- EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:24:30</code></pre>
+ EM iterations.   10 out of 999 with lapsed time 4 seconds and remaining time 396 seconds and will finish at 2023-11-14 14:44:43</code></pre>
 <pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
 <pre><code>## 
- EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2023-11-14 14:30:02
- EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2023-11-14 14:28:40
- EM iterations.   5 out of 999 with lapsed time 2 seconds and remaining time 398 seconds and will finish at 2023-11-14 14:31:09</code></pre>
+ EM iterations.   11 out of 999 with lapsed time 5 seconds and remaining time 449 seconds and will finish at 2023-11-14 14:45:37</code></pre>
 <pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
 <pre><code>## 
- EM iterations.   6 out of 999 with lapsed time 2 seconds and remaining time 331 seconds and will finish at 2023-11-14 14:30:02
- EM iterations.   7 out of 999 with lapsed time 3 seconds and remaining time 425 seconds and will finish at 2023-11-14 14:31:37
- EM iterations.   8 out of 999 with lapsed time 3 seconds and remaining time 372 seconds and will finish at 2023-11-14 14:30:44</code></pre>
+ EM iterations.   12 out of 999 with lapsed time 5 seconds and remaining time 411 seconds and will finish at 2023-11-14 14:44:59</code></pre>
 <pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
 <pre><code>## 
- EM iterations.   9 out of 999 with lapsed time 3 seconds and remaining time 330 seconds and will finish at 2023-11-14 14:30:03
- EM iterations.   10 out of 999 with lapsed time 4 seconds and remaining time 396 seconds and will finish at 2023-11-14 14:31:09
- EM iterations.   11 out of 999 with lapsed time 4 seconds and remaining time 359 seconds and will finish at 2023-11-14 14:30:33
- EM iterations.   12 out of 999 with lapsed time 5 seconds and remaining time 411 seconds and will finish at 2023-11-14 14:31:25
- EM iterations.   13 out of 999 with lapsed time 5 seconds and remaining time 379 seconds and will finish at 2023-11-14 14:30:54
- EM iterations.   14 out of 999 with lapsed time 6 seconds and remaining time 422 seconds and will finish at 2023-11-14 14:31:37
- EM iterations.   15 out of 999 with lapsed time 6 seconds and remaining time 394 seconds and will finish at 2023-11-14 14:31:09
- EM iterations.   16 out of 999 with lapsed time 6 seconds and remaining time 369 seconds and will finish at 2023-11-14 14:30:45
- EM iterations.   17 out of 999 with lapsed time 7 seconds and remaining time 404 seconds and will finish at 2023-11-14 14:31:20
- EM iterations.   18 out of 999 with lapsed time 7 seconds and remaining time 382 seconds and will finish at 2023-11-14 14:30:58
- EM iterations.   19 out of 999 with lapsed time 7 seconds and remaining time 361 seconds and will finish at 2023-11-14 14:30:38
- EM iterations.   20 out of 999 with lapsed time 8 seconds and remaining time 392 seconds and will finish at 2023-11-14 14:31:09
- EM iterations.   21 out of 999 with lapsed time 8 seconds and remaining time 373 seconds and will finish at 2023-11-14 14:30:50
- EM iterations.   22 out of 999 with lapsed time 8 seconds and remaining time 355 seconds and will finish at 2023-11-14 14:30:33
- EM iterations.   23 out of 999 with lapsed time 8 seconds and remaining time 339 seconds and will finish at 2023-11-14 14:30:17
- EM iterations.   24 out of 999 with lapsed time 9 seconds and remaining time 366 seconds and will finish at 2023-11-14 14:30:44
- EM iterations.   25 out of 999 with lapsed time 9 seconds and remaining time 351 seconds and will finish at 2023-11-14 14:30:29
- EM iterations.   26 out of 999 with lapsed time 9 seconds and remaining time 337 seconds and will finish at 2023-11-14 14:30:16[1] 5
-## 
- EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:24:39
- EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:24:39
- EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2023-11-14 14:30:12
- EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2023-11-14 14:28:49
- EM iterations.   5 out of 999 with lapsed time 1 seconds and remaining time 199 seconds and will finish at 2023-11-14 14:27:59
- EM iterations.   6 out of 999 with lapsed time 2 seconds and remaining time 331 seconds and will finish at 2023-11-14 14:30:12</code></pre>
+ EM iterations.   13 out of 999 with lapsed time 6 seconds and remaining time 455 seconds and will finish at 2023-11-14 14:45:44</code></pre>
 <pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
 <pre><code>## 
- EM iterations.   7 out of 999 with lapsed time 3 seconds and remaining time 425 seconds and will finish at 2023-11-14 14:31:47
- EM iterations.   8 out of 999 with lapsed time 3 seconds and remaining time 372 seconds and will finish at 2023-11-14 14:30:54</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   9 out of 999 with lapsed time 4 seconds and remaining time 440 seconds and will finish at 2023-11-14 14:32:03</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   10 out of 999 with lapsed time 5 seconds and remaining time 494 seconds and will finish at 2023-11-14 14:32:58</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   11 out of 999 with lapsed time 5 seconds and remaining time 449 seconds and will finish at 2023-11-14 14:32:13</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   12 out of 999 with lapsed time 6 seconds and remaining time 494 seconds and will finish at 2023-11-14 14:32:59
- EM iterations.   13 out of 999 with lapsed time 7 seconds and remaining time 531 seconds and will finish at 2023-11-14 14:33:37
- EM iterations.   14 out of 999 with lapsed time 7 seconds and remaining time 492 seconds and will finish at 2023-11-14 14:32:58
- EM iterations.   15 out of 999 with lapsed time 8 seconds and remaining time 525 seconds and will finish at 2023-11-14 14:33:32
- EM iterations.   16 out of 999 with lapsed time 8 seconds and remaining time 492 seconds and will finish at 2023-11-14 14:32:59
- EM iterations.   17 out of 999 with lapsed time 8 seconds and remaining time 462 seconds and will finish at 2023-11-14 14:32:29
- EM iterations.   18 out of 999 with lapsed time 8 seconds and remaining time 436 seconds and will finish at 2023-11-14 14:32:03
- EM iterations.   19 out of 999 with lapsed time 9 seconds and remaining time 464 seconds and will finish at 2023-11-14 14:32:32
- EM iterations.   20 out of 999 with lapsed time 9 seconds and remaining time 441 seconds and will finish at 2023-11-14 14:32:09
- EM iterations.   21 out of 999 with lapsed time 9 seconds and remaining time 419 seconds and will finish at 2023-11-14 14:31:47
- EM iterations.   22 out of 999 with lapsed time 9 seconds and remaining time 400 seconds and will finish at 2023-11-14 14:31:28
- EM iterations.   23 out of 999 with lapsed time 9 seconds and remaining time 382 seconds and will finish at 2023-11-14 14:31:10
- EM iterations.   24 out of 999 with lapsed time 10 seconds and remaining time 406 seconds and will finish at 2023-11-14 14:31:35
- EM iterations.   25 out of 999 with lapsed time 10 seconds and remaining time 390 seconds and will finish at 2023-11-14 14:31:19
- EM iterations.   26 out of 999 with lapsed time 10 seconds and remaining time 374 seconds and will finish at 2023-11-14 14:31:03
- EM iterations.   27 out of 999 with lapsed time 10 seconds and remaining time 360 seconds and will finish at 2023-11-14 14:30:49
- EM iterations.   28 out of 999 with lapsed time 11 seconds and remaining time 381 seconds and will finish at 2023-11-14 14:31:11
- EM iterations.   29 out of 999 with lapsed time 11 seconds and remaining time 368 seconds and will finish at 2023-11-14 14:30:58
- EM iterations.   30 out of 999 with lapsed time 11 seconds and remaining time 355 seconds and will finish at 2023-11-14 14:30:45
- EM iterations.   31 out of 999 with lapsed time 11 seconds and remaining time 343 seconds and will finish at 2023-11-14 14:30:33
- EM iterations.   32 out of 999 with lapsed time 12 seconds and remaining time 363 seconds and will finish at 2023-11-14 14:30:54
- EM iterations.   33 out of 999 with lapsed time 12 seconds and remaining time 351 seconds and will finish at 2023-11-14 14:30:42
- EM iterations.   34 out of 999 with lapsed time 12 seconds and remaining time 341 seconds and will finish at 2023-11-14 14:30:32
- EM iterations.   35 out of 999 with lapsed time 13 seconds and remaining time 358 seconds and will finish at 2023-11-14 14:30:50
- EM iterations.   36 out of 999 with lapsed time 13 seconds and remaining time 348 seconds and will finish at 2023-11-14 14:30:40
- EM iterations.   37 out of 999 with lapsed time 13 seconds and remaining time 338 seconds and will finish at 2023-11-14 14:30:30
- EM iterations.   38 out of 999 with lapsed time 13 seconds and remaining time 329 seconds and will finish at 2023-11-14 14:30:21
- EM iterations.   39 out of 999 with lapsed time 14 seconds and remaining time 345 seconds and will finish at 2023-11-14 14:30:38
- EM iterations.   40 out of 999 with lapsed time 14 seconds and remaining time 336 seconds and will finish at 2023-11-14 14:30:29
- EM iterations.   41 out of 999 with lapsed time 14 seconds and remaining time 327 seconds and will finish at 2023-11-14 14:30:20
- EM iterations.   42 out of 999 with lapsed time 15 seconds and remaining time 342 seconds and will finish at 2023-11-14 14:30:36
- EM iterations.   43 out of 999 with lapsed time 15 seconds and remaining time 333 seconds and will finish at 2023-11-14 14:30:27
- EM iterations.   44 out of 999 with lapsed time 15 seconds and remaining time 326 seconds and will finish at 2023-11-14 14:30:20
- EM iterations.   45 out of 999 with lapsed time 16 seconds and remaining time 339 seconds and will finish at 2023-11-14 14:30:33
- EM iterations.   46 out of 999 with lapsed time 16 seconds and remaining time 331 seconds and will finish at 2023-11-14 14:30:26
- EM iterations.   47 out of 999 with lapsed time 16 seconds and remaining time 324 seconds and will finish at 2023-11-14 14:30:19
- EM iterations.   48 out of 999 with lapsed time 16 seconds and remaining time 317 seconds and will finish at 2023-11-14 14:30:12
- EM iterations.   49 out of 999 with lapsed time 17 seconds and remaining time 330 seconds and will finish at 2023-11-14 14:30:26
- EM iterations.   50 out of 999 with lapsed time 17 seconds and remaining time 323 seconds and will finish at 2023-11-14 14:30:19[1] 6
-## 
- EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:24:56
- EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:24:57
- EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2023-11-14 14:30:29
- EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2023-11-14 14:29:06
- EM iterations.   5 out of 999 with lapsed time 1 seconds and remaining time 199 seconds and will finish at 2023-11-14 14:28:17
- EM iterations.   6 out of 999 with lapsed time 2 seconds and remaining time 331 seconds and will finish at 2023-11-14 14:30:29
- EM iterations.   7 out of 999 with lapsed time 2 seconds and remaining time 283 seconds and will finish at 2023-11-14 14:29:41
- EM iterations.   8 out of 999 with lapsed time 2 seconds and remaining time 248 seconds and will finish at 2023-11-14 14:29:07
- EM iterations.   9 out of 999 with lapsed time 3 seconds and remaining time 330 seconds and will finish at 2023-11-14 14:30:29
- EM iterations.   10 out of 999 with lapsed time 3 seconds and remaining time 297 seconds and will finish at 2023-11-14 14:29:56
- EM iterations.   11 out of 999 with lapsed time 3 seconds and remaining time 269 seconds and will finish at 2023-11-14 14:29:28
- EM iterations.   12 out of 999 with lapsed time 3 seconds and remaining time 247 seconds and will finish at 2023-11-14 14:29:07
- EM iterations.   13 out of 999 with lapsed time 4 seconds and remaining time 303 seconds and will finish at 2023-11-14 14:30:03
- EM iterations.   14 out of 999 with lapsed time 4 seconds and remaining time 281 seconds and will finish at 2023-11-14 14:29:41
- EM iterations.   15 out of 999 with lapsed time 4 seconds and remaining time 262 seconds and will finish at 2023-11-14 14:29:22
- EM iterations.   16 out of 999 with lapsed time 4 seconds and remaining time 246 seconds and will finish at 2023-11-14 14:29:07[1] 7
-## 
- EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:25:01</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:25:01
- EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2023-11-14 14:30:34</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2023-11-14 14:29:11</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   5 out of 999 with lapsed time 2 seconds and remaining time 398 seconds and will finish at 2023-11-14 14:31:41</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   6 out of 999 with lapsed time 2 seconds and remaining time 331 seconds and will finish at 2023-11-14 14:30:34
- EM iterations.   7 out of 999 with lapsed time 3 seconds and remaining time 425 seconds and will finish at 2023-11-14 14:32:08
- EM iterations.   8 out of 999 with lapsed time 3 seconds and remaining time 372 seconds and will finish at 2023-11-14 14:31:16
- EM iterations.   9 out of 999 with lapsed time 3 seconds and remaining time 330 seconds and will finish at 2023-11-14 14:30:34
- EM iterations.   10 out of 999 with lapsed time 4 seconds and remaining time 396 seconds and will finish at 2023-11-14 14:31:41
- EM iterations.   11 out of 999 with lapsed time 4 seconds and remaining time 359 seconds and will finish at 2023-11-14 14:31:04
- EM iterations.   12 out of 999 with lapsed time 5 seconds and remaining time 411 seconds and will finish at 2023-11-14 14:31:57
- EM iterations.   13 out of 999 with lapsed time 5 seconds and remaining time 379 seconds and will finish at 2023-11-14 14:31:25</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   14 out of 999 with lapsed time 6 seconds and remaining time 422 seconds and will finish at 2023-11-14 14:32:09</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   15 out of 999 with lapsed time 6 seconds and remaining time 394 seconds and will finish at 2023-11-14 14:31:41</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   16 out of 999 with lapsed time 7 seconds and remaining time 430 seconds and will finish at 2023-11-14 14:32:18</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   17 out of 999 with lapsed time 8 seconds and remaining time 462 seconds and will finish at 2023-11-14 14:32:51</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   18 out of 999 with lapsed time 8 seconds and remaining time 436 seconds and will finish at 2023-11-14 14:32:25
- EM iterations.   19 out of 999 with lapsed time 9 seconds and remaining time 464 seconds and will finish at 2023-11-14 14:32:54
- EM iterations.   20 out of 999 with lapsed time 9 seconds and remaining time 441 seconds and will finish at 2023-11-14 14:32:31
- EM iterations.   21 out of 999 with lapsed time 10 seconds and remaining time 466 seconds and will finish at 2023-11-14 14:32:57
- EM iterations.   22 out of 999 with lapsed time 10 seconds and remaining time 444 seconds and will finish at 2023-11-14 14:32:35
- EM iterations.   23 out of 999 with lapsed time 10 seconds and remaining time 424 seconds and will finish at 2023-11-14 14:32:15
- EM iterations.   24 out of 999 with lapsed time 10 seconds and remaining time 406 seconds and will finish at 2023-11-14 14:31:57
- EM iterations.   25 out of 999 with lapsed time 11 seconds and remaining time 429 seconds and will finish at 2023-11-14 14:32:21
- EM iterations.   26 out of 999 with lapsed time 11 seconds and remaining time 412 seconds and will finish at 2023-11-14 14:32:04[1] 8
-## 
- EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:25:12
- EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:25:13</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2023-11-14 14:30:45
- EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2023-11-14 14:29:23
- EM iterations.   5 out of 999 with lapsed time 2 seconds and remaining time 398 seconds and will finish at 2023-11-14 14:31:52</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   6 out of 999 with lapsed time 2 seconds and remaining time 331 seconds and will finish at 2023-11-14 14:30:46
- EM iterations.   7 out of 999 with lapsed time 3 seconds and remaining time 425 seconds and will finish at 2023-11-14 14:32:20</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   8 out of 999 with lapsed time 3 seconds and remaining time 372 seconds and will finish at 2023-11-14 14:31:28</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   9 out of 999 with lapsed time 4 seconds and remaining time 440 seconds and will finish at 2023-11-14 14:32:36
- EM iterations.   10 out of 999 with lapsed time 4 seconds and remaining time 396 seconds and will finish at 2023-11-14 14:31:52
- EM iterations.   11 out of 999 with lapsed time 5 seconds and remaining time 449 seconds and will finish at 2023-11-14 14:32:46
- EM iterations.   12 out of 999 with lapsed time 5 seconds and remaining time 411 seconds and will finish at 2023-11-14 14:32:08
- EM iterations.   13 out of 999 with lapsed time 6 seconds and remaining time 455 seconds and will finish at 2023-11-14 14:32:53
- EM iterations.   14 out of 999 with lapsed time 6 seconds and remaining time 422 seconds and will finish at 2023-11-14 14:32:20
- EM iterations.   15 out of 999 with lapsed time 6 seconds and remaining time 394 seconds and will finish at 2023-11-14 14:31:53
- EM iterations.   16 out of 999 with lapsed time 7 seconds and remaining time 430 seconds and will finish at 2023-11-14 14:32:29
- EM iterations.   17 out of 999 with lapsed time 7 seconds and remaining time 404 seconds and will finish at 2023-11-14 14:32:04
- EM iterations.   18 out of 999 with lapsed time 8 seconds and remaining time 436 seconds and will finish at 2023-11-14 14:32:36
- EM iterations.   19 out of 999 with lapsed time 8 seconds and remaining time 413 seconds and will finish at 2023-11-14 14:32:13[1] 9
-## 
- EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:25:20</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:25:21
- EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2023-11-14 14:30:53
- EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2023-11-14 14:29:30
- EM iterations.   5 out of 999 with lapsed time 1 seconds and remaining time 199 seconds and will finish at 2023-11-14 14:28:41
- EM iterations.   6 out of 999 with lapsed time 2 seconds and remaining time 331 seconds and will finish at 2023-11-14 14:30:53
- EM iterations.   7 out of 999 with lapsed time 2 seconds and remaining time 283 seconds and will finish at 2023-11-14 14:30:05
- EM iterations.   8 out of 999 with lapsed time 2 seconds and remaining time 248 seconds and will finish at 2023-11-14 14:29:31
- EM iterations.   9 out of 999 with lapsed time 3 seconds and remaining time 330 seconds and will finish at 2023-11-14 14:30:53
- EM iterations.   10 out of 999 with lapsed time 3 seconds and remaining time 297 seconds and will finish at 2023-11-14 14:30:21
- EM iterations.   11 out of 999 with lapsed time 3 seconds and remaining time 269 seconds and will finish at 2023-11-14 14:29:53
- EM iterations.   12 out of 999 with lapsed time 4 seconds and remaining time 329 seconds and will finish at 2023-11-14 14:30:53
- EM iterations.   13 out of 999 with lapsed time 4 seconds and remaining time 303 seconds and will finish at 2023-11-14 14:30:28
- EM iterations.   14 out of 999 with lapsed time 5 seconds and remaining time 352 seconds and will finish at 2023-11-14 14:31:17
- EM iterations.   15 out of 999 with lapsed time 5 seconds and remaining time 328 seconds and will finish at 2023-11-14 14:30:54
- EM iterations.   16 out of 999 with lapsed time 5 seconds and remaining time 307 seconds and will finish at 2023-11-14 14:30:33
- EM iterations.   17 out of 999 with lapsed time 6 seconds and remaining time 347 seconds and will finish at 2023-11-14 14:31:13
- EM iterations.   18 out of 999 with lapsed time 6 seconds and remaining time 327 seconds and will finish at 2023-11-14 14:30:54
- EM iterations.   19 out of 999 with lapsed time 6 seconds and remaining time 309 seconds and will finish at 2023-11-14 14:30:36
- EM iterations.   20 out of 999 with lapsed time 7 seconds and remaining time 343 seconds and will finish at 2023-11-14 14:31:10
- EM iterations.   21 out of 999 with lapsed time 7 seconds and remaining time 326 seconds and will finish at 2023-11-14 14:30:53
- EM iterations.   22 out of 999 with lapsed time 7 seconds and remaining time 311 seconds and will finish at 2023-11-14 14:30:38
- EM iterations.   23 out of 999 with lapsed time 7 seconds and remaining time 297 seconds and will finish at 2023-11-14 14:30:25
- EM iterations.   24 out of 999 with lapsed time 7 seconds and remaining time 284 seconds and will finish at 2023-11-14 14:30:12[1] 10
-## 
- EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:25:28
- EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2023-11-14 14:25:28</code></pre>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<pre><code>## 
- EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2023-11-14 14:31:01
- EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2023-11-14 14:29:38
- EM iterations.   5 out of 999 with lapsed time 1 seconds and remaining time 199 seconds and will finish at 2023-11-14 14:28:48
- EM iterations.   6 out of 999 with lapsed time 2 seconds and remaining time 331 seconds and will finish at 2023-11-14 14:31:01
- EM iterations.   7 out of 999 with lapsed time 2 seconds and remaining time 283 seconds and will finish at 2023-11-14 14:30:13
- EM iterations.   8 out of 999 with lapsed time 2 seconds and remaining time 248 seconds and will finish at 2023-11-14 14:29:38
- EM iterations.   9 out of 999 with lapsed time 3 seconds and remaining time 330 seconds and will finish at 2023-11-14 14:31:01
- EM iterations.   10 out of 999 with lapsed time 3 seconds and remaining time 297 seconds and will finish at 2023-11-14 14:30:28
- EM iterations.   11 out of 999 with lapsed time 3 seconds and remaining time 269 seconds and will finish at 2023-11-14 14:30:00
- EM iterations.   12 out of 999 with lapsed time 4 seconds and remaining time 329 seconds and will finish at 2023-11-14 14:31:01
- EM iterations.   13 out of 999 with lapsed time 4 seconds and remaining time 303 seconds and will finish at 2023-11-14 14:30:35
- EM iterations.   14 out of 999 with lapsed time 4 seconds and remaining time 281 seconds and will finish at 2023-11-14 14:30:13
- EM iterations.   15 out of 999 with lapsed time 4 seconds and remaining time 262 seconds and will finish at 2023-11-14 14:29:54
- EM iterations.   16 out of 999 with lapsed time 4 seconds and remaining time 246 seconds and will finish at 2023-11-14 14:29:39
- EM iterations.   17 out of 999 with lapsed time 5 seconds and remaining time 289 seconds and will finish at 2023-11-14 14:30:22
- EM iterations.   18 out of 999 with lapsed time 5 seconds and remaining time 272 seconds and will finish at 2023-11-14 14:30:05
- EM iterations.   19 out of 999 with lapsed time 5 seconds and remaining time 258 seconds and will finish at 2023-11-14 14:29:51
- EM iterations.   20 out of 999 with lapsed time 5 seconds and remaining time 245 seconds and will finish at 2023-11-14 14:29:38
- EM iterations.   21 out of 999 with lapsed time 5 seconds and remaining time 233 seconds and will finish at 2023-11-14 14:29:26
- EM iterations.   22 out of 999 with lapsed time 5 seconds and remaining time 222 seconds and will finish at 2023-11-14 14:29:15
- EM iterations.   23 out of 999 with lapsed time 6 seconds and remaining time 255 seconds and will finish at 2023-11-14 14:29:49
- EM iterations.   24 out of 999 with lapsed time 6 seconds and remaining time 244 seconds and will finish at 2023-11-14 14:29:38
- EM iterations.   25 out of 999 with lapsed time 6 seconds and remaining time 234 seconds and will finish at 2023-11-14 14:29:28
- EM iterations.   26 out of 999 with lapsed time 6 seconds and remaining time 225 seconds and will finish at 2023-11-14 14:29:19
- EM iterations.   27 out of 999 with lapsed time 6 seconds and remaining time 216 seconds and will finish at 2023-11-14 14:29:10
- EM iterations.   28 out of 999 with lapsed time 7 seconds and remaining time 243 seconds and will finish at 2023-11-14 14:29:38
- EM iterations.   29 out of 999 with lapsed time 7 seconds and remaining time 234 seconds and will finish at 2023-11-14 14:29:29
- EM iterations.   30 out of 999 with lapsed time 7 seconds and remaining time 226 seconds and will finish at 2023-11-14 14:29:21
- EM iterations.   31 out of 999 with lapsed time 7 seconds and remaining time 219 seconds and will finish at 2023-11-14 14:29:14
- EM iterations.   32 out of 999 with lapsed time 7 seconds and remaining time 212 seconds and will finish at 2023-11-14 14:29:07
- EM iterations.   33 out of 999 with lapsed time 8 seconds and remaining time 234 seconds and will finish at 2023-11-14 14:29:30</code></pre>
+ EM iterations.   14 out of 999 with lapsed time 7 seconds and remaining time 492 seconds and will finish at 2023-11-14 14:46:21
+ EM iterations.   15 out of 999 with lapsed time 7 seconds and remaining time 459 seconds and will finish at 2023-11-14 14:45:49
+ EM iterations.   16 out of 999 with lapsed time 7 seconds and remaining time 430 seconds and will finish at 2023-11-14 14:45:20
+ EM iterations.   17 out of 999 with lapsed time 8 seconds and remaining time 462 seconds and will finish at 2023-11-14 14:45:52
+ EM iterations.   18 out of 999 with lapsed time 8 seconds and remaining time 436 seconds and will finish at 2023-11-14 14:45:27</code></pre>
 <pre><code>## Warning: `add_rownames()` was deprecated in dplyr 1.0.0.
 ## ℹ Please use `tibble::rownames_to_column()` instead.
 ## ℹ The deprecated feature was likely used in the litr package.
 ##   Please report the issue to the authors.
 ## This warning is displayed once every 8 hours.
 ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/plot-objectives-1.png" width="672" /></p>
 </div>
 <div id="testing-monotonicity-of-objective-values" class="section level2 hasAnchor" number="12.2">
 <h2><span class="header-section-number">12.2</span> Testing monotonicity of objective values<a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -637,40 +429,40 @@ now.</p>
 decreasing across EM algorithm iterations.</p>
 <p>(Note: because the admm is imperfect and stops early sometimes, the objective is
 sometimes non-monotone. See the example from a few sections up!)</p>
-<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="testing-the-flowtrend-method.html#cb178-1" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;Objective value decreases over EM iterations.&quot;</span>,{</span>
-<span id="cb178-2"><a href="testing-the-flowtrend-method.html#cb178-2" tabindex="-1"></a>  </span>
-<span id="cb178-3"><a href="testing-the-flowtrend-method.html#cb178-3" tabindex="-1"></a>  <span class="cf">for</span>(iseed <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>){</span>
-<span id="cb178-4"><a href="testing-the-flowtrend-method.html#cb178-4" tabindex="-1"></a>    <span class="fu">print</span>(iseed)</span>
-<span id="cb178-5"><a href="testing-the-flowtrend-method.html#cb178-5" tabindex="-1"></a>    </span>
-<span id="cb178-6"><a href="testing-the-flowtrend-method.html#cb178-6" tabindex="-1"></a>    <span class="do">## Generate synthetic data</span></span>
-<span id="cb178-7"><a href="testing-the-flowtrend-method.html#cb178-7" tabindex="-1"></a>    <span class="fu">set.seed</span>(iseed<span class="sc">*</span><span class="dv">100</span>)</span>
-<span id="cb178-8"><a href="testing-the-flowtrend-method.html#cb178-8" tabindex="-1"></a>    dt       <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>))</span>
-<span id="cb178-9"><a href="testing-the-flowtrend-method.html#cb178-9" tabindex="-1"></a>    ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='package-setup.html#dt2ylist'>dt2ylist</a>()</span>
-<span id="cb178-10"><a href="testing-the-flowtrend-method.html#cb178-10" tabindex="-1"></a>    x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
-<span id="cb178-11"><a href="testing-the-flowtrend-method.html#cb178-11" tabindex="-1"></a>    </span>
-<span id="cb178-12"><a href="testing-the-flowtrend-method.html#cb178-12" tabindex="-1"></a>    <span class="do">## Fit model</span></span>
-<span id="cb178-13"><a href="testing-the-flowtrend-method.html#cb178-13" tabindex="-1"></a>    obj <span class="ot">&lt;-</span> <a href='flowtrend.html#flowtrend'>flowtrend</a>(<span class="at">ylist =</span> ylist,</span>
-<span id="cb178-14"><a href="testing-the-flowtrend-method.html#cb178-14" tabindex="-1"></a>                     <span class="at">x =</span> x,</span>
-<span id="cb178-15"><a href="testing-the-flowtrend-method.html#cb178-15" tabindex="-1"></a>                     <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
-<span id="cb178-16"><a href="testing-the-flowtrend-method.html#cb178-16" tabindex="-1"></a>                     <span class="at">numclust =</span> <span class="dv">3</span>,</span>
-<span id="cb178-17"><a href="testing-the-flowtrend-method.html#cb178-17" tabindex="-1"></a>                     <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
-<span id="cb178-18"><a href="testing-the-flowtrend-method.html#cb178-18" tabindex="-1"></a>                     <span class="at">l =</span> <span class="dv">1</span>,</span>
-<span id="cb178-19"><a href="testing-the-flowtrend-method.html#cb178-19" tabindex="-1"></a>                     <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
-<span id="cb178-20"><a href="testing-the-flowtrend-method.html#cb178-20" tabindex="-1"></a>                     <span class="at">lambda_prob =</span> <span class="fl">0.05</span>,</span>
-<span id="cb178-21"><a href="testing-the-flowtrend-method.html#cb178-21" tabindex="-1"></a>                     <span class="at">nrestart =</span> <span class="dv">1</span>)</span>
-<span id="cb178-22"><a href="testing-the-flowtrend-method.html#cb178-22" tabindex="-1"></a></span>
-<span id="cb178-23"><a href="testing-the-flowtrend-method.html#cb178-23" tabindex="-1"></a>    <span class="do">## Test objective monotonicity</span></span>
-<span id="cb178-24"><a href="testing-the-flowtrend-method.html#cb178-24" tabindex="-1"></a>    niter_end <span class="ot">=</span> <span class="fu">length</span>(obj<span class="sc">$</span>objective)</span>
-<span id="cb178-25"><a href="testing-the-flowtrend-method.html#cb178-25" tabindex="-1"></a>    testthat<span class="sc">::</span><span class="fu">expect_true</span>(<span class="fu">all</span>(<span class="fu">diff</span>(obj<span class="sc">$</span>objective) <span class="sc">&lt;</span> <span class="fl">1E-4</span>))</span>
-<span id="cb178-26"><a href="testing-the-flowtrend-method.html#cb178-26" tabindex="-1"></a></span>
-<span id="cb178-27"><a href="testing-the-flowtrend-method.html#cb178-27" tabindex="-1"></a>    <span class="do">## Make a plot</span></span>
-<span id="cb178-28"><a href="testing-the-flowtrend-method.html#cb178-28" tabindex="-1"></a>    g <span class="ot">=</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">iter=</span><span class="dv">1</span><span class="sc">:</span>niter_end, <span class="at">objective=</span>obj<span class="sc">$</span>objectives)) <span class="sc">+</span></span>
-<span id="cb178-29"><a href="testing-the-flowtrend-method.html#cb178-29" tabindex="-1"></a>      <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>iter, <span class="at">y=</span>objective)) <span class="sc">+</span></span>
-<span id="cb178-30"><a href="testing-the-flowtrend-method.html#cb178-30" tabindex="-1"></a>      <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>iter, <span class="at">y=</span>objective)) <span class="sc">+</span></span>
-<span id="cb178-31"><a href="testing-the-flowtrend-method.html#cb178-31" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">&quot;Seed=&quot;</span>, iseed<span class="sc">*</span><span class="dv">100</span>))</span>
-<span id="cb178-32"><a href="testing-the-flowtrend-method.html#cb178-32" tabindex="-1"></a>    <span class="fu">print</span>(g)</span>
-<span id="cb178-33"><a href="testing-the-flowtrend-method.html#cb178-33" tabindex="-1"></a>  }</span>
-<span id="cb178-34"><a href="testing-the-flowtrend-method.html#cb178-34" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="testing-the-flowtrend-method.html#cb173-1" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;Objective value decreases over EM iterations.&quot;</span>,{</span>
+<span id="cb173-2"><a href="testing-the-flowtrend-method.html#cb173-2" tabindex="-1"></a>  </span>
+<span id="cb173-3"><a href="testing-the-flowtrend-method.html#cb173-3" tabindex="-1"></a>  <span class="cf">for</span>(iseed <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>){</span>
+<span id="cb173-4"><a href="testing-the-flowtrend-method.html#cb173-4" tabindex="-1"></a>    <span class="fu">print</span>(iseed)</span>
+<span id="cb173-5"><a href="testing-the-flowtrend-method.html#cb173-5" tabindex="-1"></a>    </span>
+<span id="cb173-6"><a href="testing-the-flowtrend-method.html#cb173-6" tabindex="-1"></a>    <span class="do">## Generate synthetic data</span></span>
+<span id="cb173-7"><a href="testing-the-flowtrend-method.html#cb173-7" tabindex="-1"></a>    <span class="fu">set.seed</span>(iseed<span class="sc">*</span><span class="dv">100</span>)</span>
+<span id="cb173-8"><a href="testing-the-flowtrend-method.html#cb173-8" tabindex="-1"></a>    dt       <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">10</span>, <span class="dv">100</span>))</span>
+<span id="cb173-9"><a href="testing-the-flowtrend-method.html#cb173-9" tabindex="-1"></a>    ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='package-setup.html#dt2ylist'>dt2ylist</a>()</span>
+<span id="cb173-10"><a href="testing-the-flowtrend-method.html#cb173-10" tabindex="-1"></a>    x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
+<span id="cb173-11"><a href="testing-the-flowtrend-method.html#cb173-11" tabindex="-1"></a>    </span>
+<span id="cb173-12"><a href="testing-the-flowtrend-method.html#cb173-12" tabindex="-1"></a>    <span class="do">## Fit model</span></span>
+<span id="cb173-13"><a href="testing-the-flowtrend-method.html#cb173-13" tabindex="-1"></a>    obj <span class="ot">&lt;-</span> <a href='flowtrend.html#flowtrend'>flowtrend</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb173-14"><a href="testing-the-flowtrend-method.html#cb173-14" tabindex="-1"></a>                     <span class="at">x =</span> x,</span>
+<span id="cb173-15"><a href="testing-the-flowtrend-method.html#cb173-15" tabindex="-1"></a>                     <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
+<span id="cb173-16"><a href="testing-the-flowtrend-method.html#cb173-16" tabindex="-1"></a>                     <span class="at">numclust =</span> <span class="dv">3</span>,</span>
+<span id="cb173-17"><a href="testing-the-flowtrend-method.html#cb173-17" tabindex="-1"></a>                     <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
+<span id="cb173-18"><a href="testing-the-flowtrend-method.html#cb173-18" tabindex="-1"></a>                     <span class="at">l =</span> <span class="dv">1</span>,</span>
+<span id="cb173-19"><a href="testing-the-flowtrend-method.html#cb173-19" tabindex="-1"></a>                     <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
+<span id="cb173-20"><a href="testing-the-flowtrend-method.html#cb173-20" tabindex="-1"></a>                     <span class="at">lambda_prob =</span> <span class="fl">0.05</span>,</span>
+<span id="cb173-21"><a href="testing-the-flowtrend-method.html#cb173-21" tabindex="-1"></a>                     <span class="at">nrestart =</span> <span class="dv">1</span>)</span>
+<span id="cb173-22"><a href="testing-the-flowtrend-method.html#cb173-22" tabindex="-1"></a></span>
+<span id="cb173-23"><a href="testing-the-flowtrend-method.html#cb173-23" tabindex="-1"></a>    <span class="do">## Test objective monotonicity</span></span>
+<span id="cb173-24"><a href="testing-the-flowtrend-method.html#cb173-24" tabindex="-1"></a>    niter_end <span class="ot">=</span> <span class="fu">length</span>(obj<span class="sc">$</span>objective)</span>
+<span id="cb173-25"><a href="testing-the-flowtrend-method.html#cb173-25" tabindex="-1"></a>    testthat<span class="sc">::</span><span class="fu">expect_true</span>(<span class="fu">all</span>(<span class="fu">diff</span>(obj<span class="sc">$</span>objective) <span class="sc">&lt;</span> <span class="fl">1E-4</span>))</span>
+<span id="cb173-26"><a href="testing-the-flowtrend-method.html#cb173-26" tabindex="-1"></a></span>
+<span id="cb173-27"><a href="testing-the-flowtrend-method.html#cb173-27" tabindex="-1"></a>    <span class="do">## Make a plot</span></span>
+<span id="cb173-28"><a href="testing-the-flowtrend-method.html#cb173-28" tabindex="-1"></a>    g <span class="ot">=</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">iter=</span><span class="dv">1</span><span class="sc">:</span>niter_end, <span class="at">objective=</span>obj<span class="sc">$</span>objectives)) <span class="sc">+</span></span>
+<span id="cb173-29"><a href="testing-the-flowtrend-method.html#cb173-29" tabindex="-1"></a>      <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>iter, <span class="at">y=</span>objective)) <span class="sc">+</span></span>
+<span id="cb173-30"><a href="testing-the-flowtrend-method.html#cb173-30" tabindex="-1"></a>      <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>iter, <span class="at">y=</span>objective)) <span class="sc">+</span></span>
+<span id="cb173-31"><a href="testing-the-flowtrend-method.html#cb173-31" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">&quot;Seed=&quot;</span>, iseed<span class="sc">*</span><span class="dv">100</span>))</span>
+<span id="cb173-32"><a href="testing-the-flowtrend-method.html#cb173-32" tabindex="-1"></a>    <span class="fu">print</span>(g)</span>
+<span id="cb173-33"><a href="testing-the-flowtrend-method.html#cb173-33" tabindex="-1"></a>  }</span>
+<span id="cb173-34"><a href="testing-the-flowtrend-method.html#cb173-34" tabindex="-1"></a>})</span></code></pre></div>
 <pre><code>## [1] 1</code></pre>
 <p><img src="_main_files/figure-html/test-objective-1.png" width="480" /></p>
 <pre><code>## [1] 2</code></pre>
@@ -686,57 +478,57 @@ sometimes non-monotone. See the example from a few sections up!)</p>
 <div id="id_2d-example" class="section level2 hasAnchor" number="12.3">
 <h2><span class="header-section-number">12.3</span> 2d example<a href="testing-the-flowtrend-method.html#id_2d-example" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Next, we try out <code>flowtrend</code> on a synthetic 2d data example.</p>
-<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb185-1"><a href="testing-the-flowtrend-method.html#cb185-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>) </span>
-<span id="cb185-2"><a href="testing-the-flowtrend-method.html#cb185-2" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='d-data.html#gendat_2d'>gendat_2d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>))</span>
-<span id="cb185-3"><a href="testing-the-flowtrend-method.html#cb185-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10</span>)</span>
-<span id="cb185-4"><a href="testing-the-flowtrend-method.html#cb185-4" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <a href='flowtrend.html#flowtrend'>flowtrend</a>(<span class="at">ylist =</span> dt<span class="sc">$</span>ylist,</span>
-<span id="cb185-5"><a href="testing-the-flowtrend-method.html#cb185-5" tabindex="-1"></a>                 <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
-<span id="cb185-6"><a href="testing-the-flowtrend-method.html#cb185-6" tabindex="-1"></a>                 <span class="at">numclust =</span> <span class="dv">3</span>,</span>
-<span id="cb185-7"><a href="testing-the-flowtrend-method.html#cb185-7" tabindex="-1"></a>                 <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
-<span id="cb185-8"><a href="testing-the-flowtrend-method.html#cb185-8" tabindex="-1"></a>                 <span class="at">l =</span> <span class="dv">1</span>,</span>
-<span id="cb185-9"><a href="testing-the-flowtrend-method.html#cb185-9" tabindex="-1"></a>                 <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
-<span id="cb185-10"><a href="testing-the-flowtrend-method.html#cb185-10" tabindex="-1"></a>                 <span class="at">lambda_prob =</span> .<span class="dv">005</span>,</span>
-<span id="cb185-11"><a href="testing-the-flowtrend-method.html#cb185-11" tabindex="-1"></a>                 <span class="at">nrestart =</span> <span class="dv">3</span>)</span>
-<span id="cb185-12"><a href="testing-the-flowtrend-method.html#cb185-12" tabindex="-1"></a></span>
-<span id="cb185-13"><a href="testing-the-flowtrend-method.html#cb185-13" tabindex="-1"></a><span class="do">## Put together means into a long data frame</span></span>
-<span id="cb185-14"><a href="testing-the-flowtrend-method.html#cb185-14" tabindex="-1"></a>numclust <span class="ot">=</span> <span class="dv">3</span></span>
-<span id="cb185-15"><a href="testing-the-flowtrend-method.html#cb185-15" tabindex="-1"></a>mnlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(iclust){</span>
-<span id="cb185-16"><a href="testing-the-flowtrend-method.html#cb185-16" tabindex="-1"></a>  one_mnmat <span class="ot">=</span> obj<span class="sc">$</span>mn[,,iclust]</span>
-<span id="cb185-17"><a href="testing-the-flowtrend-method.html#cb185-17" tabindex="-1"></a>  <span class="fu">colnames</span>(one_mnmat) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;dim&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
-<span id="cb185-18"><a href="testing-the-flowtrend-method.html#cb185-18" tabindex="-1"></a>  one_mnmat <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">cluster =</span> iclust)</span>
-<span id="cb185-19"><a href="testing-the-flowtrend-method.html#cb185-19" tabindex="-1"></a>})</span>
-<span id="cb185-20"><a href="testing-the-flowtrend-method.html#cb185-20" tabindex="-1"></a>mnmat <span class="ot">=</span> <span class="fu">do.call</span>(rbind, mnlist)</span>
-<span id="cb185-21"><a href="testing-the-flowtrend-method.html#cb185-21" tabindex="-1"></a></span>
-<span id="cb185-22"><a href="testing-the-flowtrend-method.html#cb185-22" tabindex="-1"></a></span>
-<span id="cb185-23"><a href="testing-the-flowtrend-method.html#cb185-23" tabindex="-1"></a><span class="do">## Show estimated model at six time points. </span></span>
-<span id="cb185-24"><a href="testing-the-flowtrend-method.html#cb185-24" tabindex="-1"></a>timelist <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">30</span>,<span class="dv">40</span>,<span class="dv">50</span>,<span class="dv">60</span>,<span class="dv">70</span>)</span>
-<span id="cb185-25"><a href="testing-the-flowtrend-method.html#cb185-25" tabindex="-1"></a>plist <span class="ot">=</span> <span class="fu">lapply</span>(timelist, <span class="cf">function</span>(tt){</span>
-<span id="cb185-26"><a href="testing-the-flowtrend-method.html#cb185-26" tabindex="-1"></a>  y <span class="ot">=</span> dt<span class="sc">$</span>ylist[[tt]] <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
-<span id="cb185-27"><a href="testing-the-flowtrend-method.html#cb185-27" tabindex="-1"></a>  <span class="fu">colnames</span>(y) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;dim&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) </span>
-<span id="cb185-28"><a href="testing-the-flowtrend-method.html#cb185-28" tabindex="-1"></a>  p <span class="ot">=</span> y <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>dim1, <span class="at">y=</span>dim2), <span class="at">alpha =</span>.<span class="dv">2</span>)</span>
-<span id="cb185-29"><a href="testing-the-flowtrend-method.html#cb185-29" tabindex="-1"></a>  numclust <span class="ot">=</span> <span class="dv">3</span></span>
-<span id="cb185-30"><a href="testing-the-flowtrend-method.html#cb185-30" tabindex="-1"></a>  mn_colours <span class="ot">=</span> <span class="fu">rep</span>(<span class="st">&quot;red&quot;</span>, <span class="dv">3</span>)</span>
-<span id="cb185-31"><a href="testing-the-flowtrend-method.html#cb185-31" tabindex="-1"></a>  <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){</span>
-<span id="cb185-32"><a href="testing-the-flowtrend-method.html#cb185-32" tabindex="-1"></a>    <span class="do">## Add ellipse</span></span>
-<span id="cb185-33"><a href="testing-the-flowtrend-method.html#cb185-33" tabindex="-1"></a>    el <span class="ot">=</span> ellipse<span class="sc">::</span><span class="fu">ellipse</span>(<span class="at">x =</span> obj<span class="sc">$</span>sigma[iclust,,], <span class="at">centre =</span> obj<span class="sc">$</span>mn[tt,,iclust]) <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
-<span id="cb185-34"><a href="testing-the-flowtrend-method.html#cb185-34" tabindex="-1"></a>    p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">data =</span> el, <span class="at">colour =</span> mn_colours[iclust], <span class="at">lty =</span> <span class="dv">2</span>,</span>
-<span id="cb185-35"><a href="testing-the-flowtrend-method.html#cb185-35" tabindex="-1"></a>                      <span class="at">lwd =</span> <span class="fu">pmin</span>(obj<span class="sc">$</span>prob[tt,iclust] <span class="sc">*</span> <span class="dv">8</span>, <span class="fl">0.8</span>))</span>
-<span id="cb185-36"><a href="testing-the-flowtrend-method.html#cb185-36" tabindex="-1"></a></span>
-<span id="cb185-37"><a href="testing-the-flowtrend-method.html#cb185-37" tabindex="-1"></a>    <span class="do">## Add mean</span></span>
-<span id="cb185-38"><a href="testing-the-flowtrend-method.html#cb185-38" tabindex="-1"></a>    p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> dim1, <span class="at">y =</span> dim2),</span>
-<span id="cb185-39"><a href="testing-the-flowtrend-method.html#cb185-39" tabindex="-1"></a>                       <span class="at">data =</span> mnmat <span class="sc">%&gt;%</span> <span class="fu">subset</span>(cluster <span class="sc">==</span> iclust) <span class="sc">%&gt;%</span> .[tt,],</span>
-<span id="cb185-40"><a href="testing-the-flowtrend-method.html#cb185-40" tabindex="-1"></a>                       <span class="at">colour =</span> mn_colours[iclust],</span>
-<span id="cb185-41"><a href="testing-the-flowtrend-method.html#cb185-41" tabindex="-1"></a>                       <span class="do">## size = rel(3))</span></span>
-<span id="cb185-42"><a href="testing-the-flowtrend-method.html#cb185-42" tabindex="-1"></a>                       <span class="at">size =</span> obj<span class="sc">$</span>prob[tt,iclust] <span class="sc">*</span> <span class="dv">10</span>)</span>
-<span id="cb185-43"><a href="testing-the-flowtrend-method.html#cb185-43" tabindex="-1"></a>  }</span>
-<span id="cb185-44"><a href="testing-the-flowtrend-method.html#cb185-44" tabindex="-1"></a>  p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">&quot;Time=&quot;</span>, tt)) <span class="sc">+</span></span>
-<span id="cb185-45"><a href="testing-the-flowtrend-method.html#cb185-45" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">6.5</span>, <span class="fl">2.5</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">6.5</span>, <span class="fl">2.5</span>)) <span class="sc">+</span></span>
-<span id="cb185-46"><a href="testing-the-flowtrend-method.html#cb185-46" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span>
-<span id="cb185-47"><a href="testing-the-flowtrend-method.html#cb185-47" tabindex="-1"></a>  <span class="fu">return</span>(p)</span>
-<span id="cb185-48"><a href="testing-the-flowtrend-method.html#cb185-48" tabindex="-1"></a>})</span>
-<span id="cb185-49"><a href="testing-the-flowtrend-method.html#cb185-49" tabindex="-1"></a></span>
-<span id="cb185-50"><a href="testing-the-flowtrend-method.html#cb185-50" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span>
-<span id="cb185-51"><a href="testing-the-flowtrend-method.html#cb185-51" tabindex="-1"></a><span class="fu">do.call</span>(ggarrange, <span class="fu">c</span>(plist, <span class="at">ncol=</span><span class="dv">3</span>, <span class="at">nrow=</span><span class="dv">2</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="testing-the-flowtrend-method.html#cb180-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>) </span>
+<span id="cb180-2"><a href="testing-the-flowtrend-method.html#cb180-2" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='d-data.html#gendat_2d'>gendat_2d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>))</span>
+<span id="cb180-3"><a href="testing-the-flowtrend-method.html#cb180-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10</span>)</span>
+<span id="cb180-4"><a href="testing-the-flowtrend-method.html#cb180-4" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <a href='flowtrend.html#flowtrend'>flowtrend</a>(<span class="at">ylist =</span> dt<span class="sc">$</span>ylist,</span>
+<span id="cb180-5"><a href="testing-the-flowtrend-method.html#cb180-5" tabindex="-1"></a>                 <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
+<span id="cb180-6"><a href="testing-the-flowtrend-method.html#cb180-6" tabindex="-1"></a>                 <span class="at">numclust =</span> <span class="dv">3</span>,</span>
+<span id="cb180-7"><a href="testing-the-flowtrend-method.html#cb180-7" tabindex="-1"></a>                 <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
+<span id="cb180-8"><a href="testing-the-flowtrend-method.html#cb180-8" tabindex="-1"></a>                 <span class="at">l =</span> <span class="dv">1</span>,</span>
+<span id="cb180-9"><a href="testing-the-flowtrend-method.html#cb180-9" tabindex="-1"></a>                 <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
+<span id="cb180-10"><a href="testing-the-flowtrend-method.html#cb180-10" tabindex="-1"></a>                 <span class="at">lambda_prob =</span> .<span class="dv">005</span>,</span>
+<span id="cb180-11"><a href="testing-the-flowtrend-method.html#cb180-11" tabindex="-1"></a>                 <span class="at">nrestart =</span> <span class="dv">3</span>)</span>
+<span id="cb180-12"><a href="testing-the-flowtrend-method.html#cb180-12" tabindex="-1"></a></span>
+<span id="cb180-13"><a href="testing-the-flowtrend-method.html#cb180-13" tabindex="-1"></a><span class="do">## Put together means into a long data frame</span></span>
+<span id="cb180-14"><a href="testing-the-flowtrend-method.html#cb180-14" tabindex="-1"></a>numclust <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb180-15"><a href="testing-the-flowtrend-method.html#cb180-15" tabindex="-1"></a>mnlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(iclust){</span>
+<span id="cb180-16"><a href="testing-the-flowtrend-method.html#cb180-16" tabindex="-1"></a>  one_mnmat <span class="ot">=</span> obj<span class="sc">$</span>mn[,,iclust]</span>
+<span id="cb180-17"><a href="testing-the-flowtrend-method.html#cb180-17" tabindex="-1"></a>  <span class="fu">colnames</span>(one_mnmat) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;dim&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
+<span id="cb180-18"><a href="testing-the-flowtrend-method.html#cb180-18" tabindex="-1"></a>  one_mnmat <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">cluster =</span> iclust)</span>
+<span id="cb180-19"><a href="testing-the-flowtrend-method.html#cb180-19" tabindex="-1"></a>})</span>
+<span id="cb180-20"><a href="testing-the-flowtrend-method.html#cb180-20" tabindex="-1"></a>mnmat <span class="ot">=</span> <span class="fu">do.call</span>(rbind, mnlist)</span>
+<span id="cb180-21"><a href="testing-the-flowtrend-method.html#cb180-21" tabindex="-1"></a></span>
+<span id="cb180-22"><a href="testing-the-flowtrend-method.html#cb180-22" tabindex="-1"></a></span>
+<span id="cb180-23"><a href="testing-the-flowtrend-method.html#cb180-23" tabindex="-1"></a><span class="do">## Show estimated model at six time points. </span></span>
+<span id="cb180-24"><a href="testing-the-flowtrend-method.html#cb180-24" tabindex="-1"></a>timelist <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">30</span>,<span class="dv">40</span>,<span class="dv">50</span>,<span class="dv">60</span>,<span class="dv">70</span>)</span>
+<span id="cb180-25"><a href="testing-the-flowtrend-method.html#cb180-25" tabindex="-1"></a>plist <span class="ot">=</span> <span class="fu">lapply</span>(timelist, <span class="cf">function</span>(tt){</span>
+<span id="cb180-26"><a href="testing-the-flowtrend-method.html#cb180-26" tabindex="-1"></a>  y <span class="ot">=</span> dt<span class="sc">$</span>ylist[[tt]] <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
+<span id="cb180-27"><a href="testing-the-flowtrend-method.html#cb180-27" tabindex="-1"></a>  <span class="fu">colnames</span>(y) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;dim&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) </span>
+<span id="cb180-28"><a href="testing-the-flowtrend-method.html#cb180-28" tabindex="-1"></a>  p <span class="ot">=</span> y <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>dim1, <span class="at">y=</span>dim2), <span class="at">alpha =</span>.<span class="dv">2</span>)</span>
+<span id="cb180-29"><a href="testing-the-flowtrend-method.html#cb180-29" tabindex="-1"></a>  numclust <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb180-30"><a href="testing-the-flowtrend-method.html#cb180-30" tabindex="-1"></a>  mn_colours <span class="ot">=</span> <span class="fu">rep</span>(<span class="st">&quot;red&quot;</span>, <span class="dv">3</span>)</span>
+<span id="cb180-31"><a href="testing-the-flowtrend-method.html#cb180-31" tabindex="-1"></a>  <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){</span>
+<span id="cb180-32"><a href="testing-the-flowtrend-method.html#cb180-32" tabindex="-1"></a>    <span class="do">## Add ellipse</span></span>
+<span id="cb180-33"><a href="testing-the-flowtrend-method.html#cb180-33" tabindex="-1"></a>    el <span class="ot">=</span> ellipse<span class="sc">::</span><span class="fu">ellipse</span>(<span class="at">x =</span> obj<span class="sc">$</span>sigma[iclust,,], <span class="at">centre =</span> obj<span class="sc">$</span>mn[tt,,iclust]) <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
+<span id="cb180-34"><a href="testing-the-flowtrend-method.html#cb180-34" tabindex="-1"></a>    p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">data =</span> el, <span class="at">colour =</span> mn_colours[iclust], <span class="at">lty =</span> <span class="dv">2</span>,</span>
+<span id="cb180-35"><a href="testing-the-flowtrend-method.html#cb180-35" tabindex="-1"></a>                      <span class="at">lwd =</span> <span class="fu">pmin</span>(obj<span class="sc">$</span>prob[tt,iclust] <span class="sc">*</span> <span class="dv">8</span>, <span class="fl">0.8</span>))</span>
+<span id="cb180-36"><a href="testing-the-flowtrend-method.html#cb180-36" tabindex="-1"></a></span>
+<span id="cb180-37"><a href="testing-the-flowtrend-method.html#cb180-37" tabindex="-1"></a>    <span class="do">## Add mean</span></span>
+<span id="cb180-38"><a href="testing-the-flowtrend-method.html#cb180-38" tabindex="-1"></a>    p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> dim1, <span class="at">y =</span> dim2),</span>
+<span id="cb180-39"><a href="testing-the-flowtrend-method.html#cb180-39" tabindex="-1"></a>                       <span class="at">data =</span> mnmat <span class="sc">%&gt;%</span> <span class="fu">subset</span>(cluster <span class="sc">==</span> iclust) <span class="sc">%&gt;%</span> .[tt,],</span>
+<span id="cb180-40"><a href="testing-the-flowtrend-method.html#cb180-40" tabindex="-1"></a>                       <span class="at">colour =</span> mn_colours[iclust],</span>
+<span id="cb180-41"><a href="testing-the-flowtrend-method.html#cb180-41" tabindex="-1"></a>                       <span class="do">## size = rel(3))</span></span>
+<span id="cb180-42"><a href="testing-the-flowtrend-method.html#cb180-42" tabindex="-1"></a>                       <span class="at">size =</span> obj<span class="sc">$</span>prob[tt,iclust] <span class="sc">*</span> <span class="dv">10</span>)</span>
+<span id="cb180-43"><a href="testing-the-flowtrend-method.html#cb180-43" tabindex="-1"></a>  }</span>
+<span id="cb180-44"><a href="testing-the-flowtrend-method.html#cb180-44" tabindex="-1"></a>  p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">&quot;Time=&quot;</span>, tt)) <span class="sc">+</span></span>
+<span id="cb180-45"><a href="testing-the-flowtrend-method.html#cb180-45" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">6.5</span>, <span class="fl">2.5</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">6.5</span>, <span class="fl">2.5</span>)) <span class="sc">+</span></span>
+<span id="cb180-46"><a href="testing-the-flowtrend-method.html#cb180-46" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span>
+<span id="cb180-47"><a href="testing-the-flowtrend-method.html#cb180-47" tabindex="-1"></a>  <span class="fu">return</span>(p)</span>
+<span id="cb180-48"><a href="testing-the-flowtrend-method.html#cb180-48" tabindex="-1"></a>})</span>
+<span id="cb180-49"><a href="testing-the-flowtrend-method.html#cb180-49" tabindex="-1"></a></span>
+<span id="cb180-50"><a href="testing-the-flowtrend-method.html#cb180-50" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span>
+<span id="cb180-51"><a href="testing-the-flowtrend-method.html#cb180-51" tabindex="-1"></a><span class="fu">do.call</span>(ggarrange, <span class="fu">c</span>(plist, <span class="at">ncol=</span><span class="dv">3</span>, <span class="at">nrow=</span><span class="dv">2</span>))</span></code></pre></div>
 <pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.
 
 ## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.

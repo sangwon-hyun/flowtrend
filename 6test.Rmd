@@ -63,41 +63,6 @@ plot_prob(obj) +
 ```
 
 
-The objectives look like this:
-
-```{r}
-set.seed(100)
-dt       <- gendat_1d(TT = 100, rep(100, 100))
-dt_model <- gendat_1d(100, rep(100, 100), return_model = TRUE)
-ylist = dt %>% dt2ylist()
-x = dt %>% pull(time) %>% unique()
-
-## Run it 10 times
-objlist = lapply(1:10, function(ii){
-  print(ii)
-  set.seed(ii+100)
-  flowtrend_once(ylist = ylist,
-                 x = x,
-                 maxdev = 5,
-                 numclust = 3,
-                 l = 2,
-                 l_prob = 2,
-                 lambda = 1,
-                 lambda_prob = .1,
-                 verbose = TRUE)
-})
-
-## Make a table with objectives
-objective_table = lapply(1:10, function(jj) tibble(objective = objlist[[jj]]$objectives) %>%
-                                            add_rownames("iter") %>%
-                                            mutate(iter = as.numeric(iter)) %>%
-                                            add_column(restart=jj)) %>%
-  bind_rows()  
-
-## Plot the objectives from the 10 runs
-ggplot(objective_table) + geom_line(aes(x=iter, y=objective, group=restart))
-```
-
 
 ## Testing monotonicity of objective values
 
@@ -115,7 +80,7 @@ testthat::test_that("Objective value decreases over EM iterations.",{
     
     ## Generate synthetic data
     set.seed(iseed*100)
-    dt       <- gendat_1d(100, rep(100, 100))
+    dt       <- gendat_1d(100, rep(10, 100))
     ylist = dt %>% dt2ylist()
     x = dt %>% pull(time) %>% unique()
     
