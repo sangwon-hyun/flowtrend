@@ -342,51 +342,51 @@ list of <span class="math inline">\(n_t \times d\)</span> matrices.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="package-setup.html#cb8-1" tabindex="-1"></a>dt <span class="ot">=</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="at">TT =</span> <span class="dv">100</span>, <span class="at">ntlist =</span><span class="fu">rep</span>(<span class="dv">100</span>,<span class="dv">100</span>))</span>
 <span id="cb8-2"><a href="package-setup.html#cb8-2" tabindex="-1"></a><span class="fu">print</span>(dt)</span></code></pre></div>
 <pre><code>## # A tibble: 10,000 × 4
-##     time       Y         mu cluster
-##    &lt;int&gt;   &lt;dbl&gt;      &lt;dbl&gt;   &lt;int&gt;
-##  1     1 -0.857  -1.49            1
-##  2     1 -1.10   -1.49            1
-##  3     1 -0.940  -1.49            1
-##  4     1 -2.42   -1.49            1
-##  5     1 -1.89   -1.49            1
-##  6     1 -1.27   -1.49            1
-##  7     1 -1.19   -1.49            1
-##  8     1 -1.51   -1.49            1
-##  9     1 -0.0399 -0.0000927       2
-## 10     1 -0.138  -0.0000927       2
+##     time      Y    mu cluster
+##    &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;int&gt;
+##  1     1 -1.34  -1.49       1
+##  2     1 -0.780 -1.49       1
+##  3     1 -1.32  -1.49       1
+##  4     1 -1.74  -1.49       1
+##  5     1 -2.20  -1.49       1
+##  6     1 -1.84  -1.49       1
+##  7     1 -2.13  -1.49       1
+##  8     1 -1.90  -1.49       1
+##  9     1 -1.84  -1.49       1
+## 10     1 -1.85  -1.49       1
 ## # ℹ 9,990 more rows</code></pre>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="package-setup.html#cb10-1" tabindex="-1"></a>ylist <span class="ot">=</span> <a href='package-setup.html#dt2ylist'>dt2ylist</a>(dt)</span>
 <span id="cb10-2"><a href="package-setup.html#cb10-2" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(<span class="fu">str</span>(ylist[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])))</span></code></pre></div>
 <pre><code>## List of 5
-##  $ : num [1:100, 1] -0.857 -1.105 -0.94 -2.42 -1.888 ...
+##  $ : num [1:100, 1] -1.34 -0.78 -1.32 -1.74 -2.2 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] -0.558 -1.301 -1.698 -1.74 -1.605 ...
+##  $ : num [1:100, 1] -1.771 -1.312 -0.987 -1.757 -2.39 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] -1.286 -0.979 -1.718 -0.967 -1.499 ...
+##  $ : num [1:100, 1] -1.52 -1.26 -1.9 -1.52 -1.56 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] -2.291 -0.769 -1.842 -2.221 -1.527 ...
+##  $ : num [1:100, 1] -0.986 -1.533 -1.042 -0.868 -1.845 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] -1.57 -2.28 -1.77 -1.52 -2.15 ...
+##  $ : num [1:100, 1] -1.441 -2.211 -1.39 -0.711 -1.695 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
 ## NULL</code></pre>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="package-setup.html#cb12-1" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(ylist[[<span class="dv">1</span>]]))</span></code></pre></div>
 <pre><code>##               Y
-## [1,] -0.8574815
-## [2,] -1.1045119
-## [3,] -0.9402696
-## [4,] -2.4197255
-## [5,] -1.8879205
-## [6,] -1.2656157</code></pre>
+## [1,] -1.3403452
+## [2,] -0.7802419
+## [3,] -1.3199562
+## [4,] -1.7405737
+## [5,] -2.1987797
+## [6,] -1.8449886</code></pre>
 <p>Next, we’ll make some plotting functions 1d model and data.</p>
 <div id="plotting-1d-data" class="section level2 hasAnchor" number="2.1">
 <h2><span class="header-section-number">2.1</span> Plotting 1d data<a href="package-setup.html#plotting-1d-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
