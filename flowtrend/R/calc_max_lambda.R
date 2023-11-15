@@ -3,7 +3,7 @@
 #' Estimate maximum lambda values numerically.  First starts with a large
 #' initial value \code{max_lambda_mean} and \code{max_lambda_prob}, and runs
 #' the EM algorithm on decreasing set of values (sequentially halved). This
-#' stops once you see non-flat probabilities or means, and returns the *smallest*
+#' stops once you see non-simple probabilities or means, and returns the *smallest*
 #' regularization (lambda) value pair that gives full sparsity.
 #'
 #' Note that the \code{zero_stabilize=TRUE} option is used in
@@ -27,15 +27,15 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
                             iimax = 16,
                             ...){
 
-  ## Basic setup
+  ## Basic setup: in each dimension, the data should only vary by a relatively
+  ## small amount (say 1/100)
   dimdat = ncol(ylist[[1]])
   toler_by_dim = sapply(1:dimdat, function(idim){
     datrange = ylist %>% sapply(FUN = function(y) y %>% .[,idim] %>% range()) %>% range()
-    toler = (datrange[2] - datrange[1]) / (100 * length(ylist))
+    toler = (datrange[2] - datrange[1])/1E3
   })
-  ## This is arbitrary... I found that with T=100, nt=100 examples that it's reasonable.
-  toler_prob = min(0.1 / length(ylist), 0.01)
-
+  toler_prob = 1E-3
+  
   ## Get range of regularization parameters.
   facs = sapply(1:iimax, function(ii) 2^(-ii+1)) ## DECREASING order
   print("running the models once")
@@ -54,20 +54,13 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
                           verbose = verbose, ...)
 
     ## In each dimension, the data should only vary by a relatively small amount (say 1/100)
-    mean_is_flat = sapply(1:dimdat, FUN = function(idim){
-      all(abs(diff(res$mn[,idim,])) < toler_by_dim[idim])  })
-    prob_is_flat = all(abs(diff(res$prob)) < toler_prob)
-    all_are_flat = (all(mean_is_flat) & prob_is_flat)
+    mean_is_simple = sapply(1:dimdat, FUN = function(idim){
+      all(abs(diff(res$mn[,idim,], differences = l+1)) < toler_by_dim[idim])  })
+    prob_is_simple = all(abs(diff(res$prob, differences = l_prob+1)) < toler_prob)
+    all_are_simple = (all(mean_is_simple) & prob_is_simple)
 
-    ## ## Temporary
-    ## par(mfrow=c(1,3))
-    ## matplot(res$prob, ylim=c(0,1))
-    ## diff(diff(res$prob)) %>% matplot()
-    ## diff(res$prob) %>% matplot()
-    ## cumsum(diff(diff(res$prob))[,1]) %>% lines(col='orange')
-    ## ## End of temporary
 
-    if(!all_are_flat){
+    if(!all_are_simple){
 
       ## If there are *any* nonzero values at the first iter, prompt a restart
       ## with higher initial lambda values.
@@ -87,15 +80,15 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
                               lambda      = max_lambda_mean * facs[ii],
                               ...)
 
-        ## Check if both curves are basically flat
-        mean_is_flat = sapply(1:res$dimdat, FUN = function(idim){
-          all(abs(diff(res$mn[,idim,])) < toler_by_dim[idim]) })
-        prob_is_flat =  all(abs(diff(res$prob)) < toler_prob)
-        all_are_flat = (all(mean_is_flat) & prob_is_flat)
+        ## Check if both curves are maximally simple
+        mean_is_simple = sapply(1:dimdat, FUN = function(idim){
+          all(abs(diff(res$mn[,idim,], differences = l+1)) < toler_by_dim[idim])  })
+        prob_is_simple = all(abs(diff(res$prob, differences = l_prob+1)) < toler_prob)
+        all_are_simple = (all(mean_is_simple) & prob_is_simple)
 
         ## If there are *any* nonzero values, stop.
         ## (Otherwise, just proceed to try a smaller set of lambdas.)
-        if(!all_are_flat){
+        if(!all_are_simple){
           return(list(mean = max_lambda_mean * facs[ii-1],
                       prob = max_lambda_prob * facs[ii-1]))
         }

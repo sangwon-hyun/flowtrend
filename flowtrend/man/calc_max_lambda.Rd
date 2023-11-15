@@ -5,7 +5,7 @@
 \title{Estimate maximum lambda values numerically.  First starts with a large
 initial value \code{max_lambda_mean} and \code{max_lambda_prob}, and runs
 the EM algorithm on decreasing set of values (sequentially halved). This
-stops once you see non-flat probabilities or means, and returns the \emph{smallest}
+stops once you see non-simple probabilities or means, and returns the \emph{smallest}
 regularization (lambda) value pair that gives full sparsity.}
 \usage{
 calc_max_lambda(

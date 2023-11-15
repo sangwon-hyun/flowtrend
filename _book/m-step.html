@@ -1146,13 +1146,13 @@ that takes upper-triangular coefficient matrices.</p>
 <span id="cb54-11"><a href="m-step.html#cb54-11" tabindex="-1"></a><span class="kw">using</span> Eigen<span class="op">::</span>MatrixXd<span class="op">;</span>                  <span class="co">// variable size matrix, double precision</span></span>
 <span id="cb54-12"><a href="m-step.html#cb54-12" tabindex="-1"></a></span>
 <span id="cb54-13"><a href="m-step.html#cb54-13" tabindex="-1"></a><span class="co">//&#39; Solve &quot;barebones&quot; sylvester equation that takes upper triangular matrices as coefficients.</span></span>
-<span id="cb54-14"><a href="m-step.html#cb54-14" tabindex="-1"></a><span class="co">//&#39; </span></span>
+<span id="cb54-14"><a href="m-step.html#cb54-14" tabindex="-1"></a><span class="co">//&#39;</span></span>
 <span id="cb54-15"><a href="m-step.html#cb54-15" tabindex="-1"></a><span class="co">//&#39; @param TA Upper-triangular matrix</span></span>
 <span id="cb54-16"><a href="m-step.html#cb54-16" tabindex="-1"></a><span class="co">//&#39; @param TB Upper-triangular matrix</span></span>
 <span id="cb54-17"><a href="m-step.html#cb54-17" tabindex="-1"></a><span class="co">//&#39; @param C matrix</span></span>
 <span id="cb54-18"><a href="m-step.html#cb54-18" tabindex="-1"></a><span class="co">//&#39; @export</span></span>
 <span id="cb54-19"><a href="m-step.html#cb54-19" tabindex="-1"></a><span class="co">// [[Rcpp::export]]</span></span>
-<span id="cb54-20"><a href="m-step.html#cb54-20" tabindex="-1"></a>Eigen<span class="op">::</span>MatrixXd matrix_function_solve_triangular_sylvester_barebonesC2<span class="op">(</span><span class="at">const</span> Eigen<span class="op">::</span>MatrixXd <span class="op">&amp;</span> TA<span class="op">,</span></span>
+<span id="cb54-20"><a href="m-step.html#cb54-20" tabindex="-1"></a>Eigen<span class="op">::</span>MatrixXd matrix_function_solve_triangular_sylvester_barebonesC2<span class="op">(</span><span class="at">const</span> Eigen<span class="op">::</span>MatrixXd <span class="op">&amp;</span> TA<span class="op">,</span> </span>
 <span id="cb54-21"><a href="m-step.html#cb54-21" tabindex="-1"></a>                                     <span class="at">const</span> Eigen<span class="op">::</span>MatrixXd <span class="op">&amp;</span> TB<span class="op">,</span></span>
 <span id="cb54-22"><a href="m-step.html#cb54-22" tabindex="-1"></a>                                     <span class="at">const</span> Eigen<span class="op">::</span>MatrixXd <span class="op">&amp;</span> C<span class="op">){</span></span>
 <span id="cb54-23"><a href="m-step.html#cb54-23" tabindex="-1"></a>  <span class="co">// Eigen::eigen_assert(TA.rows() == TA.cols());</span></span>
@@ -1162,7 +1162,7 @@ that takes upper-triangular coefficient matrices.</p>
 <span id="cb54-27"><a href="m-step.html#cb54-27" tabindex="-1"></a>  <span class="co">// Eigen::eigen_assert(C.rows() == TA.rows());</span></span>
 <span id="cb54-28"><a href="m-step.html#cb54-28" tabindex="-1"></a>  <span class="co">// Eigen::eigen_assert(C.cols() == TB.rows());</span></span>
 <span id="cb54-29"><a href="m-step.html#cb54-29" tabindex="-1"></a></span>
-<span id="cb54-30"><a href="m-step.html#cb54-30" tabindex="-1"></a>  <span class="co">// typedef typename MatrixType::Index Index;</span></span>
+<span id="cb54-30"><a href="m-step.html#cb54-30" tabindex="-1"></a>  <span class="co">// typedef typename MatrixType::Index Index; </span></span>
 <span id="cb54-31"><a href="m-step.html#cb54-31" tabindex="-1"></a>  <span class="co">// typedef typename MatrixType::Scalar Scalar;</span></span>
 <span id="cb54-32"><a href="m-step.html#cb54-32" tabindex="-1"></a></span>
 <span id="cb54-33"><a href="m-step.html#cb54-33" tabindex="-1"></a>  <span class="dt">int</span> m <span class="op">=</span> TA<span class="op">.</span>rows<span class="op">();</span></span>

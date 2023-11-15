@@ -2,7 +2,7 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #' Solve "barebones" sylvester equation that takes upper triangular matrices as coefficients.
-#' 
+#'
 #' @param TA Upper-triangular matrix
 #' @param TB Upper-triangular matrix
 #' @param C matrix

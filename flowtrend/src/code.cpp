@@ -14,13 +14,13 @@ using Eigen::Map;                       // 'maps' rather than copies
 using Eigen::MatrixXd;                  // variable size matrix, double precision
 
 //' Solve "barebones" sylvester equation that takes upper triangular matrices as coefficients.
-//' 
+//'
 //' @param TA Upper-triangular matrix
 //' @param TB Upper-triangular matrix
 //' @param C matrix
 //' @export
 // [[Rcpp::export]]
-Eigen::MatrixXd matrix_function_solve_triangular_sylvester_barebonesC2(const Eigen::MatrixXd & TA,
+Eigen::MatrixXd matrix_function_solve_triangular_sylvester_barebonesC2(const Eigen::MatrixXd & TA, 
 								     const Eigen::MatrixXd & TB,
 								     const Eigen::MatrixXd & C){
   // Eigen::eigen_assert(TA.rows() == TA.cols());
@@ -30,7 +30,7 @@ Eigen::MatrixXd matrix_function_solve_triangular_sylvester_barebonesC2(const Eig
   // Eigen::eigen_assert(C.rows() == TA.rows());
   // Eigen::eigen_assert(C.cols() == TB.rows());
 
-  // typedef typename MatrixType::Index Index;
+  // typedef typename MatrixType::Index Index; 
   // typedef typename MatrixType::Scalar Scalar;
 
   int m = TA.rows();
