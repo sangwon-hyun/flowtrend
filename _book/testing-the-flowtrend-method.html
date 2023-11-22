@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2023-11-14" />
+<meta name="date" content="2023-11-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -255,33 +255,34 @@ sometimes non-monotone. See the example from a few sections up!)</p>
 <span id="cb106-6"><a href="testing-the-flowtrend-method.html#cb106-6" tabindex="-1"></a>    <span class="do">## Generate synthetic data</span></span>
 <span id="cb106-7"><a href="testing-the-flowtrend-method.html#cb106-7" tabindex="-1"></a>    <span class="fu">set.seed</span>(iseed<span class="sc">*</span><span class="dv">100</span>)</span>
 <span id="cb106-8"><a href="testing-the-flowtrend-method.html#cb106-8" tabindex="-1"></a>    dt       <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">10</span>, <span class="dv">100</span>))</span>
-<span id="cb106-9"><a href="testing-the-flowtrend-method.html#cb106-9" tabindex="-1"></a>    ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='package-setup.html#dt2ylist'>dt2ylist</a>()</span>
-<span id="cb106-10"><a href="testing-the-flowtrend-method.html#cb106-10" tabindex="-1"></a>    x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
-<span id="cb106-11"><a href="testing-the-flowtrend-method.html#cb106-11" tabindex="-1"></a>    </span>
-<span id="cb106-12"><a href="testing-the-flowtrend-method.html#cb106-12" tabindex="-1"></a>    <span class="do">## Fit model</span></span>
-<span id="cb106-13"><a href="testing-the-flowtrend-method.html#cb106-13" tabindex="-1"></a>    obj <span class="ot">&lt;-</span> <a href='flowtrend.html#flowtrend'>flowtrend</a>(<span class="at">ylist =</span> ylist,</span>
-<span id="cb106-14"><a href="testing-the-flowtrend-method.html#cb106-14" tabindex="-1"></a>                     <span class="at">x =</span> x,</span>
-<span id="cb106-15"><a href="testing-the-flowtrend-method.html#cb106-15" tabindex="-1"></a>                     <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
-<span id="cb106-16"><a href="testing-the-flowtrend-method.html#cb106-16" tabindex="-1"></a>                     <span class="at">numclust =</span> <span class="dv">3</span>,</span>
-<span id="cb106-17"><a href="testing-the-flowtrend-method.html#cb106-17" tabindex="-1"></a>                     <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
-<span id="cb106-18"><a href="testing-the-flowtrend-method.html#cb106-18" tabindex="-1"></a>                     <span class="at">l =</span> <span class="dv">1</span>,</span>
-<span id="cb106-19"><a href="testing-the-flowtrend-method.html#cb106-19" tabindex="-1"></a>                     <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
-<span id="cb106-20"><a href="testing-the-flowtrend-method.html#cb106-20" tabindex="-1"></a>                     <span class="at">lambda_prob =</span> <span class="fl">0.05</span>,</span>
-<span id="cb106-21"><a href="testing-the-flowtrend-method.html#cb106-21" tabindex="-1"></a>                     <span class="at">nrestart =</span> <span class="dv">1</span>,</span>
-<span id="cb106-22"><a href="testing-the-flowtrend-method.html#cb106-22" tabindex="-1"></a>                     <span class="at">verbose=</span><span class="cn">TRUE</span>)</span>
-<span id="cb106-23"><a href="testing-the-flowtrend-method.html#cb106-23" tabindex="-1"></a></span>
-<span id="cb106-24"><a href="testing-the-flowtrend-method.html#cb106-24" tabindex="-1"></a>    <span class="do">## Test objective monotonicity</span></span>
-<span id="cb106-25"><a href="testing-the-flowtrend-method.html#cb106-25" tabindex="-1"></a>    niter_end <span class="ot">=</span> <span class="fu">length</span>(obj<span class="sc">$</span>objective)</span>
-<span id="cb106-26"><a href="testing-the-flowtrend-method.html#cb106-26" tabindex="-1"></a>    <span class="do">## testthat::expect_true(all(diff(obj$objective) &lt; 1E-4))</span></span>
-<span id="cb106-27"><a href="testing-the-flowtrend-method.html#cb106-27" tabindex="-1"></a></span>
-<span id="cb106-28"><a href="testing-the-flowtrend-method.html#cb106-28" tabindex="-1"></a>    <span class="do">## Make a plot</span></span>
-<span id="cb106-29"><a href="testing-the-flowtrend-method.html#cb106-29" tabindex="-1"></a>    g <span class="ot">=</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">iter=</span><span class="dv">1</span><span class="sc">:</span>niter_end, <span class="at">objective=</span>obj<span class="sc">$</span>objectives)) <span class="sc">+</span></span>
-<span id="cb106-30"><a href="testing-the-flowtrend-method.html#cb106-30" tabindex="-1"></a>      <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>iter, <span class="at">y=</span>objective)) <span class="sc">+</span></span>
-<span id="cb106-31"><a href="testing-the-flowtrend-method.html#cb106-31" tabindex="-1"></a>      <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>iter, <span class="at">y=</span>objective)) <span class="sc">+</span></span>
-<span id="cb106-32"><a href="testing-the-flowtrend-method.html#cb106-32" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">&quot;Seed=&quot;</span>, iseed<span class="sc">*</span><span class="dv">100</span>))</span>
-<span id="cb106-33"><a href="testing-the-flowtrend-method.html#cb106-33" tabindex="-1"></a>    <span class="fu">print</span>(g)</span>
-<span id="cb106-34"><a href="testing-the-flowtrend-method.html#cb106-34" tabindex="-1"></a>  }</span>
-<span id="cb106-35"><a href="testing-the-flowtrend-method.html#cb106-35" tabindex="-1"></a>})</span></code></pre></div>
+<span id="cb106-9"><a href="testing-the-flowtrend-method.html#cb106-9" tabindex="-1"></a>    dt_model       <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">10</span>, <span class="dv">100</span>), <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb106-10"><a href="testing-the-flowtrend-method.html#cb106-10" tabindex="-1"></a>    ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='package-setup.html#dt2ylist'>dt2ylist</a>()</span>
+<span id="cb106-11"><a href="testing-the-flowtrend-method.html#cb106-11" tabindex="-1"></a>    x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
+<span id="cb106-12"><a href="testing-the-flowtrend-method.html#cb106-12" tabindex="-1"></a>    </span>
+<span id="cb106-13"><a href="testing-the-flowtrend-method.html#cb106-13" tabindex="-1"></a>    <span class="do">## Fit model</span></span>
+<span id="cb106-14"><a href="testing-the-flowtrend-method.html#cb106-14" tabindex="-1"></a>    obj <span class="ot">&lt;-</span> <a href='flowtrend.html#flowtrend'>flowtrend</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb106-15"><a href="testing-the-flowtrend-method.html#cb106-15" tabindex="-1"></a>                     <span class="at">x =</span> x,</span>
+<span id="cb106-16"><a href="testing-the-flowtrend-method.html#cb106-16" tabindex="-1"></a>                     <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
+<span id="cb106-17"><a href="testing-the-flowtrend-method.html#cb106-17" tabindex="-1"></a>                     <span class="at">numclust =</span> <span class="dv">3</span>,</span>
+<span id="cb106-18"><a href="testing-the-flowtrend-method.html#cb106-18" tabindex="-1"></a>                     <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
+<span id="cb106-19"><a href="testing-the-flowtrend-method.html#cb106-19" tabindex="-1"></a>                     <span class="at">l =</span> <span class="dv">1</span>,</span>
+<span id="cb106-20"><a href="testing-the-flowtrend-method.html#cb106-20" tabindex="-1"></a>                     <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
+<span id="cb106-21"><a href="testing-the-flowtrend-method.html#cb106-21" tabindex="-1"></a>                     <span class="at">lambda_prob =</span> <span class="fl">0.05</span>,</span>
+<span id="cb106-22"><a href="testing-the-flowtrend-method.html#cb106-22" tabindex="-1"></a>                     <span class="at">nrestart =</span> <span class="dv">1</span>,</span>
+<span id="cb106-23"><a href="testing-the-flowtrend-method.html#cb106-23" tabindex="-1"></a>                     <span class="at">verbose=</span><span class="cn">TRUE</span>)</span>
+<span id="cb106-24"><a href="testing-the-flowtrend-method.html#cb106-24" tabindex="-1"></a></span>
+<span id="cb106-25"><a href="testing-the-flowtrend-method.html#cb106-25" tabindex="-1"></a>    <span class="do">## Test objective monotonicity</span></span>
+<span id="cb106-26"><a href="testing-the-flowtrend-method.html#cb106-26" tabindex="-1"></a>    niter_end <span class="ot">=</span> <span class="fu">length</span>(obj<span class="sc">$</span>objective)</span>
+<span id="cb106-27"><a href="testing-the-flowtrend-method.html#cb106-27" tabindex="-1"></a>    <span class="do">## testthat::expect_true(all(diff(obj$objective) &lt; 1E-4))</span></span>
+<span id="cb106-28"><a href="testing-the-flowtrend-method.html#cb106-28" tabindex="-1"></a></span>
+<span id="cb106-29"><a href="testing-the-flowtrend-method.html#cb106-29" tabindex="-1"></a>    <span class="do">## Make a plot</span></span>
+<span id="cb106-30"><a href="testing-the-flowtrend-method.html#cb106-30" tabindex="-1"></a>    g <span class="ot">=</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">iter=</span><span class="dv">1</span><span class="sc">:</span>niter_end, <span class="at">objective=</span>obj<span class="sc">$</span>objectives)) <span class="sc">+</span></span>
+<span id="cb106-31"><a href="testing-the-flowtrend-method.html#cb106-31" tabindex="-1"></a>      <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>iter, <span class="at">y=</span>objective)) <span class="sc">+</span></span>
+<span id="cb106-32"><a href="testing-the-flowtrend-method.html#cb106-32" tabindex="-1"></a>      <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>iter, <span class="at">y=</span>objective)) <span class="sc">+</span></span>
+<span id="cb106-33"><a href="testing-the-flowtrend-method.html#cb106-33" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">&quot;Seed=&quot;</span>, iseed<span class="sc">*</span><span class="dv">100</span>))</span>
+<span id="cb106-34"><a href="testing-the-flowtrend-method.html#cb106-34" tabindex="-1"></a>    <span class="fu">print</span>(g)</span>
+<span id="cb106-35"><a href="testing-the-flowtrend-method.html#cb106-35" tabindex="-1"></a>  }</span>
+<span id="cb106-36"><a href="testing-the-flowtrend-method.html#cb106-36" tabindex="-1"></a>})</span></code></pre></div>
 </div>
 <div id="id_2d-example" class="section level2 hasAnchor" number="12.3">
 <h2><span class="header-section-number">12.3</span> 2d example<a href="testing-the-flowtrend-method.html#id_2d-example" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -337,12 +338,6 @@ sometimes non-monotone. See the example from a few sections up!)</p>
 <span id="cb107-49"><a href="testing-the-flowtrend-method.html#cb107-49" tabindex="-1"></a></span>
 <span id="cb107-50"><a href="testing-the-flowtrend-method.html#cb107-50" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span>
 <span id="cb107-51"><a href="testing-the-flowtrend-method.html#cb107-51" tabindex="-1"></a><span class="fu">do.call</span>(ggarrange, <span class="fu">c</span>(plist, <span class="at">ncol=</span><span class="dv">3</span>, <span class="at">nrow=</span><span class="dv">2</span>))</span></code></pre></div>
-<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.
-
-## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.
-
-## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
-<p><img src="_main_files/figure-html/2d-example-1.png" width="576" /></p>
 </div>
 </div>
             </section>

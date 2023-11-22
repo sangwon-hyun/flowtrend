@@ -68,6 +68,8 @@ flowtrend_once <- function(ylist,
   TT = length(ylist)
   dimdat = ncol(ylist[[1]])
   if(is.null(x)) x <- 1:TT
+  if(is.unsorted(x)) stop("x must be ordered!")
+
   # l = 2 is quadratic trend filtering
   # l = 1 is linear trend filtering
   # l = 0 is fused lasso

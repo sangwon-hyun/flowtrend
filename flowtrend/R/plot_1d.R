@@ -8,7 +8,7 @@
 #'
 #' @return ggplot object with data, and optionally, a flowtrend model overlaid.
 #' @export
-plot_1d <- function(ylist, obj=NULL, x = NULL, add_point = FALSE){
+plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALSE){
 
   ## Basic checks
   if(!is.null(x)){
@@ -18,16 +18,30 @@ plot_1d <- function(ylist, obj=NULL, x = NULL, add_point = FALSE){
     times = 1:length(ylist)
   }
 
-  ## make data into long matrix
-  ymat <- lapply(1:length(ylist), FUN = function(tt){
-    data.frame(time = times[tt], Y = ylist[[tt]])
-  }) %>% bind_rows() %>% as_tibble()
+  if(is.null(countslist)){
+    ## make data into long matrix
+    ymat <- lapply(1:length(ylist), FUN = function(tt){
+      data.frame(time = times[tt], Y = ylist[[tt]])
+    }) %>% bind_rows() %>% as_tibble()
 
-  ## plot long matrix
-  gg = ymat %>% ggplot() +
-    geom_point(aes(x = time, y = Y), alpha = .1) +
-    theme_bw() + ylab("Data") + xlab("Time") 
-    ## theme(legend.position = 'none')
+    ## plot long matrix
+    gg = ymat %>% ggplot() +
+      geom_point(aes(x = time, y = Y), alpha = .1) +
+      theme_bw() + ylab("Data") + xlab("Time") 
+      ## theme(legend.position = 'none')
+  } else {
+    ## make data into long matrix
+    ymat <- lapply(1:length(ylist), FUN = function(tt){
+      data.frame(time = times[tt], Y = ylist[[tt]], counts = countslist[[tt]])
+    }) %>% bind_rows() %>% as_tibble()
+
+    ## plot long matrix
+    gg = ymat %>% ggplot() +
+      geom_raster(aes(x = time, y = Y, fill = counts)) +
+      theme_bw() + ylab("Data") + xlab("Time")  +
+      scale_fill_gradientn(colours = c("white", "black"))
+      ## theme(legend.position = 'none')
+  }
   if(is.null(obj)) return(gg)
 
   ## Add the model

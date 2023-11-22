@@ -14,6 +14,7 @@ gen_diff_mat <- function(n, l, x = NULL){
 
   ## Basic check
   if(!is.null(x))  stopifnot(length(x) == n) 
+  if(is.unsorted(x))  stop("x must be in increasing order!") 
 
   get_D1 <- function(t) {do.call(rbind, lapply(1:(t-1), FUN = function(x){
     v <- rep(0, t)

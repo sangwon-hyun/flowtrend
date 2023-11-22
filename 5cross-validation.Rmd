@@ -648,10 +648,10 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
 
   ## Get the train/test data
   TT <- length(ylist)
-  test.inds = unlist(folds[ifold])
+  test.inds = unlist(folds[ifold]) %>% sort()
   test.dat = ylist[test.inds]
   test.count = countslist[test.inds]
-  train.inds = c(1, unlist(folds[-ifold]), TT)
+  train.inds = c(1, unlist(folds[-ifold]), TT) %>% sort()
   train.dat = ylist[train.inds]
   train.count = countslist[train.inds]
 

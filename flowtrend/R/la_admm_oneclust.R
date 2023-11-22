@@ -66,7 +66,6 @@ la_admm_oneclust <- function(K, ...){
     call <- as.call(c(list(as.name("admm_oneclust")), argn))
     res = eval(call, args)
 
-
     if(any(abs(res$mu)>1E2)){
       ## This shouldn't happen anymore, since the ADMM has been updated.
       print("mu is blowing up!")

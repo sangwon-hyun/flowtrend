@@ -50,6 +50,7 @@ gen_diff_mat <- function(n, l, x = NULL){
 
   ## Basic check
   if(!is.null(x))  stopifnot(length(x) == n) 
+  if(is.unsorted(x))  stop("x must be in increasing order!") 
 
   get_D1 <- function(t) {do.call(rbind, lapply(1:(t-1), FUN = function(x){
     v <- rep(0, t)
@@ -1129,7 +1130,6 @@ la_admm_oneclust <- function(K, ...){
     call <- as.call(c(list(as.name("admm_oneclust")), argn))
     res = eval(call, args)
 
-
     if(any(abs(res$mu)>1E2)){
       ## This shouldn't happen anymore, since the ADMM has been updated.
       print("mu is blowing up!")
@@ -2123,6 +2123,8 @@ flowtrend_once <- function(ylist,
   TT = length(ylist)
   dimdat = ncol(ylist[[1]])
   if(is.null(x)) x <- 1:TT
+  if(is.unsorted(x)) stop("x must be ordered!")
+
   # l = 2 is quadratic trend filtering
   # l = 1 is linear trend filtering
   # l = 0 is fused lasso

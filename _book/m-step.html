@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2023-11-14" />
+<meta name="date" content="2023-11-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -648,46 +648,45 @@ here in <code>la_admm_oneclust</code>, and runs the inner ADMM with a fixed step
 <span id="cb47-64"><a href="m-step.html#cb47-64" tabindex="-1"></a>    call <span class="ot">&lt;-</span> <span class="fu">as.call</span>(<span class="fu">c</span>(<span class="fu">list</span>(<span class="fu">as.name</span>(<span class="st">&quot;admm_oneclust&quot;</span>)), argn))</span>
 <span id="cb47-65"><a href="m-step.html#cb47-65" tabindex="-1"></a>    res <span class="ot">=</span> <span class="fu">eval</span>(call, args)</span>
 <span id="cb47-66"><a href="m-step.html#cb47-66" tabindex="-1"></a></span>
-<span id="cb47-67"><a href="m-step.html#cb47-67" tabindex="-1"></a></span>
-<span id="cb47-68"><a href="m-step.html#cb47-68" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">any</span>(<span class="fu">abs</span>(res<span class="sc">$</span>mu)<span class="sc">&gt;</span><span class="fl">1E2</span>)){</span>
-<span id="cb47-69"><a href="m-step.html#cb47-69" tabindex="-1"></a>      <span class="do">## This shouldn&#39;t happen anymore, since the ADMM has been updated.</span></span>
-<span id="cb47-70"><a href="m-step.html#cb47-70" tabindex="-1"></a>      <span class="fu">print</span>(<span class="st">&quot;mu is blowing up!&quot;</span>)</span>
-<span id="cb47-71"><a href="m-step.html#cb47-71" tabindex="-1"></a>      <span class="fu">browser</span>()</span>
-<span id="cb47-72"><a href="m-step.html#cb47-72" tabindex="-1"></a>    }</span>
-<span id="cb47-73"><a href="m-step.html#cb47-73" tabindex="-1"></a></span>
-<span id="cb47-74"><a href="m-step.html#cb47-74" tabindex="-1"></a>    some_admm_objectives <span class="ot">=</span> <span class="fu">c</span>(some_admm_objectives, res<span class="sc">$</span>single_admm_objective) </span>
-<span id="cb47-75"><a href="m-step.html#cb47-75" tabindex="-1"></a></span>
-<span id="cb47-76"><a href="m-step.html#cb47-76" tabindex="-1"></a>    <span class="do">## Handling the scenario where the objectives are all zero</span></span>
-<span id="cb47-77"><a href="m-step.html#cb47-77" tabindex="-1"></a>    padding <span class="ot">=</span> <span class="fl">1E-12</span></span>
-<span id="cb47-78"><a href="m-step.html#cb47-78" tabindex="-1"></a>    some_admm_objectives <span class="ot">=</span> some_admm_objectives <span class="sc">+</span> padding</span>
-<span id="cb47-79"><a href="m-step.html#cb47-79" tabindex="-1"></a></span>
-<span id="cb47-80"><a href="m-step.html#cb47-80" tabindex="-1"></a>    <span class="do">## See if outer iterations should terminate</span></span>
-<span id="cb47-81"><a href="m-step.html#cb47-81" tabindex="-1"></a>    <span class="cf">if</span>(res<span class="sc">$</span>converge ){<span class="do">##| <a href='m-step.html#outer_converge'>outer_converge</a>(some_admm_objectives)){</span></span>
-<span id="cb47-82"><a href="m-step.html#cb47-82" tabindex="-1"></a>      res<span class="sc">$</span>converge <span class="ot">&lt;-</span> T</span>
-<span id="cb47-83"><a href="m-step.html#cb47-83" tabindex="-1"></a>      <span class="cf">break</span></span>
-<span id="cb47-84"><a href="m-step.html#cb47-84" tabindex="-1"></a>    }</span>
-<span id="cb47-85"><a href="m-step.html#cb47-85" tabindex="-1"></a></span>
-<span id="cb47-86"><a href="m-step.html#cb47-86" tabindex="-1"></a>    <span class="do">## Update some parameters; double the rho value, and update the B matrix</span></span>
-<span id="cb47-87"><a href="m-step.html#cb47-87" tabindex="-1"></a>    rho <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> args<span class="sc">$</span>rho</span>
-<span id="cb47-88"><a href="m-step.html#cb47-88" tabindex="-1"></a>    <span class="do">## tQ = 2 * args$schurB$tQ ## This seems wrong. Delete now.</span></span>
-<span id="cb47-89"><a href="m-step.html#cb47-89" tabindex="-1"></a>    mu <span class="ot">=</span> res<span class="sc">$</span>mu</span>
-<span id="cb47-90"><a href="m-step.html#cb47-90" tabindex="-1"></a>    Z <span class="ot">=</span> res<span class="sc">$</span>Z</span>
-<span id="cb47-91"><a href="m-step.html#cb47-91" tabindex="-1"></a>    W <span class="ot">=</span> res<span class="sc">$</span>W</span>
-<span id="cb47-92"><a href="m-step.html#cb47-92" tabindex="-1"></a>    uz <span class="ot">=</span> res<span class="sc">$</span>uz</span>
-<span id="cb47-93"><a href="m-step.html#cb47-93" tabindex="-1"></a>    uw <span class="ot">=</span> res<span class="sc">$</span>uw</span>
-<span id="cb47-94"><a href="m-step.html#cb47-94" tabindex="-1"></a>    <span class="do">## print(&quot;args$rho&quot;)</span></span>
-<span id="cb47-95"><a href="m-step.html#cb47-95" tabindex="-1"></a>    <span class="do">## print(args$rho)</span></span>
-<span id="cb47-96"><a href="m-step.html#cb47-96" tabindex="-1"></a>  }</span>
-<span id="cb47-97"><a href="m-step.html#cb47-97" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span>res<span class="sc">$</span>converge) <span class="fu">warning</span>(<span class="st">&quot;ADMM didn&#39;t converge for one cluster.&quot;</span>)</span>
-<span id="cb47-98"><a href="m-step.html#cb47-98" tabindex="-1"></a></span>
-<span id="cb47-99"><a href="m-step.html#cb47-99" tabindex="-1"></a>  <span class="do">## Record how long the admm took; in terms of # iterations.</span></span>
-<span id="cb47-100"><a href="m-step.html#cb47-100" tabindex="-1"></a>  res<span class="sc">$</span>kk <span class="ot">=</span> kk</span>
-<span id="cb47-101"><a href="m-step.html#cb47-101" tabindex="-1"></a></span>
-<span id="cb47-102"><a href="m-step.html#cb47-102" tabindex="-1"></a>  <span class="do">## Temporary: Record the final rho</span></span>
-<span id="cb47-103"><a href="m-step.html#cb47-103" tabindex="-1"></a>  res<span class="sc">$</span>rho <span class="ot">=</span> args<span class="sc">$</span>rho</span>
-<span id="cb47-104"><a href="m-step.html#cb47-104" tabindex="-1"></a></span>
-<span id="cb47-105"><a href="m-step.html#cb47-105" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
-<span id="cb47-106"><a href="m-step.html#cb47-106" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb47-67"><a href="m-step.html#cb47-67" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">any</span>(<span class="fu">abs</span>(res<span class="sc">$</span>mu)<span class="sc">&gt;</span><span class="fl">1E2</span>)){</span>
+<span id="cb47-68"><a href="m-step.html#cb47-68" tabindex="-1"></a>      <span class="do">## This shouldn&#39;t happen anymore, since the ADMM has been updated.</span></span>
+<span id="cb47-69"><a href="m-step.html#cb47-69" tabindex="-1"></a>      <span class="fu">print</span>(<span class="st">&quot;mu is blowing up!&quot;</span>)</span>
+<span id="cb47-70"><a href="m-step.html#cb47-70" tabindex="-1"></a>      <span class="fu">browser</span>()</span>
+<span id="cb47-71"><a href="m-step.html#cb47-71" tabindex="-1"></a>    }</span>
+<span id="cb47-72"><a href="m-step.html#cb47-72" tabindex="-1"></a></span>
+<span id="cb47-73"><a href="m-step.html#cb47-73" tabindex="-1"></a>    some_admm_objectives <span class="ot">=</span> <span class="fu">c</span>(some_admm_objectives, res<span class="sc">$</span>single_admm_objective) </span>
+<span id="cb47-74"><a href="m-step.html#cb47-74" tabindex="-1"></a></span>
+<span id="cb47-75"><a href="m-step.html#cb47-75" tabindex="-1"></a>    <span class="do">## Handling the scenario where the objectives are all zero</span></span>
+<span id="cb47-76"><a href="m-step.html#cb47-76" tabindex="-1"></a>    padding <span class="ot">=</span> <span class="fl">1E-12</span></span>
+<span id="cb47-77"><a href="m-step.html#cb47-77" tabindex="-1"></a>    some_admm_objectives <span class="ot">=</span> some_admm_objectives <span class="sc">+</span> padding</span>
+<span id="cb47-78"><a href="m-step.html#cb47-78" tabindex="-1"></a></span>
+<span id="cb47-79"><a href="m-step.html#cb47-79" tabindex="-1"></a>    <span class="do">## See if outer iterations should terminate</span></span>
+<span id="cb47-80"><a href="m-step.html#cb47-80" tabindex="-1"></a>    <span class="cf">if</span>(res<span class="sc">$</span>converge ){<span class="do">##| <a href='m-step.html#outer_converge'>outer_converge</a>(some_admm_objectives)){</span></span>
+<span id="cb47-81"><a href="m-step.html#cb47-81" tabindex="-1"></a>      res<span class="sc">$</span>converge <span class="ot">&lt;-</span> T</span>
+<span id="cb47-82"><a href="m-step.html#cb47-82" tabindex="-1"></a>      <span class="cf">break</span></span>
+<span id="cb47-83"><a href="m-step.html#cb47-83" tabindex="-1"></a>    }</span>
+<span id="cb47-84"><a href="m-step.html#cb47-84" tabindex="-1"></a></span>
+<span id="cb47-85"><a href="m-step.html#cb47-85" tabindex="-1"></a>    <span class="do">## Update some parameters; double the rho value, and update the B matrix</span></span>
+<span id="cb47-86"><a href="m-step.html#cb47-86" tabindex="-1"></a>    rho <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> args<span class="sc">$</span>rho</span>
+<span id="cb47-87"><a href="m-step.html#cb47-87" tabindex="-1"></a>    <span class="do">## tQ = 2 * args$schurB$tQ ## This seems wrong. Delete now.</span></span>
+<span id="cb47-88"><a href="m-step.html#cb47-88" tabindex="-1"></a>    mu <span class="ot">=</span> res<span class="sc">$</span>mu</span>
+<span id="cb47-89"><a href="m-step.html#cb47-89" tabindex="-1"></a>    Z <span class="ot">=</span> res<span class="sc">$</span>Z</span>
+<span id="cb47-90"><a href="m-step.html#cb47-90" tabindex="-1"></a>    W <span class="ot">=</span> res<span class="sc">$</span>W</span>
+<span id="cb47-91"><a href="m-step.html#cb47-91" tabindex="-1"></a>    uz <span class="ot">=</span> res<span class="sc">$</span>uz</span>
+<span id="cb47-92"><a href="m-step.html#cb47-92" tabindex="-1"></a>    uw <span class="ot">=</span> res<span class="sc">$</span>uw</span>
+<span id="cb47-93"><a href="m-step.html#cb47-93" tabindex="-1"></a>    <span class="do">## print(&quot;args$rho&quot;)</span></span>
+<span id="cb47-94"><a href="m-step.html#cb47-94" tabindex="-1"></a>    <span class="do">## print(args$rho)</span></span>
+<span id="cb47-95"><a href="m-step.html#cb47-95" tabindex="-1"></a>  }</span>
+<span id="cb47-96"><a href="m-step.html#cb47-96" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span>res<span class="sc">$</span>converge) <span class="fu">warning</span>(<span class="st">&quot;ADMM didn&#39;t converge for one cluster.&quot;</span>)</span>
+<span id="cb47-97"><a href="m-step.html#cb47-97" tabindex="-1"></a></span>
+<span id="cb47-98"><a href="m-step.html#cb47-98" tabindex="-1"></a>  <span class="do">## Record how long the admm took; in terms of # iterations.</span></span>
+<span id="cb47-99"><a href="m-step.html#cb47-99" tabindex="-1"></a>  res<span class="sc">$</span>kk <span class="ot">=</span> kk</span>
+<span id="cb47-100"><a href="m-step.html#cb47-100" tabindex="-1"></a></span>
+<span id="cb47-101"><a href="m-step.html#cb47-101" tabindex="-1"></a>  <span class="do">## Temporary: Record the final rho</span></span>
+<span id="cb47-102"><a href="m-step.html#cb47-102" tabindex="-1"></a>  res<span class="sc">$</span>rho <span class="ot">=</span> args<span class="sc">$</span>rho</span>
+<span id="cb47-103"><a href="m-step.html#cb47-103" tabindex="-1"></a></span>
+<span id="cb47-104"><a href="m-step.html#cb47-104" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb47-105"><a href="m-step.html#cb47-105" tabindex="-1"></a>}</span></code></pre></div>
 <p>Next, the inner loop. The workhorse <code><a href='m-step.html#admm_oneclust'>admm_oneclust</a>()</code> actually performs the ADMM
 update for one cluster for a fixed step-size <span class="math inline">\(\rho\)</span> across optimization
 iterations <code>iter=1,...,n</code>.</p>

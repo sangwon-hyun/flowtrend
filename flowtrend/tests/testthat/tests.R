@@ -134,6 +134,7 @@ testthat::test_that("Objective value decreases over EM iterations.",{
     ## Generate synthetic data
     set.seed(iseed*100)
     dt       <- gendat_1d(100, rep(10, 100))
+    dt_model       <- gendat_1d(100, rep(10, 100), return_model = TRUE)
     ylist = dt %>% dt2ylist()
     x = dt %>% pull(time) %>% unique()
     

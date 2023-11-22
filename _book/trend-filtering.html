@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2023-11-14" />
+<meta name="date" content="2023-11-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -236,45 +236,46 @@ equation (41)].</p>
 <span id="cb21-12"><a href="trend-filtering.html#cb21-12" tabindex="-1"></a></span>
 <span id="cb21-13"><a href="trend-filtering.html#cb21-13" tabindex="-1"></a>  <span class="do">## Basic check</span></span>
 <span id="cb21-14"><a href="trend-filtering.html#cb21-14" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x))  <span class="fu">stopifnot</span>(<span class="fu">length</span>(x) <span class="sc">==</span> n) </span>
-<span id="cb21-15"><a href="trend-filtering.html#cb21-15" tabindex="-1"></a></span>
-<span id="cb21-16"><a href="trend-filtering.html#cb21-16" tabindex="-1"></a>  <span id='get_D1'>get_D1</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(t) {<span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>(t<span class="dv">-1</span>), <span class="at">FUN =</span> <span class="cf">function</span>(x){</span>
-<span id="cb21-17"><a href="trend-filtering.html#cb21-17" tabindex="-1"></a>    v <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, t)</span>
-<span id="cb21-18"><a href="trend-filtering.html#cb21-18" tabindex="-1"></a>    v[x] <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span></span>
-<span id="cb21-19"><a href="trend-filtering.html#cb21-19" tabindex="-1"></a>    v[x<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb21-20"><a href="trend-filtering.html#cb21-20" tabindex="-1"></a>    v</span>
-<span id="cb21-21"><a href="trend-filtering.html#cb21-21" tabindex="-1"></a>  }))}</span>
-<span id="cb21-22"><a href="trend-filtering.html#cb21-22" tabindex="-1"></a></span>
-<span id="cb21-23"><a href="trend-filtering.html#cb21-23" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(x)){</span>
-<span id="cb21-24"><a href="trend-filtering.html#cb21-24" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">0</span>){</span>
-<span id="cb21-25"><a href="trend-filtering.html#cb21-25" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">diag</span>(<span class="fu">rep</span>(<span class="dv">1</span>,n)))</span>
-<span id="cb21-26"><a href="trend-filtering.html#cb21-26" tabindex="-1"></a>    }</span>
-<span id="cb21-27"><a href="trend-filtering.html#cb21-27" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">1</span>){</span>
-<span id="cb21-28"><a href="trend-filtering.html#cb21-28" tabindex="-1"></a>      <span class="fu">return</span>(<a href='trend-filtering.html#get_D1'>get_D1</a>(n))</span>
-<span id="cb21-29"><a href="trend-filtering.html#cb21-29" tabindex="-1"></a>    }</span>
-<span id="cb21-30"><a href="trend-filtering.html#cb21-30" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">&gt;</span> <span class="dv">1</span>){</span>
-<span id="cb21-31"><a href="trend-filtering.html#cb21-31" tabindex="-1"></a>      D <span class="ot">&lt;-</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n)</span>
-<span id="cb21-32"><a href="trend-filtering.html#cb21-32" tabindex="-1"></a>      <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(l<span class="dv">-1</span>)){</span>
-<span id="cb21-33"><a href="trend-filtering.html#cb21-33" tabindex="-1"></a>        D <span class="ot">&lt;-</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n<span class="sc">-</span>k) <span class="sc">%*%</span> D</span>
-<span id="cb21-34"><a href="trend-filtering.html#cb21-34" tabindex="-1"></a>      }</span>
-<span id="cb21-35"><a href="trend-filtering.html#cb21-35" tabindex="-1"></a>      <span class="fu">return</span>(D)</span>
-<span id="cb21-36"><a href="trend-filtering.html#cb21-36" tabindex="-1"></a>    }</span>
-<span id="cb21-37"><a href="trend-filtering.html#cb21-37" tabindex="-1"></a>  }</span>
-<span id="cb21-38"><a href="trend-filtering.html#cb21-38" tabindex="-1"></a>  <span class="cf">else</span>{</span>
-<span id="cb21-39"><a href="trend-filtering.html#cb21-39" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">0</span>){</span>
-<span id="cb21-40"><a href="trend-filtering.html#cb21-40" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">diag</span>(<span class="fu">rep</span>(<span class="dv">1</span>,n)))</span>
-<span id="cb21-41"><a href="trend-filtering.html#cb21-41" tabindex="-1"></a>    }</span>
-<span id="cb21-42"><a href="trend-filtering.html#cb21-42" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">1</span>){</span>
-<span id="cb21-43"><a href="trend-filtering.html#cb21-43" tabindex="-1"></a>      <span class="fu">return</span>(<a href='trend-filtering.html#get_D1'>get_D1</a>(n))</span>
-<span id="cb21-44"><a href="trend-filtering.html#cb21-44" tabindex="-1"></a>    }</span>
-<span id="cb21-45"><a href="trend-filtering.html#cb21-45" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">&gt;</span> <span class="dv">1</span>){</span>
-<span id="cb21-46"><a href="trend-filtering.html#cb21-46" tabindex="-1"></a>      D <span class="ot">&lt;-</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n)</span>
-<span id="cb21-47"><a href="trend-filtering.html#cb21-47" tabindex="-1"></a>      <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(l<span class="dv">-1</span>)){</span>
-<span id="cb21-48"><a href="trend-filtering.html#cb21-48" tabindex="-1"></a>        D <span class="ot">&lt;-</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n<span class="sc">-</span>k) <span class="sc">%*%</span> <span class="fu">diag</span>(k<span class="sc">/</span><span class="fu">diff</span>(x, <span class="at">lag =</span> k)) <span class="sc">%*%</span> D</span>
-<span id="cb21-49"><a href="trend-filtering.html#cb21-49" tabindex="-1"></a>      }</span>
-<span id="cb21-50"><a href="trend-filtering.html#cb21-50" tabindex="-1"></a>      <span class="fu">return</span>(D)</span>
-<span id="cb21-51"><a href="trend-filtering.html#cb21-51" tabindex="-1"></a>    }</span>
-<span id="cb21-52"><a href="trend-filtering.html#cb21-52" tabindex="-1"></a>  }</span>
-<span id="cb21-53"><a href="trend-filtering.html#cb21-53" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb21-15"><a href="trend-filtering.html#cb21-15" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.unsorted</span>(x))  <span class="fu">stop</span>(<span class="st">&quot;x must be in increasing order!&quot;</span>) </span>
+<span id="cb21-16"><a href="trend-filtering.html#cb21-16" tabindex="-1"></a></span>
+<span id="cb21-17"><a href="trend-filtering.html#cb21-17" tabindex="-1"></a>  <span id='get_D1'>get_D1</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(t) {<span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>(t<span class="dv">-1</span>), <span class="at">FUN =</span> <span class="cf">function</span>(x){</span>
+<span id="cb21-18"><a href="trend-filtering.html#cb21-18" tabindex="-1"></a>    v <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, t)</span>
+<span id="cb21-19"><a href="trend-filtering.html#cb21-19" tabindex="-1"></a>    v[x] <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span></span>
+<span id="cb21-20"><a href="trend-filtering.html#cb21-20" tabindex="-1"></a>    v[x<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb21-21"><a href="trend-filtering.html#cb21-21" tabindex="-1"></a>    v</span>
+<span id="cb21-22"><a href="trend-filtering.html#cb21-22" tabindex="-1"></a>  }))}</span>
+<span id="cb21-23"><a href="trend-filtering.html#cb21-23" tabindex="-1"></a></span>
+<span id="cb21-24"><a href="trend-filtering.html#cb21-24" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(x)){</span>
+<span id="cb21-25"><a href="trend-filtering.html#cb21-25" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">0</span>){</span>
+<span id="cb21-26"><a href="trend-filtering.html#cb21-26" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">diag</span>(<span class="fu">rep</span>(<span class="dv">1</span>,n)))</span>
+<span id="cb21-27"><a href="trend-filtering.html#cb21-27" tabindex="-1"></a>    }</span>
+<span id="cb21-28"><a href="trend-filtering.html#cb21-28" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">1</span>){</span>
+<span id="cb21-29"><a href="trend-filtering.html#cb21-29" tabindex="-1"></a>      <span class="fu">return</span>(<a href='trend-filtering.html#get_D1'>get_D1</a>(n))</span>
+<span id="cb21-30"><a href="trend-filtering.html#cb21-30" tabindex="-1"></a>    }</span>
+<span id="cb21-31"><a href="trend-filtering.html#cb21-31" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">&gt;</span> <span class="dv">1</span>){</span>
+<span id="cb21-32"><a href="trend-filtering.html#cb21-32" tabindex="-1"></a>      D <span class="ot">&lt;-</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n)</span>
+<span id="cb21-33"><a href="trend-filtering.html#cb21-33" tabindex="-1"></a>      <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(l<span class="dv">-1</span>)){</span>
+<span id="cb21-34"><a href="trend-filtering.html#cb21-34" tabindex="-1"></a>        D <span class="ot">&lt;-</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n<span class="sc">-</span>k) <span class="sc">%*%</span> D</span>
+<span id="cb21-35"><a href="trend-filtering.html#cb21-35" tabindex="-1"></a>      }</span>
+<span id="cb21-36"><a href="trend-filtering.html#cb21-36" tabindex="-1"></a>      <span class="fu">return</span>(D)</span>
+<span id="cb21-37"><a href="trend-filtering.html#cb21-37" tabindex="-1"></a>    }</span>
+<span id="cb21-38"><a href="trend-filtering.html#cb21-38" tabindex="-1"></a>  }</span>
+<span id="cb21-39"><a href="trend-filtering.html#cb21-39" tabindex="-1"></a>  <span class="cf">else</span>{</span>
+<span id="cb21-40"><a href="trend-filtering.html#cb21-40" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">0</span>){</span>
+<span id="cb21-41"><a href="trend-filtering.html#cb21-41" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">diag</span>(<span class="fu">rep</span>(<span class="dv">1</span>,n)))</span>
+<span id="cb21-42"><a href="trend-filtering.html#cb21-42" tabindex="-1"></a>    }</span>
+<span id="cb21-43"><a href="trend-filtering.html#cb21-43" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">1</span>){</span>
+<span id="cb21-44"><a href="trend-filtering.html#cb21-44" tabindex="-1"></a>      <span class="fu">return</span>(<a href='trend-filtering.html#get_D1'>get_D1</a>(n))</span>
+<span id="cb21-45"><a href="trend-filtering.html#cb21-45" tabindex="-1"></a>    }</span>
+<span id="cb21-46"><a href="trend-filtering.html#cb21-46" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">&gt;</span> <span class="dv">1</span>){</span>
+<span id="cb21-47"><a href="trend-filtering.html#cb21-47" tabindex="-1"></a>      D <span class="ot">&lt;-</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n)</span>
+<span id="cb21-48"><a href="trend-filtering.html#cb21-48" tabindex="-1"></a>      <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(l<span class="dv">-1</span>)){</span>
+<span id="cb21-49"><a href="trend-filtering.html#cb21-49" tabindex="-1"></a>        D <span class="ot">&lt;-</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n<span class="sc">-</span>k) <span class="sc">%*%</span> <span class="fu">diag</span>(k<span class="sc">/</span><span class="fu">diff</span>(x, <span class="at">lag =</span> k)) <span class="sc">%*%</span> D</span>
+<span id="cb21-50"><a href="trend-filtering.html#cb21-50" tabindex="-1"></a>      }</span>
+<span id="cb21-51"><a href="trend-filtering.html#cb21-51" tabindex="-1"></a>      <span class="fu">return</span>(D)</span>
+<span id="cb21-52"><a href="trend-filtering.html#cb21-52" tabindex="-1"></a>    }</span>
+<span id="cb21-53"><a href="trend-filtering.html#cb21-53" tabindex="-1"></a>  }</span>
+<span id="cb21-54"><a href="trend-filtering.html#cb21-54" tabindex="-1"></a>}</span></code></pre></div>
 <p>For equally spaced inputs:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="trend-filtering.html#cb22-1" tabindex="-1"></a>TT <span class="ot">=</span> <span class="dv">10</span></span>
 <span id="cb22-2"><a href="trend-filtering.html#cb22-2" tabindex="-1"></a></span>

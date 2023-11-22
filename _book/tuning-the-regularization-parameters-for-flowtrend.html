@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2023-11-14" />
+<meta name="date" content="2023-11-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -778,10 +778,10 @@ models on the entire dataset is done by <code><a href='tuning-the-regularization
 <span id="cb86-26"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cb86-26" tabindex="-1"></a></span>
 <span id="cb86-27"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cb86-27" tabindex="-1"></a>  <span class="do">## Get the train/test data</span></span>
 <span id="cb86-28"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cb86-28" tabindex="-1"></a>  TT <span class="ot">&lt;-</span> <span class="fu">length</span>(ylist)</span>
-<span id="cb86-29"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cb86-29" tabindex="-1"></a>  test.inds <span class="ot">=</span> <span class="fu">unlist</span>(folds[ifold])</span>
+<span id="cb86-29"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cb86-29" tabindex="-1"></a>  test.inds <span class="ot">=</span> <span class="fu">unlist</span>(folds[ifold]) <span class="sc">%&gt;%</span> <span class="fu">sort</span>()</span>
 <span id="cb86-30"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cb86-30" tabindex="-1"></a>  test.dat <span class="ot">=</span> ylist[test.inds]</span>
 <span id="cb86-31"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cb86-31" tabindex="-1"></a>  test.count <span class="ot">=</span> countslist[test.inds]</span>
-<span id="cb86-32"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cb86-32" tabindex="-1"></a>  train.inds <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">unlist</span>(folds[<span class="sc">-</span>ifold]), TT)</span>
+<span id="cb86-32"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cb86-32" tabindex="-1"></a>  train.inds <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">unlist</span>(folds[<span class="sc">-</span>ifold]), TT) <span class="sc">%&gt;%</span> <span class="fu">sort</span>()</span>
 <span id="cb86-33"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cb86-33" tabindex="-1"></a>  train.dat <span class="ot">=</span> ylist[train.inds]</span>
 <span id="cb86-34"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cb86-34" tabindex="-1"></a>  train.count <span class="ot">=</span> countslist[train.inds]</span>
 <span id="cb86-35"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cb86-35" tabindex="-1"></a></span>
