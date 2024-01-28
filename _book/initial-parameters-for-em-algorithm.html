@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2023-11-21" />
+<meta name="date" content="2024-01-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -57,7 +57,7 @@
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -158,7 +158,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>8.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
 <li class="chapter" data-level="8.4" data-path="m-step.html"><a href="m-step.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>8.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
 <li class="chapter" data-level="8.5" data-path="m-step.html"><a href="m-step.html#all-rcpp-functions"><i class="fa fa-check"></i><b>8.5</b> All Rcpp functions</a></li>
-<li class="chapter" data-level="8.6" data-path="m-step.html"><a href="m-step.html#ported-over-from-flowmix"><i class="fa fa-check"></i><b>8.6</b> Ported over from flowmix</a></li>
 </ul></li>
 <li class="chapter" data-level="9" data-path="flowtrend.html"><a href="flowtrend.html"><i class="fa fa-check"></i><b>9</b> flowtrend</a></li>
 <li class="chapter" data-level="10" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>10</b> Reordering clusters</a></li>
@@ -177,6 +176,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>12.1</b> 1d example</a></li>
 <li class="chapter" data-level="12.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values"><i class="fa fa-check"></i><b>12.2</b> Testing monotonicity of objective values</a></li>
 <li class="chapter" data-level="12.3" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_2d-example"><i class="fa fa-check"></i><b>12.3</b> 2d example</a></li>
+<li class="chapter" data-level="12.4" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#working-with-binned-dataset"><i class="fa fa-check"></i><b>12.4</b> Working with “binned” dataset</a></li>
+<li class="chapter" data-level="12.5" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#unevenly-spaced-inputs-x"><i class="fa fa-check"></i><b>12.5</b> Unevenly spaced inputs (x)</a></li>
 </ul></li>
 <li class="chapter" data-level="13" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>13</b> Documenting the package and building</a></li>
 </ul>
@@ -205,142 +206,144 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 version of <span class="math inline">\(ylist\)</span> (downsampling is done because <span class="math inline">\(ylist\)</span> can have a large number
 of particles). <span class="math inline">\(\Sigma\)</span> is <span class="math inline">\(d\times d\)</span> identity matrices, with <code>fac=1</code> diagonal
 by default.</p>
-<p>TODO: better downsampling for binned data.</p>
-<p>TODO: think about best way to design sigma
-* TODO: this could be a good student project; best initialization
-techniques. How much does it take to get to the optimum?</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="initial-parameters-for-em-algorithm.html#cb37-1" tabindex="-1"></a><span class="co">#&#39; Initialize the cluster centers.</span></span>
-<span id="cb37-2"><a href="initial-parameters-for-em-algorithm.html#cb37-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb37-3"><a href="initial-parameters-for-em-algorithm.html#cb37-3" tabindex="-1"></a><span class="co">#&#39; @param ylist  A T-length list of (nt  by 3) datasets.  There should  be T of</span></span>
-<span id="cb37-4"><a href="initial-parameters-for-em-algorithm.html#cb37-4" tabindex="-1"></a><span class="co">#&#39;   such datasets. 3 is actually \code{mulen}.</span></span>
-<span id="cb37-5"><a href="initial-parameters-for-em-algorithm.html#cb37-5" tabindex="-1"></a><span class="co">#&#39; @param numclust Number of clusters (M).</span></span>
-<span id="cb37-6"><a href="initial-parameters-for-em-algorithm.html#cb37-6" tabindex="-1"></a><span class="co">#&#39; @param TT total number of (training) time points.</span></span>
-<span id="cb37-7"><a href="initial-parameters-for-em-algorithm.html#cb37-7" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb37-8"><a href="initial-parameters-for-em-algorithm.html#cb37-8" tabindex="-1"></a><span class="co">#&#39; @return An array of dimension (T x dimdat x M).</span></span>
-<span id="cb37-9"><a href="initial-parameters-for-em-algorithm.html#cb37-9" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb37-10"><a href="initial-parameters-for-em-algorithm.html#cb37-10" tabindex="-1"></a><span id='init_mn'>init_mn</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, numclust, TT, dimdat, <span class="at">countslist =</span> <span class="cn">NULL</span>, <span class="at">seed=</span><span class="cn">NULL</span>){</span>
-<span id="cb37-11"><a href="initial-parameters-for-em-algorithm.html#cb37-11" tabindex="-1"></a></span>
-<span id="cb37-12"><a href="initial-parameters-for-em-algorithm.html#cb37-12" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(seed)){</span>
-<span id="cb37-13"><a href="initial-parameters-for-em-algorithm.html#cb37-13" tabindex="-1"></a>    assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">all</span>((seed <span class="sc">%&gt;%</span> <span class="fu">sapply</span>(., class)) <span class="sc">==</span> <span class="st">&quot;integer&quot;</span>))</span>
-<span id="cb37-14"><a href="initial-parameters-for-em-algorithm.html#cb37-14" tabindex="-1"></a>    assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">length</span>(seed) <span class="sc">==</span> <span class="dv">7</span>)</span>
-<span id="cb37-15"><a href="initial-parameters-for-em-algorithm.html#cb37-15" tabindex="-1"></a>    .Random.seed <span class="ot">&lt;&lt;-</span> seed</span>
-<span id="cb37-16"><a href="initial-parameters-for-em-algorithm.html#cb37-16" tabindex="-1"></a>  }</span>
-<span id="cb37-17"><a href="initial-parameters-for-em-algorithm.html#cb37-17" tabindex="-1"></a></span>
-<span id="cb37-18"><a href="initial-parameters-for-em-algorithm.html#cb37-18" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(countslist)){</span>
-<span id="cb37-19"><a href="initial-parameters-for-em-algorithm.html#cb37-19" tabindex="-1"></a></span>
-<span id="cb37-20"><a href="initial-parameters-for-em-algorithm.html#cb37-20" tabindex="-1"></a>    <span class="do">## Initialize the means by (1) collapsing to one cytogram (2) random</span></span>
-<span id="cb37-21"><a href="initial-parameters-for-em-algorithm.html#cb37-21" tabindex="-1"></a>    <span class="do">## sampling from this distribution, after truncation,</span></span>
-<span id="cb37-22"><a href="initial-parameters-for-em-algorithm.html#cb37-22" tabindex="-1"></a>    TT <span class="ot">=</span> <span class="fu">length</span>(ylist)</span>
-<span id="cb37-23"><a href="initial-parameters-for-em-algorithm.html#cb37-23" tabindex="-1"></a>    ylist_downsampled <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){</span>
-<span id="cb37-24"><a href="initial-parameters-for-em-algorithm.html#cb37-24" tabindex="-1"></a></span>
-<span id="cb37-25"><a href="initial-parameters-for-em-algorithm.html#cb37-25" tabindex="-1"></a>      y <span class="ot">=</span> ylist[[tt]]</span>
-<span id="cb37-26"><a href="initial-parameters-for-em-algorithm.html#cb37-26" tabindex="-1"></a>      counts <span class="ot">=</span> countslist[[tt]]</span>
-<span id="cb37-27"><a href="initial-parameters-for-em-algorithm.html#cb37-27" tabindex="-1"></a></span>
-<span id="cb37-28"><a href="initial-parameters-for-em-algorithm.html#cb37-28" tabindex="-1"></a>      <span class="do">## Sample so that, in total, we get mean(nt)*30 sized sample. In the case</span></span>
-<span id="cb37-29"><a href="initial-parameters-for-em-algorithm.html#cb37-29" tabindex="-1"></a>      <span class="do">## of binned data, nt is the number of bins.</span></span>
-<span id="cb37-30"><a href="initial-parameters-for-em-algorithm.html#cb37-30" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">nrow</span>(y) <span class="sc">&gt;</span> <span class="dv">500</span>) nsize <span class="ot">=</span> <span class="fu">nrow</span>(y) <span class="sc">/</span> TT <span class="sc">*</span> <span class="dv">30</span> <span class="cf">else</span> nsize <span class="ot">=</span> <span class="fu">nrow</span>(y)</span>
-<span id="cb37-31"><a href="initial-parameters-for-em-algorithm.html#cb37-31" tabindex="-1"></a>      some_rows <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y), <span class="at">size =</span> nsize, <span class="at">prob =</span> counts<span class="sc">/</span><span class="fu">sum</span>(counts))</span>
-<span id="cb37-32"><a href="initial-parameters-for-em-algorithm.html#cb37-32" tabindex="-1"></a>      y[some_rows,, drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
-<span id="cb37-33"><a href="initial-parameters-for-em-algorithm.html#cb37-33" tabindex="-1"></a>    })</span>
-<span id="cb37-34"><a href="initial-parameters-for-em-algorithm.html#cb37-34" tabindex="-1"></a></span>
-<span id="cb37-35"><a href="initial-parameters-for-em-algorithm.html#cb37-35" tabindex="-1"></a>    yy <span class="ot">=</span> <span class="fu">do.call</span>(rbind, ylist_downsampled)</span>
-<span id="cb37-36"><a href="initial-parameters-for-em-algorithm.html#cb37-36" tabindex="-1"></a>    new_means <span class="ot">=</span> yy[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(yy), numclust),, drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
-<span id="cb37-37"><a href="initial-parameters-for-em-algorithm.html#cb37-37" tabindex="-1"></a>    jitter_sd <span class="ot">=</span> <span class="fu">apply</span>(yy, <span class="dv">2</span>, sd) <span class="sc">/</span> <span class="dv">100</span></span>
-<span id="cb37-38"><a href="initial-parameters-for-em-algorithm.html#cb37-38" tabindex="-1"></a>    jitter_means <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="at">n =</span> <span class="fu">nrow</span>(new_means),</span>
-<span id="cb37-39"><a href="initial-parameters-for-em-algorithm.html#cb37-39" tabindex="-1"></a>                                 <span class="at">mu =</span> <span class="fu">rep</span>(<span class="dv">0</span>, dimdat),</span>
-<span id="cb37-40"><a href="initial-parameters-for-em-algorithm.html#cb37-40" tabindex="-1"></a>                                 <span class="at">Sigma =</span> <span class="fu">diag</span>(jitter_sd, <span class="at">ncol =</span> dimdat))</span>
-<span id="cb37-41"><a href="initial-parameters-for-em-algorithm.html#cb37-41" tabindex="-1"></a>    new_means <span class="ot">=</span> new_means <span class="sc">+</span> jitter_means</span>
-<span id="cb37-42"><a href="initial-parameters-for-em-algorithm.html#cb37-42" tabindex="-1"></a></span>
-<span id="cb37-43"><a href="initial-parameters-for-em-algorithm.html#cb37-43" tabindex="-1"></a>    <span class="do">## Repeat TT times.</span></span>
-<span id="cb37-44"><a href="initial-parameters-for-em-algorithm.html#cb37-44" tabindex="-1"></a>    mulist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){ new_means })</span>
-<span id="cb37-45"><a href="initial-parameters-for-em-algorithm.html#cb37-45" tabindex="-1"></a></span>
-<span id="cb37-46"><a href="initial-parameters-for-em-algorithm.html#cb37-46" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb37-47"><a href="initial-parameters-for-em-algorithm.html#cb37-47" tabindex="-1"></a></span>
-<span id="cb37-48"><a href="initial-parameters-for-em-algorithm.html#cb37-48" tabindex="-1"></a>    TT <span class="ot">=</span> <span class="fu">length</span>(ylist)</span>
-<span id="cb37-49"><a href="initial-parameters-for-em-algorithm.html#cb37-49" tabindex="-1"></a>    ylist_downsampled <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){</span>
-<span id="cb37-50"><a href="initial-parameters-for-em-algorithm.html#cb37-50" tabindex="-1"></a>      y <span class="ot">=</span> ylist[[tt]]</span>
-<span id="cb37-51"><a href="initial-parameters-for-em-algorithm.html#cb37-51" tabindex="-1"></a>      counts <span class="ot">=</span> countslist[[tt]]</span>
-<span id="cb37-52"><a href="initial-parameters-for-em-algorithm.html#cb37-52" tabindex="-1"></a>      nsize <span class="ot">=</span> <span class="fu">pmin</span>(<span class="fu">nrow</span>(y) <span class="sc">/</span> TT <span class="sc">*</span> <span class="dv">30</span>, <span class="fu">nrow</span>(y))</span>
-<span id="cb37-53"><a href="initial-parameters-for-em-algorithm.html#cb37-53" tabindex="-1"></a>      y[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y), <span class="at">size =</span> nsize),, drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
-<span id="cb37-54"><a href="initial-parameters-for-em-algorithm.html#cb37-54" tabindex="-1"></a>    })</span>
-<span id="cb37-55"><a href="initial-parameters-for-em-algorithm.html#cb37-55" tabindex="-1"></a></span>
-<span id="cb37-56"><a href="initial-parameters-for-em-algorithm.html#cb37-56" tabindex="-1"></a>    <span class="do">## Combine all the particles</span></span>
-<span id="cb37-57"><a href="initial-parameters-for-em-algorithm.html#cb37-57" tabindex="-1"></a>    yy <span class="ot">=</span> <span class="fu">do.call</span>(rbind, ylist_downsampled)</span>
-<span id="cb37-58"><a href="initial-parameters-for-em-algorithm.html#cb37-58" tabindex="-1"></a></span>
-<span id="cb37-59"><a href="initial-parameters-for-em-algorithm.html#cb37-59" tabindex="-1"></a>    <span class="do">## Get K new means from these</span></span>
-<span id="cb37-60"><a href="initial-parameters-for-em-algorithm.html#cb37-60" tabindex="-1"></a>    inds <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(yy), numclust)</span>
-<span id="cb37-61"><a href="initial-parameters-for-em-algorithm.html#cb37-61" tabindex="-1"></a>    new_means <span class="ot">=</span> yy[inds,, drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
-<span id="cb37-62"><a href="initial-parameters-for-em-algorithm.html#cb37-62" tabindex="-1"></a>    mulist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){ new_means })</span>
-<span id="cb37-63"><a href="initial-parameters-for-em-algorithm.html#cb37-63" tabindex="-1"></a></span>
-<span id="cb37-64"><a href="initial-parameters-for-em-algorithm.html#cb37-64" tabindex="-1"></a>  }</span>
-<span id="cb37-65"><a href="initial-parameters-for-em-algorithm.html#cb37-65" tabindex="-1"></a></span>
-<span id="cb37-66"><a href="initial-parameters-for-em-algorithm.html#cb37-66" tabindex="-1"></a>  <span class="do">## New (T x dimdat x numclust) array is created.</span></span>
-<span id="cb37-67"><a href="initial-parameters-for-em-algorithm.html#cb37-67" tabindex="-1"></a>  muarray <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim=</span><span class="fu">c</span>(TT, dimdat, numclust))</span>
-<span id="cb37-68"><a href="initial-parameters-for-em-algorithm.html#cb37-68" tabindex="-1"></a>  <span class="cf">for</span>(tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT){</span>
-<span id="cb37-69"><a href="initial-parameters-for-em-algorithm.html#cb37-69" tabindex="-1"></a>    muarray[tt,,] <span class="ot">=</span> <span class="fu">as.matrix</span>(mulist[[tt]])</span>
-<span id="cb37-70"><a href="initial-parameters-for-em-algorithm.html#cb37-70" tabindex="-1"></a>  }</span>
-<span id="cb37-71"><a href="initial-parameters-for-em-algorithm.html#cb37-71" tabindex="-1"></a>  <span class="fu">return</span>(muarray)</span>
-<span id="cb37-72"><a href="initial-parameters-for-em-algorithm.html#cb37-72" tabindex="-1"></a>}</span>
-<span id="cb37-73"><a href="initial-parameters-for-em-algorithm.html#cb37-73" tabindex="-1"></a></span>
-<span id="cb37-74"><a href="initial-parameters-for-em-algorithm.html#cb37-74" tabindex="-1"></a></span>
-<span id="cb37-75"><a href="initial-parameters-for-em-algorithm.html#cb37-75" tabindex="-1"></a><span class="co">#&#39; Initialize the covariances.</span></span>
-<span id="cb37-76"><a href="initial-parameters-for-em-algorithm.html#cb37-76" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb37-77"><a href="initial-parameters-for-em-algorithm.html#cb37-77" tabindex="-1"></a><span class="co">#&#39; @param data The (nt by 3) datasets. There should be T of them.</span></span>
-<span id="cb37-78"><a href="initial-parameters-for-em-algorithm.html#cb37-78" tabindex="-1"></a><span class="co">#&#39; @param numclust Number of clusters.</span></span>
-<span id="cb37-79"><a href="initial-parameters-for-em-algorithm.html#cb37-79" tabindex="-1"></a><span class="co">#&#39; @param fac Value to use for the diagonal of the (dimdat x dimdat) covariance</span></span>
-<span id="cb37-80"><a href="initial-parameters-for-em-algorithm.html#cb37-80" tabindex="-1"></a><span class="co">#&#39;   matrix.</span></span>
-<span id="cb37-81"><a href="initial-parameters-for-em-algorithm.html#cb37-81" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb37-82"><a href="initial-parameters-for-em-algorithm.html#cb37-82" tabindex="-1"></a><span class="co">#&#39; @return An (K x dimdat x dimdat) array containing the (dimdat by dimdat)</span></span>
-<span id="cb37-83"><a href="initial-parameters-for-em-algorithm.html#cb37-83" tabindex="-1"></a><span class="co">#&#39;   covariances.</span></span>
-<span id="cb37-84"><a href="initial-parameters-for-em-algorithm.html#cb37-84" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb37-85"><a href="initial-parameters-for-em-algorithm.html#cb37-85" tabindex="-1"></a><span id='init_sigma'>init_sigma</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(data, numclust, <span class="at">fac =</span> <span class="dv">1</span>){</span>
-<span id="cb37-86"><a href="initial-parameters-for-em-algorithm.html#cb37-86" tabindex="-1"></a></span>
-<span id="cb37-87"><a href="initial-parameters-for-em-algorithm.html#cb37-87" tabindex="-1"></a>  ndat <span class="ot">=</span> <span class="fu">nrow</span>(data[[<span class="dv">1</span>]])</span>
-<span id="cb37-88"><a href="initial-parameters-for-em-algorithm.html#cb37-88" tabindex="-1"></a>  pdat <span class="ot">=</span> <span class="fu">ncol</span>(data[[<span class="dv">1</span>]])</span>
-<span id="cb37-89"><a href="initial-parameters-for-em-algorithm.html#cb37-89" tabindex="-1"></a>  sigmas <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(iclust){</span>
-<span id="cb37-90"><a href="initial-parameters-for-em-algorithm.html#cb37-90" tabindex="-1"></a>    onesigma <span class="ot">=</span> <span class="fu">diag</span>(fac <span class="sc">*</span> <span class="fu">rep</span>(<span class="dv">1</span>, pdat))</span>
-<span id="cb37-91"><a href="initial-parameters-for-em-algorithm.html#cb37-91" tabindex="-1"></a>    <span class="cf">if</span>(pdat<span class="sc">==</span><span class="dv">1</span>) onesigma <span class="ot">=</span> <span class="fu">as.matrix</span>(fac)</span>
-<span id="cb37-92"><a href="initial-parameters-for-em-algorithm.html#cb37-92" tabindex="-1"></a>    <span class="fu">colnames</span>(onesigma) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;datcol&quot;</span>, <span class="dv">1</span><span class="sc">:</span>pdat)</span>
-<span id="cb37-93"><a href="initial-parameters-for-em-algorithm.html#cb37-93" tabindex="-1"></a>    <span class="fu">rownames</span>(onesigma) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;datcol&quot;</span>, <span class="dv">1</span><span class="sc">:</span>pdat)</span>
-<span id="cb37-94"><a href="initial-parameters-for-em-algorithm.html#cb37-94" tabindex="-1"></a>    <span class="fu">return</span>(onesigma)</span>
-<span id="cb37-95"><a href="initial-parameters-for-em-algorithm.html#cb37-95" tabindex="-1"></a>  })</span>
-<span id="cb37-96"><a href="initial-parameters-for-em-algorithm.html#cb37-96" tabindex="-1"></a>  sigmas <span class="ot">=</span> abind<span class="sc">::</span><span class="fu">abind</span>(sigmas, <span class="at">along=</span><span class="dv">0</span>)</span>
-<span id="cb37-97"><a href="initial-parameters-for-em-algorithm.html#cb37-97" tabindex="-1"></a>  <span class="fu">return</span>(sigmas)</span>
-<span id="cb37-98"><a href="initial-parameters-for-em-algorithm.html#cb37-98" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="initial-parameters-for-em-algorithm.html#cb42-1" tabindex="-1"></a><span class="co">#&#39; Initialize the cluster centers.</span></span>
+<span id="cb42-2"><a href="initial-parameters-for-em-algorithm.html#cb42-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb42-3"><a href="initial-parameters-for-em-algorithm.html#cb42-3" tabindex="-1"></a><span class="co">#&#39; @param ylist  A T-length list of (nt  by 3) datasets.  There should  be T of</span></span>
+<span id="cb42-4"><a href="initial-parameters-for-em-algorithm.html#cb42-4" tabindex="-1"></a><span class="co">#&#39;   such datasets. 3 is actually \code{mulen}.</span></span>
+<span id="cb42-5"><a href="initial-parameters-for-em-algorithm.html#cb42-5" tabindex="-1"></a><span class="co">#&#39; @param numclust Number of clusters (M).</span></span>
+<span id="cb42-6"><a href="initial-parameters-for-em-algorithm.html#cb42-6" tabindex="-1"></a><span class="co">#&#39; @param TT total number of (training) time points.</span></span>
+<span id="cb42-7"><a href="initial-parameters-for-em-algorithm.html#cb42-7" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb42-8"><a href="initial-parameters-for-em-algorithm.html#cb42-8" tabindex="-1"></a><span class="co">#&#39; @return An array of dimension (T x dimdat x M).</span></span>
+<span id="cb42-9"><a href="initial-parameters-for-em-algorithm.html#cb42-9" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb42-10"><a href="initial-parameters-for-em-algorithm.html#cb42-10" tabindex="-1"></a><span id='init_mn'>init_mn</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, numclust, TT, dimdat, <span class="at">countslist =</span> <span class="cn">NULL</span>, <span class="at">seed=</span><span class="cn">NULL</span>){</span>
+<span id="cb42-11"><a href="initial-parameters-for-em-algorithm.html#cb42-11" tabindex="-1"></a></span>
+<span id="cb42-12"><a href="initial-parameters-for-em-algorithm.html#cb42-12" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(seed)){</span>
+<span id="cb42-13"><a href="initial-parameters-for-em-algorithm.html#cb42-13" tabindex="-1"></a>    assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">all</span>((seed <span class="sc">%&gt;%</span> <span class="fu">sapply</span>(., class)) <span class="sc">==</span> <span class="st">&quot;integer&quot;</span>))</span>
+<span id="cb42-14"><a href="initial-parameters-for-em-algorithm.html#cb42-14" tabindex="-1"></a>    assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">length</span>(seed) <span class="sc">==</span> <span class="dv">7</span>)</span>
+<span id="cb42-15"><a href="initial-parameters-for-em-algorithm.html#cb42-15" tabindex="-1"></a>    .Random.seed <span class="ot">&lt;&lt;-</span> seed</span>
+<span id="cb42-16"><a href="initial-parameters-for-em-algorithm.html#cb42-16" tabindex="-1"></a>  }</span>
+<span id="cb42-17"><a href="initial-parameters-for-em-algorithm.html#cb42-17" tabindex="-1"></a></span>
+<span id="cb42-18"><a href="initial-parameters-for-em-algorithm.html#cb42-18" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(countslist)){</span>
+<span id="cb42-19"><a href="initial-parameters-for-em-algorithm.html#cb42-19" tabindex="-1"></a>    ntlist <span class="ot">=</span> <span class="fu">sapply</span>(ylist, nrow)</span>
+<span id="cb42-20"><a href="initial-parameters-for-em-algorithm.html#cb42-20" tabindex="-1"></a>    countslist <span class="ot">=</span> <span class="fu">lapply</span>(ntlist, <span class="at">FUN =</span> <span class="cf">function</span>(nt) <span class="fu">rep</span>(<span class="dv">1</span>, nt))</span>
+<span id="cb42-21"><a href="initial-parameters-for-em-algorithm.html#cb42-21" tabindex="-1"></a>  }</span>
+<span id="cb42-22"><a href="initial-parameters-for-em-algorithm.html#cb42-22" tabindex="-1"></a></span>
+<span id="cb42-23"><a href="initial-parameters-for-em-algorithm.html#cb42-23" tabindex="-1"></a>  <span class="do">## Initialize the means by (1) collapsing to one cytogram (2) random</span></span>
+<span id="cb42-24"><a href="initial-parameters-for-em-algorithm.html#cb42-24" tabindex="-1"></a>  <span class="do">## sampling from this distribution, after truncation,</span></span>
+<span id="cb42-25"><a href="initial-parameters-for-em-algorithm.html#cb42-25" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="fu">length</span>(ylist)</span>
+<span id="cb42-26"><a href="initial-parameters-for-em-algorithm.html#cb42-26" tabindex="-1"></a>  ylist_downsampled <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){</span>
+<span id="cb42-27"><a href="initial-parameters-for-em-algorithm.html#cb42-27" tabindex="-1"></a></span>
+<span id="cb42-28"><a href="initial-parameters-for-em-algorithm.html#cb42-28" tabindex="-1"></a>    y <span class="ot">=</span> ylist[[tt]]</span>
+<span id="cb42-29"><a href="initial-parameters-for-em-algorithm.html#cb42-29" tabindex="-1"></a>    counts <span class="ot">=</span> countslist[[tt]]</span>
+<span id="cb42-30"><a href="initial-parameters-for-em-algorithm.html#cb42-30" tabindex="-1"></a></span>
+<span id="cb42-31"><a href="initial-parameters-for-em-algorithm.html#cb42-31" tabindex="-1"></a>    <span class="do">## Sample so that, in total, we get mean(nt) * 30 sized sample. In the case</span></span>
+<span id="cb42-32"><a href="initial-parameters-for-em-algorithm.html#cb42-32" tabindex="-1"></a>    <span class="do">## of binned data, nt is the number of bins.</span></span>
+<span id="cb42-33"><a href="initial-parameters-for-em-algorithm.html#cb42-33" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">nrow</span>(y) <span class="sc">&gt;</span> <span class="dv">500</span>) nsize <span class="ot">=</span> <span class="fu">pmin</span>(<span class="fu">nrow</span>(y) <span class="sc">/</span> TT <span class="sc">*</span> <span class="dv">30</span>, <span class="fu">nrow</span>(y)) <span class="cf">else</span> nsize <span class="ot">=</span> <span class="fu">nrow</span>(y)</span>
+<span id="cb42-34"><a href="initial-parameters-for-em-algorithm.html#cb42-34" tabindex="-1"></a>    some_rows <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y),</span>
+<span id="cb42-35"><a href="initial-parameters-for-em-algorithm.html#cb42-35" tabindex="-1"></a>                       <span class="at">size =</span> nsize,</span>
+<span id="cb42-36"><a href="initial-parameters-for-em-algorithm.html#cb42-36" tabindex="-1"></a>                       <span class="at">prob =</span> counts<span class="sc">/</span><span class="fu">sum</span>(counts))</span>
+<span id="cb42-37"><a href="initial-parameters-for-em-algorithm.html#cb42-37" tabindex="-1"></a>    y[some_rows,, drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb42-38"><a href="initial-parameters-for-em-algorithm.html#cb42-38" tabindex="-1"></a>  })</span>
+<span id="cb42-39"><a href="initial-parameters-for-em-algorithm.html#cb42-39" tabindex="-1"></a></span>
+<span id="cb42-40"><a href="initial-parameters-for-em-algorithm.html#cb42-40" tabindex="-1"></a>  <span class="do">## Jitter the means a bit</span></span>
+<span id="cb42-41"><a href="initial-parameters-for-em-algorithm.html#cb42-41" tabindex="-1"></a>  yy <span class="ot">=</span> <span class="fu">do.call</span>(rbind, ylist_downsampled)</span>
+<span id="cb42-42"><a href="initial-parameters-for-em-algorithm.html#cb42-42" tabindex="-1"></a>  new_means <span class="ot">=</span> yy[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(yy), numclust),, drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb42-43"><a href="initial-parameters-for-em-algorithm.html#cb42-43" tabindex="-1"></a>  jitter_sd <span class="ot">=</span> <span class="fu">apply</span>(yy, <span class="dv">2</span>, sd) <span class="sc">/</span> <span class="dv">100</span></span>
+<span id="cb42-44"><a href="initial-parameters-for-em-algorithm.html#cb42-44" tabindex="-1"></a>  jitter_means <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="at">n =</span> <span class="fu">nrow</span>(new_means),</span>
+<span id="cb42-45"><a href="initial-parameters-for-em-algorithm.html#cb42-45" tabindex="-1"></a>                               <span class="at">mu =</span> <span class="fu">rep</span>(<span class="dv">0</span>, dimdat),</span>
+<span id="cb42-46"><a href="initial-parameters-for-em-algorithm.html#cb42-46" tabindex="-1"></a>                               <span class="at">Sigma =</span> <span class="fu">diag</span>(jitter_sd, <span class="at">ncol =</span> dimdat))</span>
+<span id="cb42-47"><a href="initial-parameters-for-em-algorithm.html#cb42-47" tabindex="-1"></a>  new_means <span class="ot">=</span> new_means <span class="sc">+</span> jitter_means</span>
+<span id="cb42-48"><a href="initial-parameters-for-em-algorithm.html#cb42-48" tabindex="-1"></a></span>
+<span id="cb42-49"><a href="initial-parameters-for-em-algorithm.html#cb42-49" tabindex="-1"></a>  <span class="do">## Repeat TT times == flat/constant initial means across time.</span></span>
+<span id="cb42-50"><a href="initial-parameters-for-em-algorithm.html#cb42-50" tabindex="-1"></a>  mulist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){ new_means })</span>
+<span id="cb42-51"><a href="initial-parameters-for-em-algorithm.html#cb42-51" tabindex="-1"></a></span>
+<span id="cb42-52"><a href="initial-parameters-for-em-algorithm.html#cb42-52" tabindex="-1"></a>  <span class="do">## } else {</span></span>
+<span id="cb42-53"><a href="initial-parameters-for-em-algorithm.html#cb42-53" tabindex="-1"></a></span>
+<span id="cb42-54"><a href="initial-parameters-for-em-algorithm.html#cb42-54" tabindex="-1"></a>  <span class="do">##   TT = length(ylist)</span></span>
+<span id="cb42-55"><a href="initial-parameters-for-em-algorithm.html#cb42-55" tabindex="-1"></a>  <span class="do">##   ylist_downsampled &lt;- lapply(1:TT, function(tt){</span></span>
+<span id="cb42-56"><a href="initial-parameters-for-em-algorithm.html#cb42-56" tabindex="-1"></a>  <span class="do">##     y = ylist[[tt]]</span></span>
+<span id="cb42-57"><a href="initial-parameters-for-em-algorithm.html#cb42-57" tabindex="-1"></a>  <span class="do">##     counts = countslist[[tt]]</span></span>
+<span id="cb42-58"><a href="initial-parameters-for-em-algorithm.html#cb42-58" tabindex="-1"></a>  <span class="do">##     nsize = pmin(nrow(y) / TT * 30, nrow(y))</span></span>
+<span id="cb42-59"><a href="initial-parameters-for-em-algorithm.html#cb42-59" tabindex="-1"></a>  <span class="do">##     y[sample(1:nrow(y), size = nsize),, drop=FALSE]</span></span>
+<span id="cb42-60"><a href="initial-parameters-for-em-algorithm.html#cb42-60" tabindex="-1"></a>  <span class="do">##   })</span></span>
+<span id="cb42-61"><a href="initial-parameters-for-em-algorithm.html#cb42-61" tabindex="-1"></a></span>
+<span id="cb42-62"><a href="initial-parameters-for-em-algorithm.html#cb42-62" tabindex="-1"></a>  <span class="do">##   ## Combine all the particles</span></span>
+<span id="cb42-63"><a href="initial-parameters-for-em-algorithm.html#cb42-63" tabindex="-1"></a>  <span class="do">##   yy = do.call(rbind, ylist_downsampled)</span></span>
+<span id="cb42-64"><a href="initial-parameters-for-em-algorithm.html#cb42-64" tabindex="-1"></a></span>
+<span id="cb42-65"><a href="initial-parameters-for-em-algorithm.html#cb42-65" tabindex="-1"></a>  <span class="do">##   ## Get K new means from these</span></span>
+<span id="cb42-66"><a href="initial-parameters-for-em-algorithm.html#cb42-66" tabindex="-1"></a>  <span class="do">##   inds = sample(1:nrow(yy), numclust)</span></span>
+<span id="cb42-67"><a href="initial-parameters-for-em-algorithm.html#cb42-67" tabindex="-1"></a>  <span class="do">##   new_means = yy[inds,, drop=FALSE]</span></span>
+<span id="cb42-68"><a href="initial-parameters-for-em-algorithm.html#cb42-68" tabindex="-1"></a>  <span class="do">##   mulist = lapply(1:TT, function(tt){ new_means })</span></span>
+<span id="cb42-69"><a href="initial-parameters-for-em-algorithm.html#cb42-69" tabindex="-1"></a></span>
+<span id="cb42-70"><a href="initial-parameters-for-em-algorithm.html#cb42-70" tabindex="-1"></a>  <span class="do">## }</span></span>
+<span id="cb42-71"><a href="initial-parameters-for-em-algorithm.html#cb42-71" tabindex="-1"></a></span>
+<span id="cb42-72"><a href="initial-parameters-for-em-algorithm.html#cb42-72" tabindex="-1"></a>  <span class="do">## New (T x dimdat x numclust) array is created.</span></span>
+<span id="cb42-73"><a href="initial-parameters-for-em-algorithm.html#cb42-73" tabindex="-1"></a>  muarray <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim=</span><span class="fu">c</span>(TT, dimdat, numclust))</span>
+<span id="cb42-74"><a href="initial-parameters-for-em-algorithm.html#cb42-74" tabindex="-1"></a>  <span class="cf">for</span>(tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT){</span>
+<span id="cb42-75"><a href="initial-parameters-for-em-algorithm.html#cb42-75" tabindex="-1"></a>    muarray[tt,,] <span class="ot">=</span> <span class="fu">as.matrix</span>(mulist[[tt]])</span>
+<span id="cb42-76"><a href="initial-parameters-for-em-algorithm.html#cb42-76" tabindex="-1"></a>  }</span>
+<span id="cb42-77"><a href="initial-parameters-for-em-algorithm.html#cb42-77" tabindex="-1"></a>  <span class="fu">return</span>(muarray)</span>
+<span id="cb42-78"><a href="initial-parameters-for-em-algorithm.html#cb42-78" tabindex="-1"></a>}</span>
+<span id="cb42-79"><a href="initial-parameters-for-em-algorithm.html#cb42-79" tabindex="-1"></a></span>
+<span id="cb42-80"><a href="initial-parameters-for-em-algorithm.html#cb42-80" tabindex="-1"></a></span>
+<span id="cb42-81"><a href="initial-parameters-for-em-algorithm.html#cb42-81" tabindex="-1"></a><span class="co">#&#39; Initialize the covariances.</span></span>
+<span id="cb42-82"><a href="initial-parameters-for-em-algorithm.html#cb42-82" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb42-83"><a href="initial-parameters-for-em-algorithm.html#cb42-83" tabindex="-1"></a><span class="co">#&#39; @param data The (nt by 3) datasets. There should be T of them.</span></span>
+<span id="cb42-84"><a href="initial-parameters-for-em-algorithm.html#cb42-84" tabindex="-1"></a><span class="co">#&#39; @param numclust Number of clusters.</span></span>
+<span id="cb42-85"><a href="initial-parameters-for-em-algorithm.html#cb42-85" tabindex="-1"></a><span class="co">#&#39; @param fac Value to use for the diagonal of the (dimdat x dimdat) covariance</span></span>
+<span id="cb42-86"><a href="initial-parameters-for-em-algorithm.html#cb42-86" tabindex="-1"></a><span class="co">#&#39;   matrix.</span></span>
+<span id="cb42-87"><a href="initial-parameters-for-em-algorithm.html#cb42-87" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb42-88"><a href="initial-parameters-for-em-algorithm.html#cb42-88" tabindex="-1"></a><span class="co">#&#39; @return An (K x dimdat x dimdat) array containing the (dimdat by dimdat)</span></span>
+<span id="cb42-89"><a href="initial-parameters-for-em-algorithm.html#cb42-89" tabindex="-1"></a><span class="co">#&#39;   covariances.</span></span>
+<span id="cb42-90"><a href="initial-parameters-for-em-algorithm.html#cb42-90" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb42-91"><a href="initial-parameters-for-em-algorithm.html#cb42-91" tabindex="-1"></a><span id='init_sigma'>init_sigma</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(data, numclust, <span class="at">fac =</span> <span class="dv">1</span>){</span>
+<span id="cb42-92"><a href="initial-parameters-for-em-algorithm.html#cb42-92" tabindex="-1"></a></span>
+<span id="cb42-93"><a href="initial-parameters-for-em-algorithm.html#cb42-93" tabindex="-1"></a>  ndat <span class="ot">=</span> <span class="fu">nrow</span>(data[[<span class="dv">1</span>]])</span>
+<span id="cb42-94"><a href="initial-parameters-for-em-algorithm.html#cb42-94" tabindex="-1"></a>  pdat <span class="ot">=</span> <span class="fu">ncol</span>(data[[<span class="dv">1</span>]])</span>
+<span id="cb42-95"><a href="initial-parameters-for-em-algorithm.html#cb42-95" tabindex="-1"></a>  sigmas <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(iclust){</span>
+<span id="cb42-96"><a href="initial-parameters-for-em-algorithm.html#cb42-96" tabindex="-1"></a>    onesigma <span class="ot">=</span> <span class="fu">diag</span>(fac <span class="sc">*</span> <span class="fu">rep</span>(<span class="dv">1</span>, pdat))</span>
+<span id="cb42-97"><a href="initial-parameters-for-em-algorithm.html#cb42-97" tabindex="-1"></a>    <span class="cf">if</span>(pdat<span class="sc">==</span><span class="dv">1</span>) onesigma <span class="ot">=</span> <span class="fu">as.matrix</span>(fac)</span>
+<span id="cb42-98"><a href="initial-parameters-for-em-algorithm.html#cb42-98" tabindex="-1"></a>    <span class="fu">colnames</span>(onesigma) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;datcol&quot;</span>, <span class="dv">1</span><span class="sc">:</span>pdat)</span>
+<span id="cb42-99"><a href="initial-parameters-for-em-algorithm.html#cb42-99" tabindex="-1"></a>    <span class="fu">rownames</span>(onesigma) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;datcol&quot;</span>, <span class="dv">1</span><span class="sc">:</span>pdat)</span>
+<span id="cb42-100"><a href="initial-parameters-for-em-algorithm.html#cb42-100" tabindex="-1"></a>    <span class="fu">return</span>(onesigma)</span>
+<span id="cb42-101"><a href="initial-parameters-for-em-algorithm.html#cb42-101" tabindex="-1"></a>  })</span>
+<span id="cb42-102"><a href="initial-parameters-for-em-algorithm.html#cb42-102" tabindex="-1"></a>  sigmas <span class="ot">=</span> abind<span class="sc">::</span><span class="fu">abind</span>(sigmas, <span class="at">along=</span><span class="dv">0</span>)</span>
+<span id="cb42-103"><a href="initial-parameters-for-em-algorithm.html#cb42-103" tabindex="-1"></a>  <span class="fu">return</span>(sigmas)</span>
+<span id="cb42-104"><a href="initial-parameters-for-em-algorithm.html#cb42-104" tabindex="-1"></a>}</span></code></pre></div>
 <p>Here’s a helper function for printing the progress.</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="initial-parameters-for-em-algorithm.html#cb38-1" tabindex="-1"></a><span class="co">#&#39; A helper function to print the progress of a loop or simulation.</span></span>
-<span id="cb38-2"><a href="initial-parameters-for-em-algorithm.html#cb38-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb38-3"><a href="initial-parameters-for-em-algorithm.html#cb38-3" tabindex="-1"></a><span class="co">#&#39; @param isim Replicate number.</span></span>
-<span id="cb38-4"><a href="initial-parameters-for-em-algorithm.html#cb38-4" tabindex="-1"></a><span class="co">#&#39; @param nsim Total number of replicates.</span></span>
-<span id="cb38-5"><a href="initial-parameters-for-em-algorithm.html#cb38-5" tabindex="-1"></a><span class="co">#&#39; @param type Type of job you&#39;re running. Defaults to &quot;simulation&quot;.</span></span>
-<span id="cb38-6"><a href="initial-parameters-for-em-algorithm.html#cb38-6" tabindex="-1"></a><span class="co">#&#39; @param lapsetime Lapsed time, in seconds (by default).</span></span>
-<span id="cb38-7"><a href="initial-parameters-for-em-algorithm.html#cb38-7" tabindex="-1"></a><span class="co">#&#39; @param lapsetimeunit &quot;second&quot;.</span></span>
-<span id="cb38-8"><a href="initial-parameters-for-em-algorithm.html#cb38-8" tabindex="-1"></a><span class="co">#&#39; @param start.time start time.</span></span>
-<span id="cb38-9"><a href="initial-parameters-for-em-algorithm.html#cb38-9" tabindex="-1"></a><span class="co">#&#39; @param fill Whether or not to fill the line.</span></span>
-<span id="cb38-10"><a href="initial-parameters-for-em-algorithm.html#cb38-10" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb38-11"><a href="initial-parameters-for-em-algorithm.html#cb38-11" tabindex="-1"></a><span class="co">#&#39; @return No return</span></span>
-<span id="cb38-12"><a href="initial-parameters-for-em-algorithm.html#cb38-12" tabindex="-1"></a><span id='print_progress'>print_progress</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(isim, nsim,</span>
-<span id="cb38-13"><a href="initial-parameters-for-em-algorithm.html#cb38-13" tabindex="-1"></a>                           <span class="at">type =</span> <span class="st">&quot;simulation&quot;</span>, <span class="at">lapsetime =</span> <span class="cn">NULL</span>,</span>
-<span id="cb38-14"><a href="initial-parameters-for-em-algorithm.html#cb38-14" tabindex="-1"></a>                           <span class="at">lapsetimeunit =</span> <span class="st">&quot;seconds&quot;</span>, <span class="at">start.time =</span> <span class="cn">NULL</span>,</span>
-<span id="cb38-15"><a href="initial-parameters-for-em-algorithm.html#cb38-15" tabindex="-1"></a>                           <span class="at">fill =</span> <span class="cn">FALSE</span>){</span>
-<span id="cb38-16"><a href="initial-parameters-for-em-algorithm.html#cb38-16" tabindex="-1"></a></span>
-<span id="cb38-17"><a href="initial-parameters-for-em-algorithm.html#cb38-17" tabindex="-1"></a>  <span class="do">## If lapse time is present, then use it</span></span>
-<span id="cb38-18"><a href="initial-parameters-for-em-algorithm.html#cb38-18" tabindex="-1"></a>  <span class="cf">if</span>(fill) <span class="fu">cat</span>(<span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb38-19"><a href="initial-parameters-for-em-algorithm.html#cb38-19" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(lapsetime) <span class="sc">&amp;</span> <span class="fu">is.null</span>(start.time)){</span>
-<span id="cb38-20"><a href="initial-parameters-for-em-algorithm.html#cb38-20" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\r</span><span class="st">&quot;</span>, type, <span class="st">&quot; &quot;</span>, isim, <span class="st">&quot;out of&quot;</span>, nsim)</span>
-<span id="cb38-21"><a href="initial-parameters-for-em-algorithm.html#cb38-21" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb38-22"><a href="initial-parameters-for-em-algorithm.html#cb38-22" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(start.time)){</span>
-<span id="cb38-23"><a href="initial-parameters-for-em-algorithm.html#cb38-23" tabindex="-1"></a>      lapsetime <span class="ot">=</span> <span class="fu">round</span>(<span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), start.time,</span>
-<span id="cb38-24"><a href="initial-parameters-for-em-algorithm.html#cb38-24" tabindex="-1"></a>                                 <span class="at">units =</span> <span class="st">&quot;secs&quot;</span>), <span class="dv">0</span>)</span>
-<span id="cb38-25"><a href="initial-parameters-for-em-algorithm.html#cb38-25" tabindex="-1"></a>      remainingtime <span class="ot">=</span> <span class="fu">round</span>(lapsetime <span class="sc">*</span> (nsim<span class="sc">-</span>isim)<span class="sc">/</span>isim,<span class="dv">0</span>)</span>
-<span id="cb38-26"><a href="initial-parameters-for-em-algorithm.html#cb38-26" tabindex="-1"></a>      endtime <span class="ot">=</span> <span class="fu">Sys.time</span>() <span class="sc">+</span> remainingtime</span>
-<span id="cb38-27"><a href="initial-parameters-for-em-algorithm.html#cb38-27" tabindex="-1"></a>    }</span>
-<span id="cb38-28"><a href="initial-parameters-for-em-algorithm.html#cb38-28" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\r</span><span class="st">&quot;</span>, type, <span class="st">&quot; &quot;</span>, isim, <span class="st">&quot;out of&quot;</span>, nsim, <span class="st">&quot;with lapsed time&quot;</span>,</span>
-<span id="cb38-29"><a href="initial-parameters-for-em-algorithm.html#cb38-29" tabindex="-1"></a>        lapsetime, lapsetimeunit, <span class="st">&quot;and remaining time&quot;</span>, remainingtime,</span>
-<span id="cb38-30"><a href="initial-parameters-for-em-algorithm.html#cb38-30" tabindex="-1"></a>        lapsetimeunit, <span class="st">&quot;and will finish at&quot;</span>, <span class="fu">strftime</span>(endtime))</span>
-<span id="cb38-31"><a href="initial-parameters-for-em-algorithm.html#cb38-31" tabindex="-1"></a>  }</span>
-<span id="cb38-32"><a href="initial-parameters-for-em-algorithm.html#cb38-32" tabindex="-1"></a>  <span class="cf">if</span>(fill) <span class="fu">cat</span>(<span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb38-33"><a href="initial-parameters-for-em-algorithm.html#cb38-33" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="initial-parameters-for-em-algorithm.html#cb43-1" tabindex="-1"></a><span class="co">#&#39; A helper function to print the progress of a loop or simulation.</span></span>
+<span id="cb43-2"><a href="initial-parameters-for-em-algorithm.html#cb43-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb43-3"><a href="initial-parameters-for-em-algorithm.html#cb43-3" tabindex="-1"></a><span class="co">#&#39; @param isim Replicate number.</span></span>
+<span id="cb43-4"><a href="initial-parameters-for-em-algorithm.html#cb43-4" tabindex="-1"></a><span class="co">#&#39; @param nsim Total number of replicates.</span></span>
+<span id="cb43-5"><a href="initial-parameters-for-em-algorithm.html#cb43-5" tabindex="-1"></a><span class="co">#&#39; @param type Type of job you&#39;re running. Defaults to &quot;simulation&quot;.</span></span>
+<span id="cb43-6"><a href="initial-parameters-for-em-algorithm.html#cb43-6" tabindex="-1"></a><span class="co">#&#39; @param lapsetime Lapsed time, in seconds (by default).</span></span>
+<span id="cb43-7"><a href="initial-parameters-for-em-algorithm.html#cb43-7" tabindex="-1"></a><span class="co">#&#39; @param lapsetimeunit &quot;second&quot;.</span></span>
+<span id="cb43-8"><a href="initial-parameters-for-em-algorithm.html#cb43-8" tabindex="-1"></a><span class="co">#&#39; @param start.time start time.</span></span>
+<span id="cb43-9"><a href="initial-parameters-for-em-algorithm.html#cb43-9" tabindex="-1"></a><span class="co">#&#39; @param fill Whether or not to fill the line.</span></span>
+<span id="cb43-10"><a href="initial-parameters-for-em-algorithm.html#cb43-10" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb43-11"><a href="initial-parameters-for-em-algorithm.html#cb43-11" tabindex="-1"></a><span class="co">#&#39; @return No return</span></span>
+<span id="cb43-12"><a href="initial-parameters-for-em-algorithm.html#cb43-12" tabindex="-1"></a><span id='print_progress'>print_progress</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(isim, nsim,</span>
+<span id="cb43-13"><a href="initial-parameters-for-em-algorithm.html#cb43-13" tabindex="-1"></a>                           <span class="at">type =</span> <span class="st">&quot;simulation&quot;</span>, <span class="at">lapsetime =</span> <span class="cn">NULL</span>,</span>
+<span id="cb43-14"><a href="initial-parameters-for-em-algorithm.html#cb43-14" tabindex="-1"></a>                           <span class="at">lapsetimeunit =</span> <span class="st">&quot;seconds&quot;</span>, <span class="at">start.time =</span> <span class="cn">NULL</span>,</span>
+<span id="cb43-15"><a href="initial-parameters-for-em-algorithm.html#cb43-15" tabindex="-1"></a>                           <span class="at">fill =</span> <span class="cn">FALSE</span>){</span>
+<span id="cb43-16"><a href="initial-parameters-for-em-algorithm.html#cb43-16" tabindex="-1"></a></span>
+<span id="cb43-17"><a href="initial-parameters-for-em-algorithm.html#cb43-17" tabindex="-1"></a>  <span class="do">## If lapse time is present, then use it</span></span>
+<span id="cb43-18"><a href="initial-parameters-for-em-algorithm.html#cb43-18" tabindex="-1"></a>  <span class="cf">if</span>(fill) <span class="fu">cat</span>(<span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb43-19"><a href="initial-parameters-for-em-algorithm.html#cb43-19" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(lapsetime) <span class="sc">&amp;</span> <span class="fu">is.null</span>(start.time)){</span>
+<span id="cb43-20"><a href="initial-parameters-for-em-algorithm.html#cb43-20" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\r</span><span class="st">&quot;</span>, type, <span class="st">&quot; &quot;</span>, isim, <span class="st">&quot;out of&quot;</span>, nsim)</span>
+<span id="cb43-21"><a href="initial-parameters-for-em-algorithm.html#cb43-21" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb43-22"><a href="initial-parameters-for-em-algorithm.html#cb43-22" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(start.time)){</span>
+<span id="cb43-23"><a href="initial-parameters-for-em-algorithm.html#cb43-23" tabindex="-1"></a>      lapsetime <span class="ot">=</span> <span class="fu">round</span>(<span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), start.time,</span>
+<span id="cb43-24"><a href="initial-parameters-for-em-algorithm.html#cb43-24" tabindex="-1"></a>                                 <span class="at">units =</span> <span class="st">&quot;secs&quot;</span>), <span class="dv">0</span>)</span>
+<span id="cb43-25"><a href="initial-parameters-for-em-algorithm.html#cb43-25" tabindex="-1"></a>      remainingtime <span class="ot">=</span> <span class="fu">round</span>(lapsetime <span class="sc">*</span> (nsim<span class="sc">-</span>isim)<span class="sc">/</span>isim,<span class="dv">0</span>)</span>
+<span id="cb43-26"><a href="initial-parameters-for-em-algorithm.html#cb43-26" tabindex="-1"></a>      endtime <span class="ot">=</span> <span class="fu">Sys.time</span>() <span class="sc">+</span> remainingtime</span>
+<span id="cb43-27"><a href="initial-parameters-for-em-algorithm.html#cb43-27" tabindex="-1"></a>    }</span>
+<span id="cb43-28"><a href="initial-parameters-for-em-algorithm.html#cb43-28" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\r</span><span class="st">&quot;</span>, type, <span class="st">&quot; &quot;</span>, isim, <span class="st">&quot;out of&quot;</span>, nsim, <span class="st">&quot;with lapsed time&quot;</span>,</span>
+<span id="cb43-29"><a href="initial-parameters-for-em-algorithm.html#cb43-29" tabindex="-1"></a>        lapsetime, lapsetimeunit, <span class="st">&quot;and remaining time&quot;</span>, remainingtime,</span>
+<span id="cb43-30"><a href="initial-parameters-for-em-algorithm.html#cb43-30" tabindex="-1"></a>        lapsetimeunit, <span class="st">&quot;and will finish at&quot;</span>, <span class="fu">strftime</span>(endtime))</span>
+<span id="cb43-31"><a href="initial-parameters-for-em-algorithm.html#cb43-31" tabindex="-1"></a>  }</span>
+<span id="cb43-32"><a href="initial-parameters-for-em-algorithm.html#cb43-32" tabindex="-1"></a>  <span class="cf">if</span>(fill) <span class="fu">cat</span>(<span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb43-33"><a href="initial-parameters-for-em-algorithm.html#cb43-33" tabindex="-1"></a>}</span></code></pre></div>
 </div>
             </section>
 

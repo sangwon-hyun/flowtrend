@@ -46,9 +46,12 @@ gen_diff_mat <- function(n, l, x = NULL){
       return(get_D1(n))
     }
     if(l > 1){
+
       D <- get_D1(n)
       for(k in 1:(l-1)){
-        D <- get_D1(n-k) %*% diag(k/diff(x, lag = k)) %*% D
+        D1 = get_D1(n-k)
+        facmat = diag(k / diff(x, lag = k))
+        D <- D1 %*% facmat %*% D
       }
       return(D)
     }

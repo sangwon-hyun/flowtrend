@@ -20,7 +20,7 @@ gen_tf_mat <- function(n, k, x = NULL){
 
   ## For every i,j'th entry, use this helper function (from eq 25 of Tibshirani
   ## (2014)).
-  gen_ij <- function(i, j, k){
+  gen_ij <- function(x, i, j, k){
     xi <- x[i]
     if(j %in% 1:(k+1)){
       return(xi^(j-1))
@@ -32,7 +32,7 @@ gen_tf_mat <- function(n, k, x = NULL){
         prd = 1 
         ind = j
       }
-      if(k>=1){
+      if(k >= 1){
         ind = j - (1:k)
         prd = prod(xi - x[ind]) 
 
@@ -47,7 +47,7 @@ gen_tf_mat <- function(n, k, x = NULL){
   H <- matrix(nrow = n, ncol = n)
   for(i in 1:n){
     for(j in 1:n){
-      H[i,j] <- gen_ij(i,j, k)
+      H[i,j] <- gen_ij(x, i,j, k)
     }
   }
   return(H)

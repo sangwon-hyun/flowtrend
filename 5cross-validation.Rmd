@@ -171,7 +171,6 @@ testthat::test_that("The prediction function returns the right things", {
                     lambda_prob = .005, ## 
                     nrestart = 1,
                     niter = 3)
-
   predobj = predict_flowtrend(obj)
   testthat::expect_named(predobj, c("mn", "prob", "sigma", "x"))
 })
@@ -180,7 +179,7 @@ testthat::test_that("The prediction function returns the right things", {
 Now, we try to make predictions at *new* held-out time points `held_out=25:35`,
 from a model that is estimated without those time points.
 
-```{r test-predict_flowtrend2, eval = FALSE}
+```{r test-predict_flowtrend2, eval = TRUE}
 ## Generate data
 set.seed(100)
 dt       <- gendat_1d(100, rep(100, 100))
@@ -189,15 +188,20 @@ held_out = 25:35
 dt_subset = dt %>% subset(time %ni% held_out)
 ylist = dt_subset %>% dt2ylist()
 x = dt_subset %>% pull(time) %>% unique()
+set.seed(686)
 obj <- flowtrend(ylist = ylist, 
                   x = x,
                   maxdev = 5,
                   numclust = 3,
-                  lambda = 0.02,
-                  l = 1,
+                  l = 2,
                   l_prob = 2,
-                  lambda_prob = .005, ## 
-                  nrestart = 1)
+                  lambda = 0.02,
+                  lambda_prob = .1, ## 
+                 nrestart = 5,
+                 verbose = TRUE)
+
+obj$all_objectives %>% mutate(irestart = as.factor(irestart)) %>%
+  ggplot() + geom_line(aes(x=iter, y=objective, group = irestart, col = irestart))
 
 ## Also reorder the cluster labels of the truth, to match the fitted model.
 ord = obj$mn[,1,] %>% colSums() %>% order(decreasing=TRUE)
@@ -221,10 +225,10 @@ testthat::test_that("prediction function returns the right things", {
 Plot the predicted means $\mu$ and probabilities $\pi$, with purple points at
 the interpolated means.  We can see that it works as expected.
 
-```{r predict-plot-mean, fig.width = 7, fig.height = 5, eval = FALSE}
+```{r predict-plot-mean, fig.width = 7, fig.height = 5, eval = TRUE}
 predobj = predict_flowtrend(obj, newtimes = held_out)
 
-g = plot_1d(ylist, obj, x = x) +
+g = plot_1d(ylist = ylist, obj=obj, x = x) +
   geom_line(aes(x = time, y = mean, group = cluster),
             data = dt_model,## %>% subset(time %ni% held_out),
             linetype = "dashed", size=2, alpha = .7)
@@ -252,34 +256,30 @@ plot_prob(obj, x=x) +
 
 Let's now try to space inputs unevenly, by `x`.
 
-```{r uneven-space, eval = FALSE}
+```{r uneven-space, eval = TRUE}
 set.seed(100)
-dt       <- gendat_1d(1000, rep(100, 1000))
-dt_model       <- gendat_1d(1000, rep(100, 1000), return_model = TRUE)
-## held_out = 25:35
-## dt_subset = dt %>% subset(time %ni% held_out)
+TT = 100
+dt       <- gendat_1d(TT, rep(100, TT))
+dt_model       <- gendat_1d(TT, rep(100, TT), return_model = TRUE)
 ylist_orig = dt %>% dt2ylist()
-## x = dt %>% pull(time) %>% unique()
-## x = runif(min = 1, max = 100, n = 100) %>% sort()
-x = sample(1:1000, 100) %>% sort()
+plot_1d(ylist_orig)
+x = sample(1:TT, floor(TT/2)) %>% sort()
 ylist = ylist_orig[x]
+set.seed(55)
 obj <- flowtrend(ylist = ylist, 
-                  x = x,
-                  maxdev = 5,
-                  numclust = 3,
-                  lambda = 0.02,
-                  l = 1,
-                  l_prob = 2,
-                  lambda_prob = .005, ## 
-                  nrestart = 1)
+                 x = x,
+                 maxdev = 5,
+                 numclust = 3,
+                 l = 2,
+                 l_prob = 2,
+                 lambda = .5,
+                 lambda_prob = .5, ## 
+                 rho_init = .1,
+                 nrestart = 1,
+                 verbose = TRUE)
 
-## Also reorder the cluster labels of the truth, to match the fitted model.
-ord = obj$mn[,1,] %>% colSums() %>% order(decreasing=TRUE)
-lookup <- setNames(c(1:obj$numclust), ord)
-dt_model$cluster = lookup[as.numeric(dt_model$cluster)] %>% as.factor()
-
-## Reorder the cluster lables of the fitted model.
-obj = reorder_clust(obj)
+obj$all_objectives %>% mutate(irestart = as.factor(irestart)) %>%
+  ggplot() + geom_line(aes(x=iter, y=objective, group = irestart, col = irestart))
 
 ## Make mean predictions
 newtimes  = seq(from=min(x),to=max(x),length=10000)
@@ -299,8 +299,9 @@ points. The out-of-sample $\mu$ predictions made on a fine grid of time points
 (shown by the yellow lines) look fine.
 
 
-```{r uneven-mean-plot, fig.width = 7, fig.height = 5, eval = FALSE}
-g = plot_1d(ylist, obj, x = x, add_point = FALSE)
+```{r uneven-mean-plot, fig.width = 7, fig.height = 5, eval = TRUE}
+g =
+  plot_1d(ylist=ylist, obj = obj, x=x)##, x = x, add_point = FALSE)
 g + ggtitle("Fitted model")
 g + geom_line(aes(x=time, y=mn, group = cluster), data = preds, col = 'yellow', size = rel(1), alpha = .7) + ggtitle("Predictions on fine grid of times") 
 ```
@@ -308,23 +309,23 @@ g + geom_line(aes(x=time, y=mn, group = cluster), data = preds, col = 'yellow', 
 The out-of-sample $\pi$ predictions are the lines that connect the points. They
 look great as well.
 
-```{r uneven-prob-plot, eval = TRUE, fig.width = 7, fig.height = 5, eval = FALSE}
+```{r uneven-prob-plot, eval = TRUE, fig.width = 7, fig.height = 5, eval = TRUE}
 plot_prob(obj, x=x) +
-  geom_line(aes(x = time, y = prob, group = cluster, color = cluster),
-            data = dt_model, linetype = "dashed")  +
-  facet_wrap(~cluster) 
-  ## geom_line(aes(x = time, y = prob), data = preds, col = 'yellow', size = rel(1), alpha = .7)
+  ## geom_line(aes(x = time, y = prob, group = cluster, color = cluster),
+  ##          data = dt_model, linetype = "dashed")  +
+  facet_wrap(~cluster)  +
+  geom_line(aes(x = time, y = prob), data = preds, col = 'yellow', size = rel(.5), alpha = .7)
 ```
 
 Next, we'll try evaluating an estimated model's prediction in an out-of-sample
 measurement. This will be measured by the model prediction's out-of-sample
 objective (negative log-likelihood).
 
-```{r predict-example, eval = FALSE}
+```{r predict-example, eval = TRUE}
 ## Generate data
 set.seed(100)
-dt       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45)
-dt_model       <- gendat_1d(100, rep(100, 100), die_off_time = 0.45, return_model = TRUE)
+dt       <- gendat_1d(100, rep(100, 100))
+dt_model       <- gendat_1d(100, rep(100, 100), return_model = TRUE)
 held_out = 25:35
 dt_subset = dt %>% subset(time %ni% held_out)
 ylist = dt_subset %>% dt2ylist()
@@ -356,7 +357,7 @@ obj_better = objective(mu = truemn, prob = predobj$prob, sigma = predobj$sigma, 
                        unpenalized = TRUE)
 
 ## Here is the estimated model
-plot_1d(ylist, obj, x= (1:100)[-held_out], add_point = FALSE)
+plot_1d(ylist=ylist, obj=obj, x= (1:100)[-held_out], add_point = FALSE)
 ```
 
 The out-of-sample prediction is similar for the predicted model and the
@@ -1454,8 +1455,6 @@ laptop, using `cv_flowtrend()`.
 Let's try it out.
 
 ```{r, eval = FALSE}
-litr::load_all("~/repos/flowtrend/index.Rmd")
-library(tidyverse)
 cv_gridsize = 3
 l = 1
 l_prob = 1

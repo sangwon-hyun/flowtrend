@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2023-11-21" />
+<meta name="date" content="2024-01-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -57,7 +57,7 @@
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -158,7 +158,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>8.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
 <li class="chapter" data-level="8.4" data-path="m-step.html"><a href="m-step.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>8.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
 <li class="chapter" data-level="8.5" data-path="m-step.html"><a href="m-step.html#all-rcpp-functions"><i class="fa fa-check"></i><b>8.5</b> All Rcpp functions</a></li>
-<li class="chapter" data-level="8.6" data-path="m-step.html"><a href="m-step.html#ported-over-from-flowmix"><i class="fa fa-check"></i><b>8.6</b> Ported over from flowmix</a></li>
 </ul></li>
 <li class="chapter" data-level="9" data-path="flowtrend.html"><a href="flowtrend.html"><i class="fa fa-check"></i><b>9</b> flowtrend</a></li>
 <li class="chapter" data-level="10" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>10</b> Reordering clusters</a></li>
@@ -177,6 +176,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>12.1</b> 1d example</a></li>
 <li class="chapter" data-level="12.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values"><i class="fa fa-check"></i><b>12.2</b> Testing monotonicity of objective values</a></li>
 <li class="chapter" data-level="12.3" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_2d-example"><i class="fa fa-check"></i><b>12.3</b> 2d example</a></li>
+<li class="chapter" data-level="12.4" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#working-with-binned-dataset"><i class="fa fa-check"></i><b>12.4</b> Working with “binned” dataset</a></li>
+<li class="chapter" data-level="12.5" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#unevenly-spaced-inputs-x"><i class="fa fa-check"></i><b>12.5</b> Unevenly spaced inputs (x)</a></li>
 </ul></li>
 <li class="chapter" data-level="13" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>13</b> Documenting the package and building</a></li>
 </ul>
@@ -200,7 +201,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">4</span> Trend filtering<a href="trend-filtering.html#trend-filtering" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Trend filtering is a
 non-parametric regression technique for a sequence of output points <span class="math inline">\(y = (y_1,..., y_T)\)</span>
-observed at locations <span class="math inline">\(x = (x_1, ..., x_T)\)</span>. It is usually assumed that <span class="math inline">\(x_1, ..., x_T\)</span> are evenly spaced points, though this can be relaxed. The trend
+observed at locations <span class="math inline">\(x = (x_1, ..., x_T)\)</span>. It is usually assumed that <span class="math inline">\(x_1,
+..., x_T\)</span> are evenly spaced points, though this can be relaxed. The trend
 filtering estimate of order <span class="math inline">\(l\)</span> of the time series <span class="math inline">\(\mu_t = \mathbb{E}(y_t), t \in x\)</span> is
 obtained by calculating <span class="math display">\[\hat{\mu} = \mathop{\mathrm{argmin}}_{\mu \in \mathbb{R}^T}
 \frac{1}{2}\| \mu - y\|_2^2 + \lambda \| D^{(l+1)} \mu\|_1,\]</span> where <span class="math inline">\(\lambda\)</span> is
@@ -222,83 +224,71 @@ equation (41)].</p>
 \end{equation*}\]</span></p>
 <p>For <span class="math inline">\(l&gt;1\)</span>, the differencing matrox <span class="math inline">\(D^{(l+1)}\)</span> is defined recursively as
 <span class="math inline">\(D^{(l+1)} = D^{(1)} D^{(l)}\)</span>, starting with <span class="math inline">\(D^{(1)}\)</span>.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="trend-filtering.html#cb21-1" tabindex="-1"></a><span class="co">#&#39; Generating Difference Matrix of Specified Order</span></span>
-<span id="cb21-2"><a href="trend-filtering.html#cb21-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb21-3"><a href="trend-filtering.html#cb21-3" tabindex="-1"></a><span class="co">#&#39; @param n length of vector to be differenced</span></span>
-<span id="cb21-4"><a href="trend-filtering.html#cb21-4" tabindex="-1"></a><span class="co">#&#39; @param l order of differencing</span></span>
-<span id="cb21-5"><a href="trend-filtering.html#cb21-5" tabindex="-1"></a><span class="co">#&#39; @param x optional. Spacing of input points.</span></span>
-<span id="cb21-6"><a href="trend-filtering.html#cb21-6" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb21-7"><a href="trend-filtering.html#cb21-7" tabindex="-1"></a><span class="co">#&#39; @return A n by n-l-1 matrix</span></span>
-<span id="cb21-8"><a href="trend-filtering.html#cb21-8" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb21-9"><a href="trend-filtering.html#cb21-9" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb21-10"><a href="trend-filtering.html#cb21-10" tabindex="-1"></a><span class="co">#&#39; @examples</span></span>
-<span id="cb21-11"><a href="trend-filtering.html#cb21-11" tabindex="-1"></a><span id='gen_diff_mat'>gen_diff_mat</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(n, l, <span class="at">x =</span> <span class="cn">NULL</span>){</span>
-<span id="cb21-12"><a href="trend-filtering.html#cb21-12" tabindex="-1"></a></span>
-<span id="cb21-13"><a href="trend-filtering.html#cb21-13" tabindex="-1"></a>  <span class="do">## Basic check</span></span>
-<span id="cb21-14"><a href="trend-filtering.html#cb21-14" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x))  <span class="fu">stopifnot</span>(<span class="fu">length</span>(x) <span class="sc">==</span> n) </span>
-<span id="cb21-15"><a href="trend-filtering.html#cb21-15" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.unsorted</span>(x))  <span class="fu">stop</span>(<span class="st">&quot;x must be in increasing order!&quot;</span>) </span>
-<span id="cb21-16"><a href="trend-filtering.html#cb21-16" tabindex="-1"></a></span>
-<span id="cb21-17"><a href="trend-filtering.html#cb21-17" tabindex="-1"></a>  <span id='get_D1'>get_D1</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(t) {<span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>(t<span class="dv">-1</span>), <span class="at">FUN =</span> <span class="cf">function</span>(x){</span>
-<span id="cb21-18"><a href="trend-filtering.html#cb21-18" tabindex="-1"></a>    v <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, t)</span>
-<span id="cb21-19"><a href="trend-filtering.html#cb21-19" tabindex="-1"></a>    v[x] <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span></span>
-<span id="cb21-20"><a href="trend-filtering.html#cb21-20" tabindex="-1"></a>    v[x<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb21-21"><a href="trend-filtering.html#cb21-21" tabindex="-1"></a>    v</span>
-<span id="cb21-22"><a href="trend-filtering.html#cb21-22" tabindex="-1"></a>  }))}</span>
-<span id="cb21-23"><a href="trend-filtering.html#cb21-23" tabindex="-1"></a></span>
-<span id="cb21-24"><a href="trend-filtering.html#cb21-24" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(x)){</span>
-<span id="cb21-25"><a href="trend-filtering.html#cb21-25" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">0</span>){</span>
-<span id="cb21-26"><a href="trend-filtering.html#cb21-26" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">diag</span>(<span class="fu">rep</span>(<span class="dv">1</span>,n)))</span>
-<span id="cb21-27"><a href="trend-filtering.html#cb21-27" tabindex="-1"></a>    }</span>
-<span id="cb21-28"><a href="trend-filtering.html#cb21-28" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">1</span>){</span>
-<span id="cb21-29"><a href="trend-filtering.html#cb21-29" tabindex="-1"></a>      <span class="fu">return</span>(<a href='trend-filtering.html#get_D1'>get_D1</a>(n))</span>
-<span id="cb21-30"><a href="trend-filtering.html#cb21-30" tabindex="-1"></a>    }</span>
-<span id="cb21-31"><a href="trend-filtering.html#cb21-31" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">&gt;</span> <span class="dv">1</span>){</span>
-<span id="cb21-32"><a href="trend-filtering.html#cb21-32" tabindex="-1"></a>      D <span class="ot">&lt;-</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n)</span>
-<span id="cb21-33"><a href="trend-filtering.html#cb21-33" tabindex="-1"></a>      <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(l<span class="dv">-1</span>)){</span>
-<span id="cb21-34"><a href="trend-filtering.html#cb21-34" tabindex="-1"></a>        D <span class="ot">&lt;-</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n<span class="sc">-</span>k) <span class="sc">%*%</span> D</span>
-<span id="cb21-35"><a href="trend-filtering.html#cb21-35" tabindex="-1"></a>      }</span>
-<span id="cb21-36"><a href="trend-filtering.html#cb21-36" tabindex="-1"></a>      <span class="fu">return</span>(D)</span>
-<span id="cb21-37"><a href="trend-filtering.html#cb21-37" tabindex="-1"></a>    }</span>
-<span id="cb21-38"><a href="trend-filtering.html#cb21-38" tabindex="-1"></a>  }</span>
-<span id="cb21-39"><a href="trend-filtering.html#cb21-39" tabindex="-1"></a>  <span class="cf">else</span>{</span>
-<span id="cb21-40"><a href="trend-filtering.html#cb21-40" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">0</span>){</span>
-<span id="cb21-41"><a href="trend-filtering.html#cb21-41" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">diag</span>(<span class="fu">rep</span>(<span class="dv">1</span>,n)))</span>
-<span id="cb21-42"><a href="trend-filtering.html#cb21-42" tabindex="-1"></a>    }</span>
-<span id="cb21-43"><a href="trend-filtering.html#cb21-43" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">1</span>){</span>
-<span id="cb21-44"><a href="trend-filtering.html#cb21-44" tabindex="-1"></a>      <span class="fu">return</span>(<a href='trend-filtering.html#get_D1'>get_D1</a>(n))</span>
-<span id="cb21-45"><a href="trend-filtering.html#cb21-45" tabindex="-1"></a>    }</span>
-<span id="cb21-46"><a href="trend-filtering.html#cb21-46" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">&gt;</span> <span class="dv">1</span>){</span>
-<span id="cb21-47"><a href="trend-filtering.html#cb21-47" tabindex="-1"></a>      D <span class="ot">&lt;-</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n)</span>
-<span id="cb21-48"><a href="trend-filtering.html#cb21-48" tabindex="-1"></a>      <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(l<span class="dv">-1</span>)){</span>
-<span id="cb21-49"><a href="trend-filtering.html#cb21-49" tabindex="-1"></a>        D <span class="ot">&lt;-</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n<span class="sc">-</span>k) <span class="sc">%*%</span> <span class="fu">diag</span>(k<span class="sc">/</span><span class="fu">diff</span>(x, <span class="at">lag =</span> k)) <span class="sc">%*%</span> D</span>
-<span id="cb21-50"><a href="trend-filtering.html#cb21-50" tabindex="-1"></a>      }</span>
-<span id="cb21-51"><a href="trend-filtering.html#cb21-51" tabindex="-1"></a>      <span class="fu">return</span>(D)</span>
-<span id="cb21-52"><a href="trend-filtering.html#cb21-52" tabindex="-1"></a>    }</span>
-<span id="cb21-53"><a href="trend-filtering.html#cb21-53" tabindex="-1"></a>  }</span>
-<span id="cb21-54"><a href="trend-filtering.html#cb21-54" tabindex="-1"></a>}</span></code></pre></div>
-<p>For equally spaced inputs:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="trend-filtering.html#cb22-1" tabindex="-1"></a>TT <span class="ot">=</span> <span class="dv">10</span></span>
-<span id="cb22-2"><a href="trend-filtering.html#cb22-2" tabindex="-1"></a></span>
-<span id="cb22-3"><a href="trend-filtering.html#cb22-3" tabindex="-1"></a>l <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb22-4"><a href="trend-filtering.html#cb22-4" tabindex="-1"></a>Dl <span class="ot">=</span> <a href='trend-filtering.html#gen_diff_mat'>gen_diff_mat</a>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">l =</span> l<span class="sc">+</span><span class="dv">1</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span>
-<span id="cb22-5"><a href="trend-filtering.html#cb22-5" tabindex="-1"></a><span class="fu">print</span>(Dl)</span>
-<span id="cb22-6"><a href="trend-filtering.html#cb22-6" tabindex="-1"></a></span>
-<span id="cb22-7"><a href="trend-filtering.html#cb22-7" tabindex="-1"></a>l <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb22-8"><a href="trend-filtering.html#cb22-8" tabindex="-1"></a>Dl <span class="ot">=</span> <a href='trend-filtering.html#gen_diff_mat'>gen_diff_mat</a>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">l =</span> l<span class="sc">+</span><span class="dv">1</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span>
-<span id="cb22-9"><a href="trend-filtering.html#cb22-9" tabindex="-1"></a><span class="fu">print</span>(Dl)</span>
-<span id="cb22-10"><a href="trend-filtering.html#cb22-10" tabindex="-1"></a></span>
-<span id="cb22-11"><a href="trend-filtering.html#cb22-11" tabindex="-1"></a>l <span class="ot">=</span> <span class="dv">2</span></span>
-<span id="cb22-12"><a href="trend-filtering.html#cb22-12" tabindex="-1"></a>Dl <span class="ot">=</span> <a href='trend-filtering.html#gen_diff_mat'>gen_diff_mat</a>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">l =</span> l<span class="sc">+</span><span class="dv">1</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span>
-<span id="cb22-13"><a href="trend-filtering.html#cb22-13" tabindex="-1"></a><span class="fu">print</span>(Dl)</span></code></pre></div>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-## [1,]    1   -2    1    0    0    0    0    0    0     0
-## [2,]    0    1   -2    1    0    0    0    0    0     0
-## [3,]    0    0    1   -2    1    0    0    0    0     0
-## [4,]    0    0    0    1   -2    1    0    0    0     0
-## [5,]    0    0    0    0    1   -2    1    0    0     0
-## [6,]    0    0    0    0    0    1   -2    1    0     0
-## [7,]    0    0    0    0    0    0    1   -2    1     0
-## [8,]    0    0    0    0    0    0    0    1   -2     1</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="trend-filtering.html#cb22-1" tabindex="-1"></a><span class="co">#&#39; Generating Difference Matrix of Specified Order</span></span>
+<span id="cb22-2"><a href="trend-filtering.html#cb22-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb22-3"><a href="trend-filtering.html#cb22-3" tabindex="-1"></a><span class="co">#&#39; @param n length of vector to be differenced</span></span>
+<span id="cb22-4"><a href="trend-filtering.html#cb22-4" tabindex="-1"></a><span class="co">#&#39; @param l order of differencing</span></span>
+<span id="cb22-5"><a href="trend-filtering.html#cb22-5" tabindex="-1"></a><span class="co">#&#39; @param x optional. Spacing of input points.</span></span>
+<span id="cb22-6"><a href="trend-filtering.html#cb22-6" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb22-7"><a href="trend-filtering.html#cb22-7" tabindex="-1"></a><span class="co">#&#39; @return A n by n-l-1 matrix</span></span>
+<span id="cb22-8"><a href="trend-filtering.html#cb22-8" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb22-9"><a href="trend-filtering.html#cb22-9" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb22-10"><a href="trend-filtering.html#cb22-10" tabindex="-1"></a><span class="co">#&#39; @examples</span></span>
+<span id="cb22-11"><a href="trend-filtering.html#cb22-11" tabindex="-1"></a><span id='gen_diff_mat'>gen_diff_mat</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(n, l, <span class="at">x =</span> <span class="cn">NULL</span>){</span>
+<span id="cb22-12"><a href="trend-filtering.html#cb22-12" tabindex="-1"></a></span>
+<span id="cb22-13"><a href="trend-filtering.html#cb22-13" tabindex="-1"></a>  <span class="do">## Basic check</span></span>
+<span id="cb22-14"><a href="trend-filtering.html#cb22-14" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x))  <span class="fu">stopifnot</span>(<span class="fu">length</span>(x) <span class="sc">==</span> n) </span>
+<span id="cb22-15"><a href="trend-filtering.html#cb22-15" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.unsorted</span>(x))  <span class="fu">stop</span>(<span class="st">&quot;x must be in increasing order!&quot;</span>) </span>
+<span id="cb22-16"><a href="trend-filtering.html#cb22-16" tabindex="-1"></a></span>
+<span id="cb22-17"><a href="trend-filtering.html#cb22-17" tabindex="-1"></a>  <span id='get_D1'>get_D1</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(t) {<span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>(t<span class="dv">-1</span>), <span class="at">FUN =</span> <span class="cf">function</span>(x){</span>
+<span id="cb22-18"><a href="trend-filtering.html#cb22-18" tabindex="-1"></a>    v <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, t)</span>
+<span id="cb22-19"><a href="trend-filtering.html#cb22-19" tabindex="-1"></a>    v[x] <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span></span>
+<span id="cb22-20"><a href="trend-filtering.html#cb22-20" tabindex="-1"></a>    v[x<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb22-21"><a href="trend-filtering.html#cb22-21" tabindex="-1"></a>    v</span>
+<span id="cb22-22"><a href="trend-filtering.html#cb22-22" tabindex="-1"></a>  }))}</span>
+<span id="cb22-23"><a href="trend-filtering.html#cb22-23" tabindex="-1"></a></span>
+<span id="cb22-24"><a href="trend-filtering.html#cb22-24" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(x)){</span>
+<span id="cb22-25"><a href="trend-filtering.html#cb22-25" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">0</span>){</span>
+<span id="cb22-26"><a href="trend-filtering.html#cb22-26" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">diag</span>(<span class="fu">rep</span>(<span class="dv">1</span>,n)))</span>
+<span id="cb22-27"><a href="trend-filtering.html#cb22-27" tabindex="-1"></a>    }</span>
+<span id="cb22-28"><a href="trend-filtering.html#cb22-28" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">1</span>){</span>
+<span id="cb22-29"><a href="trend-filtering.html#cb22-29" tabindex="-1"></a>      <span class="fu">return</span>(<a href='trend-filtering.html#get_D1'>get_D1</a>(n))</span>
+<span id="cb22-30"><a href="trend-filtering.html#cb22-30" tabindex="-1"></a>    }</span>
+<span id="cb22-31"><a href="trend-filtering.html#cb22-31" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">&gt;</span> <span class="dv">1</span>){</span>
+<span id="cb22-32"><a href="trend-filtering.html#cb22-32" tabindex="-1"></a>      D <span class="ot">&lt;-</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n)</span>
+<span id="cb22-33"><a href="trend-filtering.html#cb22-33" tabindex="-1"></a>      <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(l<span class="dv">-1</span>)){</span>
+<span id="cb22-34"><a href="trend-filtering.html#cb22-34" tabindex="-1"></a>        D <span class="ot">&lt;-</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n<span class="sc">-</span>k) <span class="sc">%*%</span> D</span>
+<span id="cb22-35"><a href="trend-filtering.html#cb22-35" tabindex="-1"></a>      }</span>
+<span id="cb22-36"><a href="trend-filtering.html#cb22-36" tabindex="-1"></a>      <span class="fu">return</span>(D)</span>
+<span id="cb22-37"><a href="trend-filtering.html#cb22-37" tabindex="-1"></a>    }</span>
+<span id="cb22-38"><a href="trend-filtering.html#cb22-38" tabindex="-1"></a>  }</span>
+<span id="cb22-39"><a href="trend-filtering.html#cb22-39" tabindex="-1"></a>  <span class="cf">else</span>{</span>
+<span id="cb22-40"><a href="trend-filtering.html#cb22-40" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">0</span>){</span>
+<span id="cb22-41"><a href="trend-filtering.html#cb22-41" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">diag</span>(<span class="fu">rep</span>(<span class="dv">1</span>,n)))</span>
+<span id="cb22-42"><a href="trend-filtering.html#cb22-42" tabindex="-1"></a>    }</span>
+<span id="cb22-43"><a href="trend-filtering.html#cb22-43" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">==</span> <span class="dv">1</span>){</span>
+<span id="cb22-44"><a href="trend-filtering.html#cb22-44" tabindex="-1"></a>      <span class="fu">return</span>(<a href='trend-filtering.html#get_D1'>get_D1</a>(n))</span>
+<span id="cb22-45"><a href="trend-filtering.html#cb22-45" tabindex="-1"></a>    }</span>
+<span id="cb22-46"><a href="trend-filtering.html#cb22-46" tabindex="-1"></a>    <span class="cf">if</span>(l <span class="sc">&gt;</span> <span class="dv">1</span>){</span>
+<span id="cb22-47"><a href="trend-filtering.html#cb22-47" tabindex="-1"></a></span>
+<span id="cb22-48"><a href="trend-filtering.html#cb22-48" tabindex="-1"></a>      D <span class="ot">&lt;-</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n)</span>
+<span id="cb22-49"><a href="trend-filtering.html#cb22-49" tabindex="-1"></a>      <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(l<span class="dv">-1</span>)){</span>
+<span id="cb22-50"><a href="trend-filtering.html#cb22-50" tabindex="-1"></a>        D1 <span class="ot">=</span> <a href='trend-filtering.html#get_D1'>get_D1</a>(n<span class="sc">-</span>k)</span>
+<span id="cb22-51"><a href="trend-filtering.html#cb22-51" tabindex="-1"></a>        facmat <span class="ot">=</span> <span class="fu">diag</span>(k <span class="sc">/</span> <span class="fu">diff</span>(x, <span class="at">lag =</span> k))</span>
+<span id="cb22-52"><a href="trend-filtering.html#cb22-52" tabindex="-1"></a>        D <span class="ot">&lt;-</span> D1 <span class="sc">%*%</span> facmat <span class="sc">%*%</span> D</span>
+<span id="cb22-53"><a href="trend-filtering.html#cb22-53" tabindex="-1"></a>      }</span>
+<span id="cb22-54"><a href="trend-filtering.html#cb22-54" tabindex="-1"></a>      <span class="fu">return</span>(D)</span>
+<span id="cb22-55"><a href="trend-filtering.html#cb22-55" tabindex="-1"></a>    }</span>
+<span id="cb22-56"><a href="trend-filtering.html#cb22-56" tabindex="-1"></a>  }</span>
+<span id="cb22-57"><a href="trend-filtering.html#cb22-57" tabindex="-1"></a>}</span></code></pre></div>
+<p>For equally spaced inputs with <span class="math inline">\(l=1\)</span> and <span class="math inline">\(l=2\)</span>:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="trend-filtering.html#cb23-1" tabindex="-1"></a>l <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb23-2"><a href="trend-filtering.html#cb23-2" tabindex="-1"></a>Dl <span class="ot">=</span> <a href='trend-filtering.html#gen_diff_mat'>gen_diff_mat</a>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">l =</span> l<span class="sc">+</span><span class="dv">1</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span>
+<span id="cb23-3"><a href="trend-filtering.html#cb23-3" tabindex="-1"></a><span class="fu">print</span>(Dl)</span>
+<span id="cb23-4"><a href="trend-filtering.html#cb23-4" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="trend-filtering.html#cb23-5" tabindex="-1"></a>l <span class="ot">=</span> <span class="dv">2</span></span>
+<span id="cb23-6"><a href="trend-filtering.html#cb23-6" tabindex="-1"></a>Dl <span class="ot">=</span> <a href='trend-filtering.html#gen_diff_mat'>gen_diff_mat</a>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">l =</span> l<span class="sc">+</span><span class="dv">1</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span>
+<span id="cb23-7"><a href="trend-filtering.html#cb23-7" tabindex="-1"></a><span class="fu">print</span>(Dl)</span></code></pre></div>
 <pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
 ## [1,]    1   -2    1    0    0    0    0    0    0     0
 ## [2,]    0    1   -2    1    0    0    0    0    0     0
@@ -317,125 +307,188 @@ equation (41)].</p>
 ## [6,]    0    0    0    0    0   -1    3   -3    1     0
 ## [7,]    0    0    0    0    0    0   -1    3   -3     1</code></pre>
 <p>When the inputs have a gap in it:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="trend-filtering.html#cb26-1" tabindex="-1"></a>x <span class="ot">=</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)[<span class="sc">-</span>(<span class="dv">4</span><span class="sc">:</span><span class="dv">6</span>)]</span>
-<span id="cb26-2"><a href="trend-filtering.html#cb26-2" tabindex="-1"></a>l <span class="ot">=</span> <span class="dv">2</span></span>
-<span id="cb26-3"><a href="trend-filtering.html#cb26-3" tabindex="-1"></a>TT <span class="ot">=</span> <span class="fu">length</span>(x)</span>
-<span id="cb26-4"><a href="trend-filtering.html#cb26-4" tabindex="-1"></a>Dl <span class="ot">=</span> <a href='trend-filtering.html#gen_diff_mat'>gen_diff_mat</a>(<span class="at">n =</span> TT, <span class="at">l =</span> l<span class="sc">+</span><span class="dv">1</span>, <span class="at">x =</span> x)</span>
-<span id="cb26-5"><a href="trend-filtering.html#cb26-5" tabindex="-1"></a><span class="fu">print</span>(Dl)</span></code></pre></div>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7]
-## [1,]   -1  2.4 -1.5  0.1  0.0    0    0
-## [2,]    0 -0.4  0.6 -0.6  0.4    0    0
-## [3,]    0  0.0 -0.1  1.5 -2.4    1    0
-## [4,]    0  0.0  0.0 -1.0  3.0   -3    1</code></pre>
-<p>Next, here’s a function to build a lasso regressor matrix <span class="math inline">\(H\)</span> that can be used
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="trend-filtering.html#cb26-1" tabindex="-1"></a><span class="do">## See what a l=2 difference matrix looks like:</span></span>
+<span id="cb26-2"><a href="trend-filtering.html#cb26-2" tabindex="-1"></a>x <span class="ot">=</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)[<span class="sc">-</span>(<span class="dv">3</span>)]</span>
+<span id="cb26-3"><a href="trend-filtering.html#cb26-3" tabindex="-1"></a>l <span class="ot">=</span> <span class="dv">2</span></span>
+<span id="cb26-4"><a href="trend-filtering.html#cb26-4" tabindex="-1"></a>TT <span class="ot">=</span> <span class="fu">length</span>(x)</span>
+<span id="cb26-5"><a href="trend-filtering.html#cb26-5" tabindex="-1"></a>Dl <span class="ot">=</span> <a href='trend-filtering.html#gen_diff_mat'>gen_diff_mat</a>(<span class="at">n =</span> TT, <span class="at">l =</span> l<span class="sc">+</span><span class="dv">1</span>, <span class="at">x =</span> x)</span>
+<span id="cb26-6"><a href="trend-filtering.html#cb26-6" tabindex="-1"></a><span class="fu">print</span>(Dl)</span>
+<span id="cb26-7"><a href="trend-filtering.html#cb26-7" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="trend-filtering.html#cb26-8" tabindex="-1"></a><span class="do">## Formally test it</span></span>
+<span id="cb26-9"><a href="trend-filtering.html#cb26-9" tabindex="-1"></a>d1 <span class="ot">=</span> <a href='trend-filtering.html#gen_diff_mat'>gen_diff_mat</a>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">l =</span> l<span class="sc">+</span><span class="dv">1</span>, <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
+<span id="cb26-10"><a href="trend-filtering.html#cb26-10" tabindex="-1"></a>d2 <span class="ot">=</span> <a href='trend-filtering.html#gen_diff_mat'>gen_diff_mat</a>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">l =</span> l<span class="sc">+</span><span class="dv">1</span>, <span class="at">x =</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)<span class="sc">*</span><span class="dv">2</span>)</span>
+<span id="cb26-11"><a href="trend-filtering.html#cb26-11" tabindex="-1"></a><span class="fu">print</span>(d1)</span>
+<span id="cb26-12"><a href="trend-filtering.html#cb26-12" tabindex="-1"></a><span class="fu">print</span>(d2)</span>
+<span id="cb26-13"><a href="trend-filtering.html#cb26-13" tabindex="-1"></a>d1_d2_ratio <span class="ot">=</span> <span class="fu">as.numeric</span>(d1<span class="sc">/</span>d2)  <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span> <span class="fu">as.numeric</span>()</span>
+<span id="cb26-14"><a href="trend-filtering.html#cb26-14" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">expect_true</span>(<span class="fu">all</span>(d1_d2_ratio<span class="sc">==</span>d1_d2_ratio[<span class="dv">1</span>])) <span class="do">## correct</span></span></code></pre></div>
+<pre><code>##            [,1]       [,2]      [,3]       [,4] [,5] [,6] [,7] [,8] [,9]
+## [1,] -0.6666667  1.3333333 -1.333333  0.6666667    0    0    0    0    0
+## [2,]  0.0000000 -0.3333333  2.000000 -2.6666667    1    0    0    0    0
+## [3,]  0.0000000  0.0000000 -1.000000  3.0000000   -3    1    0    0    0
+## [4,]  0.0000000  0.0000000  0.000000 -1.0000000    3   -3    1    0    0
+## [5,]  0.0000000  0.0000000  0.000000  0.0000000   -1    3   -3    1    0
+## [6,]  0.0000000  0.0000000  0.000000  0.0000000    0   -1    3   -3    1</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+## [1,]   -1    3   -3    1    0    0    0    0    0     0
+## [2,]    0   -1    3   -3    1    0    0    0    0     0
+## [3,]    0    0   -1    3   -3    1    0    0    0     0
+## [4,]    0    0    0   -1    3   -3    1    0    0     0
+## [5,]    0    0    0    0   -1    3   -3    1    0     0
+## [6,]    0    0    0    0    0   -1    3   -3    1     0
+## [7,]    0    0    0    0    0    0   -1    3   -3     1</code></pre>
+<pre><code>##       [,1]  [,2]  [,3]  [,4]  [,5]  [,6]  [,7]  [,8]  [,9] [,10]
+## [1,] -0.25  0.75 -0.75  0.25  0.00  0.00  0.00  0.00  0.00  0.00
+## [2,]  0.00 -0.25  0.75 -0.75  0.25  0.00  0.00  0.00  0.00  0.00
+## [3,]  0.00  0.00 -0.25  0.75 -0.75  0.25  0.00  0.00  0.00  0.00
+## [4,]  0.00  0.00  0.00 -0.25  0.75 -0.75  0.25  0.00  0.00  0.00
+## [5,]  0.00  0.00  0.00  0.00 -0.25  0.75 -0.75  0.25  0.00  0.00
+## [6,]  0.00  0.00  0.00  0.00  0.00 -0.25  0.75 -0.75  0.25  0.00
+## [7,]  0.00  0.00  0.00  0.00  0.00  0.00 -0.25  0.75 -0.75  0.25</code></pre>
+<p>A formal test for unevenly spaced inputs will come soon, once we’ve defined
+<code>gen_tf_mat</code>, next.</p>
+<p>We now build a function to build a lasso regressor matrix <span class="math inline">\(H\)</span> that can be used
 to solve an equivalent problem as the trend filtering of the ’th degree.</p>
 <p>(This is stated in Lemma 4, equation (25) from Tibshirani (2014))</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="trend-filtering.html#cb28-1" tabindex="-1"></a><span class="co">#&#39; A lasso regressor matrix H that can be used to solve an equivalent problem as the trend filtering of the \code{k}&#39;th degree.</span></span>
-<span id="cb28-2"><a href="trend-filtering.html#cb28-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb28-3"><a href="trend-filtering.html#cb28-3" tabindex="-1"></a><span class="co">#&#39; @param n Total number of time points.</span></span>
-<span id="cb28-4"><a href="trend-filtering.html#cb28-4" tabindex="-1"></a><span class="co">#&#39; @param k Degree of trend filtering for cluster probabilities. $k=0$ is fused lasso, $k=1$ is linear trend filtering, and so on.</span></span>
-<span id="cb28-5"><a href="trend-filtering.html#cb28-5" tabindex="-1"></a><span class="co">#&#39; @param x Time points</span></span>
-<span id="cb28-6"><a href="trend-filtering.html#cb28-6" tabindex="-1"></a><span class="co">#&#39; </span></span>
-<span id="cb28-7"><a href="trend-filtering.html#cb28-7" tabindex="-1"></a><span class="co">#&#39; @return $n$ by $n$ matrix.</span></span>
-<span id="cb28-8"><a href="trend-filtering.html#cb28-8" tabindex="-1"></a><span class="co">#&#39; </span></span>
-<span id="cb28-9"><a href="trend-filtering.html#cb28-9" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb28-10"><a href="trend-filtering.html#cb28-10" tabindex="-1"></a><span id='gen_tf_mat'>gen_tf_mat</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(n, k, <span class="at">x =</span> <span class="cn">NULL</span>){</span>
-<span id="cb28-11"><a href="trend-filtering.html#cb28-11" tabindex="-1"></a></span>
-<span id="cb28-12"><a href="trend-filtering.html#cb28-12" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(x) ){</span>
-<span id="cb28-13"><a href="trend-filtering.html#cb28-13" tabindex="-1"></a>    x <span class="ot">=</span> (<span class="dv">1</span><span class="sc">:</span>n)<span class="sc">/</span>n</span>
-<span id="cb28-14"><a href="trend-filtering.html#cb28-14" tabindex="-1"></a>  }</span>
-<span id="cb28-15"><a href="trend-filtering.html#cb28-15" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x)){</span>
-<span id="cb28-16"><a href="trend-filtering.html#cb28-16" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">length</span>(x) <span class="sc">==</span> n)</span>
-<span id="cb28-17"><a href="trend-filtering.html#cb28-17" tabindex="-1"></a>  }</span>
-<span id="cb28-18"><a href="trend-filtering.html#cb28-18" tabindex="-1"></a></span>
-<span id="cb28-19"><a href="trend-filtering.html#cb28-19" tabindex="-1"></a>  <span class="do">## For every i,j&#39;th entry, use this helper function (from eq 25 of Tibshirani</span></span>
-<span id="cb28-20"><a href="trend-filtering.html#cb28-20" tabindex="-1"></a>  <span class="do">## (2014)).</span></span>
-<span id="cb28-21"><a href="trend-filtering.html#cb28-21" tabindex="-1"></a>  <span id='gen_ij'>gen_ij</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(i, j, k){</span>
-<span id="cb28-22"><a href="trend-filtering.html#cb28-22" tabindex="-1"></a>    xi <span class="ot">&lt;-</span> x[i]</span>
-<span id="cb28-23"><a href="trend-filtering.html#cb28-23" tabindex="-1"></a>    <span class="cf">if</span>(j <span class="sc">%in%</span> <span class="dv">1</span><span class="sc">:</span>(k<span class="sc">+</span><span class="dv">1</span>)){</span>
-<span id="cb28-24"><a href="trend-filtering.html#cb28-24" tabindex="-1"></a>      <span class="fu">return</span>(xi<span class="sc">^</span>(j<span class="dv">-1</span>))</span>
-<span id="cb28-25"><a href="trend-filtering.html#cb28-25" tabindex="-1"></a>    }</span>
-<span id="cb28-26"><a href="trend-filtering.html#cb28-26" tabindex="-1"></a>    <span class="cf">if</span>(j <span class="sc">%in%</span> (k<span class="sc">+</span><span class="dv">2</span>)<span class="sc">:</span>n){</span>
-<span id="cb28-27"><a href="trend-filtering.html#cb28-27" tabindex="-1"></a></span>
-<span id="cb28-28"><a href="trend-filtering.html#cb28-28" tabindex="-1"></a>      <span class="do">## Special handling for k==0, See lemma 4 eq 25</span></span>
-<span id="cb28-29"><a href="trend-filtering.html#cb28-29" tabindex="-1"></a>      <span class="cf">if</span>(k <span class="sc">==</span> <span class="dv">0</span>){</span>
-<span id="cb28-30"><a href="trend-filtering.html#cb28-30" tabindex="-1"></a>        prd <span class="ot">=</span> <span class="dv">1</span> </span>
-<span id="cb28-31"><a href="trend-filtering.html#cb28-31" tabindex="-1"></a>        ind <span class="ot">=</span> j</span>
-<span id="cb28-32"><a href="trend-filtering.html#cb28-32" tabindex="-1"></a>      }</span>
-<span id="cb28-33"><a href="trend-filtering.html#cb28-33" tabindex="-1"></a>      <span class="cf">if</span>(k<span class="sc">&gt;=</span><span class="dv">1</span>){</span>
-<span id="cb28-34"><a href="trend-filtering.html#cb28-34" tabindex="-1"></a>        ind <span class="ot">=</span> j <span class="sc">-</span> (<span class="dv">1</span><span class="sc">:</span>k)</span>
-<span id="cb28-35"><a href="trend-filtering.html#cb28-35" tabindex="-1"></a>        prd <span class="ot">=</span> <span class="fu">prod</span>(xi <span class="sc">-</span> x[ind]) </span>
-<span id="cb28-36"><a href="trend-filtering.html#cb28-36" tabindex="-1"></a></span>
-<span id="cb28-37"><a href="trend-filtering.html#cb28-37" tabindex="-1"></a>      }</span>
-<span id="cb28-38"><a href="trend-filtering.html#cb28-38" tabindex="-1"></a>      <span class="fu">return</span>(prd <span class="sc">*</span> <span class="fu">ifelse</span>(xi <span class="sc">&gt;=</span> x[<span class="fu">max</span>(ind)], <span class="dv">1</span>, <span class="dv">0</span>))</span>
-<span id="cb28-39"><a href="trend-filtering.html#cb28-39" tabindex="-1"></a>      <span class="do">## if(k &gt;= 1) prd = prod(xi - x[(j-k):(j-1)]) </span></span>
-<span id="cb28-40"><a href="trend-filtering.html#cb28-40" tabindex="-1"></a>      <span class="do">## return(prd * ifelse(xi &gt;= x[(j-1)], 1, 0)) </span></span>
-<span id="cb28-41"><a href="trend-filtering.html#cb28-41" tabindex="-1"></a>    }</span>
-<span id="cb28-42"><a href="trend-filtering.html#cb28-42" tabindex="-1"></a>  }</span>
-<span id="cb28-43"><a href="trend-filtering.html#cb28-43" tabindex="-1"></a></span>
-<span id="cb28-44"><a href="trend-filtering.html#cb28-44" tabindex="-1"></a>  <span class="do">## Generate the H matrix, entry-wise.</span></span>
-<span id="cb28-45"><a href="trend-filtering.html#cb28-45" tabindex="-1"></a>  H <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> n, <span class="at">ncol =</span> n)</span>
-<span id="cb28-46"><a href="trend-filtering.html#cb28-46" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
-<span id="cb28-47"><a href="trend-filtering.html#cb28-47" tabindex="-1"></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
-<span id="cb28-48"><a href="trend-filtering.html#cb28-48" tabindex="-1"></a>      H[i,j] <span class="ot">&lt;-</span> <a href='trend-filtering.html#gen_ij'>gen_ij</a>(i,j, k)</span>
-<span id="cb28-49"><a href="trend-filtering.html#cb28-49" tabindex="-1"></a>    }</span>
-<span id="cb28-50"><a href="trend-filtering.html#cb28-50" tabindex="-1"></a>  }</span>
-<span id="cb28-51"><a href="trend-filtering.html#cb28-51" tabindex="-1"></a>  <span class="fu">return</span>(H)</span>
-<span id="cb28-52"><a href="trend-filtering.html#cb28-52" tabindex="-1"></a>}</span></code></pre></div>
-<p>Here’s a simple test, against an alternative function that only works for
-equally spaced data.</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="trend-filtering.html#cb29-1" tabindex="-1"></a><span class="co">#&#39; Creates trendfiltering regression matrix using Lemma 2 of Ryan Tibshirani&#39;s</span></span>
-<span id="cb29-2"><a href="trend-filtering.html#cb29-2" tabindex="-1"></a><span class="co">#&#39; trendfilter paper (2014); works on equally spaced data only.</span></span>
-<span id="cb29-3"><a href="trend-filtering.html#cb29-3" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb29-4"><a href="trend-filtering.html#cb29-4" tabindex="-1"></a><span class="co">#&#39; @param n Number of data points</span></span>
-<span id="cb29-5"><a href="trend-filtering.html#cb29-5" tabindex="-1"></a><span class="co">#&#39; @param k Order of trend filter. 0 is fused lasso, and so on.</span></span>
-<span id="cb29-6"><a href="trend-filtering.html#cb29-6" tabindex="-1"></a><span class="co">#&#39; @examples </span></span>
-<span id="cb29-7"><a href="trend-filtering.html#cb29-7" tabindex="-1"></a><span class="co">#&#39; ord = 1</span></span>
-<span id="cb29-8"><a href="trend-filtering.html#cb29-8" tabindex="-1"></a><span class="co">#&#39; H_tf &lt;- <a href='trend-filtering.html#gen_tf_mat_equalspace'>gen_tf_mat_equalspace</a>(n = 100, k = ord)</span></span>
-<span id="cb29-9"><a href="trend-filtering.html#cb29-9" tabindex="-1"></a><span class="co">#&#39; H_tf[,1] * 100</span></span>
-<span id="cb29-10"><a href="trend-filtering.html#cb29-10" tabindex="-1"></a><span class="co">#&#39; H_tf[,2] * 100</span></span>
-<span id="cb29-11"><a href="trend-filtering.html#cb29-11" tabindex="-1"></a><span class="co">#&#39; H_tf[,3] * 100</span></span>
-<span id="cb29-12"><a href="trend-filtering.html#cb29-12" tabindex="-1"></a><span class="co">#&#39; H_tf[,4] * 100</span></span>
-<span id="cb29-13"><a href="trend-filtering.html#cb29-13" tabindex="-1"></a><span class="co">#&#39; H_tf[,99] * 100</span></span>
-<span id="cb29-14"><a href="trend-filtering.html#cb29-14" tabindex="-1"></a><span class="co">#&#39; H_tf[,100] * 100</span></span>
-<span id="cb29-15"><a href="trend-filtering.html#cb29-15" tabindex="-1"></a><span class="co">#&#39; @return n by n matrix.</span></span>
-<span id="cb29-16"><a href="trend-filtering.html#cb29-16" tabindex="-1"></a><span id='gen_tf_mat_equalspace'>gen_tf_mat_equalspace</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(n, k){</span>
-<span id="cb29-17"><a href="trend-filtering.html#cb29-17" tabindex="-1"></a>  nn <span class="ot">=</span> n</span>
-<span id="cb29-18"><a href="trend-filtering.html#cb29-18" tabindex="-1"></a>  kk <span class="ot">=</span> k</span>
-<span id="cb29-19"><a href="trend-filtering.html#cb29-19" tabindex="-1"></a>  <span class="do">##&#39; Connects kk to kk-1.</span></span>
-<span id="cb29-20"><a href="trend-filtering.html#cb29-20" tabindex="-1"></a>  <span id='sigm'>sigm</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ii, kk){</span>
-<span id="cb29-21"><a href="trend-filtering.html#cb29-21" tabindex="-1"></a>    <span class="cf">if</span>(kk <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">return</span>(<span class="fu">rep</span>(<span class="dv">1</span>, ii))</span>
-<span id="cb29-22"><a href="trend-filtering.html#cb29-22" tabindex="-1"></a>    <span class="fu">cumsum</span>(<a href='trend-filtering.html#sigm'>sigm</a>(ii, kk<span class="dv">-1</span>))</span>
-<span id="cb29-23"><a href="trend-filtering.html#cb29-23" tabindex="-1"></a>  }</span>
-<span id="cb29-24"><a href="trend-filtering.html#cb29-24" tabindex="-1"></a></span>
-<span id="cb29-25"><a href="trend-filtering.html#cb29-25" tabindex="-1"></a>  mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">ncol =</span> nn, <span class="at">nrow =</span> nn)</span>
-<span id="cb29-26"><a href="trend-filtering.html#cb29-26" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nn){</span>
-<span id="cb29-27"><a href="trend-filtering.html#cb29-27" tabindex="-1"></a>    <span class="cf">for</span>(jj <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nn){</span>
-<span id="cb29-28"><a href="trend-filtering.html#cb29-28" tabindex="-1"></a>      <span class="cf">if</span>(jj <span class="sc">&lt;=</span> kk<span class="sc">+</span><span class="dv">1</span>) mat[ii,jj] <span class="ot">=</span> ii<span class="sc">^</span>(jj<span class="dv">-1</span>) <span class="sc">/</span> nn<span class="sc">^</span>(jj<span class="dv">-1</span>)</span>
-<span id="cb29-29"><a href="trend-filtering.html#cb29-29" tabindex="-1"></a>      <span class="cf">if</span>(ii <span class="sc">&lt;=</span> jj<span class="dv">-1</span> <span class="sc">&amp;</span> jj <span class="sc">&gt;=</span> kk<span class="sc">+</span><span class="dv">2</span>) mat[ii, jj] <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb29-30"><a href="trend-filtering.html#cb29-30" tabindex="-1"></a>      <span class="cf">if</span>(ii <span class="sc">&gt;</span> jj<span class="dv">-1</span> <span class="sc">&amp;</span> jj <span class="sc">&gt;=</span> kk<span class="sc">+</span><span class="dv">2</span>){</span>
-<span id="cb29-31"><a href="trend-filtering.html#cb29-31" tabindex="-1"></a>        mat[ii, jj] <span class="ot">=</span> (<a href='trend-filtering.html#sigm'>sigm</a>(ii<span class="sc">-</span>jj<span class="sc">+</span><span class="dv">1</span>, kk) <span class="sc">%&gt;%</span> <span class="fu">tail</span>(<span class="dv">1</span>)) <span class="sc">*</span> <span class="fu">factorial</span>(kk) <span class="sc">/</span> nn<span class="sc">^</span>kk</span>
-<span id="cb29-32"><a href="trend-filtering.html#cb29-32" tabindex="-1"></a>      }</span>
-<span id="cb29-33"><a href="trend-filtering.html#cb29-33" tabindex="-1"></a>    }</span>
-<span id="cb29-34"><a href="trend-filtering.html#cb29-34" tabindex="-1"></a>  }</span>
-<span id="cb29-35"><a href="trend-filtering.html#cb29-35" tabindex="-1"></a>  <span class="fu">return</span>(mat)</span>
-<span id="cb29-36"><a href="trend-filtering.html#cb29-36" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="trend-filtering.html#cb30-1" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;Trend filtering regression matrix is created correctly.&quot;</span>, {</span>
-<span id="cb30-2"><a href="trend-filtering.html#cb30-2" tabindex="-1"></a>  <span class="do">## Check that equally spaced data creates same trendfilter regression matrix</span></span>
-<span id="cb30-3"><a href="trend-filtering.html#cb30-3" tabindex="-1"></a>  H1 <span class="ot">&lt;-</span> <a href='trend-filtering.html#gen_tf_mat'>gen_tf_mat</a>(<span class="dv">10</span>, <span class="dv">1</span>)</span>
-<span id="cb30-4"><a href="trend-filtering.html#cb30-4" tabindex="-1"></a>  H1_other <span class="ot">&lt;-</span> <a href='trend-filtering.html#gen_tf_mat'>gen_tf_mat</a>(<span class="dv">10</span>, <span class="dv">1</span>, <span class="at">x=</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)<span class="sc">/</span><span class="dv">10</span>)</span>
-<span id="cb30-5"><a href="trend-filtering.html#cb30-5" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_equal</span>(H1, H1_other)</span>
-<span id="cb30-6"><a href="trend-filtering.html#cb30-6" tabindex="-1"></a></span>
-<span id="cb30-7"><a href="trend-filtering.html#cb30-7" tabindex="-1"></a>  <span class="do">## Check the dimension</span></span>
-<span id="cb30-8"><a href="trend-filtering.html#cb30-8" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_equal</span>(<span class="fu">dim</span>(H1), <span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">10</span>))</span>
-<span id="cb30-9"><a href="trend-filtering.html#cb30-9" tabindex="-1"></a></span>
-<span id="cb30-10"><a href="trend-filtering.html#cb30-10" tabindex="-1"></a>  <span class="do">## Check against an alternative function.</span></span>
-<span id="cb30-11"><a href="trend-filtering.html#cb30-11" tabindex="-1"></a>  <span class="cf">for</span>(ord <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)){</span>
-<span id="cb30-12"><a href="trend-filtering.html#cb30-12" tabindex="-1"></a>    H <span class="ot">&lt;-</span> <a href='trend-filtering.html#gen_tf_mat'>gen_tf_mat</a>(<span class="dv">10</span>, ord)</span>
-<span id="cb30-13"><a href="trend-filtering.html#cb30-13" tabindex="-1"></a>    H_eq <span class="ot">=</span> <a href='trend-filtering.html#gen_tf_mat_equalspace'>gen_tf_mat_equalspace</a>(<span class="dv">10</span>, ord)</span>
-<span id="cb30-14"><a href="trend-filtering.html#cb30-14" tabindex="-1"></a>    testthat<span class="sc">::</span><span class="fu">expect_true</span>(<span class="fu">max</span>(<span class="fu">abs</span>(H_eq<span class="sc">-</span> H)) <span class="sc">&lt;</span> <span class="fl">1E-10</span>)</span>
-<span id="cb30-15"><a href="trend-filtering.html#cb30-15" tabindex="-1"></a>  }</span>
-<span id="cb30-16"><a href="trend-filtering.html#cb30-16" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="trend-filtering.html#cb30-1" tabindex="-1"></a><span class="co">#&#39; A lasso regressor matrix H that can be used to solve an equivalent problem as the trend filtering of the \code{k}&#39;th degree.</span></span>
+<span id="cb30-2"><a href="trend-filtering.html#cb30-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb30-3"><a href="trend-filtering.html#cb30-3" tabindex="-1"></a><span class="co">#&#39; @param n Total number of time points.</span></span>
+<span id="cb30-4"><a href="trend-filtering.html#cb30-4" tabindex="-1"></a><span class="co">#&#39; @param k Degree of trend filtering for cluster probabilities. $k=0$ is fused lasso, $k=1$ is linear trend filtering, and so on.</span></span>
+<span id="cb30-5"><a href="trend-filtering.html#cb30-5" tabindex="-1"></a><span class="co">#&#39; @param x Time points</span></span>
+<span id="cb30-6"><a href="trend-filtering.html#cb30-6" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb30-7"><a href="trend-filtering.html#cb30-7" tabindex="-1"></a><span class="co">#&#39; @return $n$ by $n$ matrix.</span></span>
+<span id="cb30-8"><a href="trend-filtering.html#cb30-8" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb30-9"><a href="trend-filtering.html#cb30-9" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb30-10"><a href="trend-filtering.html#cb30-10" tabindex="-1"></a><span id='gen_tf_mat'>gen_tf_mat</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(n, k, <span class="at">x =</span> <span class="cn">NULL</span>){</span>
+<span id="cb30-11"><a href="trend-filtering.html#cb30-11" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="trend-filtering.html#cb30-12" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(x) ){</span>
+<span id="cb30-13"><a href="trend-filtering.html#cb30-13" tabindex="-1"></a>    x <span class="ot">=</span> (<span class="dv">1</span><span class="sc">:</span>n)<span class="sc">/</span>n</span>
+<span id="cb30-14"><a href="trend-filtering.html#cb30-14" tabindex="-1"></a>  }</span>
+<span id="cb30-15"><a href="trend-filtering.html#cb30-15" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x)){</span>
+<span id="cb30-16"><a href="trend-filtering.html#cb30-16" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">length</span>(x) <span class="sc">==</span> n)</span>
+<span id="cb30-17"><a href="trend-filtering.html#cb30-17" tabindex="-1"></a>  }</span>
+<span id="cb30-18"><a href="trend-filtering.html#cb30-18" tabindex="-1"></a></span>
+<span id="cb30-19"><a href="trend-filtering.html#cb30-19" tabindex="-1"></a>  <span class="do">## For every i,j&#39;th entry, use this helper function (from eq 25 of Tibshirani</span></span>
+<span id="cb30-20"><a href="trend-filtering.html#cb30-20" tabindex="-1"></a>  <span class="do">## (2014)).</span></span>
+<span id="cb30-21"><a href="trend-filtering.html#cb30-21" tabindex="-1"></a>  <span id='gen_ij'>gen_ij</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(x, i, j, k){</span>
+<span id="cb30-22"><a href="trend-filtering.html#cb30-22" tabindex="-1"></a>    xi <span class="ot">&lt;-</span> x[i]</span>
+<span id="cb30-23"><a href="trend-filtering.html#cb30-23" tabindex="-1"></a>    <span class="cf">if</span>(j <span class="sc">%in%</span> <span class="dv">1</span><span class="sc">:</span>(k<span class="sc">+</span><span class="dv">1</span>)){</span>
+<span id="cb30-24"><a href="trend-filtering.html#cb30-24" tabindex="-1"></a>      <span class="fu">return</span>(xi<span class="sc">^</span>(j<span class="dv">-1</span>))</span>
+<span id="cb30-25"><a href="trend-filtering.html#cb30-25" tabindex="-1"></a>    }</span>
+<span id="cb30-26"><a href="trend-filtering.html#cb30-26" tabindex="-1"></a>    <span class="cf">if</span>(j <span class="sc">%in%</span> (k<span class="sc">+</span><span class="dv">2</span>)<span class="sc">:</span>n){</span>
+<span id="cb30-27"><a href="trend-filtering.html#cb30-27" tabindex="-1"></a></span>
+<span id="cb30-28"><a href="trend-filtering.html#cb30-28" tabindex="-1"></a>      <span class="do">## Special handling for k==0, See lemma 4 eq 25</span></span>
+<span id="cb30-29"><a href="trend-filtering.html#cb30-29" tabindex="-1"></a>      <span class="cf">if</span>(k <span class="sc">==</span> <span class="dv">0</span>){</span>
+<span id="cb30-30"><a href="trend-filtering.html#cb30-30" tabindex="-1"></a>        prd <span class="ot">=</span> <span class="dv">1</span> </span>
+<span id="cb30-31"><a href="trend-filtering.html#cb30-31" tabindex="-1"></a>        ind <span class="ot">=</span> j</span>
+<span id="cb30-32"><a href="trend-filtering.html#cb30-32" tabindex="-1"></a>      }</span>
+<span id="cb30-33"><a href="trend-filtering.html#cb30-33" tabindex="-1"></a>      <span class="cf">if</span>(k <span class="sc">&gt;=</span> <span class="dv">1</span>){</span>
+<span id="cb30-34"><a href="trend-filtering.html#cb30-34" tabindex="-1"></a>        ind <span class="ot">=</span> j <span class="sc">-</span> (<span class="dv">1</span><span class="sc">:</span>k)</span>
+<span id="cb30-35"><a href="trend-filtering.html#cb30-35" tabindex="-1"></a>        prd <span class="ot">=</span> <span class="fu">prod</span>(xi <span class="sc">-</span> x[ind]) </span>
+<span id="cb30-36"><a href="trend-filtering.html#cb30-36" tabindex="-1"></a></span>
+<span id="cb30-37"><a href="trend-filtering.html#cb30-37" tabindex="-1"></a>      }</span>
+<span id="cb30-38"><a href="trend-filtering.html#cb30-38" tabindex="-1"></a>      <span class="fu">return</span>(prd <span class="sc">*</span> <span class="fu">ifelse</span>(xi <span class="sc">&gt;=</span> x[<span class="fu">max</span>(ind)], <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb30-39"><a href="trend-filtering.html#cb30-39" tabindex="-1"></a>      <span class="do">## if(k &gt;= 1) prd = prod(xi - x[(j-k):(j-1)]) </span></span>
+<span id="cb30-40"><a href="trend-filtering.html#cb30-40" tabindex="-1"></a>      <span class="do">## return(prd * ifelse(xi &gt;= x[(j-1)], 1, 0)) </span></span>
+<span id="cb30-41"><a href="trend-filtering.html#cb30-41" tabindex="-1"></a>    }</span>
+<span id="cb30-42"><a href="trend-filtering.html#cb30-42" tabindex="-1"></a>  }</span>
+<span id="cb30-43"><a href="trend-filtering.html#cb30-43" tabindex="-1"></a></span>
+<span id="cb30-44"><a href="trend-filtering.html#cb30-44" tabindex="-1"></a>  <span class="do">## Generate the H matrix, entry-wise.</span></span>
+<span id="cb30-45"><a href="trend-filtering.html#cb30-45" tabindex="-1"></a>  H <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> n, <span class="at">ncol =</span> n)</span>
+<span id="cb30-46"><a href="trend-filtering.html#cb30-46" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb30-47"><a href="trend-filtering.html#cb30-47" tabindex="-1"></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb30-48"><a href="trend-filtering.html#cb30-48" tabindex="-1"></a>      H[i,j] <span class="ot">&lt;-</span> <a href='trend-filtering.html#gen_ij'>gen_ij</a>(x, i,j, k)</span>
+<span id="cb30-49"><a href="trend-filtering.html#cb30-49" tabindex="-1"></a>    }</span>
+<span id="cb30-50"><a href="trend-filtering.html#cb30-50" tabindex="-1"></a>  }</span>
+<span id="cb30-51"><a href="trend-filtering.html#cb30-51" tabindex="-1"></a>  <span class="fu">return</span>(H)</span>
+<span id="cb30-52"><a href="trend-filtering.html#cb30-52" tabindex="-1"></a>}</span></code></pre></div>
+<p>Here’s a simple test of <code><a href='trend-filtering.html#gen_tf_mat'>gen_tf_mat</a>()</code>, against an alternative function built
+for equally spaced data.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="trend-filtering.html#cb31-1" tabindex="-1"></a><span class="co">#&#39; Creates trendfiltering regression matrix using Lemma 2 of Ryan Tibshirani&#39;s</span></span>
+<span id="cb31-2"><a href="trend-filtering.html#cb31-2" tabindex="-1"></a><span class="co">#&#39; trendfilter paper (2014); works on equally spaced data only.</span></span>
+<span id="cb31-3"><a href="trend-filtering.html#cb31-3" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb31-4"><a href="trend-filtering.html#cb31-4" tabindex="-1"></a><span class="co">#&#39; @param n Number of data points</span></span>
+<span id="cb31-5"><a href="trend-filtering.html#cb31-5" tabindex="-1"></a><span class="co">#&#39; @param k Order of trend filter. 0 is fused lasso, and so on.</span></span>
+<span id="cb31-6"><a href="trend-filtering.html#cb31-6" tabindex="-1"></a><span class="co">#&#39; @examples </span></span>
+<span id="cb31-7"><a href="trend-filtering.html#cb31-7" tabindex="-1"></a><span class="co">#&#39; ord = 1</span></span>
+<span id="cb31-8"><a href="trend-filtering.html#cb31-8" tabindex="-1"></a><span class="co">#&#39; H_tf &lt;- <a href='trend-filtering.html#gen_tf_mat_equalspace'>gen_tf_mat_equalspace</a>(n = 100, k = ord)</span></span>
+<span id="cb31-9"><a href="trend-filtering.html#cb31-9" tabindex="-1"></a><span class="co">#&#39; H_tf[,1] * 100</span></span>
+<span id="cb31-10"><a href="trend-filtering.html#cb31-10" tabindex="-1"></a><span class="co">#&#39; H_tf[,2] * 100</span></span>
+<span id="cb31-11"><a href="trend-filtering.html#cb31-11" tabindex="-1"></a><span class="co">#&#39; H_tf[,3] * 100</span></span>
+<span id="cb31-12"><a href="trend-filtering.html#cb31-12" tabindex="-1"></a><span class="co">#&#39; H_tf[,4] * 100</span></span>
+<span id="cb31-13"><a href="trend-filtering.html#cb31-13" tabindex="-1"></a><span class="co">#&#39; H_tf[,99] * 100</span></span>
+<span id="cb31-14"><a href="trend-filtering.html#cb31-14" tabindex="-1"></a><span class="co">#&#39; H_tf[,100] * 100</span></span>
+<span id="cb31-15"><a href="trend-filtering.html#cb31-15" tabindex="-1"></a><span class="co">#&#39; @return n by n matrix.</span></span>
+<span id="cb31-16"><a href="trend-filtering.html#cb31-16" tabindex="-1"></a><span id='gen_tf_mat_equalspace'>gen_tf_mat_equalspace</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(n, k){</span>
+<span id="cb31-17"><a href="trend-filtering.html#cb31-17" tabindex="-1"></a>  nn <span class="ot">=</span> n</span>
+<span id="cb31-18"><a href="trend-filtering.html#cb31-18" tabindex="-1"></a>  kk <span class="ot">=</span> k</span>
+<span id="cb31-19"><a href="trend-filtering.html#cb31-19" tabindex="-1"></a>  <span class="do">##&#39; Connects kk to kk-1.</span></span>
+<span id="cb31-20"><a href="trend-filtering.html#cb31-20" tabindex="-1"></a>  <span id='sigm'>sigm</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ii, kk){</span>
+<span id="cb31-21"><a href="trend-filtering.html#cb31-21" tabindex="-1"></a>    <span class="cf">if</span>(kk <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">return</span>(<span class="fu">rep</span>(<span class="dv">1</span>, ii))</span>
+<span id="cb31-22"><a href="trend-filtering.html#cb31-22" tabindex="-1"></a>    <span class="fu">cumsum</span>(<a href='trend-filtering.html#sigm'>sigm</a>(ii, kk<span class="dv">-1</span>))</span>
+<span id="cb31-23"><a href="trend-filtering.html#cb31-23" tabindex="-1"></a>  }</span>
+<span id="cb31-24"><a href="trend-filtering.html#cb31-24" tabindex="-1"></a></span>
+<span id="cb31-25"><a href="trend-filtering.html#cb31-25" tabindex="-1"></a>  mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">ncol =</span> nn, <span class="at">nrow =</span> nn)</span>
+<span id="cb31-26"><a href="trend-filtering.html#cb31-26" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nn){</span>
+<span id="cb31-27"><a href="trend-filtering.html#cb31-27" tabindex="-1"></a>    <span class="cf">for</span>(jj <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nn){</span>
+<span id="cb31-28"><a href="trend-filtering.html#cb31-28" tabindex="-1"></a>      <span class="cf">if</span>(jj <span class="sc">&lt;=</span> kk<span class="sc">+</span><span class="dv">1</span>) mat[ii,jj] <span class="ot">=</span> ii<span class="sc">^</span>(jj<span class="dv">-1</span>) <span class="sc">/</span> nn<span class="sc">^</span>(jj<span class="dv">-1</span>)</span>
+<span id="cb31-29"><a href="trend-filtering.html#cb31-29" tabindex="-1"></a>      <span class="cf">if</span>(ii <span class="sc">&lt;=</span> jj<span class="dv">-1</span> <span class="sc">&amp;</span> jj <span class="sc">&gt;=</span> kk<span class="sc">+</span><span class="dv">2</span>) mat[ii, jj] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb31-30"><a href="trend-filtering.html#cb31-30" tabindex="-1"></a>      <span class="cf">if</span>(ii <span class="sc">&gt;</span> jj<span class="dv">-1</span> <span class="sc">&amp;</span> jj <span class="sc">&gt;=</span> kk<span class="sc">+</span><span class="dv">2</span>){</span>
+<span id="cb31-31"><a href="trend-filtering.html#cb31-31" tabindex="-1"></a>        mat[ii, jj] <span class="ot">=</span> (<a href='trend-filtering.html#sigm'>sigm</a>(ii<span class="sc">-</span>jj<span class="sc">+</span><span class="dv">1</span>, kk) <span class="sc">%&gt;%</span> <span class="fu">tail</span>(<span class="dv">1</span>)) <span class="sc">*</span> <span class="fu">factorial</span>(kk) <span class="sc">/</span> nn<span class="sc">^</span>kk</span>
+<span id="cb31-32"><a href="trend-filtering.html#cb31-32" tabindex="-1"></a>      }</span>
+<span id="cb31-33"><a href="trend-filtering.html#cb31-33" tabindex="-1"></a>    }</span>
+<span id="cb31-34"><a href="trend-filtering.html#cb31-34" tabindex="-1"></a>  }</span>
+<span id="cb31-35"><a href="trend-filtering.html#cb31-35" tabindex="-1"></a>  <span class="fu">return</span>(mat)</span>
+<span id="cb31-36"><a href="trend-filtering.html#cb31-36" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="trend-filtering.html#cb32-1" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;Trend filtering regression matrix is created correctly on equally spaced data.&quot;</span>,</span>
+<span id="cb32-2"><a href="trend-filtering.html#cb32-2" tabindex="-1"></a>{</span>
+<span id="cb32-3"><a href="trend-filtering.html#cb32-3" tabindex="-1"></a>  <span class="do">## Check that equally spaced data creates same trendfilter regression matrix</span></span>
+<span id="cb32-4"><a href="trend-filtering.html#cb32-4" tabindex="-1"></a>  <span class="do">## Degree 1</span></span>
+<span id="cb32-5"><a href="trend-filtering.html#cb32-5" tabindex="-1"></a>  H1 <span class="ot">&lt;-</span> <a href='trend-filtering.html#gen_tf_mat'>gen_tf_mat</a>(<span class="dv">10</span>, <span class="dv">1</span>)</span>
+<span id="cb32-6"><a href="trend-filtering.html#cb32-6" tabindex="-1"></a>  H1_other <span class="ot">&lt;-</span> <a href='trend-filtering.html#gen_tf_mat'>gen_tf_mat</a>(<span class="dv">10</span>, <span class="dv">1</span>, <span class="at">x=</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)<span class="sc">/</span><span class="dv">10</span>)</span>
+<span id="cb32-7"><a href="trend-filtering.html#cb32-7" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_equal</span>(H1, H1_other)</span>
+<span id="cb32-8"><a href="trend-filtering.html#cb32-8" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="trend-filtering.html#cb32-9" tabindex="-1"></a>  <span class="do">## Degree 1</span></span>
+<span id="cb32-10"><a href="trend-filtering.html#cb32-10" tabindex="-1"></a>  H2 <span class="ot">&lt;-</span> <a href='trend-filtering.html#gen_tf_mat'>gen_tf_mat</a>(<span class="dv">10</span>, <span class="dv">2</span>)</span>
+<span id="cb32-11"><a href="trend-filtering.html#cb32-11" tabindex="-1"></a>  H2_other <span class="ot">&lt;-</span> <a href='trend-filtering.html#gen_tf_mat'>gen_tf_mat</a>(<span class="dv">10</span>, <span class="dv">2</span>, <span class="at">x=</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)<span class="sc">/</span><span class="dv">10</span>)</span>
+<span id="cb32-12"><a href="trend-filtering.html#cb32-12" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_equal</span>(H2, H2_other)</span>
+<span id="cb32-13"><a href="trend-filtering.html#cb32-13" tabindex="-1"></a>  </span>
+<span id="cb32-14"><a href="trend-filtering.html#cb32-14" tabindex="-1"></a>  <span class="do">## Check the dimension</span></span>
+<span id="cb32-15"><a href="trend-filtering.html#cb32-15" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_equal</span>(<span class="fu">dim</span>(H1), <span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">10</span>))</span>
+<span id="cb32-16"><a href="trend-filtering.html#cb32-16" tabindex="-1"></a>  </span>
+<span id="cb32-17"><a href="trend-filtering.html#cb32-17" tabindex="-1"></a>  <span class="do">## Check against an alternative function.</span></span>
+<span id="cb32-18"><a href="trend-filtering.html#cb32-18" tabindex="-1"></a>  <span class="cf">for</span>(ord <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)){</span>
+<span id="cb32-19"><a href="trend-filtering.html#cb32-19" tabindex="-1"></a>    H <span class="ot">&lt;-</span> <a href='trend-filtering.html#gen_tf_mat'>gen_tf_mat</a>(<span class="dv">10</span>, ord)</span>
+<span id="cb32-20"><a href="trend-filtering.html#cb32-20" tabindex="-1"></a>    H_eq <span class="ot">=</span> <a href='trend-filtering.html#gen_tf_mat_equalspace'>gen_tf_mat_equalspace</a>(<span class="dv">10</span>, ord)</span>
+<span id="cb32-21"><a href="trend-filtering.html#cb32-21" tabindex="-1"></a>    testthat<span class="sc">::</span><span class="fu">expect_true</span>(<span class="fu">max</span>(<span class="fu">abs</span>(H_eq<span class="sc">-</span> H)) <span class="sc">&lt;</span> <span class="fl">1E-10</span>)</span>
+<span id="cb32-22"><a href="trend-filtering.html#cb32-22" tabindex="-1"></a>  }</span>
+<span id="cb32-23"><a href="trend-filtering.html#cb32-23" tabindex="-1"></a>})</span></code></pre></div>
+<pre><code>## Test passed</code></pre>
+<p>Finally, let’s test the difference matrix <span class="math inline">\(D\)</span> formed using unevenly spaced <span class="math inline">\(x\)</span>’s.</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="trend-filtering.html#cb34-1" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;Uneven spaced D matrix is formed correctly&quot;</span>, {</span>
+<span id="cb34-2"><a href="trend-filtering.html#cb34-2" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="trend-filtering.html#cb34-3" tabindex="-1"></a>  x <span class="ot">=</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>)[<span class="sc">-</span>(<span class="dv">2</span>)]</span>
+<span id="cb34-4"><a href="trend-filtering.html#cb34-4" tabindex="-1"></a>  <span class="do">## k = 0 is piecewise constant, k=1 is piecewise linear, etc.</span></span>
+<span id="cb34-5"><a href="trend-filtering.html#cb34-5" tabindex="-1"></a>  <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">3</span>){</span>
+<span id="cb34-6"><a href="trend-filtering.html#cb34-6" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="trend-filtering.html#cb34-7" tabindex="-1"></a>    l <span class="ot">=</span> k<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb34-8"><a href="trend-filtering.html#cb34-8" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="trend-filtering.html#cb34-9" tabindex="-1"></a>    <span class="do">## Form Dl using our function</span></span>
+<span id="cb34-10"><a href="trend-filtering.html#cb34-10" tabindex="-1"></a>    Dl <span class="ot">&lt;-</span> flowtrend<span class="sc">::</span><a href='trend-filtering.html#gen_diff_mat'>gen_diff_mat</a>(<span class="at">n=</span><span class="dv">5</span>, <span class="at">l =</span> l, <span class="at">x=</span>x)</span>
+<span id="cb34-11"><a href="trend-filtering.html#cb34-11" tabindex="-1"></a>    </span>
+<span id="cb34-12"><a href="trend-filtering.html#cb34-12" tabindex="-1"></a>    <span class="do">## Compare it to rows of H matrix, per section 6 of Tibshirani et al. 2014</span></span>
+<span id="cb34-13"><a href="trend-filtering.html#cb34-13" tabindex="-1"></a>    <a href='trend-filtering.html#gen_tf_mat'>gen_tf_mat</a>(<span class="at">n =</span> <span class="fu">length</span>(x), <span class="at">k =</span> k, <span class="at">x =</span> x) <span class="sc">%&gt;%</span></span>
+<span id="cb34-14"><a href="trend-filtering.html#cb34-14" tabindex="-1"></a>      <span class="fu">solve</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb34-15"><a href="trend-filtering.html#cb34-15" tabindex="-1"></a>      <span class="st">`</span><span class="at">*</span><span class="st">`</span>(<span class="fu">factorial</span>(k)) <span class="sc">%&gt;%</span> <span class="do">## This part is missing in Tibshirani et al. 2014</span></span>
+<span id="cb34-16"><a href="trend-filtering.html#cb34-16" tabindex="-1"></a>      <span class="fu">tail</span>(<span class="fu">length</span>(x)<span class="sc">-</span>(k<span class="sc">+</span><span class="dv">1</span>)) <span class="ot">-&gt;</span> Hx </span>
+<span id="cb34-17"><a href="trend-filtering.html#cb34-17" tabindex="-1"></a>    ratiomat <span class="ot">=</span> Hx<span class="sc">/</span>Dl</span>
+<span id="cb34-18"><a href="trend-filtering.html#cb34-18" tabindex="-1"></a></span>
+<span id="cb34-19"><a href="trend-filtering.html#cb34-19" tabindex="-1"></a>    <span class="do">## Process the ratios of each entry, and check that they&#39;re equal to 1</span></span>
+<span id="cb34-20"><a href="trend-filtering.html#cb34-20" tabindex="-1"></a>    ratios <span class="ot">=</span> ratiomat[<span class="sc">!</span><span class="fu">is.nan</span>(ratiomat)]</span>
+<span id="cb34-21"><a href="trend-filtering.html#cb34-21" tabindex="-1"></a>    ratios <span class="ot">=</span> ratios[<span class="fu">is.finite</span>(ratios)]</span>
+<span id="cb34-22"><a href="trend-filtering.html#cb34-22" tabindex="-1"></a>    testthat<span class="sc">::</span><span class="fu">expect_true</span>(<span class="fu">all.equal</span>(ratios, <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">length</span>(ratios)))) </span>
+<span id="cb34-23"><a href="trend-filtering.html#cb34-23" tabindex="-1"></a>  }</span>
+<span id="cb34-24"><a href="trend-filtering.html#cb34-24" tabindex="-1"></a>})</span></code></pre></div>
+<pre><code>## Test passed</code></pre>
 </div>
             </section>
 

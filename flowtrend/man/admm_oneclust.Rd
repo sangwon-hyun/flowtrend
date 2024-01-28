@@ -9,6 +9,7 @@ admm_oneclust(
   niter,
   y,
   Dl,
+  tDl,
   Dlp1,
   l = NULL,
   TT,
@@ -23,6 +24,7 @@ admm_oneclust(
   sigmainv,
   lambda,
   resp,
+  resp_sum,
   ylist,
   err_rel = 0.001,
   err_abs = 0,
@@ -36,8 +38,7 @@ admm_oneclust(
   outer_iter,
   local_adapt,
   sigma,
-  sigma_eig_by_clust,
-  space = 20
+  sigma_eig_by_clust
 )
 }
 \description{

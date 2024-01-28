@@ -25,6 +25,7 @@ flowtrend_once(
   admm_local_adapt = TRUE,
   admm_local_adapt_niter = if (admm_local_adapt) 10 else 1,
   rho_init = 0.1,
+  check_convergence = TRUE,
   seed = NULL
 )
 }
@@ -40,7 +41,8 @@ case the value becomes \code{1:T}, for the $T==length(ylist)$.}
 
 \item{niter}{Maximum number of EM iterations.}
 
-\item{l}{Degree of differencing for the mean trend filtering.}
+\item{l}{Degree of differencing for the mean trend filtering. l=0 will give
+you piecewise constant means; l=1 is piecewise linear, and so forth.}
 
 \item{l_prob}{Degree of differencing for the probability trend filtering.}
 

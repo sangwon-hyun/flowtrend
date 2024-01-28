@@ -6,7 +6,7 @@
 programming solver \code{prox()} (which calls \code{prox_dp()} written in C)
 is used.}
 \usage{
-W_update_fused(l, TT, mu, uw, rho, lambda)
+W_update_fused(l, TT, mu, uw, rho, lambda, Dl)
 }
 \description{
 Solve a fused lasso problem for the W update. Internally, a fused lasso dynamic

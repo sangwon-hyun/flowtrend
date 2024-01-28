@@ -9,9 +9,9 @@ plot_prob <- function(obj, x = NULL){
 
   ## Basic checks
   if(!is.null(x)){
-    stopifnot(length(x) == length(ylist))
     times = x
   } else {
+    stop("must provide x")
     times = 1:length(ylist)
   }
 

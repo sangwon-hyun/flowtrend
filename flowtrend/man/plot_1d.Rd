@@ -4,7 +4,14 @@
 \alias{plot_1d}
 \title{Makes 1d plot of data and model}
 \usage{
-plot_1d(ylist, countslist = NULL, obj = NULL, x = NULL, add_point = FALSE)
+plot_1d(
+  ylist,
+  countslist = NULL,
+  obj = NULL,
+  x = NULL,
+  add_point = FALSE,
+  idim = NULL
+)
 }
 \arguments{
 \item{ylist}{Data.}
@@ -12,6 +19,10 @@ plot_1d(ylist, countslist = NULL, obj = NULL, x = NULL, add_point = FALSE)
 \item{obj}{flowtrend object. Defaults to NULL.}
 
 \item{x}{time points. Defaults to NULL.}
+
+\item{add_point}{if TRUE, add the means as points.}
+
+\item{idim}{if provided, take the idim.}
 }
 \value{
 ggplot object with data, and optionally, a flowtrend model overlaid.

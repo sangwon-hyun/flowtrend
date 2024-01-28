@@ -6,11 +6,13 @@
 #' @param lambda
 #' @param l
 #' @param Sigma_inv inverse of Sigma
+#' @param x covariates
 Mstep_mu_cvxr <- function(ylist,
                           resp,
                           lambda,
                           l,
                           Sigma_inv, 
+                          x = NULL,
                           thresh = 1E-8,
                           maxdev = NULL,
                           dimdat,
@@ -26,9 +28,10 @@ Mstep_mu_cvxr <- function(ylist,
     yy <- ylist[[tt]]
     g <- resp[[tt]]
     yy <- apply(yy, MARGIN = 2, FUN = function(x) x * g)
-    colSums(yy)
-  })  %>% bind_rows() %>% as.matrix()
-  
+    yrow = matrix(c(NA, NA), nrow=1, ncol=dimdat)
+    yrow[1,] = colSums(yy)
+    yrow
+  }) %>% do.call(rbind, .)
   
   ## Auxiliary term, needed to make the objective interpretable
   aux.y <- Reduce("+", lapply(1:TT, FUN = function(tt){
@@ -45,14 +48,25 @@ Mstep_mu_cvxr <- function(ylist,
   resp.sum.sqrt <- lapply(resp, FUN = function(x) sqrt(sum(x)))
   
   ## Differencing Matrix, (TT-(l+1)) x TT 
-  Dlp1 <- gen_diff_mat(n = TT, l = l+1)
+  Dlp1 <- gen_diff_mat(n = TT, l = l+1, x = x)
   # l = 2 is quadratic trend filtering
   # l = 1 is linear trend filtering
   # l = 0 is fused lasso
   
   ## Forming the objective
-  obj = 1/(2*N) *( Reduce("+", lapply(1:TT, FUN = function(tt) CVXR::quad_form(resp.sum.sqrt[[tt]]*mumat[tt,], Sigma_inv))) -2 * Reduce("+", lapply(1:TT, FUN = function(tt) t(ytildes[tt,]) %*% Sigma_inv %*% mumat[tt,])) + aux.y) + lambda * sum(CVXR::sum_entries(abs(Dlp1 %*% mumat), axis = 1))
+  obj = 1/(2*N) *( Reduce("+", lapply(1:TT, FUN = function(tt) CVXR::quad_form(t(resp.sum.sqrt[[tt]]*mumat[tt,]), Sigma_inv))) -2 * Reduce("+", lapply(1:TT, FUN = function(tt) t(ytildes[tt,]) %*% Sigma_inv %*% t(mumat[tt,]))) + aux.y) + lambda * sum(CVXR::sum_entries(abs(Dlp1 %*% mumat), axis = 1))
+
+  ##Reduce("+", lapply(1:TT, FUN = function(tt) t(ytildes[tt,]) %*% Sigma_inv %*% (mumat[tt,]))) + aux.y
+  ## a = t(resp.sum.sqrt[[tt]]*mumat[tt,])
+  ## CVXR::quad_form(resp.sum.sqrt[[tt]]*mumat[tt,], Sigma_inv)
+    
+    
+  ## resp.sum.sqrt[[tt]]*mumat[tt,] %>% dim()
+  ## dim(Sigma_inv)
+  ## mumat %>% dim()
+  ## ( (resp.sum.sqrt[[tt]]) * mumat[tt,]) %>% dim()
   
+
   ## Putting together the ball constraint
   rowmns <- matrix(rep(1, TT^2), nrow = TT)/TT
   mu_dotdot <- rowmns %*% mumat

@@ -9,7 +9,7 @@
 #' @param l_prob Trend filtering degree.
 #'
 #' @return (T x k) matrix containing the alphas, for \code{prob = exp(alpha)/
-#'         rowSums(exp(alpha))}.
+#'         rowSums(exp(alpha))}. 
 #' @export
 #'
 Mstep_prob <- function(resp, H_tf, countslist = NULL,
@@ -34,7 +34,7 @@ Mstep_prob <- function(resp, H_tf, countslist = NULL,
     }
     return(resp.avg) 
 
-  ## If glmnet is actually needed, use it.
+  ## If glmnet is needed, use it.
   } else {
 
     lambda_range <- function(lam, nlam = 50, lam.max = 5*lam){
@@ -44,12 +44,10 @@ Mstep_prob <- function(resp, H_tf, countslist = NULL,
     penalty.facs <- c(rep(0, l_prob+1), rep(1, nrow(H_tf) - l_prob - 1))
     resp.predict <- do.call(rbind, lapply(resp, colSums))
     glmnet_obj <- glmnet::glmnet(x = H_tf, y = resp.predict, family = "multinomial",
-                         penalty.factor = penalty.facs, maxit = 1e7,
-                         lambda =  mean(penalty.facs)*lambda_range(lambda_prob),
-                         standardize = F, intercept = FALSE) ## todo: replicate the parameters.
+                                 penalty.factor = penalty.facs, maxit = 1e7,
+                                 lambda =  mean(penalty.facs)*lambda_range(lambda_prob),
+                                 standardize = F, intercept = FALSE) 
     pred_link <- predict(glmnet_obj, newx = H_tf, type = "link", s = mean(penalty.facs) * lambda_prob)[,,1]
     return(pred_link)
   }
 }
-
-## Things TODO: (1) check whether the resp.avg and result from penalized regression match, and (2) check if the scaling has entered the lambdas.

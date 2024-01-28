@@ -8,8 +8,9 @@
 #'   case the value becomes \code{1:T}, for the $T==length(ylist)$.
 #' @param numclust Number of clusters.
 #' @param niter Maximum number of EM iterations.
-#' @param l Degree of differencing for the mean trend filtering.
-#' @param l_prob Degree of differencing for the probability trend filtering.
+#' @param l Degree of differencing for the mean trend filtering. l=0 will give
+#'   you piecewise constant means; l=1 is piecewise linear, and so forth. 
+#' @param l_prob Degree of differencing for the probability trend filtering. 
 #' @param mn Initial value for cluster means. Defaults to NULL, in which case
 #'   initial values are randomly chosen from the data.
 #' @param lambda Smoothing parameter for means
@@ -44,6 +45,8 @@ flowtrend_once <- function(ylist,
                        admm_local_adapt = TRUE,
                        admm_local_adapt_niter = if(admm_local_adapt) 10 else 1,
                        rho_init = 0.1,
+                       ## Other options
+                       check_convergence = TRUE,
                        ## Random seed
                        seed = NULL){
 
@@ -75,12 +78,22 @@ flowtrend_once <- function(ylist,
   # l = 0 is fused lasso
   # D^{(1)} is first differences, so it correponds to l=0
   Dlp1 = gen_diff_mat(n = TT, l = l+1, x = x)
-  Dl = gen_diff_mat(n = TT, l = l, x = x)
+  if(l > 1){
+    facmat = diag(l / diff(x, lag = l))
+  } else {
+    facmat = diag(rep(1, TT-l))
+  }
+  Dl = facmat %*% gen_diff_mat(n = TT, l = l, x = x)
+  tDl = t(Dl)
+
   Dlsqrd <- t(Dl) %*% Dl
   e_mat <- etilde_mat(TT = TT) # needed to generate B
   Dlp1_prob = gen_diff_mat(n = TT, l = l_prob+1, x = x)
-  H_tf <- gen_tf_mat(n = length(countslist), k = l_prob, x = x)
-  if(is.null(mn)) mn = init_mn(ylist, numclust, TT, dimdat, countslist = countslist, seed = seed)
+  H_tf <- gen_tf_mat(n = TT, k = l_prob, x = x)
+  if(is.null(mn)){
+    mn = init_mn(ylist, numclust, TT, dimdat,
+                 countslist = countslist, seed = seed)
+  }
   ntlist = sapply(ylist, nrow)
   N = sum(ntlist)
 
@@ -115,6 +128,7 @@ flowtrend_once <- function(ylist,
                       lambda = lambda,
                       first_iter = (iter == 2),
                       l = l, Dlp1 = Dlp1, Dl = Dl,
+                      tDl = tDl,
                       Dlsqrd = Dlsqrd,
                       sigma_eig_by_clust = sigma_eig_by_clust,
                       sigma = sigma, maxdev = maxdev,
@@ -135,10 +149,6 @@ flowtrend_once <- function(ylist,
 
     ## 2. Sigma
     sigma = Mstep_sigma(resp, ylist, mn, numclust)
-    # sigma_eig_by_clust <- eigendecomp_sigma_array(sigma)
-    # denslist_by_clust <- make_denslist_eigen(ylist, mn, TT, dimdat, numclust,
-    #                                          sigma_eig_by_clust,
-    #                                          countslist)
 
     ## 3. Probabilities
     prob_link = Mstep_prob(resp, countslist = countslist, H_tf = H_tf,
@@ -152,7 +162,15 @@ flowtrend_once <- function(ylist,
                                  lambda_prob = lambda_prob)
 
     ## Check convergence
-    if(check_converge_rel(objectives[iter-1], objectives[iter], tol = tol_em)) break
+    if(iter > 10){ 
+      if(check_convergence &
+         check_converge_rel(objectives[iter-1], objectives[iter], tol = tol_em) &
+         check_converge_rel(objectives[iter-2], objectives[iter-1], tol = tol_em)&
+         check_converge_rel(objectives[iter-3], objectives[iter-2], tol = tol_em)){
+         ## check_converge_rel(objectives[iter-4], objectives[iter-3], tol = tol_em)){
+        break
+      }
+    }
   }
 
   return(structure(list(mn = mn,

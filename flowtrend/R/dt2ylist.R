@@ -7,7 +7,7 @@
 #' @return List of matrices
 #' @export
 dt2ylist <- function(dt){
-  dt%>% select(time, Y) %>% arrange(time) %>%
+  dt%>% dplyr::select(time, Y) %>% arrange(time) %>%
     group_by(time) %>%
     group_split(.keep = FALSE) %>%
     lapply(as.matrix)

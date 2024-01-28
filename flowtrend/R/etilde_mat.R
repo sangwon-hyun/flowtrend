@@ -36,15 +36,12 @@ get_C_mat <- function(C1, resp_sum, TT, dimdat, Sigma_inv, e_mat, N, Dlp1, Dl,
 
   # third component
   C3 <- do.call(rbind, lapply(1:dimdat, FUN = function(j){
-    assertthat::assert_that(length(uw[,j, drop=TRUE]) != 1)
-    stopifnot(length(uw[,j, drop=TRUE]) == TT-l)
-    stopifnot(length(w[,j, drop=TRUE]) == TT-l)
-    ((uw[,j, drop=TRUE] - rho*w[,j,drop=TRUE]) %*% Dl) %>% as.numeric()
+    ((uw[,j, drop=TRUE] - rho * w[,j,drop=TRUE]) %*% Dl) %>% as.numeric()
   }))
 
   # combining
-  C <-  (-1/N*C1 + C2 + C3)
-  C <- C/unlist(resp_sum)[col(C)]
+  C <-  (-1/N * C1 + C2 + C3)
+  C <- C/resp_sum[col(C)]
   return(C)
 }
 

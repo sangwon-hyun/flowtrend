@@ -14,7 +14,6 @@ m-step-for-sigma
 m-step-for-mu
 helpers-for-m-step-mu
 all-rcpp-functions
-ported-over-from-flowmix
 flowtrend
 reordering-clusters
 tuning-the-regularization-parameters-for-flowtrend
@@ -29,4 +28,6 @@ testing-the-flowtrend-method
 id_1d-example
 testing-monotonicity-of-objective-values
 id_2d-example
+working-with-binned-dataset
+unevenly-spaced-inputs-x
 documenting-the-package-and-building

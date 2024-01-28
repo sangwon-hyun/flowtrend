@@ -10,6 +10,7 @@ Mstep_mu_cvxr(
   lambda,
   l,
   Sigma_inv,
+  x = NULL,
   thresh = 1e-08,
   maxdev = NULL,
   dimdat,
@@ -20,6 +21,8 @@ Mstep_mu_cvxr(
 }
 \arguments{
 \item{Sigma_inv}{inverse of Sigma}
+
+\item{x}{covariates}
 }
 \description{
 Testing against \code{Mstep_mu()}, for ONE cluster.

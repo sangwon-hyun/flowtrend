@@ -52,8 +52,8 @@ objective <- function(mu, prob, prob_link = NULL, sigma,
     if(is.null(denslist_by_clust)){
       return(loglik_tt(ylist, tt, mu, sigma, prob, countslist, numclust = numclust, dimdat = dimdat))
     } else {
+      ## TODO: This function doesn't exist yet, but might need to, since.. speed!
       return(loglik_tt_precalculate(ylist, tt, denslist_by_clust, prob, countslist, numclust))
-      ## TODO: This doesn't exist yet, but might need to, since.. speed!
     }
   })
 
@@ -65,7 +65,6 @@ objective <- function(mu, prob, prob_link = NULL, sigma,
     ## Return penalized likelihood
     mu.splt <- asplit(mu, MARGIN = 3)
     diff_mu <- sum(unlist(lapply(mu.splt, FUN = function(m) sum(abs(Dlp1 %*% m)))))
-    ## diff_prob <- sum(abs(Dl_prob %*% log(prob * sapply(countslist, sum))))
     diff_prob <- sum(abs(Dlp1_prob %*% prob_link))
     obj =  -1/N * sum(unlist(loglik)) + lambda * diff_mu + lambda_prob * diff_prob
     return(obj)

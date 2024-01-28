@@ -31,9 +31,6 @@ Mstep_sigma <- function(resp, ylist, mn, numclust){
     resp.long = do.call(c, resp.thisclust)
     mnlong = mn[irows,,iclust]
     if(is.vector(mnlong)) mnlong = mnlong %>% cbind()
-    ## browser()
-    ## vars[[iclust]] = estepC(ylong, mnlong, sqrt(resp.long), sum(resp.long))
-    ## TODO: see if this could be sped up.
     resid <- ylong - mnlong
     resid_weighted <- resp.long * resid
     sig_temp <- t(resid_weighted) %*% resid/sum(resp.long)

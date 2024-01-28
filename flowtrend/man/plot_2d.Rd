@@ -4,7 +4,7 @@
 \alias{plot_2d}
 \title{Simple plotter for 2d particle data.}
 \usage{
-plot_2d(ylist, tt)
+plot_2d(ylist, obj = NULL, tt)
 }
 \description{
 Simple plotter for 2d particle data.

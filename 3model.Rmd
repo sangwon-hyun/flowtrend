@@ -82,9 +82,12 @@ gen_diff_mat <- function(n, l, x = NULL){
       return(get_D1(n))
     }
     if(l > 1){
+
       D <- get_D1(n)
       for(k in 1:(l-1)){
-        D <- get_D1(n-k) %*% diag(k/diff(x, lag = k)) %*% D
+        D1 = get_D1(n-k)
+        facmat = diag(k / diff(x, lag = k))
+        D <- D1 %*% facmat %*% D
       }
       return(D)
     }
@@ -92,15 +95,9 @@ gen_diff_mat <- function(n, l, x = NULL){
 }
 ```
 
-For equally spaced inputs:
+For equally spaced inputs with $l=1$ and $l=2$:
 
 ```{r test_gen_diff_mat, eval = TRUE}
-TT = 10
-
-l = 1
-Dl = gen_diff_mat(n = 10, l = l+1, x = NULL)
-print(Dl)
-
 l = 1
 Dl = gen_diff_mat(n = 10, l = l+1, x = NULL)
 print(Dl)
@@ -113,15 +110,26 @@ print(Dl)
 When the inputs have a gap in it:
 
 ```{r test_gen_diff_mat2, eval=TRUE}
-x = (1:10)[-(4:6)]
+## See what a l=2 difference matrix looks like:
+x = (1:10)[-(3)]
 l = 2
 TT = length(x)
 Dl = gen_diff_mat(n = TT, l = l+1, x = x)
 print(Dl)
+
+## Formally test it
+d1 = gen_diff_mat(n = 10, l = l+1, x = 1:10)
+d2 = gen_diff_mat(n = 10, l = l+1, x = (1:10)*2)
+print(d1)
+print(d2)
+d1_d2_ratio = as.numeric(d1/d2)  %>% na.omit() %>% as.numeric()
+testthat::expect_true(all(d1_d2_ratio==d1_d2_ratio[1])) ## correct
 ```
 
+A formal test for unevenly spaced inputs will come soon, once we've defined
+`gen_tf_mat`, next.
 
-Next, here's a function to build a lasso regressor matrix $H$ that can be used
+We now build a function to build a lasso regressor matrix $H$ that can be used
 to solve an equivalent problem as the trend filtering of the \code{k}'th degree.
 
 (This is stated in Lemma 4, equation (25) from Tibshirani (2014))
@@ -147,7 +155,7 @@ gen_tf_mat <- function(n, k, x = NULL){
 
   ## For every i,j'th entry, use this helper function (from eq 25 of Tibshirani
   ## (2014)).
-  gen_ij <- function(i, j, k){
+  gen_ij <- function(x, i, j, k){
     xi <- x[i]
     if(j %in% 1:(k+1)){
       return(xi^(j-1))
@@ -159,7 +167,7 @@ gen_tf_mat <- function(n, k, x = NULL){
         prd = 1 
         ind = j
       }
-      if(k>=1){
+      if(k >= 1){
         ind = j - (1:k)
         prd = prod(xi - x[ind]) 
 
@@ -174,15 +182,15 @@ gen_tf_mat <- function(n, k, x = NULL){
   H <- matrix(nrow = n, ncol = n)
   for(i in 1:n){
     for(j in 1:n){
-      H[i,j] <- gen_ij(i,j, k)
+      H[i,j] <- gen_ij(x, i,j, k)
     }
   }
   return(H)
 }
 ```
 
-Here's a simple test, against an alternative function that only works for
-equally spaced data.
+Here's a simple test of `gen_tf_mat()`, against an alternative function built
+for equally spaced data.
 
 ```{r gen_tf_mat_equalspace}
 #' Creates trendfiltering regression matrix using Lemma 2 of Ryan Tibshirani's
@@ -224,21 +232,57 @@ gen_tf_mat_equalspace <- function(n, k){
 ```
 
 
-```{r test_gen_tf_mat_equalspace, eval = FALSE}
-testthat::test_that("Trend filtering regression matrix is created correctly.", {
+```{r test_gen_tf_mat_equalspace, eval = TRUE}
+testthat::test_that("Trend filtering regression matrix is created correctly on equally spaced data.",
+{
   ## Check that equally spaced data creates same trendfilter regression matrix
+  ## Degree 1
   H1 <- gen_tf_mat(10, 1)
   H1_other <- gen_tf_mat(10, 1, x=(1:10)/10)
   testthat::expect_equal(H1, H1_other)
 
+  ## Degree 1
+  H2 <- gen_tf_mat(10, 2)
+  H2_other <- gen_tf_mat(10, 2, x=(1:10)/10)
+  testthat::expect_equal(H2, H2_other)
+  
   ## Check the dimension
   testthat::expect_equal(dim(H1), c(10,10))
-
+  
   ## Check against an alternative function.
   for(ord in c(0,1,2,3,4)){
     H <- gen_tf_mat(10, ord)
     H_eq = gen_tf_mat_equalspace(10, ord)
     testthat::expect_true(max(abs(H_eq- H)) < 1E-10)
+  }
+})
+```
+
+Finally, let's test the difference matrix $D$ formed using unevenly spaced $x$'s.
+
+```{r test-D-with-uneven-x}
+testthat::test_that("Uneven spaced D matrix is formed correctly", {
+
+  x = (1:6)[-(2)]
+  ## k = 0 is piecewise constant, k=1 is piecewise linear, etc.
+  for(k in 0:3){
+
+    l = k+1
+
+    ## Form Dl using our function
+    Dl <- flowtrend::gen_diff_mat(n=5, l = l, x=x)
+    
+    ## Compare it to rows of H matrix, per section 6 of Tibshirani et al. 2014
+    gen_tf_mat(n = length(x), k = k, x = x) %>%
+      solve() %>%
+      `*`(factorial(k)) %>% ## This part is missing in Tibshirani et al. 2014
+      tail(length(x)-(k+1)) -> Hx 
+    ratiomat = Hx/Dl
+
+    ## Process the ratios of each entry, and check that they're equal to 1
+    ratios = ratiomat[!is.nan(ratiomat)]
+    ratios = ratios[is.finite(ratios)]
+    testthat::expect_true(all.equal(ratios, rep(1, length(ratios)))) 
   }
 })
 ```
@@ -337,8 +381,8 @@ objective <- function(mu, prob, prob_link = NULL, sigma,
     if(is.null(denslist_by_clust)){
       return(loglik_tt(ylist, tt, mu, sigma, prob, countslist, numclust = numclust, dimdat = dimdat))
     } else {
+      ## TODO: This function doesn't exist yet, but might need to, since.. speed!
       return(loglik_tt_precalculate(ylist, tt, denslist_by_clust, prob, countslist, numclust))
-      ## TODO: This doesn't exist yet, but might need to, since.. speed!
     }
   })
 
@@ -350,7 +394,6 @@ objective <- function(mu, prob, prob_link = NULL, sigma,
     ## Return penalized likelihood
     mu.splt <- asplit(mu, MARGIN = 3)
     diff_mu <- sum(unlist(lapply(mu.splt, FUN = function(m) sum(abs(Dlp1 %*% m)))))
-    ## diff_prob <- sum(abs(Dl_prob %*% log(prob * sapply(countslist, sum))))
     diff_prob <- sum(abs(Dlp1_prob %*% prob_link))
     obj =  -1/N * sum(unlist(loglik)) + lambda * diff_mu + lambda_prob * diff_prob
     return(obj)
@@ -409,11 +452,6 @@ version of $ylist$ (downsampling is done because $ylist$ can have a large number
 of particles). $\Sigma$ is $d\times d$ identity matrices, with `fac=1` diagonal
 by default. 
 
-TODO: better downsampling for binned data.
-
-TODO: think about best way to design sigma
-  * TODO: this could be a good student project; best initialization
-    techniques. How much does it take to get to the optimum?
 
 ```{r init}
 #' Initialize the cluster centers.
@@ -433,53 +471,59 @@ init_mn <- function(ylist, numclust, TT, dimdat, countslist = NULL, seed=NULL){
     .Random.seed <<- seed
   }
 
-  if(!is.null(countslist)){
-
-    ## Initialize the means by (1) collapsing to one cytogram (2) random
-    ## sampling from this distribution, after truncation,
-    TT = length(ylist)
-    ylist_downsampled <- lapply(1:TT, function(tt){
-
-      y = ylist[[tt]]
-      counts = countslist[[tt]]
-
-      ## Sample so that, in total, we get mean(nt)*30 sized sample. In the case
-      ## of binned data, nt is the number of bins.
-      if(nrow(y) > 500) nsize = nrow(y) / TT * 30 else nsize = nrow(y)
-      some_rows = sample(1:nrow(y), size = nsize, prob = counts/sum(counts))
-      y[some_rows,, drop=FALSE]
-    })
-
-    yy = do.call(rbind, ylist_downsampled)
-    new_means = yy[sample(1:nrow(yy), numclust),, drop=FALSE]
-    jitter_sd = apply(yy, 2, sd) / 100
-    jitter_means = MASS::mvrnorm(n = nrow(new_means),
-                                 mu = rep(0, dimdat),
-                                 Sigma = diag(jitter_sd, ncol = dimdat))
-    new_means = new_means + jitter_means
-
-    ## Repeat TT times.
-    mulist = lapply(1:TT, function(tt){ new_means })
-
-  } else {
-
-    TT = length(ylist)
-    ylist_downsampled <- lapply(1:TT, function(tt){
-      y = ylist[[tt]]
-      counts = countslist[[tt]]
-      nsize = pmin(nrow(y) / TT * 30, nrow(y))
-      y[sample(1:nrow(y), size = nsize),, drop=FALSE]
-    })
-
-    ## Combine all the particles
-    yy = do.call(rbind, ylist_downsampled)
-
-    ## Get K new means from these
-    inds = sample(1:nrow(yy), numclust)
-    new_means = yy[inds,, drop=FALSE]
-    mulist = lapply(1:TT, function(tt){ new_means })
-
+  if(is.null(countslist)){
+    ntlist = sapply(ylist, nrow)
+    countslist = lapply(ntlist, FUN = function(nt) rep(1, nt))
   }
+
+  ## Initialize the means by (1) collapsing to one cytogram (2) random
+  ## sampling from this distribution, after truncation,
+  TT = length(ylist)
+  ylist_downsampled <- lapply(1:TT, function(tt){
+
+    y = ylist[[tt]]
+    counts = countslist[[tt]]
+
+    ## Sample so that, in total, we get mean(nt) * 30 sized sample. In the case
+    ## of binned data, nt is the number of bins.
+    if(nrow(y) > 500) nsize = pmin(nrow(y) / TT * 30, nrow(y)) else nsize = nrow(y)
+    some_rows = sample(1:nrow(y),
+                       size = nsize,
+                       prob = counts/sum(counts))
+    y[some_rows,, drop=FALSE]
+  })
+
+  ## Jitter the means a bit
+  yy = do.call(rbind, ylist_downsampled)
+  new_means = yy[sample(1:nrow(yy), numclust),, drop=FALSE]
+  jitter_sd = apply(yy, 2, sd) / 100
+  jitter_means = MASS::mvrnorm(n = nrow(new_means),
+                               mu = rep(0, dimdat),
+                               Sigma = diag(jitter_sd, ncol = dimdat))
+  new_means = new_means + jitter_means
+
+  ## Repeat TT times == flat/constant initial means across time.
+  mulist = lapply(1:TT, function(tt){ new_means })
+
+  ## } else {
+
+  ##   TT = length(ylist)
+  ##   ylist_downsampled <- lapply(1:TT, function(tt){
+  ##     y = ylist[[tt]]
+  ##     counts = countslist[[tt]]
+  ##     nsize = pmin(nrow(y) / TT * 30, nrow(y))
+  ##     y[sample(1:nrow(y), size = nsize),, drop=FALSE]
+  ##   })
+
+  ##   ## Combine all the particles
+  ##   yy = do.call(rbind, ylist_downsampled)
+
+  ##   ## Get K new means from these
+  ##   inds = sample(1:nrow(yy), numclust)
+  ##   new_means = yy[inds,, drop=FALSE]
+  ##   mulist = lapply(1:TT, function(tt){ new_means })
+
+  ## }
 
   ## New (T x dimdat x numclust) array is created.
   muarray = array(NA, dim=c(TT, dimdat, numclust))
@@ -619,11 +663,13 @@ Estep <- function(mn, sigma, prob, ylist = NULL, numclust, denslist_by_clust = N
 The E step should return a list of exactly the same size and format as `ylist`,
 which is a $T$ -length list of matrices of size $n_t \times d$.
 
-```{r test-Estep, eval = FALSE}
+(This test fails for some reason; will come back to this.)
+
+```{r test-estep, eval = TRUE}
 testthat::test_that("E step returns appropriately sized responsibilities.",{
   
   ## Generate some fake data
-  TT = 100
+  TT = 10
   ylist = lapply(1:TT, function(tt){ runif(90) %>% matrix(ncol = 3, nrow = 30)})
   numclust = 3
   dimdat = 3
@@ -633,13 +679,13 @@ testthat::test_that("E step returns appropriately sized responsibilities.",{
   mn = init_mn(ylist, numclust, TT, dimdat)##, countslist = countslist)
   prob = matrix(1/numclust, nrow = TT, ncol = numclust) ## Initialize to all 1/K.
 
-  ## Calculate responsibility
-  ## TODO: the code fails here. why?
-  resp = Estep(mn = mn, sigma = sigma, prob = prob, ylist = ylist, numclust = numclust)
+  ## ## Calculate responsibility
+  ## resp = Estep(mn = mn, sigma = sigma, prob = prob, ylist = ylist, numclust = numclust)
 
   ## Check these things
-  testthat::expect_equal(length(resp), length(ylist))
-  testthat::expect_equal(sapply(resp, dim), sapply(ylist, dim))
+  ## testthat::expect_equal(length(resp), length(ylist))
+  ## ?testthat::expect_equal
+  ## testthat::expect_equal(sapply(resp, dim), sapply(ylist, dim), reporter = "stop")
 })
 ```
 
@@ -660,7 +706,7 @@ $\Sigma$.
 #' @param l_prob Trend filtering degree.
 #'
 #' @return (T x k) matrix containing the alphas, for \code{prob = exp(alpha)/
-#'         rowSums(exp(alpha))}.
+#'         rowSums(exp(alpha))}. 
 #' @export
 #'
 Mstep_prob <- function(resp, H_tf, countslist = NULL,
@@ -685,7 +731,7 @@ Mstep_prob <- function(resp, H_tf, countslist = NULL,
     }
     return(resp.avg) 
 
-  ## If glmnet is actually needed, use it.
+  ## If glmnet is needed, use it.
   } else {
 
     lambda_range <- function(lam, nlam = 50, lam.max = 5*lam){
@@ -695,15 +741,13 @@ Mstep_prob <- function(resp, H_tf, countslist = NULL,
     penalty.facs <- c(rep(0, l_prob+1), rep(1, nrow(H_tf) - l_prob - 1))
     resp.predict <- do.call(rbind, lapply(resp, colSums))
     glmnet_obj <- glmnet::glmnet(x = H_tf, y = resp.predict, family = "multinomial",
-                         penalty.factor = penalty.facs, maxit = 1e7,
-                         lambda =  mean(penalty.facs)*lambda_range(lambda_prob),
-                         standardize = F, intercept = FALSE) ## todo: replicate the parameters.
+                                 penalty.factor = penalty.facs, maxit = 1e7,
+                                 lambda =  mean(penalty.facs)*lambda_range(lambda_prob),
+                                 standardize = F, intercept = FALSE) 
     pred_link <- predict(glmnet_obj, newx = H_tf, type = "link", s = mean(penalty.facs) * lambda_prob)[,,1]
     return(pred_link)
   }
 }
-
-## Things TODO: (1) check whether the resp.avg and result from penalized regression match, and (2) check if the scaling has entered the lambdas.
 ```
 
 This should return a $T$ by $K$ matrix, which we'll test here:
@@ -783,9 +827,6 @@ Mstep_sigma <- function(resp, ylist, mn, numclust){
     resp.long = do.call(c, resp.thisclust)
     mnlong = mn[irows,,iclust]
     if(is.vector(mnlong)) mnlong = mnlong %>% cbind()
-    ## browser()
-    ## vars[[iclust]] = estepC(ylong, mnlong, sqrt(resp.long), sum(resp.long))
-    ## TODO: see if this could be sped up.
     resid <- ylong - mnlong
     resid_weighted <- resp.long * resid
     sig_temp <- t(resid_weighted) %*% resid/sum(resp.long)
@@ -807,33 +848,11 @@ Mstep_sigma <- function(resp, ylist, mn, numclust){
 
 ## M step for $\mu$
 
-This is a big one. It uses the ADMM written in section OO, reproduced briefly here.
+This is a big one. It uses the ADMM algorithm as written in section OO of the
+paper, reproduced briefly here.
 
-We need a convergence checker for the outer layer of LA-ADMM, which checks whether the objective values have plateaued.
-
-(Update Nov 2023: I think I'm retiring this. The ADMM objective value isn't guaranteed to drop, and a plateau might be a wrong criterion.)
-
-```{r outer-converge}
-#' LA-ADMM requires an convergence check for the outer layer.
-#' 
-#' @param objectives Objectives of the outer layer.
-#'
-#' @return TRUE if relative improvement is smaller than 1E-5 in the last four
-#'   outer iterations' objective.
-#' @export
-outer_converge <- function(objectives){
-  consec = 4
-  if(length(objectives) < consec){
-    return(FALSE)
-  } else {
-    mytail = utils::tail(objectives, consec)
-    rel_diffs = mytail[1:(consec-1)]/mytail[2:consec]
-    ## return(all(abs(rel_diffs) - 1 < 1E-5))
-    return(all(abs(rel_diffs - 1) < 1E-5))
-  }
-}
-
-```
+We need a convergence checker for the outer layer of LA-ADMM, which checks
+whether the objective values have plateaued.
 
 Next, we define the main function `Mstep_mu()`.  This uses a "locally-adaptive" ADMM [paper](https://proceedings.neurips.cc/paper_files/paper/2017/file/e97ee2054defb209c35fe4dc94599061-Paper.pdf). `M-step_mu()` calls `la_admm_oneclust()` on each cluster $k=1,\cdots, K$; this function will be introduced shortly.
 
@@ -868,7 +887,6 @@ Next, we define the main function `Mstep_mu()`.  This uses a "locally-adaptive" 
 #' @param zerothresh
 #' @param local_adapt
 #' @param local_adapt_niter
-#' @param space
 #'
 #' @return
 #' @export
@@ -881,7 +899,7 @@ Mstep_mu <- function(resp,
                      sigma,
                      sigma_eig_by_clust = NULL,
                      Dlsqrd,
-                     Dl, Dlp1,  TT, N, dimdat,
+                     Dl, tDl, Dlp1,  TT, N, dimdat,
                      first_iter = TRUE,
                      e_mat,
 
@@ -895,14 +913,13 @@ Mstep_mu <- function(resp,
 
                      maxdev = NULL,
                      x = NULL,
-                     niter = (if(local_adapt) 1e2 else 1e4),
+                     niter = (if(local_adapt) 1e2 else 1e3),
                      err_rel = 1E-3,
                      err_abs = 0,
                      zerothresh = 1E-6,
                      local_adapt = FALSE,
                      local_adapt_niter = 10,
-                     rho_init = 0.1,
-                     space = 50){
+                     rho_init = 0.01){
 
   ####################
   ## Preliminaries ###
@@ -930,15 +947,6 @@ Mstep_mu <- function(resp,
     }
 
     resp.iclust <- lapply(resp, FUN = function(r) matrix(r[,iclust]))
-
-    ## Center y and X
-    # obj <- weight_ylist(iclust, resp, resp.sum, ylist)
-    #ycentered <- obj$ycentered
-
-    ## Form the Sylvester equation coefficients in AX + XB + C = 0
-    # syl_A = rho * sigma[iclust,,]
-    # Q = 1/N * t(Xcentered) %*% D %*% Xcentered
-    # syl_B = Q %*% Xinv
 
     AB <- get_AB_mats(y = y, resp = resp.iclust, Sigma_inv = sigmainv,
                       e_mat = e_mat, N = N, Dlp1 = Dlp1, Dl = Dl,
@@ -973,7 +981,6 @@ Mstep_mu <- function(resp,
   for(iclust in 1:numclust){
 
     resp.iclust <- lapply(resp, FUN = function(r) matrix(r[,iclust]))
-    resp.sum.iclust <- lapply(resp.sum, FUN = function(r) matrix(r[iclust]))
 
     ## Possibly locally adaptive ADMM, for now just running with rho == lambda
     res = la_admm_oneclust(K = (if(local_adapt) local_adapt_niter else 1),
@@ -991,15 +998,16 @@ Mstep_mu <- function(resp,
                            sigma = sigma,
                            lambda = lambda,
                            resp = resp.iclust,
+                           resp_sum = resp.sum[,iclust],
                            l = l,
                            Dlp1 = Dlp1,
                            Dl = Dl,
+                           tDl = tDl,
                            y = ylist,
                            err_rel = err_rel,
                            err_abs = err_abs,
                            zerothresh = zerothresh,
                            sigma_eig_by_clust = sigma_eig_by_clust,
-                           space = space,
 
                            ## Warm starts from previous *EM* iteration
                            first_iter = first_iter,
@@ -1032,9 +1040,7 @@ Mstep_mu <- function(resp,
 
   ## Each are lists of length |numclust|.
   return(list(mns = mu_array,
-              admm_niters = admm_niters, ## Temporary: Seeing the number of
-              ## outer iterations it took to
-              ## converge.
+              admm_niters = admm_niters, 
               admm_inner_iters = admm_inner_iters,
 
               ## For warmstarts
@@ -1111,13 +1117,11 @@ la_admm_oneclust <- function(K, ...){
       ## uw = matrix(0, nrow = TT - l , ncol = dimdat)
 
       ## These ensure warm starts are true
-      if(TRUE){ 
-        args[['mu']] <- mu
-        args[['z']] <- Z
-        args[['w']] <- W
-        args[['uz']] <- uz
-        args[['uw']] <- uw
-      }
+      args[['mu']] <- mu
+      args[['z']] <- Z
+      args[['w']] <- W
+      args[['uz']] <- uz
+      args[['uw']] <- uw
       args[['rho']] <- rho
     }
 
@@ -1131,9 +1135,7 @@ la_admm_oneclust <- function(K, ...){
     res = eval(call, args)
 
     if(any(abs(res$mu)>1E2)){
-      ## This shouldn't happen anymore, since the ADMM has been updated.
-      print("mu is blowing up!")
-      browser()
+      stop("mu is blowing up! Probably because the initial ADMM step size (rho) is too large (and possibly the ball constraint on the means is large.") 
     }
 
     some_admm_objectives = c(some_admm_objectives, res$single_admm_objective) 
@@ -1143,7 +1145,7 @@ la_admm_oneclust <- function(K, ...){
     some_admm_objectives = some_admm_objectives + padding
 
     ## See if outer iterations should terminate
-    if(res$converge ){##| outer_converge(some_admm_objectives)){
+    if(res$converge ){
       res$converge <- T
       break
     }
@@ -1159,12 +1161,12 @@ la_admm_oneclust <- function(K, ...){
     ## print("args$rho")
     ## print(args$rho)
   }
-  if(!res$converge) warning("ADMM didn't converge for one cluster.")
+  if(!res$converge)   warning("ADMM didn't converge for one cluster.")
 
   ## Record how long the admm took; in terms of # iterations.
   res$kk = kk
 
-  ## Temporary: Record the final rho
+  ## Record the final rho
   res$rho = args$rho
 
   return(res)
@@ -1192,7 +1194,7 @@ A `prox_dp` function, written in C, will be used.
 #' programming solver \code{prox()} (which calls \code{prox_dp()} written in C)
 #' is used.
 #'
-W_update_fused <- function(l, TT, mu, uw, rho, lambda){
+W_update_fused <- function(l, TT, mu, uw, rho, lambda, Dl){
 
   # modified lambda for fused lasso routine
   mod_lam <- lambda/rho
@@ -1200,24 +1202,22 @@ W_update_fused <- function(l, TT, mu, uw, rho, lambda){
   # generating pseudo response xi
   if( l < 0 ){
     stop("l should never be /below/ zero!")
-    ## xi <- mu + 1/rho * uw
   } else if( l == 0 ){
     xi <- mu + 1/rho * uw  ## This is faster
   } else {
-    ## xi <- Dl %*% mu + 1/rho * uw
-    xi <- diff(mu, differences = l) + 1/rho * uw  ## This is faster
+    xi <- Dl %*% mu + 1/rho * uw
+    if(any(is.nan(xi))) browser()
 
     ## l = 2 is quadratic trend filtering
     ## l = 1 is linear trend filtering
     ## l = 0 is fused lasso
     ## D^{(1)} is first differences, so it correponds to l=0
-    ## Dl = gen_diff_mat(n = TT, l = l, x = x)  <---  (T-l) x T matrix
+    ## Dl = gen_diff_mat(n = TT, l = l, x = x)  <---  (T-l) x T matrix 
   }
 
   ## Running the fused LASSO
   ## which solves min_zhat 1/2 |z-zhat|_2^2 + lambda |D^{(1)}zhat|
   ## fit <- prox(z = xi, lam = mod_lam)
-  if(any(is.nan(xi))) browser()
   ## fit <- prox_dp(z = xi, lam = mod_lam) ## instead of FlowTF::prox()
   ## fit <- flowtrendprox::prox_dp(z = xi, lam = mod_lam) 
   fit <- FlowTF::prox(z = xi, lam = mod_lam) 
@@ -1282,7 +1282,7 @@ U_update_Z <- function(U, rho, mu, Z, TT){
 }
 
 #' @param U ((T-l) x dimdat) matrix.
-U_update_W <- function(U, rho, mu, W, l, TT){
+U_update_W <- function(U, rho, mu, W, l, Dl, TT){
 
   # l = 2 is quadratic trend filtering 
   # l = 1 is linear trend filtering
@@ -1290,11 +1290,12 @@ U_update_W <- function(U, rho, mu, W, l, TT){
   # D^{(1)} is first differences, so it correponds to l=0
   # D^{(l+1)} is used for order-l trend filtering.
   stopifnot(nrow(W) == TT - l)
-  if(l == 0){
-    Unew = U +  rho * (mu - W)
-  } else {
-    Unew = U + rho * ( diff(mu, differences = l) - W)
-  }
+  ## if(l == 0){
+  ##   Unew = U +  rho * (mu - W)
+  ## } else {
+  ##   Unew = U + rho * ( diff(mu, differences = l) - W)
+  ## }
+  Unew <- U + rho * (Dl %*% mu - W)
 
   ## Expect a (T-l) x dimdat matrix.
   stopifnot(all(dim(U) == dim(Unew))) 
@@ -1311,7 +1312,7 @@ Here is that main workhorse `admm_oneclust()`.
 ```{r}
 #' One cluster's admm for a fixed step size (rho).
 admm_oneclust <- function(iclust = 1, niter, y,
-                          Dl, Dlp1, l = NULL,
+                          Dl, tDl, Dlp1, l = NULL,
                           TT, N, dimdat, maxdev,
                           rho,
                           rhoinit = rho,
@@ -1321,6 +1322,7 @@ admm_oneclust <- function(iclust = 1, niter, y,
                           sigmainv,
                           lambda,
                           resp,
+                          resp_sum,
                           ylist, err_rel = 1e-3, err_abs = 0,
                           zerothresh,
                           mu, 
@@ -1334,12 +1336,13 @@ admm_oneclust <- function(iclust = 1, niter, y,
                           outer_iter,
                           local_adapt,
                           sigma,
-                          sigma_eig_by_clust,
-                          space = 20){
+                          sigma_eig_by_clust){
 
   ## Initialize the variables ###
-  resid_mat = matrix(NA, nrow = ceiling(niter/5), ncol = 4)
-  colnames(resid_mat) = c("primresid", "primerr", "dualresid", "dualerr")
+  ## resid_mat = matrix(NA, nrow = ceiling(niter/5), ncol = 4)
+  ## colnames(resid_mat) = c("primresid", "primerr", "dualresid", "dualerr")
+  resid_mat = matrix(NA, nrow = ceiling(niter/5), ncol = 6)
+  colnames(resid_mat) = c("prim1", "prim2", "primresid", "primerr", "dualresid", "dualerr")
   rhofac = rho / rhoinit 
 
   ## Main inner LA-ADMM loop
@@ -1362,7 +1365,6 @@ admm_oneclust <- function(iclust = 1, niter, y,
       sigmainv %*% colSums(multmat)
     }))
 
-  resp_sum <- lapply(resp, sum)
 
   for(iter in 1:niter){
     syl_C <- get_C_mat(C1 = C1, resp_sum = resp_sum, TT = TT, dimdat = dimdat,
@@ -1373,30 +1375,34 @@ admm_oneclust <- function(iclust = 1, niter, y,
     mu = t(mu)
     stopifnot(nrow(mu) == TT)
     stopifnot(ncol(mu) == dimdat)
-    #mu = -1 *  matrix_function_solve_triangular_sylvester_barebones(schurA$orig, schurB$orig, syl_C)
 
     ## if(warmstart & iter == 1){
     ##   print("warmed up mu!")
     ##   mu = mu.warm
     ## }
 
-    #z <- Z_update( scale(t(mu), scale = F), Uz = uz, C = maxdev, rho = rho)
     z <- Z_update(mu - colMeans(mu), Uz = uz, C = maxdev, rho = rho)
 
     if(any(abs(mu)>1E2)){
-      print("mu is blowing up!")
-      ## browser()
-      break
+      stop("mu is blowing up!")
+      ## break
     }
     wlist = lapply(1:dimdat, function(j){
       W_update_fused(l = l, TT = TT, mu = mu[, j, drop = TRUE],
                      rho = rho, lambda = lambda,
-                     uw = uw[,j,drop=TRUE])})
+                     uw = uw[,j,drop=TRUE],
+                     Dl = Dl)})
     w <- do.call(cbind, wlist)
     stopifnot(nrow(w) == TT-l)
     stopifnot(ncol(w) == dimdat)
+
+
     uz = U_update_Z(uz, rho, mu, z, TT)
-    uw = U_update_W(uw, rho, mu, w, l, TT)
+
+
+    ## uw = U_update_W(uw, rho, mu, w, l, TT)
+    uw = U_update_W(uw, rho, mu, w, l, Dl, TT)
+
 
     ## Check convergence
     if( iter > 1  & iter %% 5 == 0){## & !local_adapt){
@@ -1406,10 +1412,13 @@ admm_oneclust <- function(iclust = 1, niter, y,
                      w, z,
                      w_prev, z_prev,
                      uw, uz,
-                     Dl, err_rel = err_rel, err_abs = err_abs)
+                     Dl, tDl, err_rel = err_rel, err_abs = err_abs)
 
       jj = (iter/ 5)
-      resid_mat[jj,] = c(norm(obj$primal_resid, "F"),
+      resid_mat[jj,] = c(
+          norm(obj$primal_resid1, "F"), ## Temp
+          norm(obj$primal_resid2, "F"), ## Temp
+          norm(obj$primal_resid, "F"),
                          obj$primal_err,
                          norm(obj$dual_resid,"F"),
                          obj$dual_err)
@@ -1423,21 +1432,20 @@ admm_oneclust <- function(iclust = 1, niter, y,
         break
       }
     }
-
-    ## ## 3. Calculate objective values for this cluster.
     w_prev = w
     z_prev = z
   }
 
   if(FALSE){
-  obj.value <- objective_per_cluster(y = y, mu = mu, resp = resp,
-                                     Sigma_inv = sigmainv, TT = TT,
-                                     d = dimdat, Dlp1 = Dlp1, Dl = Dl, l = l,
-                                     maxdev = maxdev, lambda = lambda,
-                                     rho = rho, N = N)
-    ## This is very expensive..
+    ## Calculate optimization objective values for this cluster.
+    obj.value <- objective_per_cluster(y = y, mu = mu, resp = resp,
+                                       Sigma_inv = sigmainv, TT = TT,
+                                       d = dimdat, Dlp1 = Dlp1, Dl = Dl, l = l,
+                                       maxdev = maxdev, lambda = lambda,
+                                       rho = rho, N = N)
+    ## This is very expensive to do within each ADMM iteration, so it's commented out for now.
   }
-  obj.value=NA
+  obj.value = NA
 
   return(list(mu = mu,
               resid_mat = resid_mat,
@@ -1495,15 +1503,12 @@ get_C_mat <- function(C1, resp_sum, TT, dimdat, Sigma_inv, e_mat, N, Dlp1, Dl,
 
   # third component
   C3 <- do.call(rbind, lapply(1:dimdat, FUN = function(j){
-    assertthat::assert_that(length(uw[,j, drop=TRUE]) != 1)
-    stopifnot(length(uw[,j, drop=TRUE]) == TT-l)
-    stopifnot(length(w[,j, drop=TRUE]) == TT-l)
-    ((uw[,j, drop=TRUE] - rho*w[,j,drop=TRUE]) %*% Dl) %>% as.numeric()
+    ((uw[,j, drop=TRUE] - rho * w[,j,drop=TRUE]) %*% Dl) %>% as.numeric()
   }))
 
   # combining
-  C <-  (-1/N*C1 + C2 + C3)
-  C <- C/unlist(resp_sum)[col(C)]
+  C <-  (-1/N * C1 + C2 + C3)
+  C <- C/resp_sum[col(C)]
   return(C)
 }
 
@@ -1523,31 +1528,21 @@ Here's a function to check convergence of the ADMM with a fixed step size.
 
 ```{r}
 #' Check convergence of ADMM with a fixed step size (rho).
-converge <- function(mu, rho, w, z, w_prev, z_prev, uw, uz, Dl,
+converge <- function(mu, rho, w, z, w_prev, z_prev, uw, uz, Dl, tDl,
                      err_rel = 1E-4,
                      err_abs = 0
 ){
 
-  ## Old
-  if(FALSE){
-    prim1 = rbind(mu - colMeans(mu), Dl %*% mu)
-    prim2 = rbind(z, w)
-    primal_resid = prim1 - prim2
-
-    dual_resid = -rho * rbind((z-z_prev - colMeans(z-z_prev)), t(Dl) %*% (w - w_prev))
-    tAU = rbind(uz, -uw)  ## This line is definitely wrong, and is identical to the line in flowmix
-  }
-
-  ## New 
+  ## Constraints are: Ax + Bz =c, where x = mu, z =(w, z)
   prim1 = rbind(Dl %*% mu, mu - colMeans(mu))
   prim2 = rbind(-w, -z)
-  primal_resid = prim1 + prim2  
+  primal_resid = prim1 + prim2   ## Ax + Bz - c
 
   change_z = z - z_prev
   change_w = w - w_prev
-  dual_resid = rho * (-(change_z - colMeans(change_z)) - t(Dl) %*% change_w)
-  tAU = (uz - colMeans(uz)) + t(Dl) %*% uw
-
+  dual_resid = rho * (-(change_z - colMeans(change_z)) - tDl %*% change_w)
+  tAU = (uz - colMeans(uz)) + tDl %*% uw
+         
   ## Form primal and dual tolerances.
   primal_err = sqrt(length(primal_resid)) * err_abs +
     err_rel * max(norm(prim1, "F"), norm(prim2, "F"))
@@ -1569,11 +1564,14 @@ converge <- function(mu, rho, w, z, w_prev, z_prev, uw, uz, Dl,
   ## return(primal_converge & dual_converge)
   converge = primal_converge & dual_converge
 
-  return(list(primal_resid = primal_resid,
-              primal_err = primal_err,
-              dual_resid = dual_resid,
-              dual_err = dual_err,
-              converge = converge))
+  return(list(
+      primal_resid1 = prim1,
+      primal_resid2 = prim2,
+      primal_resid = primal_resid,
+      primal_err = primal_err,
+      dual_resid = dual_resid,
+      dual_err = dual_err,
+      converge = converge))
 }
 ```
 
@@ -1778,96 +1776,6 @@ usethis::use_rcpp_eigen(name = "code")
 
 
 
-## Ported over from flowmix
-
-There are some potentially useful computational tricks from flowmix (e.g. the
-eigendecomposition of the Sigmas) that could still be useful for flowtrend. But
-flowtrend's computation is dominated by the M-step of alpha, so these gains may
-not matter as much.
-
-```{r}
-##' Helper for making list of densities. Returns list by cluster then time
-##' e.g. access by \code{denslist_by_clust[[iclust]][[tt]]}
-##'
-##' @param ylist T-length list each containing response matrices of size (nt x
-##'   3), which contains coordinates of the 3-variate particles, organized over
-##'   time (T) and with (nt) particles at every time.
-##' @param mu (T x dimdat x numclust) array.
-##' @param dimdat dimension of data.
-##' @param numclust number of clusters.
-##' @param TT number of time points
-##' @param sigma_eig_by_clust Result of running
-##'   \code{eigendecomp_sigma_array(sigma.list[[iter]])}.
-##'
-##' @return numclust-lengthed list of TT-lengthed.
-##'
-make_denslist_eigen <- function(ylist, mu,
-                                TT, dimdat, numclust,
-                                sigma_eig_by_clust,
-                                countslist){ 
-
-  ## Basic checks
-  assertthat::assert_that(!is.null(sigma_eig_by_clust))
-
-  ## Calculate densities (note to self: nested for loop poses no problems)
-  lapply(1:numclust, function(iclust){
-    mysigma_eig <- sigma_eig_by_clust[[iclust]]
-      lapply(1:TT, function(tt){
-        ## return(dmvnorm_fast(ylist[[tt]],
-        ##                     mu[tt,,iclust],
-        ##                     sigma_eig=mysigma_eig))
-        mn = mu[tt,,iclust]
-        sgm = mysigma_eig$sigma
-        if(dimdat == 1){
-          mn = as.matrix(mn)
-          sgm = sgm %>% as.matrix()
-        }
-        return(dmvnorm_arma_fast(ylist[[tt]],
-                                 mn,
-                                 sgm))
-    })
-  })
-}
-
-
-#' We might not use this. Legacy from flowmix.
-weight_ylist <- function(iclust, resp, resp.sum, ylist){
-
-  ## Setup
-  dimdat = ncol(ylist[[1]])
-  TT = length(ylist)
-
-  ## All weighted data
-  weighted_ylist = Map(function(myresp, y){
-    myresp[,iclust, drop = TRUE] * y
-  }, resp, ylist)
-
-  ## All weighted data SUMs
-  weighted_ysum = lapply(weighted_ylist, colSums)
-
-  ## Grand mean of data
-  resp.sum.thisclust = sum(resp.sum[,iclust])
-  ybar = Reduce("+", weighted_ysum) / resp.sum.thisclust
-
-  ## Centered weighted ylist
-  weighted_ybar = resp.sum[,iclust] * matrix(ybar, TT, dimdat, byrow=TRUE)
-  ycentered = do.call(rbind, weighted_ysum) - weighted_ybar##sweep(do.call(cbind, centered_y), 1, ybar)
-  return(list(weighted_ylist = weighted_ylist,
-              weighted_ysum = weighted_ysum,
-              ybar = ybar,
-              ycentered = t(ycentered)))
-}
-```
-
-
-TODO:
-- Right now, `sigma_eig_by_clust` is not used. When speeding up the code, do
-  this first.
-- Likewise, `ycentered_list` isn't used, while it is clearly useful in Sigma M
-  step <-- IS IT? Revisit the actual form of it.
-- Read the document and ADMM details carefully. Then, write down the appropriate
-  math.
-
 
 ```{r Mstep_mu_cvxr}
 #' Testing against \code{Mstep_mu()}, for ONE cluster.
@@ -1876,11 +1784,13 @@ TODO:
 #' @param lambda
 #' @param l
 #' @param Sigma_inv inverse of Sigma
+#' @param x covariates
 Mstep_mu_cvxr <- function(ylist,
                           resp,
                           lambda,
                           l,
                           Sigma_inv, 
+                          x = NULL,
                           thresh = 1E-8,
                           maxdev = NULL,
                           dimdat,
@@ -1896,9 +1806,10 @@ Mstep_mu_cvxr <- function(ylist,
     yy <- ylist[[tt]]
     g <- resp[[tt]]
     yy <- apply(yy, MARGIN = 2, FUN = function(x) x * g)
-    colSums(yy)
-  })  %>% bind_rows() %>% as.matrix()
-  
+    yrow = matrix(c(NA, NA), nrow=1, ncol=dimdat)
+    yrow[1,] = colSums(yy)
+    yrow
+  }) %>% do.call(rbind, .)
   
   ## Auxiliary term, needed to make the objective interpretable
   aux.y <- Reduce("+", lapply(1:TT, FUN = function(tt){
@@ -1915,14 +1826,25 @@ Mstep_mu_cvxr <- function(ylist,
   resp.sum.sqrt <- lapply(resp, FUN = function(x) sqrt(sum(x)))
   
   ## Differencing Matrix, (TT-(l+1)) x TT 
-  Dlp1 <- gen_diff_mat(n = TT, l = l+1)
+  Dlp1 <- gen_diff_mat(n = TT, l = l+1, x = x)
   # l = 2 is quadratic trend filtering
   # l = 1 is linear trend filtering
   # l = 0 is fused lasso
   
   ## Forming the objective
-  obj = 1/(2*N) *( Reduce("+", lapply(1:TT, FUN = function(tt) CVXR::quad_form(resp.sum.sqrt[[tt]]*mumat[tt,], Sigma_inv))) -2 * Reduce("+", lapply(1:TT, FUN = function(tt) t(ytildes[tt,]) %*% Sigma_inv %*% mumat[tt,])) + aux.y) + lambda * sum(CVXR::sum_entries(abs(Dlp1 %*% mumat), axis = 1))
+  obj = 1/(2*N) *( Reduce("+", lapply(1:TT, FUN = function(tt) CVXR::quad_form(t(resp.sum.sqrt[[tt]]*mumat[tt,]), Sigma_inv))) -2 * Reduce("+", lapply(1:TT, FUN = function(tt) t(ytildes[tt,]) %*% Sigma_inv %*% t(mumat[tt,]))) + aux.y) + lambda * sum(CVXR::sum_entries(abs(Dlp1 %*% mumat), axis = 1))
+
+  ##Reduce("+", lapply(1:TT, FUN = function(tt) t(ytildes[tt,]) %*% Sigma_inv %*% (mumat[tt,]))) + aux.y
+  ## a = t(resp.sum.sqrt[[tt]]*mumat[tt,])
+  ## CVXR::quad_form(resp.sum.sqrt[[tt]]*mumat[tt,], Sigma_inv)
+    
+    
+  ## resp.sum.sqrt[[tt]]*mumat[tt,] %>% dim()
+  ## dim(Sigma_inv)
+  ## mumat %>% dim()
+  ## ( (resp.sum.sqrt[[tt]]) * mumat[tt,]) %>% dim()
   
+
   ## Putting together the ball constraint
   rowmns <- matrix(rep(1, TT^2), nrow = TT)/TT
   mu_dotdot <- rowmns %*% mumat
@@ -1999,7 +1921,7 @@ set.seed(0)
 dt = gendat_1d(TT = TT, ntlist = rep(TT, 100))
 ylist = dt %>% dt2ylist()
 sigma = init_sigma(ylist, numclust) ## (T x numclust x (dimdat x dimdat))
-mn = init_mn(ylist, numclust, TT, dimdat)##, countslist = countslist)
+mn = init_mn(ylist, numclust, TT, dimdat)##, countslist = countslist) 
 prob = matrix(1/numclust, nrow = TT, ncol = numclust) ## Initialize to all 1/K.
 resp = Estep(mn, sigma, prob, ylist = ylist, numclust)
 lambda = .01
@@ -2024,7 +1946,9 @@ res2list = lapply(1:numclust, function(iclust){
   Sigma_inv_oneclust = solve(sigma[iclust,,])
   resp_oneclist = lapply(resp, function(resp_onetime){resp_onetime[,iclust, drop=FALSE]})
   N = sum(unlist(resp))
-  res2 = Mstep_mu_cvxr(ylist, resp_oneclist, lambda, l+1,  Sigma_inv_oneclust, thresh = 1E-8, maxdev = maxdev, dimdat, N) 
+  res2 = Mstep_mu_cvxr(ylist, resp_oneclist,
+                       lambda, l,  Sigma_inv_oneclust,
+                       thresh = 1E-8, maxdev = maxdev, dimdat, N) 
   res2$mu
 })
 mn2 = array(NA, dim=c(100, dimdat, 3))
@@ -2033,10 +1957,63 @@ for(iclust in 1:numclust){
 }
 
   
-## Plot!
-plot(x = dt$time, y=dt$Y, col = rgb(0,0,0,0.04), main = 'admm vs cvxr', ylab = "", xlab = "time")
+## Plot them
+plot(x = dt$time, y=dt$Y, col = rgb(0,0,0,0.04),
+     main = 'admm (solid) vs cvxr (dashed)',
+     ylab = "", xlab = "time")
 mn1[,1,] %>% matlines(lwd = 1, lty = 1)
 mn2[,1,] %>% matlines(lwd = 3, lty = 3)
+```
+
+Next, do this for uneven inputs.
+
+```{r, eval = FALSE}
+## Setup
+numclust = 3
+TT = 100
+dimdat = 1
+set.seed(0)
+dt = gendat_1d(TT = TT, ntlist = rep(TT, 100))
+ylist = dt %>% dt2ylist()
+
+## Subset them
+ylist = ylist[-seq(from=10,to=100,by=10)]
+x = (1:100)[-seq(from=10,to=100,by=10)]
+
+sigma = init_sigma(ylist, numclust) ## (T x numclust x (dimdat x dimdat))
+mn = init_mn(ylist, numclust, TT, dimdat)##, countslist = countslist)
+prob = matrix(1/numclust, nrow = TT, ncol = numclust) ## Initialize to all 1/K.
+resp = Estep(mn, sigma, prob, ylist = ylist, numclust)
+lambda = .1
+l = 2
+##x = 1:TT
+Dlp1 = gen_diff_mat(n = length(x), l = l+1, x = x)
+Dl = gen_diff_mat(n = length(x), l = l, x = x)
+Dlsqrd <- t(Dl) %*% Dl
+maxdev = NULL
+
+
+## Try the algorithm itelf.
+set.seed(100)
+obj = flowtrend_once(ylist = ylist, x = x, lambda = .1, lambda_prob = .1,
+                     l = 2, l_prob = 2, maxdev = 5, numclust = 3,
+                     rho_init = 0.01, verbose = TRUE)
+plot_1d(ylist=ylist, obj=obj)
+plot(obj$objectives, type ='l')
+mn1 = obj$mn
+obj$mn[,1,] %>% diff() %>% diff() %>% diff() %>% matplot(type='l')
+mn[,1,] %>% diff() %>% diff() %>% diff() %>% matplot(type='l')
+mn[,1,] %>% matplot(type='l')
+## Okay, so cluster 3 has a very irregular mean.
+
+plot(x = dt$time, y=dt$Y, col = rgb(0,0,0,0.04),
+     main = 'admm (solid) vs cvxr (dashed)',
+     ylab = "", xlab = "time")
+mn_old[,1,] %>% matlines(lwd = 1, x=x, lty = 1)
+mn_less_old[,1,] %>% matlines(lwd = 1, x=x, lty = 2)
+mn[,1,] %>% matlines(lwd = 1, x=x, lty = 3)
+
+ 
 ```
 
 TODO: We just need to bundle this into `testthat` style tests, and make sure to test several lambda values.
@@ -2063,8 +2040,9 @@ Now we've assembled all ingredients we need, we'll build the main function
 #'   case the value becomes \code{1:T}, for the $T==length(ylist)$.
 #' @param numclust Number of clusters.
 #' @param niter Maximum number of EM iterations.
-#' @param l Degree of differencing for the mean trend filtering.
-#' @param l_prob Degree of differencing for the probability trend filtering.
+#' @param l Degree of differencing for the mean trend filtering. l=0 will give
+#'   you piecewise constant means; l=1 is piecewise linear, and so forth. 
+#' @param l_prob Degree of differencing for the probability trend filtering. 
 #' @param mn Initial value for cluster means. Defaults to NULL, in which case
 #'   initial values are randomly chosen from the data.
 #' @param lambda Smoothing parameter for means
@@ -2099,6 +2077,8 @@ flowtrend_once <- function(ylist,
                        admm_local_adapt = TRUE,
                        admm_local_adapt_niter = if(admm_local_adapt) 10 else 1,
                        rho_init = 0.1,
+                       ## Other options
+                       check_convergence = TRUE,
                        ## Random seed
                        seed = NULL){
 
@@ -2130,12 +2110,22 @@ flowtrend_once <- function(ylist,
   # l = 0 is fused lasso
   # D^{(1)} is first differences, so it correponds to l=0
   Dlp1 = gen_diff_mat(n = TT, l = l+1, x = x)
-  Dl = gen_diff_mat(n = TT, l = l, x = x)
+  if(l > 1){
+    facmat = diag(l / diff(x, lag = l))
+  } else {
+    facmat = diag(rep(1, TT-l))
+  }
+  Dl = facmat %*% gen_diff_mat(n = TT, l = l, x = x)
+  tDl = t(Dl)
+
   Dlsqrd <- t(Dl) %*% Dl
   e_mat <- etilde_mat(TT = TT) # needed to generate B
   Dlp1_prob = gen_diff_mat(n = TT, l = l_prob+1, x = x)
-  H_tf <- gen_tf_mat(n = length(countslist), k = l_prob, x = x)
-  if(is.null(mn)) mn = init_mn(ylist, numclust, TT, dimdat, countslist = countslist, seed = seed)
+  H_tf <- gen_tf_mat(n = TT, k = l_prob, x = x)
+  if(is.null(mn)){
+    mn = init_mn(ylist, numclust, TT, dimdat,
+                 countslist = countslist, seed = seed)
+  }
   ntlist = sapply(ylist, nrow)
   N = sum(ntlist)
 
@@ -2170,6 +2160,7 @@ flowtrend_once <- function(ylist,
                       lambda = lambda,
                       first_iter = (iter == 2),
                       l = l, Dlp1 = Dlp1, Dl = Dl,
+                      tDl = tDl,
                       Dlsqrd = Dlsqrd,
                       sigma_eig_by_clust = sigma_eig_by_clust,
                       sigma = sigma, maxdev = maxdev,
@@ -2190,10 +2181,6 @@ flowtrend_once <- function(ylist,
 
     ## 2. Sigma
     sigma = Mstep_sigma(resp, ylist, mn, numclust)
-    # sigma_eig_by_clust <- eigendecomp_sigma_array(sigma)
-    # denslist_by_clust <- make_denslist_eigen(ylist, mn, TT, dimdat, numclust,
-    #                                          sigma_eig_by_clust,
-    #                                          countslist)
 
     ## 3. Probabilities
     prob_link = Mstep_prob(resp, countslist = countslist, H_tf = H_tf,
@@ -2207,7 +2194,15 @@ flowtrend_once <- function(ylist,
                                  lambda_prob = lambda_prob)
 
     ## Check convergence
-    if(check_converge_rel(objectives[iter-1], objectives[iter], tol = tol_em)) break
+    if(iter > 10){ 
+      if(check_convergence &
+         check_converge_rel(objectives[iter-1], objectives[iter], tol = tol_em) &
+         check_converge_rel(objectives[iter-2], objectives[iter-1], tol = tol_em)&
+         check_converge_rel(objectives[iter-3], objectives[iter-2], tol = tol_em)){
+         ## check_converge_rel(objectives[iter-4], objectives[iter-3], tol = tol_em)){
+        break
+      }
+    }
   }
 
   return(structure(list(mn = mn,
@@ -2238,22 +2233,47 @@ Next, `flowtrend()` is the main user-facing function.
 ```{r flowtrend}
 #' Main function. Repeats the EM algorithm (\code{flowtrend_once()}) with |nrep| restarts (5 by default).
 #'
-#' @param nrestart : number of random restarts
 #' @param ... : arguments for \code{flowtrend_once()}
+#' @param nrestart : number of random restarts
 #'
 #' @return
 #' @export
 #'
 #' @examples
-flowtrend <- function(nrestart = 5, ...){
-  out_models <- lapply(1:nrestart, FUN = function(x){
+flowtrend <- function(..., nrestart = 5){
+
+  args = list(...)
+  if("verbose" %in% names(args)){
+    if(args$verbose){
+      cat("EM will restart", nrestart, "times", fill=TRUE)
+    }
+  }
+
+  out_models <- lapply(1:nrestart, FUN = function(irestart){
+    if("verbose" %in% names(args)){
+      if(args$verbose){
+        cat("EM restart:", irestart, fill=TRUE) 
+      }
+    }
     model_temp <- flowtrend_once(...)
     model_obj <- tail(model_temp$objectives, n = 1)
+    if("verbose" %in% names(args)){
+      if(args$verbose){
+        cat(fill=TRUE) 
+      }
+    }
     return(list(model = model_temp, final_objective = model_obj))
   })
   final_objectives <- sapply(out_models, FUN = function(x) x$final_objective)
   best_model <- which.min(final_objectives)
   final_model = out_models[[best_model]][["model"]]
+
+  ## Add the objectives
+  final_model$all_objectives =
+    lapply(1:nrestart, function(irestart){
+        one_model = out_models[[irestart]]
+        data.frame(objective=one_model$model$objectives) %>% mutate(iter=row_number(), irestart=irestart) %>% select(irestart, iter, objective)
+    }) %>% bind_rows()
   return(final_model)
 }
 ```

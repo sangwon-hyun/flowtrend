@@ -47,13 +47,11 @@ la_admm_oneclust <- function(K, ...){
       ## uw = matrix(0, nrow = TT - l , ncol = dimdat)
 
       ## These ensure warm starts are true
-      if(TRUE){ 
-        args[['mu']] <- mu
-        args[['z']] <- Z
-        args[['w']] <- W
-        args[['uz']] <- uz
-        args[['uw']] <- uw
-      }
+      args[['mu']] <- mu
+      args[['z']] <- Z
+      args[['w']] <- W
+      args[['uz']] <- uz
+      args[['uw']] <- uw
       args[['rho']] <- rho
     }
 
@@ -67,9 +65,7 @@ la_admm_oneclust <- function(K, ...){
     res = eval(call, args)
 
     if(any(abs(res$mu)>1E2)){
-      ## This shouldn't happen anymore, since the ADMM has been updated.
-      print("mu is blowing up!")
-      browser()
+      stop("mu is blowing up! Probably because the initial ADMM step size (rho) is too large (and possibly the ball constraint on the means is large.") 
     }
 
     some_admm_objectives = c(some_admm_objectives, res$single_admm_objective) 
@@ -79,7 +75,7 @@ la_admm_oneclust <- function(K, ...){
     some_admm_objectives = some_admm_objectives + padding
 
     ## See if outer iterations should terminate
-    if(res$converge ){##| outer_converge(some_admm_objectives)){
+    if(res$converge ){
       res$converge <- T
       break
     }
@@ -95,12 +91,12 @@ la_admm_oneclust <- function(K, ...){
     ## print("args$rho")
     ## print(args$rho)
   }
-  if(!res$converge) warning("ADMM didn't converge for one cluster.")
+  if(!res$converge)   warning("ADMM didn't converge for one cluster.")
 
   ## Record how long the admm took; in terms of # iterations.
   res$kk = kk
 
-  ## Temporary: Record the final rho
+  ## Record the final rho
   res$rho = args$rho
 
   return(res)

@@ -38,7 +38,8 @@ cv_flowtrend(
 
 \item{lambda_probs}{Regularization parameters for probs.}
 
-\item{l}{Degree of differencing for the mean trend filtering.}
+\item{l}{Degree of differencing for the mean trend filtering. l=0 will give
+you piecewise constant means; l=1 is piecewise linear, and so forth.}
 
 \item{l_prob}{Degree of differencing for the probability trend filtering.}
 

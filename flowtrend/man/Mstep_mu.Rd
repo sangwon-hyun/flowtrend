@@ -15,6 +15,7 @@ Mstep_mu(
   sigma_eig_by_clust = NULL,
   Dlsqrd,
   Dl,
+  tDl,
   Dlp1,
   TT,
   N,
@@ -28,14 +29,13 @@ Mstep_mu(
   uzs = NULL,
   maxdev = NULL,
   x = NULL,
-  niter = (if (local_adapt) 100 else 10000),
+  niter = (if (local_adapt) 100 else 1000),
   err_rel = 0.001,
   err_abs = 0,
   zerothresh = 1e-06,
   local_adapt = FALSE,
   local_adapt_niter = 10,
-  rho_init = 0.1,
-  space = 50
+  rho_init = 0.01
 )
 }
 \arguments{
@@ -43,7 +43,7 @@ Mstep_mu(
 
 \item{ylist}{}
 
-\item{space}{}
+\item{local_adapt_niter}{}
 }
 \description{
 Computes the M step for mu. TODO: use templates for the argument. As shown

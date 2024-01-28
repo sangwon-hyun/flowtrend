@@ -27,11 +27,10 @@ obj <- flowtrend(ylist = ylist,
                  numclust = 3,
                  l = 2,
                  l_prob = 2,
-                 lambda = 1,
-                 lambda_prob = .1,
+                 lambda = .1,
+                 lambda_prob = .005,
                  admm_local_adapt = TRUE,
-                 nrestart = 1,
-                 verbose = TRUE)
+                 nrestart = 5)
 
 ## Also reorder the cluster labels of the truth, to match the fitted model.
 ord = obj$mn[,1,] %>% colSums() %>% order(decreasing=TRUE)
@@ -46,7 +45,7 @@ The data and estimated model are shown here. The dashed lines are the true means
 
 
 ```{r 1d-example-plot-mean, fig.width = 7, fig.height = 5, eval = FALSE}
-plot_1d(ylist, obj, x = x, add_point = FALSE) +
+plot_1d(ylist = ylist, obj = obj, x = x, add_point = FALSE) +
   geom_line(aes(x = time, y = mean, group = cluster),
             data = dt_model,## %>% subset(time %ni% held_out),
             linetype = "dashed", size=2, alpha = .7)
@@ -55,7 +54,7 @@ plot_1d(ylist, obj, x = x, add_point = FALSE) +
 The estimated probabilities are shown here.
 
 ```{r 1d-example-plot-prob, fig.width = 7, fig.height = 5, eval = FALSE}
-plot_prob(obj) +
+plot_prob(obj=obj, x=x) +
   geom_line(aes(x = time, y = prob, group = cluster, color = cluster),
             data = dt_model, linetype = "dashed")  +
   facet_wrap(~cluster)
@@ -68,10 +67,10 @@ plot_prob(obj) +
 The objective value (that is, the penalized log likelihood) should be monotone
 decreasing across EM algorithm iterations.
 
-(Note: because the admm is imperfect and stops early sometimes, the objective is
-sometimes non-monotone. See the example from a few sections up!)
+<!-- (Note: because the admm is imperfect and stops early sometimes, the objective is -->
+<!-- sometimes non-monotone. See the example from a few sections up!) -->
 
-```{r test-objective, fig.width = 5, fig.height = 3, eval = FALSE}
+```{r test-objective, fig.width = 5, fig.height = 3, eval = TRUE}
 testthat::test_that("Objective value decreases over EM iterations.",{
   
   for(iseed in 1:5){
@@ -85,20 +84,18 @@ testthat::test_that("Objective value decreases over EM iterations.",{
     x = dt %>% pull(time) %>% unique()
     
     ## Fit model
-    obj <- flowtrend(ylist = ylist,
+    obj <- flowtrend_once(ylist = ylist,
                      x = x,
                      maxdev = 5,
                      numclust = 3,
                      lambda = 0.02,
                      l = 1,
                      l_prob = 2,
-                     lambda_prob = 0.05,
-                     nrestart = 1,
-                     verbose=TRUE)
+                     lambda_prob = 0.05)
 
     ## Test objective monotonicity
     niter_end = length(obj$objective)
-    ## testthat::expect_true(all(diff(obj$objective) < 1E-4))
+    testthat::expect_true(all(diff(obj$objective) < 1E-4))
 
     ## Make a plot
     g = ggplot(tibble(iter=1:niter_end, objective=obj$objectives)) +
@@ -114,65 +111,111 @@ testthat::test_that("Objective value decreases over EM iterations.",{
 
 Next, we try out `flowtrend` on a synthetic 2d data example.
 
-```{r 2d-example, fig.width = 10, fig.width = 6, eval = FALSE}
+```{r 2d-example, fig.width = 10, fig.width = 10, eval = TRUE}
 set.seed(100) 
-dt       <- gendat_2d(100, rep(100, 100))
+TT = 100
+dt <- gendat_2d(TT, rep(100, times = TT))
+x = 1:TT
 set.seed(10)
-obj <- flowtrend(ylist = dt$ylist,
-                 maxdev = 5,
-                 numclust = 3,
-                 lambda = 0.02,
-                 l = 1,
-                 l_prob = 2,
-                 lambda_prob = .005,
-                 nrestart = 3)
-
-## Put together means into a long data frame
-numclust = 3
-mnlist = lapply(1:numclust, function(iclust){
-  one_mnmat = obj$mn[,,iclust]
-  colnames(one_mnmat) = paste0("dim", 1:2)
-  one_mnmat %>% as_tibble() %>% add_column(cluster = iclust)
-})
-mnmat = do.call(rbind, mnlist)
-
-
-## Show estimated model at six time points. 
-timelist = c(10, 30,40,50,60,70)
-plist = lapply(timelist, function(tt){
-  y = dt$ylist[[tt]] %>% as_tibble()
-  colnames(y) = paste0("dim", 1:2) 
-  p = y %>% ggplot() + geom_point(aes(x=dim1, y=dim2), alpha =.2)
-  numclust = 3
-  mn_colours = rep("red", 3)
-  for(iclust in 1:numclust){
-    ## Add ellipse
-    el = ellipse::ellipse(x = obj$sigma[iclust,,], centre = obj$mn[tt,,iclust]) %>% as_tibble()
-    p = p + geom_path(aes(x = x, y = y), data = el, colour = mn_colours[iclust], lty = 2,
-                      lwd = pmin(obj$prob[tt,iclust] * 8, 0.8))
-
-    ## Add mean
-    p = p + geom_point(aes(x = dim1, y = dim2),
-                       data = mnmat %>% subset(cluster == iclust) %>% .[tt,],
-                       colour = mn_colours[iclust],
-                       ## size = rel(3))
-                       size = obj$prob[tt,iclust] * 10)
-  }
-  p = p + ggtitle(paste0("Time=", tt)) +
-    coord_cartesian(xlim = c(-6.5, 2.5), ylim = c(-6.5, 2.5)) +
-    theme_minimal()
-  return(p)
-})
-
-library(ggpubr)
-do.call(ggarrange, c(plist, ncol=3, nrow=2))
+obj <- flowtrend_once(ylist = dt$ylist,
+                      x = x,
+                      maxdev = 3,
+                      numclust = 3,
+                      l = 2,
+                      l_prob = 2,
+                      lambda = 0.01,
+                      lambda_prob = .01,
+                      rho_init = 0.01)
+g1 = plot_1d(ylist = dt$ylist, obj = obj, idim = 2) + ylim(c(-7, 4))
+g2 = plot_1d(ylist = dt$ylist, obj = obj, idim = 1) + ylim(c(-7, 4))
+do.call(ggpubr::ggarrange, c(list(g1, g2), ncol=1, nrow=2))
 ```
+
+The plot above shows 1d projections in the two dimensions of the response data.
+
+And the plot below are some snapshots in time $t$.
+
+```{r plot-2d-in-1d, fig.width = 8, fig.height = 7}
+timelist = c(10, 20, 30, 40, 60, 80)
+plist = lapply(timelist, function(tt){
+  plot_2d(dt$ylist, obj, tt = tt) + coord_fixed() + ylim(-6, 3) + xlim(-6, 3)
+})
+do.call(ggpubr::ggarrange, c(plist, ncol=3, nrow=2))
+```
+
+## Working with "binned" dataset
+
+Recall that "binning" means we will use binned frequency histogram estimates of
+the original particle-level dataset; this is useful when there are many
+particles. 
+
+
+```{r binned}
+## library(flowmix)
+set.seed(10232)
+TT = 100
+dt <- gendat_2d(TT, rep(100, times = TT))
+manual_grid = flowmix::make_grid(dt$ylist, gridsize = 40)
+binres = flowmix::bin_many_cytograms(dt$ylist, manual.grid = manual_grid)
+set.seed(100)
+obj = flowtrend(ylist = binres$ybin_list,
+                countslist = binres$counts_list,
+                maxdev = 5,
+                numclust = 3,
+                l = 2,
+                l_prob = 2,
+                lambda = .01,
+                lambda_prob = .005,
+                rho_init = .01,
+                nrestart = 1)
+obj$objectives %>% plot(type='l')
+
+g1 = plot_1d(ylist = dt$ylist, obj = obj, idim = 2) + ylim(c(-7, 4))
+g2 = plot_1d(ylist = dt$ylist, obj = obj, idim = 1) + ylim(c(-7, 4))
+do.call(ggpubr::ggarrange, c(list(g1, g2), ncol=1, nrow=2))
+```
+
+
+## Unevenly spaced inputs (x)
+
+Let's try the EM algorithm out with unevenly spaced inputs.
+
+```{r uneven-test, fig.width = 6, fig.height = 6}
+set.seed(100)
+dt       <- gendat_1d(TT=100, rep(100, times=100))
+dt_model       <- gendat_1d(TT=100, rep(100, times=100), return_model = TRUE)
+ylist_orig = dt %>% dt2ylist()
+
+ind_rm_list = list(seq(from=10, to=100, by=10),
+                   ind_rm = 30:50)
+for(ind_rm in ind_rm_list){
+  x = (1:100)[-ind_rm]
+  ylist = ylist_orig[x]
+
+  set.seed(100)
+  obj <- flowtrend_once(ylist = ylist, 
+                        x = x,
+                        maxdev = 100,
+                        numclust = 3,
+                        l = 2,
+                        l_prob = 2,
+                        lambda = 0.1,
+                        lambda_prob = 0.1, ## 
+                        verbose = TRUE,
+                        admm_local_adapt = TRUE,
+                        rho_init = 0.01)
+  obj$objectives %>% plot(type='o', ylab = "EM objectives")
+  plot_1d(obj = obj, ylist = ylist, x = x)
+}
+```
+
 
 
 # Documenting the package and building
 
-We finish by running commands that will document, build, and install the package.  It may also be a good idea to check the package from within this file.
+We finish by running commands that will document, build, and install the
+package.  It may also be a good idea to check the package from within this file.
 
 ```{r, results='hide'}
-litr::document() # <-- use instead of devtools::document()
+litr::document() # <-- use instead of devtools::document() 
 ```

@@ -29,7 +29,6 @@
 #' @param zerothresh
 #' @param local_adapt
 #' @param local_adapt_niter
-#' @param space
 #'
 #' @return
 #' @export
@@ -42,7 +41,7 @@ Mstep_mu <- function(resp,
                      sigma,
                      sigma_eig_by_clust = NULL,
                      Dlsqrd,
-                     Dl, Dlp1,  TT, N, dimdat,
+                     Dl, tDl, Dlp1,  TT, N, dimdat,
                      first_iter = TRUE,
                      e_mat,
 
@@ -56,14 +55,13 @@ Mstep_mu <- function(resp,
 
                      maxdev = NULL,
                      x = NULL,
-                     niter = (if(local_adapt) 1e2 else 1e4),
+                     niter = (if(local_adapt) 1e2 else 1e3),
                      err_rel = 1E-3,
                      err_abs = 0,
                      zerothresh = 1E-6,
                      local_adapt = FALSE,
                      local_adapt_niter = 10,
-                     rho_init = 0.1,
-                     space = 50){
+                     rho_init = 0.01){
 
   ####################
   ## Preliminaries ###
@@ -91,15 +89,6 @@ Mstep_mu <- function(resp,
     }
 
     resp.iclust <- lapply(resp, FUN = function(r) matrix(r[,iclust]))
-
-    ## Center y and X
-    # obj <- weight_ylist(iclust, resp, resp.sum, ylist)
-    #ycentered <- obj$ycentered
-
-    ## Form the Sylvester equation coefficients in AX + XB + C = 0
-    # syl_A = rho * sigma[iclust,,]
-    # Q = 1/N * t(Xcentered) %*% D %*% Xcentered
-    # syl_B = Q %*% Xinv
 
     AB <- get_AB_mats(y = y, resp = resp.iclust, Sigma_inv = sigmainv,
                       e_mat = e_mat, N = N, Dlp1 = Dlp1, Dl = Dl,
@@ -134,7 +123,6 @@ Mstep_mu <- function(resp,
   for(iclust in 1:numclust){
 
     resp.iclust <- lapply(resp, FUN = function(r) matrix(r[,iclust]))
-    resp.sum.iclust <- lapply(resp.sum, FUN = function(r) matrix(r[iclust]))
 
     ## Possibly locally adaptive ADMM, for now just running with rho == lambda
     res = la_admm_oneclust(K = (if(local_adapt) local_adapt_niter else 1),
@@ -152,15 +140,16 @@ Mstep_mu <- function(resp,
                            sigma = sigma,
                            lambda = lambda,
                            resp = resp.iclust,
+                           resp_sum = resp.sum[,iclust],
                            l = l,
                            Dlp1 = Dlp1,
                            Dl = Dl,
+                           tDl = tDl,
                            y = ylist,
                            err_rel = err_rel,
                            err_abs = err_abs,
                            zerothresh = zerothresh,
                            sigma_eig_by_clust = sigma_eig_by_clust,
-                           space = space,
 
                            ## Warm starts from previous *EM* iteration
                            first_iter = first_iter,
@@ -193,9 +182,7 @@ Mstep_mu <- function(resp,
 
   ## Each are lists of length |numclust|.
   return(list(mns = mu_array,
-              admm_niters = admm_niters, ## Temporary: Seeing the number of
-              ## outer iterations it took to
-              ## converge.
+              admm_niters = admm_niters, 
               admm_inner_iters = admm_inner_iters,
 
               ## For warmstarts
