@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2024-01-28" />
+<meta name="date" content="2024-01-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -343,57 +343,58 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb69-140"><a href="flowtrend.html#cb69-140" tabindex="-1"></a>                      <span class="at">err_abs =</span> admm_err_abs,</span>
 <span id="cb69-141"><a href="flowtrend.html#cb69-141" tabindex="-1"></a>                      <span class="at">local_adapt =</span> admm_local_adapt,</span>
 <span id="cb69-142"><a href="flowtrend.html#cb69-142" tabindex="-1"></a>                      <span class="at">local_adapt_niter =</span> admm_local_adapt_niter,</span>
-<span id="cb69-143"><a href="flowtrend.html#cb69-143" tabindex="-1"></a>                      <span class="at">rho_init =</span> rho_init)</span>
-<span id="cb69-144"><a href="flowtrend.html#cb69-144" tabindex="-1"></a>                      <span class="do">## rho_init = (if(iter == 2) rho_init else latest_rho))</span></span>
-<span id="cb69-145"><a href="flowtrend.html#cb69-145" tabindex="-1"></a>    <span class="do">## latest_rho = res_mu$rho</span></span>
-<span id="cb69-146"><a href="flowtrend.html#cb69-146" tabindex="-1"></a>    mn <span class="ot">=</span> res_mu<span class="sc">$</span>mns</span>
-<span id="cb69-147"><a href="flowtrend.html#cb69-147" tabindex="-1"></a></span>
-<span id="cb69-148"><a href="flowtrend.html#cb69-148" tabindex="-1"></a>    <span class="do">## 2. Sigma</span></span>
-<span id="cb69-149"><a href="flowtrend.html#cb69-149" tabindex="-1"></a>    sigma <span class="ot">=</span> <a href='m-step.html#Mstep_sigma'>Mstep_sigma</a>(resp, ylist, mn, numclust)</span>
-<span id="cb69-150"><a href="flowtrend.html#cb69-150" tabindex="-1"></a></span>
-<span id="cb69-151"><a href="flowtrend.html#cb69-151" tabindex="-1"></a>    <span class="do">## 3. Probabilities</span></span>
-<span id="cb69-152"><a href="flowtrend.html#cb69-152" tabindex="-1"></a>    prob_link <span class="ot">=</span> <a href='m-step.html#Mstep_prob'>Mstep_prob</a>(resp, <span class="at">countslist =</span> countslist, <span class="at">H_tf =</span> H_tf,</span>
-<span id="cb69-153"><a href="flowtrend.html#cb69-153" tabindex="-1"></a>                           <span class="at">lambda_prob =</span> lambda_prob, <span class="at">l_prob =</span> l_prob, <span class="at">x =</span> x)</span>
-<span id="cb69-154"><a href="flowtrend.html#cb69-154" tabindex="-1"></a>    prob <span class="ot">=</span> <a href='objective-data-log-likelihood.html#softmax'>softmax</a>(prob_link)</span>
-<span id="cb69-155"><a href="flowtrend.html#cb69-155" tabindex="-1"></a></span>
-<span id="cb69-156"><a href="flowtrend.html#cb69-156" tabindex="-1"></a>    objectives[iter] <span class="ot">=</span> <a href='objective-data-log-likelihood.html#objective'>objective</a>(<span class="at">ylist =</span> ylist, <span class="at">mu =</span> mn, <span class="at">sigma =</span> sigma, <span class="at">prob =</span> prob, <span class="at">prob_link =</span> prob_link,</span>
-<span id="cb69-157"><a href="flowtrend.html#cb69-157" tabindex="-1"></a>                                 <span class="at">lambda =</span> lambda, <span class="at">Dlp1 =</span> Dlp1, <span class="at">l =</span> l, <span class="at">countslist =</span> countslist,</span>
-<span id="cb69-158"><a href="flowtrend.html#cb69-158" tabindex="-1"></a>                                 <span class="at">Dlp1_prob =</span> Dlp1_prob,</span>
-<span id="cb69-159"><a href="flowtrend.html#cb69-159" tabindex="-1"></a>                                 <span class="at">l_prob =</span> l_prob,</span>
-<span id="cb69-160"><a href="flowtrend.html#cb69-160" tabindex="-1"></a>                                 <span class="at">lambda_prob =</span> lambda_prob)</span>
-<span id="cb69-161"><a href="flowtrend.html#cb69-161" tabindex="-1"></a></span>
-<span id="cb69-162"><a href="flowtrend.html#cb69-162" tabindex="-1"></a>    <span class="do">## Check convergence</span></span>
-<span id="cb69-163"><a href="flowtrend.html#cb69-163" tabindex="-1"></a>    <span class="cf">if</span>(iter <span class="sc">&gt;</span> <span class="dv">10</span>){ </span>
-<span id="cb69-164"><a href="flowtrend.html#cb69-164" tabindex="-1"></a>      <span class="cf">if</span>(check_convergence <span class="sc">&amp;</span></span>
-<span id="cb69-165"><a href="flowtrend.html#cb69-165" tabindex="-1"></a>         <a href='objective-data-log-likelihood.html#check_converge_rel'>check_converge_rel</a>(objectives[iter<span class="dv">-1</span>], objectives[iter], <span class="at">tol =</span> tol_em) <span class="sc">&amp;</span></span>
-<span id="cb69-166"><a href="flowtrend.html#cb69-166" tabindex="-1"></a>         <a href='objective-data-log-likelihood.html#check_converge_rel'>check_converge_rel</a>(objectives[iter<span class="dv">-2</span>], objectives[iter<span class="dv">-1</span>], <span class="at">tol =</span> tol_em)<span class="sc">&amp;</span></span>
-<span id="cb69-167"><a href="flowtrend.html#cb69-167" tabindex="-1"></a>         <a href='objective-data-log-likelihood.html#check_converge_rel'>check_converge_rel</a>(objectives[iter<span class="dv">-3</span>], objectives[iter<span class="dv">-2</span>], <span class="at">tol =</span> tol_em)){</span>
-<span id="cb69-168"><a href="flowtrend.html#cb69-168" tabindex="-1"></a>         <span class="do">## <a href='objective-data-log-likelihood.html#check_converge_rel'>check_converge_rel</a>(objectives[iter-4], objectives[iter-3], tol = tol_em)){</span></span>
-<span id="cb69-169"><a href="flowtrend.html#cb69-169" tabindex="-1"></a>        <span class="cf">break</span></span>
-<span id="cb69-170"><a href="flowtrend.html#cb69-170" tabindex="-1"></a>      }</span>
-<span id="cb69-171"><a href="flowtrend.html#cb69-171" tabindex="-1"></a>    }</span>
-<span id="cb69-172"><a href="flowtrend.html#cb69-172" tabindex="-1"></a>  }</span>
-<span id="cb69-173"><a href="flowtrend.html#cb69-173" tabindex="-1"></a></span>
-<span id="cb69-174"><a href="flowtrend.html#cb69-174" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">structure</span>(<span class="fu">list</span>(<span class="at">mn =</span> mn,</span>
-<span id="cb69-175"><a href="flowtrend.html#cb69-175" tabindex="-1"></a>                        <span class="at">prob =</span> prob,</span>
-<span id="cb69-176"><a href="flowtrend.html#cb69-176" tabindex="-1"></a>                        <span class="at">prob_link =</span> prob_link,</span>
-<span id="cb69-177"><a href="flowtrend.html#cb69-177" tabindex="-1"></a>                        <span class="at">sigma =</span> sigma,</span>
-<span id="cb69-178"><a href="flowtrend.html#cb69-178" tabindex="-1"></a>                        <span class="at">objectives =</span> objectives[<span class="dv">2</span><span class="sc">:</span>iter],</span>
-<span id="cb69-179"><a href="flowtrend.html#cb69-179" tabindex="-1"></a>                        <span class="at">final.iter =</span> iter,</span>
-<span id="cb69-180"><a href="flowtrend.html#cb69-180" tabindex="-1"></a>                        <span class="at">resp =</span> resp,</span>
-<span id="cb69-181"><a href="flowtrend.html#cb69-181" tabindex="-1"></a>                        <span class="do">## Above is output, below are data/algorithm settings.</span></span>
-<span id="cb69-182"><a href="flowtrend.html#cb69-182" tabindex="-1"></a>                        <span class="at">dimdat =</span> dimdat,</span>
-<span id="cb69-183"><a href="flowtrend.html#cb69-183" tabindex="-1"></a>                        <span class="at">TT =</span> TT,</span>
-<span id="cb69-184"><a href="flowtrend.html#cb69-184" tabindex="-1"></a>                        <span class="at">N =</span> N,</span>
-<span id="cb69-185"><a href="flowtrend.html#cb69-185" tabindex="-1"></a>                        <span class="at">l =</span> l,</span>
-<span id="cb69-186"><a href="flowtrend.html#cb69-186" tabindex="-1"></a>                        <span class="at">x =</span> x,</span>
-<span id="cb69-187"><a href="flowtrend.html#cb69-187" tabindex="-1"></a>                        <span class="at">numclust =</span> numclust,</span>
-<span id="cb69-188"><a href="flowtrend.html#cb69-188" tabindex="-1"></a>                        <span class="at">lambda =</span> lambda,</span>
-<span id="cb69-189"><a href="flowtrend.html#cb69-189" tabindex="-1"></a>                        <span class="at">lambda_prob =</span> lambda_prob,</span>
-<span id="cb69-190"><a href="flowtrend.html#cb69-190" tabindex="-1"></a>                        <span class="at">maxdev =</span> maxdev,</span>
-<span id="cb69-191"><a href="flowtrend.html#cb69-191" tabindex="-1"></a>                        <span class="at">niter =</span> niter</span>
-<span id="cb69-192"><a href="flowtrend.html#cb69-192" tabindex="-1"></a>  ), <span class="at">class =</span> <span class="st">&quot;flowtrend&quot;</span>))</span>
-<span id="cb69-193"><a href="flowtrend.html#cb69-193" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb69-143"><a href="flowtrend.html#cb69-143" tabindex="-1"></a>                      <span class="at">rho_init =</span> rho_init,</span>
+<span id="cb69-144"><a href="flowtrend.html#cb69-144" tabindex="-1"></a>                      <span class="at">iter =</span> iter)</span>
+<span id="cb69-145"><a href="flowtrend.html#cb69-145" tabindex="-1"></a>                      <span class="do">## rho_init = (if(iter == 2) rho_init else latest_rho))</span></span>
+<span id="cb69-146"><a href="flowtrend.html#cb69-146" tabindex="-1"></a>    <span class="do">## latest_rho = res_mu$rho</span></span>
+<span id="cb69-147"><a href="flowtrend.html#cb69-147" tabindex="-1"></a>    mn <span class="ot">=</span> res_mu<span class="sc">$</span>mns</span>
+<span id="cb69-148"><a href="flowtrend.html#cb69-148" tabindex="-1"></a></span>
+<span id="cb69-149"><a href="flowtrend.html#cb69-149" tabindex="-1"></a>    <span class="do">## 2. Sigma</span></span>
+<span id="cb69-150"><a href="flowtrend.html#cb69-150" tabindex="-1"></a>    sigma <span class="ot">=</span> <a href='m-step.html#Mstep_sigma'>Mstep_sigma</a>(resp, ylist, mn, numclust)</span>
+<span id="cb69-151"><a href="flowtrend.html#cb69-151" tabindex="-1"></a></span>
+<span id="cb69-152"><a href="flowtrend.html#cb69-152" tabindex="-1"></a>    <span class="do">## 3. Probabilities</span></span>
+<span id="cb69-153"><a href="flowtrend.html#cb69-153" tabindex="-1"></a>    prob_link <span class="ot">=</span> <a href='m-step.html#Mstep_prob'>Mstep_prob</a>(resp, <span class="at">countslist =</span> countslist, <span class="at">H_tf =</span> H_tf,</span>
+<span id="cb69-154"><a href="flowtrend.html#cb69-154" tabindex="-1"></a>                           <span class="at">lambda_prob =</span> lambda_prob, <span class="at">l_prob =</span> l_prob, <span class="at">x =</span> x)</span>
+<span id="cb69-155"><a href="flowtrend.html#cb69-155" tabindex="-1"></a>    prob <span class="ot">=</span> <a href='objective-data-log-likelihood.html#softmax'>softmax</a>(prob_link)</span>
+<span id="cb69-156"><a href="flowtrend.html#cb69-156" tabindex="-1"></a></span>
+<span id="cb69-157"><a href="flowtrend.html#cb69-157" tabindex="-1"></a>    objectives[iter] <span class="ot">=</span> <a href='objective-data-log-likelihood.html#objective'>objective</a>(<span class="at">ylist =</span> ylist, <span class="at">mu =</span> mn, <span class="at">sigma =</span> sigma, <span class="at">prob =</span> prob, <span class="at">prob_link =</span> prob_link,</span>
+<span id="cb69-158"><a href="flowtrend.html#cb69-158" tabindex="-1"></a>                                 <span class="at">lambda =</span> lambda, <span class="at">Dlp1 =</span> Dlp1, <span class="at">l =</span> l, <span class="at">countslist =</span> countslist,</span>
+<span id="cb69-159"><a href="flowtrend.html#cb69-159" tabindex="-1"></a>                                 <span class="at">Dlp1_prob =</span> Dlp1_prob,</span>
+<span id="cb69-160"><a href="flowtrend.html#cb69-160" tabindex="-1"></a>                                 <span class="at">l_prob =</span> l_prob,</span>
+<span id="cb69-161"><a href="flowtrend.html#cb69-161" tabindex="-1"></a>                                 <span class="at">lambda_prob =</span> lambda_prob)</span>
+<span id="cb69-162"><a href="flowtrend.html#cb69-162" tabindex="-1"></a></span>
+<span id="cb69-163"><a href="flowtrend.html#cb69-163" tabindex="-1"></a>    <span class="do">## Check convergence</span></span>
+<span id="cb69-164"><a href="flowtrend.html#cb69-164" tabindex="-1"></a>    <span class="cf">if</span>(iter <span class="sc">&gt;</span> <span class="dv">10</span>){ </span>
+<span id="cb69-165"><a href="flowtrend.html#cb69-165" tabindex="-1"></a>      <span class="cf">if</span>(check_convergence <span class="sc">&amp;</span></span>
+<span id="cb69-166"><a href="flowtrend.html#cb69-166" tabindex="-1"></a>         <a href='objective-data-log-likelihood.html#check_converge_rel'>check_converge_rel</a>(objectives[iter<span class="dv">-1</span>], objectives[iter], <span class="at">tol =</span> tol_em) <span class="sc">&amp;</span></span>
+<span id="cb69-167"><a href="flowtrend.html#cb69-167" tabindex="-1"></a>         <a href='objective-data-log-likelihood.html#check_converge_rel'>check_converge_rel</a>(objectives[iter<span class="dv">-2</span>], objectives[iter<span class="dv">-1</span>], <span class="at">tol =</span> tol_em)<span class="sc">&amp;</span></span>
+<span id="cb69-168"><a href="flowtrend.html#cb69-168" tabindex="-1"></a>         <a href='objective-data-log-likelihood.html#check_converge_rel'>check_converge_rel</a>(objectives[iter<span class="dv">-3</span>], objectives[iter<span class="dv">-2</span>], <span class="at">tol =</span> tol_em)){</span>
+<span id="cb69-169"><a href="flowtrend.html#cb69-169" tabindex="-1"></a>         <span class="do">## <a href='objective-data-log-likelihood.html#check_converge_rel'>check_converge_rel</a>(objectives[iter-4], objectives[iter-3], tol = tol_em)){</span></span>
+<span id="cb69-170"><a href="flowtrend.html#cb69-170" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb69-171"><a href="flowtrend.html#cb69-171" tabindex="-1"></a>      }</span>
+<span id="cb69-172"><a href="flowtrend.html#cb69-172" tabindex="-1"></a>    }</span>
+<span id="cb69-173"><a href="flowtrend.html#cb69-173" tabindex="-1"></a>  }</span>
+<span id="cb69-174"><a href="flowtrend.html#cb69-174" tabindex="-1"></a></span>
+<span id="cb69-175"><a href="flowtrend.html#cb69-175" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">structure</span>(<span class="fu">list</span>(<span class="at">mn =</span> mn,</span>
+<span id="cb69-176"><a href="flowtrend.html#cb69-176" tabindex="-1"></a>                        <span class="at">prob =</span> prob,</span>
+<span id="cb69-177"><a href="flowtrend.html#cb69-177" tabindex="-1"></a>                        <span class="at">prob_link =</span> prob_link,</span>
+<span id="cb69-178"><a href="flowtrend.html#cb69-178" tabindex="-1"></a>                        <span class="at">sigma =</span> sigma,</span>
+<span id="cb69-179"><a href="flowtrend.html#cb69-179" tabindex="-1"></a>                        <span class="at">objectives =</span> objectives[<span class="dv">2</span><span class="sc">:</span>iter],</span>
+<span id="cb69-180"><a href="flowtrend.html#cb69-180" tabindex="-1"></a>                        <span class="at">final.iter =</span> iter,</span>
+<span id="cb69-181"><a href="flowtrend.html#cb69-181" tabindex="-1"></a>                        <span class="at">resp =</span> resp,</span>
+<span id="cb69-182"><a href="flowtrend.html#cb69-182" tabindex="-1"></a>                        <span class="do">## Above is output, below are data/algorithm settings.</span></span>
+<span id="cb69-183"><a href="flowtrend.html#cb69-183" tabindex="-1"></a>                        <span class="at">dimdat =</span> dimdat,</span>
+<span id="cb69-184"><a href="flowtrend.html#cb69-184" tabindex="-1"></a>                        <span class="at">TT =</span> TT,</span>
+<span id="cb69-185"><a href="flowtrend.html#cb69-185" tabindex="-1"></a>                        <span class="at">N =</span> N,</span>
+<span id="cb69-186"><a href="flowtrend.html#cb69-186" tabindex="-1"></a>                        <span class="at">l =</span> l,</span>
+<span id="cb69-187"><a href="flowtrend.html#cb69-187" tabindex="-1"></a>                        <span class="at">x =</span> x,</span>
+<span id="cb69-188"><a href="flowtrend.html#cb69-188" tabindex="-1"></a>                        <span class="at">numclust =</span> numclust,</span>
+<span id="cb69-189"><a href="flowtrend.html#cb69-189" tabindex="-1"></a>                        <span class="at">lambda =</span> lambda,</span>
+<span id="cb69-190"><a href="flowtrend.html#cb69-190" tabindex="-1"></a>                        <span class="at">lambda_prob =</span> lambda_prob,</span>
+<span id="cb69-191"><a href="flowtrend.html#cb69-191" tabindex="-1"></a>                        <span class="at">maxdev =</span> maxdev,</span>
+<span id="cb69-192"><a href="flowtrend.html#cb69-192" tabindex="-1"></a>                        <span class="at">niter =</span> niter</span>
+<span id="cb69-193"><a href="flowtrend.html#cb69-193" tabindex="-1"></a>  ), <span class="at">class =</span> <span class="st">&quot;flowtrend&quot;</span>))</span>
+<span id="cb69-194"><a href="flowtrend.html#cb69-194" tabindex="-1"></a>}</span></code></pre></div>
 <p>Next, <code><a href='flowtrend.html#flowtrend'>flowtrend</a>()</code> is the main user-facing function.</p>
 <div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="flowtrend.html#cb70-1" tabindex="-1"></a><span class="co">#&#39; Main function. Repeats the EM algorithm (\code{<a href='flowtrend.html#flowtrend_once'>flowtrend_once</a>()}) with |nrep| restarts (5 by default).</span></span>
 <span id="cb70-2"><a href="flowtrend.html#cb70-2" tabindex="-1"></a><span class="co">#&#39;</span></span>

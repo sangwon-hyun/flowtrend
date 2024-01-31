@@ -35,6 +35,9 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
     toler = (datrange[2] - datrange[1])/1E3
   })
   toler_prob = 1E-3
+  args = list(...)
+  l = args$l
+  l_prob = args$l_prob
   
   ## Get range of regularization parameters.
   facs = sapply(1:iimax, function(ii) 2^(-ii+1)) ## DECREASING order
@@ -55,8 +58,8 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
 
     ## In each dimension, the data should only vary by a relatively small amount (say 1/100)
     mean_is_simple = sapply(1:dimdat, FUN = function(idim){
-      all(abs(diff(res$mn[,idim,], differences = l+1)) < toler_by_dim[idim])  })
-    prob_is_simple = all(abs(diff(res$prob, differences = l_prob+1)) < toler_prob)
+      all(abs(diff(res$mn[,idim,], differences = l+1)) < toler_by_dim[idim] * 2^l)   })
+    prob_is_simple = all(abs(diff(res$prob, differences = l_prob+1)) < toler_prob * 2^l_prob)
     all_are_simple = (all(mean_is_simple) & prob_is_simple)
 
 

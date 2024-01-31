@@ -5,7 +5,7 @@
 \title{Generates some synthetic 1-dimensional data with three clusters. Returns a
 data frame with (1) time, (2) Y (3) mu (4) cluster assignments.}
 \usage{
-gendat_1d(TT, ntlist, offset = 0, return_model = FALSE)
+gendat_1d(TT, ntlist, offset = 0, return_model = FALSE, sd3 = NULL)
 }
 \arguments{
 \item{TT}{Number of time points.}

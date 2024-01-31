@@ -66,18 +66,46 @@ cv_flowtrend <- function(## Data
 
   ## Save meta information, once.
   if(save_meta){
-    if(!refit){
-      save(folds,
-           nfold,
-           nrestart, ## Added recently
-           cv_gridsize,
-           lambda_means,
-           lambda_probs,
-           ylist, countslist,
-           ## Save the file
-           file = file.path(destin, 'meta.Rdata'))
-      print(paste0("wrote meta data to ", file.path(destin, 'meta.Rdata')))
-    }
+    ##if(!refit){
+      if(file.exists(file = file.path(destin, 'meta.Rdata'))){
+
+        ## Put aside the current guys
+        cat(fill=TRUE)
+        print("Meta data already exists!")
+        folds_current = folds
+        nfold_current = nfold
+        nrestart_current = nrestart
+        cv_gridsize_current = cv_gridsize
+        lambda_means_current = lambda_means
+        lambda_probs_current = lambda_probs
+        ylist_current = ylist
+        countslist_current = countslist
+
+        ## Load the saved metadata and check if they are all the same as the current guys
+        load(file = file.path(destin, 'meta.Rdata'), verbose = FALSE)
+        stopifnot(identical(folds, folds_current))
+        stopifnot(nfold == nfold_current)
+        stopifnot(nrestart == nrestart_current) ## Added recently
+        stopifnot(cv_gridsize == cv_gridsize_current)
+        stopifnot(all(lambda_means == lambda_means_current))
+        stopifnot(all(lambda_probs == lambda_probs_current))
+        stopifnot(identical(ylist, ylist_current))
+        stopifnot(identical(countslist, countslist_current))
+        cat(fill=TRUE)
+        cat("Successfully checked that the saved metadata is identical to the current one.", fill = TRUE)
+      } else {
+        save(folds,
+             nfold,
+             nrestart, ## Added recently
+             cv_gridsize,
+             lambda_means,
+             lambda_probs,
+             ylist, countslist,
+             ## Save the file
+             file = file.path(destin, 'meta.Rdata'))
+        print(paste0("wrote meta data to ", file.path(destin, 'meta.Rdata')))
+      }
+    ## }
   }
 
   ## Run the EM algorithm many times, for each value of (iprob, imu, ifold, irestart)

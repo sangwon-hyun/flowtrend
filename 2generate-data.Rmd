@@ -18,7 +18,8 @@ the true underlying parameters.
 #'
 #' @return long matrix with data or model.
 #' @export
-gendat_1d <- function(TT, ntlist, offset = 0, return_model = FALSE){
+gendat_1d <- function(TT, ntlist, offset = 0, return_model = FALSE,
+                      sd3=NULL){
 
   ## Basic checks
   stopifnot(length(ntlist) == TT)
@@ -32,7 +33,9 @@ gendat_1d <- function(TT, ntlist, offset = 0, return_model = FALSE){
   colnames(probs) = 1:3
   sd1 = 0.4
   sd2 = 0.5
-  sd3 = 0.35
+  if(is.null(sd3)) sd3 = 0.35
+  ## if(!is.null(sd3)) sd3 = 1/1.5 ## The ratio of amplitude:data-standard-deviation is about
+  ##             ## $1.50695$.
   probs_long = as_tibble(probs) %>%
     add_column(time = 1:TT) %>%
     pivot_longer(-"time", names_to = "cluster", values_to = "prob")
@@ -145,7 +148,7 @@ in a single plot. `plot_1d()` lets you do this.
 #'
 #' @return ggplot object with data, and optionally, a flowtrend model overlaid.
 #' @export
-plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALSE, idim = NULL){
+plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALSE, idim = NULL, alpha = .1){
 
   ## Basic checks
   if(!is.null(x)){
@@ -174,10 +177,11 @@ plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALS
     ymat <- lapply(1:length(ylist), FUN = function(tt){
       data.frame(time = times[tt], Y = ylist[[tt]])
     }) %>% bind_rows() %>% as_tibble()
+    colnames(ymat) = c("time", "Y", "counts") ## when ylist[[tt]] already has a column name, this is needed.
 
     ## plot long matrix
     gg = ymat %>% ggplot() +
-      geom_point(aes(x = time, y = Y), alpha = .1) +
+      geom_point(aes(x = time, y = Y), alpha = alpha) +
       theme_bw() + ylab("Data") + xlab("Time") 
       ## theme(legend.position = 'none')
   } else {
@@ -185,6 +189,7 @@ plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALS
     ymat <- lapply(1:length(ylist), FUN = function(tt){
       data.frame(time = times[tt], Y = ylist[[tt]], counts = countslist[[tt]])
     }) %>% bind_rows() %>% as_tibble()
+    colnames(ymat) = c("time", "Y", "counts") ## when ylist[[tt]] already has a column name, this is needed.
 
     ## plot long matrix
     gg = ymat %>% ggplot() +

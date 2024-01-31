@@ -35,6 +35,7 @@ admm_oneclust(
   uw,
   uz,
   first_iter,
+  iter,
   outer_iter,
   local_adapt,
   sigma,

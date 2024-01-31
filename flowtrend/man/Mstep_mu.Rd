@@ -35,7 +35,8 @@ Mstep_mu(
   zerothresh = 1e-06,
   local_adapt = FALSE,
   local_adapt_niter = 10,
-  rho_init = 0.01
+  rho_init = 0.01,
+  iter = NULL
 )
 }
 \arguments{

@@ -11,7 +11,8 @@
 #'
 #' @return long matrix with data or model.
 #' @export
-gendat_1d <- function(TT, ntlist, offset = 0, return_model = FALSE){
+gendat_1d <- function(TT, ntlist, offset = 0, return_model = FALSE,
+                      sd3=NULL){
 
   ## Basic checks
   stopifnot(length(ntlist) == TT)
@@ -25,7 +26,9 @@ gendat_1d <- function(TT, ntlist, offset = 0, return_model = FALSE){
   colnames(probs) = 1:3
   sd1 = 0.4
   sd2 = 0.5
-  sd3 = 0.35
+  if(is.null(sd3)) sd3 = 0.35
+  ## if(!is.null(sd3)) sd3 = 1/1.5 ## The ratio of amplitude:data-standard-deviation is about
+  ##             ## $1.50695$.
   probs_long = as_tibble(probs) %>%
     add_column(time = 1:TT) %>%
     pivot_longer(-"time", names_to = "cluster", values_to = "prob")

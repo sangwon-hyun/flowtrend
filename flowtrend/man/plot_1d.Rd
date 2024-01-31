@@ -10,7 +10,8 @@ plot_1d(
   obj = NULL,
   x = NULL,
   add_point = FALSE,
-  idim = NULL
+  idim = NULL,
+  alpha = 0.1
 )
 }
 \arguments{

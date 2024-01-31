@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2024-01-28" />
+<meta name="date" content="2024-01-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -405,147 +405,149 @@ whether the objective values have plateaued.</p>
 <span id="cb51-59"><a href="m-step.html#cb51-59" tabindex="-1"></a>                     <span class="at">zerothresh =</span> <span class="fl">1E-6</span>,</span>
 <span id="cb51-60"><a href="m-step.html#cb51-60" tabindex="-1"></a>                     <span class="at">local_adapt =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb51-61"><a href="m-step.html#cb51-61" tabindex="-1"></a>                     <span class="at">local_adapt_niter =</span> <span class="dv">10</span>,</span>
-<span id="cb51-62"><a href="m-step.html#cb51-62" tabindex="-1"></a>                     <span class="at">rho_init =</span> <span class="fl">0.01</span>){</span>
-<span id="cb51-63"><a href="m-step.html#cb51-63" tabindex="-1"></a></span>
-<span id="cb51-64"><a href="m-step.html#cb51-64" tabindex="-1"></a>  <span class="do">####################</span></span>
-<span id="cb51-65"><a href="m-step.html#cb51-65" tabindex="-1"></a>  <span class="do">## Preliminaries </span><span class="al">###</span></span>
-<span id="cb51-66"><a href="m-step.html#cb51-66" tabindex="-1"></a>  <span class="do">####################</span></span>
-<span id="cb51-67"><a href="m-step.html#cb51-67" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="fu">length</span>(ylist)</span>
-<span id="cb51-68"><a href="m-step.html#cb51-68" tabindex="-1"></a>  numclust <span class="ot">=</span> <span class="fu">ncol</span>(resp[[<span class="dv">1</span>]])</span>
-<span id="cb51-69"><a href="m-step.html#cb51-69" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="fu">ncol</span>(ylist[[<span class="dv">1</span>]])</span>
-<span id="cb51-70"><a href="m-step.html#cb51-70" tabindex="-1"></a>  ntlist <span class="ot">=</span> <span class="fu">sapply</span>(ylist, nrow)</span>
-<span id="cb51-71"><a href="m-step.html#cb51-71" tabindex="-1"></a>  resp.sum <span class="ot">=</span> <span class="fu">lapply</span>(resp, colSums) <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind, .)</span>
-<span id="cb51-72"><a href="m-step.html#cb51-72" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">unlist</span>(resp.sum))</span>
-<span id="cb51-73"><a href="m-step.html#cb51-73" tabindex="-1"></a></span>
-<span id="cb51-74"><a href="m-step.html#cb51-74" tabindex="-1"></a>  <span class="do">## Other preliminaries</span></span>
-<span id="cb51-75"><a href="m-step.html#cb51-75" tabindex="-1"></a>  schur_syl_A_by_clust <span class="ot">=</span> schur_syl_B_by_clust <span class="ot">=</span> term3list <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb51-76"><a href="m-step.html#cb51-76" tabindex="-1"></a>  ybarlist <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb51-77"><a href="m-step.html#cb51-77" tabindex="-1"></a>  ycentered_list <span class="ot">=</span> Xcentered_list <span class="ot">=</span> yXcentered_list <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb51-78"><a href="m-step.html#cb51-78" tabindex="-1"></a>  Qlist <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb51-79"><a href="m-step.html#cb51-79" tabindex="-1"></a>  sigmainv_list <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb51-80"><a href="m-step.html#cb51-80" tabindex="-1"></a>  <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){</span>
-<span id="cb51-81"><a href="m-step.html#cb51-81" tabindex="-1"></a></span>
-<span id="cb51-82"><a href="m-step.html#cb51-82" tabindex="-1"></a>    <span class="do">## Retrieve sigma inverse from pre-computed SVD, if necessary</span></span>
-<span id="cb51-83"><a href="m-step.html#cb51-83" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">is.null</span>(sigma_eig_by_clust)){</span>
-<span id="cb51-84"><a href="m-step.html#cb51-84" tabindex="-1"></a>      sigmainv <span class="ot">=</span> <span class="fu">solve</span>(sigma[iclust,,])</span>
-<span id="cb51-85"><a href="m-step.html#cb51-85" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb51-86"><a href="m-step.html#cb51-86" tabindex="-1"></a>      sigmainv <span class="ot">=</span> sigma_eig_by_clust[[iclust]]<span class="sc">$</span>sigma_inv</span>
-<span id="cb51-87"><a href="m-step.html#cb51-87" tabindex="-1"></a>    }</span>
-<span id="cb51-88"><a href="m-step.html#cb51-88" tabindex="-1"></a></span>
-<span id="cb51-89"><a href="m-step.html#cb51-89" tabindex="-1"></a>    resp.iclust <span class="ot">&lt;-</span> <span class="fu">lapply</span>(resp, <span class="at">FUN =</span> <span class="cf">function</span>(r) <span class="fu">matrix</span>(r[,iclust]))</span>
-<span id="cb51-90"><a href="m-step.html#cb51-90" tabindex="-1"></a></span>
-<span id="cb51-91"><a href="m-step.html#cb51-91" tabindex="-1"></a>    AB <span class="ot">&lt;-</span> <a href='m-step.html#get_AB_mats'>get_AB_mats</a>(<span class="at">y =</span> y, <span class="at">resp =</span> resp.iclust, <span class="at">Sigma_inv =</span> sigmainv,</span>
-<span id="cb51-92"><a href="m-step.html#cb51-92" tabindex="-1"></a>                      <span class="at">e_mat =</span> e_mat, <span class="at">N =</span> N, <span class="at">Dlp1 =</span> Dlp1, <span class="at">Dl =</span> Dl,</span>
-<span id="cb51-93"><a href="m-step.html#cb51-93" tabindex="-1"></a>                      <span class="at">Dlsqrd =</span> Dlsqrd, <span class="at">rho =</span> rho_init, <span class="at">z =</span> <span class="cn">NULL</span>, <span class="at">w =</span> <span class="cn">NULL</span>,</span>
-<span id="cb51-94"><a href="m-step.html#cb51-94" tabindex="-1"></a>                      <span class="at">uz =</span> <span class="cn">NULL</span>, <span class="at">uw =</span> <span class="cn">NULL</span>)</span>
-<span id="cb51-95"><a href="m-step.html#cb51-95" tabindex="-1"></a></span>
-<span id="cb51-96"><a href="m-step.html#cb51-96" tabindex="-1"></a>    <span class="do">## Store the Schur decomposition</span></span>
-<span id="cb51-97"><a href="m-step.html#cb51-97" tabindex="-1"></a>    schur_syl_A_by_clust[[iclust]] <span class="ot">=</span> <a href='m-step.html#myschur'>myschur</a>(AB<span class="sc">$</span>A)</span>
-<span id="cb51-98"><a href="m-step.html#cb51-98" tabindex="-1"></a>    schur_syl_B_by_clust[[iclust]] <span class="ot">=</span> <a href='m-step.html#myschur'>myschur</a>(AB<span class="sc">$</span>B)</span>
-<span id="cb51-99"><a href="m-step.html#cb51-99" tabindex="-1"></a></span>
-<span id="cb51-100"><a href="m-step.html#cb51-100" tabindex="-1"></a>    ycentered <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb51-101"><a href="m-step.html#cb51-101" tabindex="-1"></a>    ycentered_list[[iclust]] <span class="ot">=</span> ycentered</span>
-<span id="cb51-102"><a href="m-step.html#cb51-102" tabindex="-1"></a>    sigmainv_list[[iclust]] <span class="ot">=</span> sigmainv</span>
-<span id="cb51-103"><a href="m-step.html#cb51-103" tabindex="-1"></a>  }</span>
-<span id="cb51-104"><a href="m-step.html#cb51-104" tabindex="-1"></a></span>
-<span id="cb51-105"><a href="m-step.html#cb51-105" tabindex="-1"></a>  <span class="do">##########################################</span></span>
-<span id="cb51-106"><a href="m-step.html#cb51-106" tabindex="-1"></a>  <span class="do">## Run ADMM separately on each cluster ##</span></span>
-<span id="cb51-107"><a href="m-step.html#cb51-107" tabindex="-1"></a>  <span class="do">#########################################</span></span>
-<span id="cb51-108"><a href="m-step.html#cb51-108" tabindex="-1"></a>  admm_niters <span class="ot">=</span> admm_inner_iters <span class="ot">=</span> <span class="fu">vector</span>(<span class="at">length =</span> numclust, <span class="at">mode =</span> <span class="st">&quot;list&quot;</span>)</span>
-<span id="cb51-109"><a href="m-step.html#cb51-109" tabindex="-1"></a>  <span class="cf">if</span>(first_iter) mus <span class="ot">=</span> <span class="fu">vector</span>(<span class="at">length =</span> numclust, <span class="at">mode =</span> <span class="st">&quot;list&quot;</span>)</span>
-<span id="cb51-110"><a href="m-step.html#cb51-110" tabindex="-1"></a> <span class="co"># if(first_iter){</span></span>
-<span id="cb51-111"><a href="m-step.html#cb51-111" tabindex="-1"></a>    Zs <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(x) <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> TT, <span class="at">ncol =</span> dimdat))</span>
-<span id="cb51-112"><a href="m-step.html#cb51-112" tabindex="-1"></a>    Ws <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(x) <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> TT <span class="sc">-</span> l, <span class="at">ncol =</span> dimdat))</span>
-<span id="cb51-113"><a href="m-step.html#cb51-113" tabindex="-1"></a>    uzs <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(x) <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> TT, <span class="at">ncol =</span> dimdat))</span>
-<span id="cb51-114"><a href="m-step.html#cb51-114" tabindex="-1"></a>    uws <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(x) <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> TT <span class="sc">-</span> l, <span class="at">ncol =</span> dimdat))</span>
-<span id="cb51-115"><a href="m-step.html#cb51-115" tabindex="-1"></a></span>
-<span id="cb51-116"><a href="m-step.html#cb51-116" tabindex="-1"></a>   <span class="co"># Zs =  Ws =  Us  = vector(length = numclust, mode = &quot;list&quot;)</span></span>
-<span id="cb51-117"><a href="m-step.html#cb51-117" tabindex="-1"></a> <span class="co"># }</span></span>
-<span id="cb51-118"><a href="m-step.html#cb51-118" tabindex="-1"></a></span>
-<span id="cb51-119"><a href="m-step.html#cb51-119" tabindex="-1"></a>  <span class="do">## For every cluster, run LA-ADMM</span></span>
-<span id="cb51-120"><a href="m-step.html#cb51-120" tabindex="-1"></a>  start.time <span class="ot">=</span> <span class="fu">Sys.time</span>()</span>
-<span id="cb51-121"><a href="m-step.html#cb51-121" tabindex="-1"></a>  <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){</span>
-<span id="cb51-122"><a href="m-step.html#cb51-122" tabindex="-1"></a></span>
-<span id="cb51-123"><a href="m-step.html#cb51-123" tabindex="-1"></a>    resp.iclust <span class="ot">&lt;-</span> <span class="fu">lapply</span>(resp, <span class="at">FUN =</span> <span class="cf">function</span>(r) <span class="fu">matrix</span>(r[,iclust]))</span>
-<span id="cb51-124"><a href="m-step.html#cb51-124" tabindex="-1"></a></span>
-<span id="cb51-125"><a href="m-step.html#cb51-125" tabindex="-1"></a>    <span class="do">## Possibly locally adaptive ADMM, for now just running with rho == lambda</span></span>
-<span id="cb51-126"><a href="m-step.html#cb51-126" tabindex="-1"></a>    res <span class="ot">=</span> <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(<span class="at">K =</span> (<span class="cf">if</span>(local_adapt) local_adapt_niter <span class="cf">else</span> <span class="dv">1</span>),</span>
-<span id="cb51-127"><a href="m-step.html#cb51-127" tabindex="-1"></a>                           <span class="at">local_adapt =</span> local_adapt,</span>
-<span id="cb51-128"><a href="m-step.html#cb51-128" tabindex="-1"></a>                           <span class="at">iclust =</span> iclust,</span>
-<span id="cb51-129"><a href="m-step.html#cb51-129" tabindex="-1"></a>                           <span class="at">niter =</span> niter,</span>
-<span id="cb51-130"><a href="m-step.html#cb51-130" tabindex="-1"></a>                           <span class="at">TT =</span> TT, <span class="at">N =</span> N, <span class="at">dimdat =</span> dimdat, <span class="at">maxdev =</span> maxdev,</span>
-<span id="cb51-131"><a href="m-step.html#cb51-131" tabindex="-1"></a>                           <span class="at">schurA =</span> schur_syl_A_by_clust[[iclust]],</span>
-<span id="cb51-132"><a href="m-step.html#cb51-132" tabindex="-1"></a>                           <span class="at">schurB =</span> schur_syl_B_by_clust[[iclust]],</span>
-<span id="cb51-133"><a href="m-step.html#cb51-133" tabindex="-1"></a>                           <span class="at">sigmainv =</span> sigmainv_list[[iclust]],</span>
-<span id="cb51-134"><a href="m-step.html#cb51-134" tabindex="-1"></a>                           <span class="at">rho =</span> rho_init, </span>
-<span id="cb51-135"><a href="m-step.html#cb51-135" tabindex="-1"></a>                           <span class="at">rhoinit =</span> rho_init, </span>
-<span id="cb51-136"><a href="m-step.html#cb51-136" tabindex="-1"></a>                           <span class="do">## rho = (if(iclust == 1) rho_init else res$rho/2),</span></span>
-<span id="cb51-137"><a href="m-step.html#cb51-137" tabindex="-1"></a>                           <span class="do">## rhoinit = (if(iclust == 1) rho_init else res$rho/2),</span></span>
-<span id="cb51-138"><a href="m-step.html#cb51-138" tabindex="-1"></a>                           <span class="at">sigma =</span> sigma,</span>
-<span id="cb51-139"><a href="m-step.html#cb51-139" tabindex="-1"></a>                           <span class="at">lambda =</span> lambda,</span>
-<span id="cb51-140"><a href="m-step.html#cb51-140" tabindex="-1"></a>                           <span class="at">resp =</span> resp.iclust,</span>
-<span id="cb51-141"><a href="m-step.html#cb51-141" tabindex="-1"></a>                           <span class="at">resp_sum =</span> resp.sum[,iclust],</span>
-<span id="cb51-142"><a href="m-step.html#cb51-142" tabindex="-1"></a>                           <span class="at">l =</span> l,</span>
-<span id="cb51-143"><a href="m-step.html#cb51-143" tabindex="-1"></a>                           <span class="at">Dlp1 =</span> Dlp1,</span>
-<span id="cb51-144"><a href="m-step.html#cb51-144" tabindex="-1"></a>                           <span class="at">Dl =</span> Dl,</span>
-<span id="cb51-145"><a href="m-step.html#cb51-145" tabindex="-1"></a>                           <span class="at">tDl =</span> tDl,</span>
-<span id="cb51-146"><a href="m-step.html#cb51-146" tabindex="-1"></a>                           <span class="at">y =</span> ylist,</span>
-<span id="cb51-147"><a href="m-step.html#cb51-147" tabindex="-1"></a>                           <span class="at">err_rel =</span> err_rel,</span>
-<span id="cb51-148"><a href="m-step.html#cb51-148" tabindex="-1"></a>                           <span class="at">err_abs =</span> err_abs,</span>
-<span id="cb51-149"><a href="m-step.html#cb51-149" tabindex="-1"></a>                           <span class="at">zerothresh =</span> zerothresh,</span>
-<span id="cb51-150"><a href="m-step.html#cb51-150" tabindex="-1"></a>                           <span class="at">sigma_eig_by_clust =</span> sigma_eig_by_clust,</span>
-<span id="cb51-151"><a href="m-step.html#cb51-151" tabindex="-1"></a></span>
-<span id="cb51-152"><a href="m-step.html#cb51-152" tabindex="-1"></a>                           <span class="do">## Warm starts from previous *EM* iteration</span></span>
-<span id="cb51-153"><a href="m-step.html#cb51-153" tabindex="-1"></a>                           <span class="at">first_iter =</span> first_iter,</span>
-<span id="cb51-154"><a href="m-step.html#cb51-154" tabindex="-1"></a>                           <span class="do">## mu = mus[[iclust]], ## I think we want this.</span></span>
-<span id="cb51-155"><a href="m-step.html#cb51-155" tabindex="-1"></a>                           <span class="at">uw =</span> uws[[iclust]],</span>
-<span id="cb51-156"><a href="m-step.html#cb51-156" tabindex="-1"></a>                           <span class="at">uz =</span> uzs[[iclust]],</span>
-<span id="cb51-157"><a href="m-step.html#cb51-157" tabindex="-1"></a>                           <span class="at">z =</span> Zs[[iclust]],</span>
-<span id="cb51-158"><a href="m-step.html#cb51-158" tabindex="-1"></a>                           <span class="at">w =</span> Ws[[iclust]])</span>
-<span id="cb51-159"><a href="m-step.html#cb51-159" tabindex="-1"></a>    <span class="do">## print(res$rho)</span></span>
-<span id="cb51-160"><a href="m-step.html#cb51-160" tabindex="-1"></a></span>
-<span id="cb51-161"><a href="m-step.html#cb51-161" tabindex="-1"></a>    <span class="do">## Store the results</span></span>
-<span id="cb51-162"><a href="m-step.html#cb51-162" tabindex="-1"></a>    mus[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>mu</span>
-<span id="cb51-163"><a href="m-step.html#cb51-163" tabindex="-1"></a>    admm_niters[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>kk</span>
-<span id="cb51-164"><a href="m-step.html#cb51-164" tabindex="-1"></a>    admm_inner_iters[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>inner.iter</span>
-<span id="cb51-165"><a href="m-step.html#cb51-165" tabindex="-1"></a></span>
-<span id="cb51-166"><a href="m-step.html#cb51-166" tabindex="-1"></a>    <span class="do">## Store other things for for warmstart</span></span>
-<span id="cb51-167"><a href="m-step.html#cb51-167" tabindex="-1"></a>    <span class="do">## mus[[iclust]] = res$mu</span></span>
-<span id="cb51-168"><a href="m-step.html#cb51-168" tabindex="-1"></a>    Zs[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>Z</span>
-<span id="cb51-169"><a href="m-step.html#cb51-169" tabindex="-1"></a>    uzs[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>uz</span>
-<span id="cb51-170"><a href="m-step.html#cb51-170" tabindex="-1"></a>    uws[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>uw</span>
-<span id="cb51-171"><a href="m-step.html#cb51-171" tabindex="-1"></a>    Ws[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>W</span>
-<span id="cb51-172"><a href="m-step.html#cb51-172" tabindex="-1"></a>    <span class="do">## The upper triangular matrix remains the same. (code missing?)</span></span>
-<span id="cb51-173"><a href="m-step.html#cb51-173" tabindex="-1"></a></span>
-<span id="cb51-174"><a href="m-step.html#cb51-174" tabindex="-1"></a>   <span class="co"># print(res$converge)</span></span>
-<span id="cb51-175"><a href="m-step.html#cb51-175" tabindex="-1"></a>  }</span>
-<span id="cb51-176"><a href="m-step.html#cb51-176" tabindex="-1"></a></span>
-<span id="cb51-177"><a href="m-step.html#cb51-177" tabindex="-1"></a>  <span class="do">## Aggregate the yhats into one array</span></span>
-<span id="cb51-178"><a href="m-step.html#cb51-178" tabindex="-1"></a>  mu_array <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim =</span> <span class="fu">c</span>(TT, dimdat, numclust))</span>
-<span id="cb51-179"><a href="m-step.html#cb51-179" tabindex="-1"></a>  <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){ mu_array[,,iclust] <span class="ot">=</span> mus[[iclust]] }</span>
-<span id="cb51-180"><a href="m-step.html#cb51-180" tabindex="-1"></a></span>
-<span id="cb51-181"><a href="m-step.html#cb51-181" tabindex="-1"></a>  <span class="do">## Each are lists of length |numclust|.</span></span>
-<span id="cb51-182"><a href="m-step.html#cb51-182" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">mns =</span> mu_array,</span>
-<span id="cb51-183"><a href="m-step.html#cb51-183" tabindex="-1"></a>              <span class="at">admm_niters =</span> admm_niters, </span>
-<span id="cb51-184"><a href="m-step.html#cb51-184" tabindex="-1"></a>              <span class="at">admm_inner_iters =</span> admm_inner_iters,</span>
-<span id="cb51-185"><a href="m-step.html#cb51-185" tabindex="-1"></a></span>
-<span id="cb51-186"><a href="m-step.html#cb51-186" tabindex="-1"></a>              <span class="do">## For warmstarts</span></span>
-<span id="cb51-187"><a href="m-step.html#cb51-187" tabindex="-1"></a>              <span class="at">Zs =</span> Zs,</span>
-<span id="cb51-188"><a href="m-step.html#cb51-188" tabindex="-1"></a>              <span class="at">Ws =</span> Ws,</span>
-<span id="cb51-189"><a href="m-step.html#cb51-189" tabindex="-1"></a>              <span class="at">uws =</span> uws,</span>
-<span id="cb51-190"><a href="m-step.html#cb51-190" tabindex="-1"></a>              <span class="at">uzs =</span> uzs,</span>
-<span id="cb51-191"><a href="m-step.html#cb51-191" tabindex="-1"></a>              <span class="at">N =</span> N,</span>
-<span id="cb51-192"><a href="m-step.html#cb51-192" tabindex="-1"></a></span>
-<span id="cb51-193"><a href="m-step.html#cb51-193" tabindex="-1"></a>              <span class="do">## Return the column</span></span>
-<span id="cb51-194"><a href="m-step.html#cb51-194" tabindex="-1"></a>              <span class="at">rho =</span> res<span class="sc">$</span>rho,</span>
-<span id="cb51-195"><a href="m-step.html#cb51-195" tabindex="-1"></a></span>
-<span id="cb51-196"><a href="m-step.html#cb51-196" tabindex="-1"></a>              <span class="do">## For using in the Sigma M step</span></span>
-<span id="cb51-197"><a href="m-step.html#cb51-197" tabindex="-1"></a>              <span class="at">ycentered_list =</span> ycentered_list,</span>
-<span id="cb51-198"><a href="m-step.html#cb51-198" tabindex="-1"></a>              <span class="at">Xcentered_list =</span> Xcentered_list,</span>
-<span id="cb51-199"><a href="m-step.html#cb51-199" tabindex="-1"></a>              <span class="at">yXcentered_list =</span> yXcentered_list,</span>
-<span id="cb51-200"><a href="m-step.html#cb51-200" tabindex="-1"></a>              <span class="at">Qlist =</span> Qlist</span>
-<span id="cb51-201"><a href="m-step.html#cb51-201" tabindex="-1"></a>  ))</span>
-<span id="cb51-202"><a href="m-step.html#cb51-202" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb51-62"><a href="m-step.html#cb51-62" tabindex="-1"></a>                     <span class="at">rho_init =</span> <span class="fl">0.01</span>,</span>
+<span id="cb51-63"><a href="m-step.html#cb51-63" tabindex="-1"></a>                     <span class="at">iter =</span> <span class="cn">NULL</span>){</span>
+<span id="cb51-64"><a href="m-step.html#cb51-64" tabindex="-1"></a></span>
+<span id="cb51-65"><a href="m-step.html#cb51-65" tabindex="-1"></a>  <span class="do">####################</span></span>
+<span id="cb51-66"><a href="m-step.html#cb51-66" tabindex="-1"></a>  <span class="do">## Preliminaries </span><span class="al">###</span></span>
+<span id="cb51-67"><a href="m-step.html#cb51-67" tabindex="-1"></a>  <span class="do">####################</span></span>
+<span id="cb51-68"><a href="m-step.html#cb51-68" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="fu">length</span>(ylist)</span>
+<span id="cb51-69"><a href="m-step.html#cb51-69" tabindex="-1"></a>  numclust <span class="ot">=</span> <span class="fu">ncol</span>(resp[[<span class="dv">1</span>]])</span>
+<span id="cb51-70"><a href="m-step.html#cb51-70" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="fu">ncol</span>(ylist[[<span class="dv">1</span>]])</span>
+<span id="cb51-71"><a href="m-step.html#cb51-71" tabindex="-1"></a>  ntlist <span class="ot">=</span> <span class="fu">sapply</span>(ylist, nrow)</span>
+<span id="cb51-72"><a href="m-step.html#cb51-72" tabindex="-1"></a>  resp.sum <span class="ot">=</span> <span class="fu">lapply</span>(resp, colSums) <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind, .)</span>
+<span id="cb51-73"><a href="m-step.html#cb51-73" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">unlist</span>(resp.sum))</span>
+<span id="cb51-74"><a href="m-step.html#cb51-74" tabindex="-1"></a></span>
+<span id="cb51-75"><a href="m-step.html#cb51-75" tabindex="-1"></a>  <span class="do">## Other preliminaries</span></span>
+<span id="cb51-76"><a href="m-step.html#cb51-76" tabindex="-1"></a>  schur_syl_A_by_clust <span class="ot">=</span> schur_syl_B_by_clust <span class="ot">=</span> term3list <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb51-77"><a href="m-step.html#cb51-77" tabindex="-1"></a>  ybarlist <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb51-78"><a href="m-step.html#cb51-78" tabindex="-1"></a>  ycentered_list <span class="ot">=</span> Xcentered_list <span class="ot">=</span> yXcentered_list <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb51-79"><a href="m-step.html#cb51-79" tabindex="-1"></a>  Qlist <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb51-80"><a href="m-step.html#cb51-80" tabindex="-1"></a>  sigmainv_list <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb51-81"><a href="m-step.html#cb51-81" tabindex="-1"></a>  <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){</span>
+<span id="cb51-82"><a href="m-step.html#cb51-82" tabindex="-1"></a></span>
+<span id="cb51-83"><a href="m-step.html#cb51-83" tabindex="-1"></a>    <span class="do">## Retrieve sigma inverse from pre-computed SVD, if necessary</span></span>
+<span id="cb51-84"><a href="m-step.html#cb51-84" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">is.null</span>(sigma_eig_by_clust)){</span>
+<span id="cb51-85"><a href="m-step.html#cb51-85" tabindex="-1"></a>      sigmainv <span class="ot">=</span> <span class="fu">solve</span>(sigma[iclust,,])</span>
+<span id="cb51-86"><a href="m-step.html#cb51-86" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb51-87"><a href="m-step.html#cb51-87" tabindex="-1"></a>      sigmainv <span class="ot">=</span> sigma_eig_by_clust[[iclust]]<span class="sc">$</span>sigma_inv</span>
+<span id="cb51-88"><a href="m-step.html#cb51-88" tabindex="-1"></a>    }</span>
+<span id="cb51-89"><a href="m-step.html#cb51-89" tabindex="-1"></a></span>
+<span id="cb51-90"><a href="m-step.html#cb51-90" tabindex="-1"></a>    resp.iclust <span class="ot">&lt;-</span> <span class="fu">lapply</span>(resp, <span class="at">FUN =</span> <span class="cf">function</span>(r) <span class="fu">matrix</span>(r[,iclust]))</span>
+<span id="cb51-91"><a href="m-step.html#cb51-91" tabindex="-1"></a></span>
+<span id="cb51-92"><a href="m-step.html#cb51-92" tabindex="-1"></a>    AB <span class="ot">&lt;-</span> <a href='m-step.html#get_AB_mats'>get_AB_mats</a>(<span class="at">y =</span> y, <span class="at">resp =</span> resp.iclust, <span class="at">Sigma_inv =</span> sigmainv,</span>
+<span id="cb51-93"><a href="m-step.html#cb51-93" tabindex="-1"></a>                      <span class="at">e_mat =</span> e_mat, <span class="at">N =</span> N, <span class="at">Dlp1 =</span> Dlp1, <span class="at">Dl =</span> Dl,</span>
+<span id="cb51-94"><a href="m-step.html#cb51-94" tabindex="-1"></a>                      <span class="at">Dlsqrd =</span> Dlsqrd, <span class="at">rho =</span> rho_init, <span class="at">z =</span> <span class="cn">NULL</span>, <span class="at">w =</span> <span class="cn">NULL</span>,</span>
+<span id="cb51-95"><a href="m-step.html#cb51-95" tabindex="-1"></a>                      <span class="at">uz =</span> <span class="cn">NULL</span>, <span class="at">uw =</span> <span class="cn">NULL</span>)</span>
+<span id="cb51-96"><a href="m-step.html#cb51-96" tabindex="-1"></a></span>
+<span id="cb51-97"><a href="m-step.html#cb51-97" tabindex="-1"></a>    <span class="do">## Store the Schur decomposition</span></span>
+<span id="cb51-98"><a href="m-step.html#cb51-98" tabindex="-1"></a>    schur_syl_A_by_clust[[iclust]] <span class="ot">=</span> <a href='m-step.html#myschur'>myschur</a>(AB<span class="sc">$</span>A)</span>
+<span id="cb51-99"><a href="m-step.html#cb51-99" tabindex="-1"></a>    schur_syl_B_by_clust[[iclust]] <span class="ot">=</span> <a href='m-step.html#myschur'>myschur</a>(AB<span class="sc">$</span>B)</span>
+<span id="cb51-100"><a href="m-step.html#cb51-100" tabindex="-1"></a></span>
+<span id="cb51-101"><a href="m-step.html#cb51-101" tabindex="-1"></a>    ycentered <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb51-102"><a href="m-step.html#cb51-102" tabindex="-1"></a>    ycentered_list[[iclust]] <span class="ot">=</span> ycentered</span>
+<span id="cb51-103"><a href="m-step.html#cb51-103" tabindex="-1"></a>    sigmainv_list[[iclust]] <span class="ot">=</span> sigmainv</span>
+<span id="cb51-104"><a href="m-step.html#cb51-104" tabindex="-1"></a>  }</span>
+<span id="cb51-105"><a href="m-step.html#cb51-105" tabindex="-1"></a></span>
+<span id="cb51-106"><a href="m-step.html#cb51-106" tabindex="-1"></a>  <span class="do">##########################################</span></span>
+<span id="cb51-107"><a href="m-step.html#cb51-107" tabindex="-1"></a>  <span class="do">## Run ADMM separately on each cluster ##</span></span>
+<span id="cb51-108"><a href="m-step.html#cb51-108" tabindex="-1"></a>  <span class="do">#########################################</span></span>
+<span id="cb51-109"><a href="m-step.html#cb51-109" tabindex="-1"></a>  admm_niters <span class="ot">=</span> admm_inner_iters <span class="ot">=</span> <span class="fu">vector</span>(<span class="at">length =</span> numclust, <span class="at">mode =</span> <span class="st">&quot;list&quot;</span>)</span>
+<span id="cb51-110"><a href="m-step.html#cb51-110" tabindex="-1"></a>  <span class="cf">if</span>(first_iter) mus <span class="ot">=</span> <span class="fu">vector</span>(<span class="at">length =</span> numclust, <span class="at">mode =</span> <span class="st">&quot;list&quot;</span>)</span>
+<span id="cb51-111"><a href="m-step.html#cb51-111" tabindex="-1"></a> <span class="co"># if(first_iter){</span></span>
+<span id="cb51-112"><a href="m-step.html#cb51-112" tabindex="-1"></a>    Zs <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(x) <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> TT, <span class="at">ncol =</span> dimdat))</span>
+<span id="cb51-113"><a href="m-step.html#cb51-113" tabindex="-1"></a>    Ws <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(x) <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> TT <span class="sc">-</span> l, <span class="at">ncol =</span> dimdat))</span>
+<span id="cb51-114"><a href="m-step.html#cb51-114" tabindex="-1"></a>    uzs <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(x) <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> TT, <span class="at">ncol =</span> dimdat))</span>
+<span id="cb51-115"><a href="m-step.html#cb51-115" tabindex="-1"></a>    uws <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(x) <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> TT <span class="sc">-</span> l, <span class="at">ncol =</span> dimdat))</span>
+<span id="cb51-116"><a href="m-step.html#cb51-116" tabindex="-1"></a></span>
+<span id="cb51-117"><a href="m-step.html#cb51-117" tabindex="-1"></a>   <span class="co"># Zs =  Ws =  Us  = vector(length = numclust, mode = &quot;list&quot;)</span></span>
+<span id="cb51-118"><a href="m-step.html#cb51-118" tabindex="-1"></a> <span class="co"># }</span></span>
+<span id="cb51-119"><a href="m-step.html#cb51-119" tabindex="-1"></a></span>
+<span id="cb51-120"><a href="m-step.html#cb51-120" tabindex="-1"></a>  <span class="do">## For every cluster, run LA-ADMM</span></span>
+<span id="cb51-121"><a href="m-step.html#cb51-121" tabindex="-1"></a>  start.time <span class="ot">=</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb51-122"><a href="m-step.html#cb51-122" tabindex="-1"></a>  <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){</span>
+<span id="cb51-123"><a href="m-step.html#cb51-123" tabindex="-1"></a></span>
+<span id="cb51-124"><a href="m-step.html#cb51-124" tabindex="-1"></a>    resp.iclust <span class="ot">&lt;-</span> <span class="fu">lapply</span>(resp, <span class="at">FUN =</span> <span class="cf">function</span>(r) <span class="fu">matrix</span>(r[,iclust]))</span>
+<span id="cb51-125"><a href="m-step.html#cb51-125" tabindex="-1"></a></span>
+<span id="cb51-126"><a href="m-step.html#cb51-126" tabindex="-1"></a>    <span class="do">## Possibly locally adaptive ADMM, for now just running with rho == lambda</span></span>
+<span id="cb51-127"><a href="m-step.html#cb51-127" tabindex="-1"></a>    res <span class="ot">=</span> <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(<span class="at">K =</span> (<span class="cf">if</span>(local_adapt) local_adapt_niter <span class="cf">else</span> <span class="dv">1</span>),</span>
+<span id="cb51-128"><a href="m-step.html#cb51-128" tabindex="-1"></a>                           <span class="at">local_adapt =</span> local_adapt,</span>
+<span id="cb51-129"><a href="m-step.html#cb51-129" tabindex="-1"></a>                           <span class="at">iclust =</span> iclust,</span>
+<span id="cb51-130"><a href="m-step.html#cb51-130" tabindex="-1"></a>                           <span class="at">niter =</span> niter,</span>
+<span id="cb51-131"><a href="m-step.html#cb51-131" tabindex="-1"></a>                           <span class="at">TT =</span> TT, <span class="at">N =</span> N, <span class="at">dimdat =</span> dimdat, <span class="at">maxdev =</span> maxdev,</span>
+<span id="cb51-132"><a href="m-step.html#cb51-132" tabindex="-1"></a>                           <span class="at">schurA =</span> schur_syl_A_by_clust[[iclust]],</span>
+<span id="cb51-133"><a href="m-step.html#cb51-133" tabindex="-1"></a>                           <span class="at">schurB =</span> schur_syl_B_by_clust[[iclust]],</span>
+<span id="cb51-134"><a href="m-step.html#cb51-134" tabindex="-1"></a>                           <span class="at">sigmainv =</span> sigmainv_list[[iclust]],</span>
+<span id="cb51-135"><a href="m-step.html#cb51-135" tabindex="-1"></a>                           <span class="at">rho =</span> rho_init, </span>
+<span id="cb51-136"><a href="m-step.html#cb51-136" tabindex="-1"></a>                           <span class="at">rhoinit =</span> rho_init, </span>
+<span id="cb51-137"><a href="m-step.html#cb51-137" tabindex="-1"></a>                           <span class="do">## rho = (if(iclust == 1) rho_init else res$rho/2),</span></span>
+<span id="cb51-138"><a href="m-step.html#cb51-138" tabindex="-1"></a>                           <span class="do">## rhoinit = (if(iclust == 1) rho_init else res$rho/2),</span></span>
+<span id="cb51-139"><a href="m-step.html#cb51-139" tabindex="-1"></a>                           <span class="at">sigma =</span> sigma,</span>
+<span id="cb51-140"><a href="m-step.html#cb51-140" tabindex="-1"></a>                           <span class="at">lambda =</span> lambda,</span>
+<span id="cb51-141"><a href="m-step.html#cb51-141" tabindex="-1"></a>                           <span class="at">resp =</span> resp.iclust,</span>
+<span id="cb51-142"><a href="m-step.html#cb51-142" tabindex="-1"></a>                           <span class="at">resp_sum =</span> resp.sum[,iclust],</span>
+<span id="cb51-143"><a href="m-step.html#cb51-143" tabindex="-1"></a>                           <span class="at">l =</span> l,</span>
+<span id="cb51-144"><a href="m-step.html#cb51-144" tabindex="-1"></a>                           <span class="at">Dlp1 =</span> Dlp1,</span>
+<span id="cb51-145"><a href="m-step.html#cb51-145" tabindex="-1"></a>                           <span class="at">Dl =</span> Dl,</span>
+<span id="cb51-146"><a href="m-step.html#cb51-146" tabindex="-1"></a>                           <span class="at">tDl =</span> tDl,</span>
+<span id="cb51-147"><a href="m-step.html#cb51-147" tabindex="-1"></a>                           <span class="at">y =</span> ylist,</span>
+<span id="cb51-148"><a href="m-step.html#cb51-148" tabindex="-1"></a>                           <span class="at">err_rel =</span> err_rel,</span>
+<span id="cb51-149"><a href="m-step.html#cb51-149" tabindex="-1"></a>                           <span class="at">err_abs =</span> err_abs,</span>
+<span id="cb51-150"><a href="m-step.html#cb51-150" tabindex="-1"></a>                           <span class="at">zerothresh =</span> zerothresh,</span>
+<span id="cb51-151"><a href="m-step.html#cb51-151" tabindex="-1"></a>                           <span class="at">sigma_eig_by_clust =</span> sigma_eig_by_clust,</span>
+<span id="cb51-152"><a href="m-step.html#cb51-152" tabindex="-1"></a>                           <span class="at">iter =</span> iter,</span>
+<span id="cb51-153"><a href="m-step.html#cb51-153" tabindex="-1"></a></span>
+<span id="cb51-154"><a href="m-step.html#cb51-154" tabindex="-1"></a>                           <span class="do">## Warm starts from previous *EM* iteration</span></span>
+<span id="cb51-155"><a href="m-step.html#cb51-155" tabindex="-1"></a>                           <span class="at">first_iter =</span> first_iter,</span>
+<span id="cb51-156"><a href="m-step.html#cb51-156" tabindex="-1"></a>                           <span class="do">## mu = mus[[iclust]], ## I think we want this.</span></span>
+<span id="cb51-157"><a href="m-step.html#cb51-157" tabindex="-1"></a>                           <span class="at">uw =</span> uws[[iclust]],</span>
+<span id="cb51-158"><a href="m-step.html#cb51-158" tabindex="-1"></a>                           <span class="at">uz =</span> uzs[[iclust]],</span>
+<span id="cb51-159"><a href="m-step.html#cb51-159" tabindex="-1"></a>                           <span class="at">z =</span> Zs[[iclust]],</span>
+<span id="cb51-160"><a href="m-step.html#cb51-160" tabindex="-1"></a>                           <span class="at">w =</span> Ws[[iclust]])</span>
+<span id="cb51-161"><a href="m-step.html#cb51-161" tabindex="-1"></a>    <span class="do">## print(res$rho)</span></span>
+<span id="cb51-162"><a href="m-step.html#cb51-162" tabindex="-1"></a></span>
+<span id="cb51-163"><a href="m-step.html#cb51-163" tabindex="-1"></a>    <span class="do">## Store the results</span></span>
+<span id="cb51-164"><a href="m-step.html#cb51-164" tabindex="-1"></a>    mus[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>mu</span>
+<span id="cb51-165"><a href="m-step.html#cb51-165" tabindex="-1"></a>    admm_niters[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>kk</span>
+<span id="cb51-166"><a href="m-step.html#cb51-166" tabindex="-1"></a>    admm_inner_iters[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>inner.iter</span>
+<span id="cb51-167"><a href="m-step.html#cb51-167" tabindex="-1"></a></span>
+<span id="cb51-168"><a href="m-step.html#cb51-168" tabindex="-1"></a>    <span class="do">## Store other things for for warmstart</span></span>
+<span id="cb51-169"><a href="m-step.html#cb51-169" tabindex="-1"></a>    <span class="do">## mus[[iclust]] = res$mu</span></span>
+<span id="cb51-170"><a href="m-step.html#cb51-170" tabindex="-1"></a>    Zs[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>Z</span>
+<span id="cb51-171"><a href="m-step.html#cb51-171" tabindex="-1"></a>    uzs[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>uz</span>
+<span id="cb51-172"><a href="m-step.html#cb51-172" tabindex="-1"></a>    uws[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>uw</span>
+<span id="cb51-173"><a href="m-step.html#cb51-173" tabindex="-1"></a>    Ws[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>W</span>
+<span id="cb51-174"><a href="m-step.html#cb51-174" tabindex="-1"></a>    <span class="do">## The upper triangular matrix remains the same. (code missing?)</span></span>
+<span id="cb51-175"><a href="m-step.html#cb51-175" tabindex="-1"></a></span>
+<span id="cb51-176"><a href="m-step.html#cb51-176" tabindex="-1"></a>   <span class="co"># print(res$converge)</span></span>
+<span id="cb51-177"><a href="m-step.html#cb51-177" tabindex="-1"></a>  }</span>
+<span id="cb51-178"><a href="m-step.html#cb51-178" tabindex="-1"></a></span>
+<span id="cb51-179"><a href="m-step.html#cb51-179" tabindex="-1"></a>  <span class="do">## Aggregate the yhats into one array</span></span>
+<span id="cb51-180"><a href="m-step.html#cb51-180" tabindex="-1"></a>  mu_array <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim =</span> <span class="fu">c</span>(TT, dimdat, numclust))</span>
+<span id="cb51-181"><a href="m-step.html#cb51-181" tabindex="-1"></a>  <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){ mu_array[,,iclust] <span class="ot">=</span> mus[[iclust]] }</span>
+<span id="cb51-182"><a href="m-step.html#cb51-182" tabindex="-1"></a></span>
+<span id="cb51-183"><a href="m-step.html#cb51-183" tabindex="-1"></a>  <span class="do">## Each are lists of length |numclust|.</span></span>
+<span id="cb51-184"><a href="m-step.html#cb51-184" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">mns =</span> mu_array,</span>
+<span id="cb51-185"><a href="m-step.html#cb51-185" tabindex="-1"></a>              <span class="at">admm_niters =</span> admm_niters, </span>
+<span id="cb51-186"><a href="m-step.html#cb51-186" tabindex="-1"></a>              <span class="at">admm_inner_iters =</span> admm_inner_iters,</span>
+<span id="cb51-187"><a href="m-step.html#cb51-187" tabindex="-1"></a></span>
+<span id="cb51-188"><a href="m-step.html#cb51-188" tabindex="-1"></a>              <span class="do">## For warmstarts</span></span>
+<span id="cb51-189"><a href="m-step.html#cb51-189" tabindex="-1"></a>              <span class="at">Zs =</span> Zs,</span>
+<span id="cb51-190"><a href="m-step.html#cb51-190" tabindex="-1"></a>              <span class="at">Ws =</span> Ws,</span>
+<span id="cb51-191"><a href="m-step.html#cb51-191" tabindex="-1"></a>              <span class="at">uws =</span> uws,</span>
+<span id="cb51-192"><a href="m-step.html#cb51-192" tabindex="-1"></a>              <span class="at">uzs =</span> uzs,</span>
+<span id="cb51-193"><a href="m-step.html#cb51-193" tabindex="-1"></a>              <span class="at">N =</span> N,</span>
+<span id="cb51-194"><a href="m-step.html#cb51-194" tabindex="-1"></a></span>
+<span id="cb51-195"><a href="m-step.html#cb51-195" tabindex="-1"></a>              <span class="do">## Return the column</span></span>
+<span id="cb51-196"><a href="m-step.html#cb51-196" tabindex="-1"></a>              <span class="at">rho =</span> res<span class="sc">$</span>rho,</span>
+<span id="cb51-197"><a href="m-step.html#cb51-197" tabindex="-1"></a></span>
+<span id="cb51-198"><a href="m-step.html#cb51-198" tabindex="-1"></a>              <span class="do">## For using in the Sigma M step</span></span>
+<span id="cb51-199"><a href="m-step.html#cb51-199" tabindex="-1"></a>              <span class="at">ycentered_list =</span> ycentered_list,</span>
+<span id="cb51-200"><a href="m-step.html#cb51-200" tabindex="-1"></a>              <span class="at">Xcentered_list =</span> Xcentered_list,</span>
+<span id="cb51-201"><a href="m-step.html#cb51-201" tabindex="-1"></a>              <span class="at">yXcentered_list =</span> yXcentered_list,</span>
+<span id="cb51-202"><a href="m-step.html#cb51-202" tabindex="-1"></a>              <span class="at">Qlist =</span> Qlist</span>
+<span id="cb51-203"><a href="m-step.html#cb51-203" tabindex="-1"></a>  ))</span>
+<span id="cb51-204"><a href="m-step.html#cb51-204" tabindex="-1"></a>}</span></code></pre></div>
 <p>The locally adaptive admm for a single cluster involves an inner and outer
 loop. The inner loop is an ADMM for a fixed <span class="math inline">\(\rho\)</span>. The outer loop is written
 here in <code>la_admm_oneclust</code>, and runs the inner ADMM with a fixed step-size
@@ -798,132 +800,134 @@ iterations <code>iter=1,...,n</code>.</p>
 <span id="cb54-20"><a href="m-step.html#cb54-20" tabindex="-1"></a>                          uz,</span>
 <span id="cb54-21"><a href="m-step.html#cb54-21" tabindex="-1"></a>                          <span class="do">## warmstart = FALSE,</span></span>
 <span id="cb54-22"><a href="m-step.html#cb54-22" tabindex="-1"></a>                          <span class="do">## mu.warm = if(!warmstart) NULL,</span></span>
-<span id="cb54-23"><a href="m-step.html#cb54-23" tabindex="-1"></a>                          first_iter,<span class="do">## Not used</span></span>
-<span id="cb54-24"><a href="m-step.html#cb54-24" tabindex="-1"></a>                          outer_iter,</span>
-<span id="cb54-25"><a href="m-step.html#cb54-25" tabindex="-1"></a>                          local_adapt,</span>
-<span id="cb54-26"><a href="m-step.html#cb54-26" tabindex="-1"></a>                          sigma,</span>
-<span id="cb54-27"><a href="m-step.html#cb54-27" tabindex="-1"></a>                          sigma_eig_by_clust){</span>
-<span id="cb54-28"><a href="m-step.html#cb54-28" tabindex="-1"></a></span>
-<span id="cb54-29"><a href="m-step.html#cb54-29" tabindex="-1"></a>  <span class="do">## Initialize the variables </span><span class="al">###</span></span>
-<span id="cb54-30"><a href="m-step.html#cb54-30" tabindex="-1"></a>  <span class="do">## resid_mat = matrix(NA, nrow = ceiling(niter/5), ncol = 4)</span></span>
-<span id="cb54-31"><a href="m-step.html#cb54-31" tabindex="-1"></a>  <span class="do">## colnames(resid_mat) = c(&quot;primresid&quot;, &quot;primerr&quot;, &quot;dualresid&quot;, &quot;dualerr&quot;)</span></span>
-<span id="cb54-32"><a href="m-step.html#cb54-32" tabindex="-1"></a>  resid_mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> <span class="fu">ceiling</span>(niter<span class="sc">/</span><span class="dv">5</span>), <span class="at">ncol =</span> <span class="dv">6</span>)</span>
-<span id="cb54-33"><a href="m-step.html#cb54-33" tabindex="-1"></a>  <span class="fu">colnames</span>(resid_mat) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;prim1&quot;</span>, <span class="st">&quot;prim2&quot;</span>, <span class="st">&quot;primresid&quot;</span>, <span class="st">&quot;primerr&quot;</span>, <span class="st">&quot;dualresid&quot;</span>, <span class="st">&quot;dualerr&quot;</span>)</span>
-<span id="cb54-34"><a href="m-step.html#cb54-34" tabindex="-1"></a>  rhofac <span class="ot">=</span> rho <span class="sc">/</span> rhoinit </span>
-<span id="cb54-35"><a href="m-step.html#cb54-35" tabindex="-1"></a></span>
-<span id="cb54-36"><a href="m-step.html#cb54-36" tabindex="-1"></a>  <span class="do">## Main inner LA-ADMM loop</span></span>
-<span id="cb54-37"><a href="m-step.html#cb54-37" tabindex="-1"></a>  converge <span class="ot">=</span> <span class="cn">FALSE</span> </span>
-<span id="cb54-38"><a href="m-step.html#cb54-38" tabindex="-1"></a>  start.time <span class="ot">=</span> <span class="fu">Sys.time</span>()</span>
-<span id="cb54-39"><a href="m-step.html#cb54-39" tabindex="-1"></a>  Zlist <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb54-40"><a href="m-step.html#cb54-40" tabindex="-1"></a></span>
-<span id="cb54-41"><a href="m-step.html#cb54-41" tabindex="-1"></a>  <span class="do">## This doesn&#39;t change over iterations</span></span>
-<span id="cb54-42"><a href="m-step.html#cb54-42" tabindex="-1"></a>  schurB <span class="ot">=</span> <a href='m-step.html#myschur'>myschur</a>(schurB<span class="sc">$</span>orig <span class="sc">*</span> rhofac) <span class="do">## In flowmix, this is done on A. Here, it&#39;s done on B (in AX + XB + C = 0).</span></span>
-<span id="cb54-43"><a href="m-step.html#cb54-43" tabindex="-1"></a>  TA <span class="ot">=</span> schurA<span class="sc">$</span>T <span class="do">##* rhofac</span></span>
-<span id="cb54-44"><a href="m-step.html#cb54-44" tabindex="-1"></a>  TB <span class="ot">=</span> schurB<span class="sc">$</span>T</span>
-<span id="cb54-45"><a href="m-step.html#cb54-45" tabindex="-1"></a>  UA <span class="ot">=</span> schurA<span class="sc">$</span>Q</span>
-<span id="cb54-46"><a href="m-step.html#cb54-46" tabindex="-1"></a>  UB <span class="ot">=</span> schurB<span class="sc">$</span>Q</span>
-<span id="cb54-47"><a href="m-step.html#cb54-47" tabindex="-1"></a>  tUA <span class="ot">=</span> schurA<span class="sc">$</span>tQ</span>
-<span id="cb54-48"><a href="m-step.html#cb54-48" tabindex="-1"></a>  tUB <span class="ot">=</span> schurB<span class="sc">$</span>tQ</span>
-<span id="cb54-49"><a href="m-step.html#cb54-49" tabindex="-1"></a></span>
-<span id="cb54-50"><a href="m-step.html#cb54-50" tabindex="-1"></a>  <span class="do">## This also doesn&#39;t change over iterations</span></span>
-<span id="cb54-51"><a href="m-step.html#cb54-51" tabindex="-1"></a>  C1 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="at">FUN =</span> <span class="cf">function</span>(tt){</span>
-<span id="cb54-52"><a href="m-step.html#cb54-52" tabindex="-1"></a>      multmat <span class="ot">&lt;-</span> <span class="fu">apply</span>(y[[tt]], <span class="at">FUN =</span> <span class="cf">function</span>(yy) yy <span class="sc">*</span> resp[[tt]], <span class="at">MARGIN =</span> <span class="dv">2</span>)</span>
-<span id="cb54-53"><a href="m-step.html#cb54-53" tabindex="-1"></a>      sigmainv <span class="sc">%*%</span> <span class="fu">colSums</span>(multmat)</span>
-<span id="cb54-54"><a href="m-step.html#cb54-54" tabindex="-1"></a>    }))</span>
-<span id="cb54-55"><a href="m-step.html#cb54-55" tabindex="-1"></a></span>
-<span id="cb54-56"><a href="m-step.html#cb54-56" tabindex="-1"></a></span>
-<span id="cb54-57"><a href="m-step.html#cb54-57" tabindex="-1"></a>  <span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>niter){</span>
-<span id="cb54-58"><a href="m-step.html#cb54-58" tabindex="-1"></a>    syl_C <span class="ot">&lt;-</span> <a href='m-step.html#get_C_mat'>get_C_mat</a>(<span class="at">C1 =</span> C1, <span class="at">resp_sum =</span> resp_sum, <span class="at">TT =</span> TT, <span class="at">dimdat =</span> dimdat,</span>
-<span id="cb54-59"><a href="m-step.html#cb54-59" tabindex="-1"></a>                       <span class="at">Sigma_inv =</span> sigmainv, <span class="at">N =</span> N, <span class="at">Dl =</span> Dl, <span class="at">rho =</span> rho,</span>
-<span id="cb54-60"><a href="m-step.html#cb54-60" tabindex="-1"></a>                       <span class="at">z =</span> z, <span class="at">w =</span> w, <span class="at">uz =</span> uz, <span class="at">uw =</span> uw, <span class="at">l=</span>l)</span>
-<span id="cb54-61"><a href="m-step.html#cb54-61" tabindex="-1"></a>    FF <span class="ot">=</span>  (<span class="sc">-</span><span class="dv">1</span>) <span class="sc">*</span> tUA <span class="sc">%*%</span> syl_C <span class="sc">%*%</span> UB</span>
-<span id="cb54-62"><a href="m-step.html#cb54-62" tabindex="-1"></a>    mu <span class="ot">=</span> UA <span class="sc">%*%</span> <span class="fu">matrix_function_solve_triangular_sylvester_barebonesC2</span>(TA, TB, FF) <span class="sc">%*%</span> tUB</span>
-<span id="cb54-63"><a href="m-step.html#cb54-63" tabindex="-1"></a>    mu <span class="ot">=</span> <span class="fu">t</span>(mu)</span>
-<span id="cb54-64"><a href="m-step.html#cb54-64" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">nrow</span>(mu) <span class="sc">==</span> TT)</span>
-<span id="cb54-65"><a href="m-step.html#cb54-65" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">ncol</span>(mu) <span class="sc">==</span> dimdat)</span>
-<span id="cb54-66"><a href="m-step.html#cb54-66" tabindex="-1"></a></span>
-<span id="cb54-67"><a href="m-step.html#cb54-67" tabindex="-1"></a>    <span class="do">## if(warmstart &amp; iter == 1){</span></span>
-<span id="cb54-68"><a href="m-step.html#cb54-68" tabindex="-1"></a>    <span class="do">##   print(&quot;warmed up mu!&quot;)</span></span>
-<span id="cb54-69"><a href="m-step.html#cb54-69" tabindex="-1"></a>    <span class="do">##   mu = mu.warm</span></span>
-<span id="cb54-70"><a href="m-step.html#cb54-70" tabindex="-1"></a>    <span class="do">## }</span></span>
-<span id="cb54-71"><a href="m-step.html#cb54-71" tabindex="-1"></a></span>
-<span id="cb54-72"><a href="m-step.html#cb54-72" tabindex="-1"></a>    z <span class="ot">&lt;-</span> <a href='m-step.html#Z_update'>Z_update</a>(mu <span class="sc">-</span> <span class="fu">colMeans</span>(mu), <span class="at">Uz =</span> uz, <span class="at">C =</span> maxdev, <span class="at">rho =</span> rho)</span>
+<span id="cb54-23"><a href="m-step.html#cb54-23" tabindex="-1"></a>                          first_iter,<span class="do">## Not used </span></span>
+<span id="cb54-24"><a href="m-step.html#cb54-24" tabindex="-1"></a>                          iter,</span>
+<span id="cb54-25"><a href="m-step.html#cb54-25" tabindex="-1"></a>                          outer_iter,</span>
+<span id="cb54-26"><a href="m-step.html#cb54-26" tabindex="-1"></a>                          local_adapt,</span>
+<span id="cb54-27"><a href="m-step.html#cb54-27" tabindex="-1"></a>                          sigma,</span>
+<span id="cb54-28"><a href="m-step.html#cb54-28" tabindex="-1"></a>                          sigma_eig_by_clust){</span>
+<span id="cb54-29"><a href="m-step.html#cb54-29" tabindex="-1"></a></span>
+<span id="cb54-30"><a href="m-step.html#cb54-30" tabindex="-1"></a>  <span class="do">## Initialize the variables </span><span class="al">###</span></span>
+<span id="cb54-31"><a href="m-step.html#cb54-31" tabindex="-1"></a>  <span class="do">## resid_mat = matrix(NA, nrow = ceiling(niter/5), ncol = 4)</span></span>
+<span id="cb54-32"><a href="m-step.html#cb54-32" tabindex="-1"></a>  <span class="do">## colnames(resid_mat) = c(&quot;primresid&quot;, &quot;primerr&quot;, &quot;dualresid&quot;, &quot;dualerr&quot;)</span></span>
+<span id="cb54-33"><a href="m-step.html#cb54-33" tabindex="-1"></a>  resid_mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> <span class="fu">ceiling</span>(niter<span class="sc">/</span><span class="dv">5</span>), <span class="at">ncol =</span> <span class="dv">6</span>)</span>
+<span id="cb54-34"><a href="m-step.html#cb54-34" tabindex="-1"></a>  <span class="fu">colnames</span>(resid_mat) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;prim1&quot;</span>, <span class="st">&quot;prim2&quot;</span>, <span class="st">&quot;primresid&quot;</span>, <span class="st">&quot;primerr&quot;</span>, <span class="st">&quot;dualresid&quot;</span>, <span class="st">&quot;dualerr&quot;</span>)</span>
+<span id="cb54-35"><a href="m-step.html#cb54-35" tabindex="-1"></a>  rhofac <span class="ot">=</span> rho <span class="sc">/</span> rhoinit </span>
+<span id="cb54-36"><a href="m-step.html#cb54-36" tabindex="-1"></a></span>
+<span id="cb54-37"><a href="m-step.html#cb54-37" tabindex="-1"></a></span>
+<span id="cb54-38"><a href="m-step.html#cb54-38" tabindex="-1"></a>  <span class="do">## Main inner LA-ADMM loop</span></span>
+<span id="cb54-39"><a href="m-step.html#cb54-39" tabindex="-1"></a>  converge <span class="ot">=</span> <span class="cn">FALSE</span> </span>
+<span id="cb54-40"><a href="m-step.html#cb54-40" tabindex="-1"></a>  start.time <span class="ot">=</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb54-41"><a href="m-step.html#cb54-41" tabindex="-1"></a>  Zlist <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb54-42"><a href="m-step.html#cb54-42" tabindex="-1"></a></span>
+<span id="cb54-43"><a href="m-step.html#cb54-43" tabindex="-1"></a>  <span class="do">## This doesn&#39;t change over iterations</span></span>
+<span id="cb54-44"><a href="m-step.html#cb54-44" tabindex="-1"></a>  schurB <span class="ot">=</span> <a href='m-step.html#myschur'>myschur</a>(schurB<span class="sc">$</span>orig <span class="sc">*</span> rhofac) <span class="do">## In flowmix, this is done on A. Here, it&#39;s done on B (in AX + XB + C = 0).</span></span>
+<span id="cb54-45"><a href="m-step.html#cb54-45" tabindex="-1"></a>  TA <span class="ot">=</span> schurA<span class="sc">$</span>T <span class="do">##* rhofac</span></span>
+<span id="cb54-46"><a href="m-step.html#cb54-46" tabindex="-1"></a>  TB <span class="ot">=</span> schurB<span class="sc">$</span>T</span>
+<span id="cb54-47"><a href="m-step.html#cb54-47" tabindex="-1"></a>  UA <span class="ot">=</span> schurA<span class="sc">$</span>Q</span>
+<span id="cb54-48"><a href="m-step.html#cb54-48" tabindex="-1"></a>  UB <span class="ot">=</span> schurB<span class="sc">$</span>Q</span>
+<span id="cb54-49"><a href="m-step.html#cb54-49" tabindex="-1"></a>  tUA <span class="ot">=</span> schurA<span class="sc">$</span>tQ</span>
+<span id="cb54-50"><a href="m-step.html#cb54-50" tabindex="-1"></a>  tUB <span class="ot">=</span> schurB<span class="sc">$</span>tQ</span>
+<span id="cb54-51"><a href="m-step.html#cb54-51" tabindex="-1"></a></span>
+<span id="cb54-52"><a href="m-step.html#cb54-52" tabindex="-1"></a>  <span class="do">## This also doesn&#39;t change over iterations</span></span>
+<span id="cb54-53"><a href="m-step.html#cb54-53" tabindex="-1"></a>  C1 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="at">FUN =</span> <span class="cf">function</span>(tt){</span>
+<span id="cb54-54"><a href="m-step.html#cb54-54" tabindex="-1"></a>      multmat <span class="ot">&lt;-</span> <span class="fu">apply</span>(y[[tt]], <span class="at">FUN =</span> <span class="cf">function</span>(yy) yy <span class="sc">*</span> resp[[tt]], <span class="at">MARGIN =</span> <span class="dv">2</span>)</span>
+<span id="cb54-55"><a href="m-step.html#cb54-55" tabindex="-1"></a>      sigmainv <span class="sc">%*%</span> <span class="fu">colSums</span>(multmat)</span>
+<span id="cb54-56"><a href="m-step.html#cb54-56" tabindex="-1"></a>    }))</span>
+<span id="cb54-57"><a href="m-step.html#cb54-57" tabindex="-1"></a></span>
+<span id="cb54-58"><a href="m-step.html#cb54-58" tabindex="-1"></a></span>
+<span id="cb54-59"><a href="m-step.html#cb54-59" tabindex="-1"></a>  <span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>niter){</span>
+<span id="cb54-60"><a href="m-step.html#cb54-60" tabindex="-1"></a>    syl_C <span class="ot">&lt;-</span> <a href='m-step.html#get_C_mat'>get_C_mat</a>(<span class="at">C1 =</span> C1, <span class="at">resp_sum =</span> resp_sum, <span class="at">TT =</span> TT, <span class="at">dimdat =</span> dimdat,</span>
+<span id="cb54-61"><a href="m-step.html#cb54-61" tabindex="-1"></a>                       <span class="at">Sigma_inv =</span> sigmainv, <span class="at">N =</span> N, <span class="at">Dl =</span> Dl, <span class="at">rho =</span> rho,</span>
+<span id="cb54-62"><a href="m-step.html#cb54-62" tabindex="-1"></a>                       <span class="at">z =</span> z, <span class="at">w =</span> w, <span class="at">uz =</span> uz, <span class="at">uw =</span> uw, <span class="at">l=</span>l)</span>
+<span id="cb54-63"><a href="m-step.html#cb54-63" tabindex="-1"></a>    FF <span class="ot">=</span>  (<span class="sc">-</span><span class="dv">1</span>) <span class="sc">*</span> tUA <span class="sc">%*%</span> syl_C <span class="sc">%*%</span> UB</span>
+<span id="cb54-64"><a href="m-step.html#cb54-64" tabindex="-1"></a>    mu <span class="ot">=</span> UA <span class="sc">%*%</span> <span class="fu">matrix_function_solve_triangular_sylvester_barebonesC2</span>(TA, TB, FF) <span class="sc">%*%</span> tUB</span>
+<span id="cb54-65"><a href="m-step.html#cb54-65" tabindex="-1"></a>    mu <span class="ot">=</span> <span class="fu">t</span>(mu)</span>
+<span id="cb54-66"><a href="m-step.html#cb54-66" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">nrow</span>(mu) <span class="sc">==</span> TT)</span>
+<span id="cb54-67"><a href="m-step.html#cb54-67" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">ncol</span>(mu) <span class="sc">==</span> dimdat)</span>
+<span id="cb54-68"><a href="m-step.html#cb54-68" tabindex="-1"></a></span>
+<span id="cb54-69"><a href="m-step.html#cb54-69" tabindex="-1"></a>    <span class="do">## if(warmstart &amp; iter == 1){</span></span>
+<span id="cb54-70"><a href="m-step.html#cb54-70" tabindex="-1"></a>    <span class="do">##   print(&quot;warmed up mu!&quot;)</span></span>
+<span id="cb54-71"><a href="m-step.html#cb54-71" tabindex="-1"></a>    <span class="do">##   mu = mu.warm</span></span>
+<span id="cb54-72"><a href="m-step.html#cb54-72" tabindex="-1"></a>    <span class="do">## }</span></span>
 <span id="cb54-73"><a href="m-step.html#cb54-73" tabindex="-1"></a></span>
-<span id="cb54-74"><a href="m-step.html#cb54-74" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">any</span>(<span class="fu">abs</span>(mu)<span class="sc">&gt;</span><span class="fl">1E2</span>)){</span>
-<span id="cb54-75"><a href="m-step.html#cb54-75" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">&quot;mu is blowing up!&quot;</span>)</span>
-<span id="cb54-76"><a href="m-step.html#cb54-76" tabindex="-1"></a>      <span class="do">## break</span></span>
-<span id="cb54-77"><a href="m-step.html#cb54-77" tabindex="-1"></a>    }</span>
-<span id="cb54-78"><a href="m-step.html#cb54-78" tabindex="-1"></a>    wlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>dimdat, <span class="cf">function</span>(j){</span>
-<span id="cb54-79"><a href="m-step.html#cb54-79" tabindex="-1"></a>      <a href='m-step.html#W_update_fused'>W_update_fused</a>(<span class="at">l =</span> l, <span class="at">TT =</span> TT, <span class="at">mu =</span> mu[, j, <span class="at">drop =</span> <span class="cn">TRUE</span>],</span>
-<span id="cb54-80"><a href="m-step.html#cb54-80" tabindex="-1"></a>                     <span class="at">rho =</span> rho, <span class="at">lambda =</span> lambda,</span>
-<span id="cb54-81"><a href="m-step.html#cb54-81" tabindex="-1"></a>                     <span class="at">uw =</span> uw[,j,<span class="at">drop=</span><span class="cn">TRUE</span>],</span>
-<span id="cb54-82"><a href="m-step.html#cb54-82" tabindex="-1"></a>                     <span class="at">Dl =</span> Dl)})</span>
-<span id="cb54-83"><a href="m-step.html#cb54-83" tabindex="-1"></a>    w <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, wlist)</span>
-<span id="cb54-84"><a href="m-step.html#cb54-84" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">nrow</span>(w) <span class="sc">==</span> TT<span class="sc">-</span>l)</span>
-<span id="cb54-85"><a href="m-step.html#cb54-85" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">ncol</span>(w) <span class="sc">==</span> dimdat)</span>
-<span id="cb54-86"><a href="m-step.html#cb54-86" tabindex="-1"></a></span>
-<span id="cb54-87"><a href="m-step.html#cb54-87" tabindex="-1"></a></span>
-<span id="cb54-88"><a href="m-step.html#cb54-88" tabindex="-1"></a>    uz <span class="ot">=</span> <a href='m-step.html#U_update_Z'>U_update_Z</a>(uz, rho, mu, z, TT)</span>
+<span id="cb54-74"><a href="m-step.html#cb54-74" tabindex="-1"></a>    z <span class="ot">&lt;-</span> <a href='m-step.html#Z_update'>Z_update</a>(mu <span class="sc">-</span> <span class="fu">colMeans</span>(mu), <span class="at">Uz =</span> uz, <span class="at">C =</span> maxdev, <span class="at">rho =</span> rho)</span>
+<span id="cb54-75"><a href="m-step.html#cb54-75" tabindex="-1"></a></span>
+<span id="cb54-76"><a href="m-step.html#cb54-76" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">any</span>(<span class="fu">abs</span>(mu)<span class="sc">&gt;</span><span class="fl">1E2</span>)){</span>
+<span id="cb54-77"><a href="m-step.html#cb54-77" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">&quot;mu is blowing up!&quot;</span>)</span>
+<span id="cb54-78"><a href="m-step.html#cb54-78" tabindex="-1"></a>      <span class="do">## break</span></span>
+<span id="cb54-79"><a href="m-step.html#cb54-79" tabindex="-1"></a>    }</span>
+<span id="cb54-80"><a href="m-step.html#cb54-80" tabindex="-1"></a>    wlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>dimdat, <span class="cf">function</span>(j){</span>
+<span id="cb54-81"><a href="m-step.html#cb54-81" tabindex="-1"></a>      <a href='m-step.html#W_update_fused'>W_update_fused</a>(<span class="at">l =</span> l, <span class="at">TT =</span> TT, <span class="at">mu =</span> mu[, j, <span class="at">drop =</span> <span class="cn">TRUE</span>],</span>
+<span id="cb54-82"><a href="m-step.html#cb54-82" tabindex="-1"></a>                     <span class="at">rho =</span> rho, <span class="at">lambda =</span> lambda,</span>
+<span id="cb54-83"><a href="m-step.html#cb54-83" tabindex="-1"></a>                     <span class="at">uw =</span> uw[,j,<span class="at">drop=</span><span class="cn">TRUE</span>],</span>
+<span id="cb54-84"><a href="m-step.html#cb54-84" tabindex="-1"></a>                     <span class="at">Dl =</span> Dl)})</span>
+<span id="cb54-85"><a href="m-step.html#cb54-85" tabindex="-1"></a>    w <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, wlist)</span>
+<span id="cb54-86"><a href="m-step.html#cb54-86" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">nrow</span>(w) <span class="sc">==</span> TT<span class="sc">-</span>l)</span>
+<span id="cb54-87"><a href="m-step.html#cb54-87" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">ncol</span>(w) <span class="sc">==</span> dimdat)</span>
+<span id="cb54-88"><a href="m-step.html#cb54-88" tabindex="-1"></a></span>
 <span id="cb54-89"><a href="m-step.html#cb54-89" tabindex="-1"></a></span>
-<span id="cb54-90"><a href="m-step.html#cb54-90" tabindex="-1"></a></span>
-<span id="cb54-91"><a href="m-step.html#cb54-91" tabindex="-1"></a>    <span class="do">## uw = <a href='m-step.html#U_update_W'>U_update_W</a>(uw, rho, mu, w, l, TT)</span></span>
-<span id="cb54-92"><a href="m-step.html#cb54-92" tabindex="-1"></a>    uw <span class="ot">=</span> <a href='m-step.html#U_update_W'>U_update_W</a>(uw, rho, mu, w, l, Dl, TT)</span>
-<span id="cb54-93"><a href="m-step.html#cb54-93" tabindex="-1"></a></span>
-<span id="cb54-94"><a href="m-step.html#cb54-94" tabindex="-1"></a></span>
-<span id="cb54-95"><a href="m-step.html#cb54-95" tabindex="-1"></a>    <span class="do">## Check convergence</span></span>
-<span id="cb54-96"><a href="m-step.html#cb54-96" tabindex="-1"></a>    <span class="cf">if</span>( iter <span class="sc">&gt;</span> <span class="dv">1</span>  <span class="sc">&amp;</span> iter <span class="sc">%%</span> <span class="dv">5</span> <span class="sc">==</span> <span class="dv">0</span>){<span class="do">## &amp; !local_adapt){</span></span>
-<span id="cb54-97"><a href="m-step.html#cb54-97" tabindex="-1"></a></span>
-<span id="cb54-98"><a href="m-step.html#cb54-98" tabindex="-1"></a>      <span class="do">## Calculate convergence criterion</span></span>
-<span id="cb54-99"><a href="m-step.html#cb54-99" tabindex="-1"></a>      obj <span class="ot">=</span> <a href='m-step.html#converge'>converge</a>(mu, rho,</span>
-<span id="cb54-100"><a href="m-step.html#cb54-100" tabindex="-1"></a>                     w, z,</span>
-<span id="cb54-101"><a href="m-step.html#cb54-101" tabindex="-1"></a>                     w_prev, z_prev,</span>
-<span id="cb54-102"><a href="m-step.html#cb54-102" tabindex="-1"></a>                     uw, uz,</span>
-<span id="cb54-103"><a href="m-step.html#cb54-103" tabindex="-1"></a>                     Dl, tDl, <span class="at">err_rel =</span> err_rel, <span class="at">err_abs =</span> err_abs)</span>
-<span id="cb54-104"><a href="m-step.html#cb54-104" tabindex="-1"></a></span>
-<span id="cb54-105"><a href="m-step.html#cb54-105" tabindex="-1"></a>      jj <span class="ot">=</span> (iter<span class="sc">/</span> <span class="dv">5</span>)</span>
-<span id="cb54-106"><a href="m-step.html#cb54-106" tabindex="-1"></a>      resid_mat[jj,] <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb54-107"><a href="m-step.html#cb54-107" tabindex="-1"></a>          <span class="fu">norm</span>(obj<span class="sc">$</span>primal_resid1, <span class="st">&quot;F&quot;</span>), <span class="do">## Temp</span></span>
-<span id="cb54-108"><a href="m-step.html#cb54-108" tabindex="-1"></a>          <span class="fu">norm</span>(obj<span class="sc">$</span>primal_resid2, <span class="st">&quot;F&quot;</span>), <span class="do">## Temp</span></span>
-<span id="cb54-109"><a href="m-step.html#cb54-109" tabindex="-1"></a>          <span class="fu">norm</span>(obj<span class="sc">$</span>primal_resid, <span class="st">&quot;F&quot;</span>),</span>
-<span id="cb54-110"><a href="m-step.html#cb54-110" tabindex="-1"></a>                         obj<span class="sc">$</span>primal_err,</span>
-<span id="cb54-111"><a href="m-step.html#cb54-111" tabindex="-1"></a>                         <span class="fu">norm</span>(obj<span class="sc">$</span>dual_resid,<span class="st">&quot;F&quot;</span>),</span>
-<span id="cb54-112"><a href="m-step.html#cb54-112" tabindex="-1"></a>                         obj<span class="sc">$</span>dual_err)</span>
-<span id="cb54-113"><a href="m-step.html#cb54-113" tabindex="-1"></a></span>
-<span id="cb54-114"><a href="m-step.html#cb54-114" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">is.na</span>(obj<span class="sc">$</span>converge)){</span>
-<span id="cb54-115"><a href="m-step.html#cb54-115" tabindex="-1"></a>        obj<span class="sc">$</span>converge <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
-<span id="cb54-116"><a href="m-step.html#cb54-116" tabindex="-1"></a>        <span class="fu">warning</span>(<span class="st">&quot;Convergence was NA&quot;</span>)</span>
-<span id="cb54-117"><a href="m-step.html#cb54-117" tabindex="-1"></a>      }</span>
-<span id="cb54-118"><a href="m-step.html#cb54-118" tabindex="-1"></a>      <span class="cf">if</span>(obj<span class="sc">$</span>converge){</span>
-<span id="cb54-119"><a href="m-step.html#cb54-119" tabindex="-1"></a>        converge <span class="ot">=</span> <span class="cn">TRUE</span></span>
-<span id="cb54-120"><a href="m-step.html#cb54-120" tabindex="-1"></a>        <span class="cf">break</span></span>
-<span id="cb54-121"><a href="m-step.html#cb54-121" tabindex="-1"></a>      }</span>
-<span id="cb54-122"><a href="m-step.html#cb54-122" tabindex="-1"></a>    }</span>
-<span id="cb54-123"><a href="m-step.html#cb54-123" tabindex="-1"></a>    w_prev <span class="ot">=</span> w</span>
-<span id="cb54-124"><a href="m-step.html#cb54-124" tabindex="-1"></a>    z_prev <span class="ot">=</span> z</span>
-<span id="cb54-125"><a href="m-step.html#cb54-125" tabindex="-1"></a>  }</span>
-<span id="cb54-126"><a href="m-step.html#cb54-126" tabindex="-1"></a></span>
-<span id="cb54-127"><a href="m-step.html#cb54-127" tabindex="-1"></a>  <span class="cf">if</span>(<span class="cn">FALSE</span>){</span>
-<span id="cb54-128"><a href="m-step.html#cb54-128" tabindex="-1"></a>    <span class="do">## Calculate optimization objective values for this cluster.</span></span>
-<span id="cb54-129"><a href="m-step.html#cb54-129" tabindex="-1"></a>    obj.value <span class="ot">&lt;-</span> <a href='m-step.html#objective_per_cluster'>objective_per_cluster</a>(<span class="at">y =</span> y, <span class="at">mu =</span> mu, <span class="at">resp =</span> resp,</span>
-<span id="cb54-130"><a href="m-step.html#cb54-130" tabindex="-1"></a>                                       <span class="at">Sigma_inv =</span> sigmainv, <span class="at">TT =</span> TT,</span>
-<span id="cb54-131"><a href="m-step.html#cb54-131" tabindex="-1"></a>                                       <span class="at">d =</span> dimdat, <span class="at">Dlp1 =</span> Dlp1, <span class="at">Dl =</span> Dl, <span class="at">l =</span> l,</span>
-<span id="cb54-132"><a href="m-step.html#cb54-132" tabindex="-1"></a>                                       <span class="at">maxdev =</span> maxdev, <span class="at">lambda =</span> lambda,</span>
-<span id="cb54-133"><a href="m-step.html#cb54-133" tabindex="-1"></a>                                       <span class="at">rho =</span> rho, <span class="at">N =</span> N)</span>
-<span id="cb54-134"><a href="m-step.html#cb54-134" tabindex="-1"></a>    <span class="do">## This is very expensive to do within each ADMM iteration, so it&#39;s commented out for now.</span></span>
-<span id="cb54-135"><a href="m-step.html#cb54-135" tabindex="-1"></a>  }</span>
-<span id="cb54-136"><a href="m-step.html#cb54-136" tabindex="-1"></a>  obj.value <span class="ot">=</span> <span class="cn">NA</span></span>
-<span id="cb54-137"><a href="m-step.html#cb54-137" tabindex="-1"></a></span>
-<span id="cb54-138"><a href="m-step.html#cb54-138" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">mu =</span> mu,</span>
-<span id="cb54-139"><a href="m-step.html#cb54-139" tabindex="-1"></a>              <span class="at">resid_mat =</span> resid_mat,</span>
-<span id="cb54-140"><a href="m-step.html#cb54-140" tabindex="-1"></a>              <span class="at">converge =</span> converge,</span>
-<span id="cb54-141"><a href="m-step.html#cb54-141" tabindex="-1"></a>              <span class="do">## Other variables to return.</span></span>
-<span id="cb54-142"><a href="m-step.html#cb54-142" tabindex="-1"></a>              <span class="at">Z =</span> z,</span>
-<span id="cb54-143"><a href="m-step.html#cb54-143" tabindex="-1"></a>              <span class="at">W =</span> w,</span>
-<span id="cb54-144"><a href="m-step.html#cb54-144" tabindex="-1"></a>              <span class="at">uz =</span> uz,</span>
-<span id="cb54-145"><a href="m-step.html#cb54-145" tabindex="-1"></a>              <span class="at">uw =</span> uw,</span>
-<span id="cb54-146"><a href="m-step.html#cb54-146" tabindex="-1"></a>              <span class="at">inner.iter =</span> iter,</span>
-<span id="cb54-147"><a href="m-step.html#cb54-147" tabindex="-1"></a>              <span class="at">single_admm_objective =</span> obj.value))</span>
-<span id="cb54-148"><a href="m-step.html#cb54-148" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb54-90"><a href="m-step.html#cb54-90" tabindex="-1"></a>    uz <span class="ot">=</span> <a href='m-step.html#U_update_Z'>U_update_Z</a>(uz, rho, mu, z, TT)</span>
+<span id="cb54-91"><a href="m-step.html#cb54-91" tabindex="-1"></a></span>
+<span id="cb54-92"><a href="m-step.html#cb54-92" tabindex="-1"></a></span>
+<span id="cb54-93"><a href="m-step.html#cb54-93" tabindex="-1"></a>    <span class="do">## uw = <a href='m-step.html#U_update_W'>U_update_W</a>(uw, rho, mu, w, l, TT)</span></span>
+<span id="cb54-94"><a href="m-step.html#cb54-94" tabindex="-1"></a>    uw <span class="ot">=</span> <a href='m-step.html#U_update_W'>U_update_W</a>(uw, rho, mu, w, l, Dl, TT)</span>
+<span id="cb54-95"><a href="m-step.html#cb54-95" tabindex="-1"></a></span>
+<span id="cb54-96"><a href="m-step.html#cb54-96" tabindex="-1"></a></span>
+<span id="cb54-97"><a href="m-step.html#cb54-97" tabindex="-1"></a>    <span class="do">## Check convergence</span></span>
+<span id="cb54-98"><a href="m-step.html#cb54-98" tabindex="-1"></a>    <span class="cf">if</span>( iter <span class="sc">&gt;</span> <span class="dv">1</span>  <span class="sc">&amp;</span> iter <span class="sc">%%</span> <span class="dv">5</span> <span class="sc">==</span> <span class="dv">0</span>){<span class="do">## &amp; !local_adapt){</span></span>
+<span id="cb54-99"><a href="m-step.html#cb54-99" tabindex="-1"></a></span>
+<span id="cb54-100"><a href="m-step.html#cb54-100" tabindex="-1"></a>      <span class="do">## Calculate convergence criterion</span></span>
+<span id="cb54-101"><a href="m-step.html#cb54-101" tabindex="-1"></a>      obj <span class="ot">=</span> <a href='m-step.html#converge'>converge</a>(mu, rho,</span>
+<span id="cb54-102"><a href="m-step.html#cb54-102" tabindex="-1"></a>                     w, z,</span>
+<span id="cb54-103"><a href="m-step.html#cb54-103" tabindex="-1"></a>                     w_prev, z_prev,</span>
+<span id="cb54-104"><a href="m-step.html#cb54-104" tabindex="-1"></a>                     uw, uz,</span>
+<span id="cb54-105"><a href="m-step.html#cb54-105" tabindex="-1"></a>                     Dl, tDl, <span class="at">err_rel =</span> err_rel, <span class="at">err_abs =</span> err_abs)</span>
+<span id="cb54-106"><a href="m-step.html#cb54-106" tabindex="-1"></a></span>
+<span id="cb54-107"><a href="m-step.html#cb54-107" tabindex="-1"></a>      jj <span class="ot">=</span> (iter<span class="sc">/</span> <span class="dv">5</span>)</span>
+<span id="cb54-108"><a href="m-step.html#cb54-108" tabindex="-1"></a>      resid_mat[jj,] <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb54-109"><a href="m-step.html#cb54-109" tabindex="-1"></a>          <span class="fu">norm</span>(obj<span class="sc">$</span>primal_resid1, <span class="st">&quot;F&quot;</span>), <span class="do">## Temp</span></span>
+<span id="cb54-110"><a href="m-step.html#cb54-110" tabindex="-1"></a>          <span class="fu">norm</span>(obj<span class="sc">$</span>primal_resid2, <span class="st">&quot;F&quot;</span>), <span class="do">## Temp</span></span>
+<span id="cb54-111"><a href="m-step.html#cb54-111" tabindex="-1"></a>          <span class="fu">norm</span>(obj<span class="sc">$</span>primal_resid, <span class="st">&quot;F&quot;</span>),</span>
+<span id="cb54-112"><a href="m-step.html#cb54-112" tabindex="-1"></a>                         obj<span class="sc">$</span>primal_err,</span>
+<span id="cb54-113"><a href="m-step.html#cb54-113" tabindex="-1"></a>                         <span class="fu">norm</span>(obj<span class="sc">$</span>dual_resid,<span class="st">&quot;F&quot;</span>),</span>
+<span id="cb54-114"><a href="m-step.html#cb54-114" tabindex="-1"></a>                         obj<span class="sc">$</span>dual_err)</span>
+<span id="cb54-115"><a href="m-step.html#cb54-115" tabindex="-1"></a></span>
+<span id="cb54-116"><a href="m-step.html#cb54-116" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">is.na</span>(obj<span class="sc">$</span>converge)){</span>
+<span id="cb54-117"><a href="m-step.html#cb54-117" tabindex="-1"></a>        obj<span class="sc">$</span>converge <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb54-118"><a href="m-step.html#cb54-118" tabindex="-1"></a>        <span class="fu">warning</span>(<span class="st">&quot;Convergence was NA&quot;</span>)</span>
+<span id="cb54-119"><a href="m-step.html#cb54-119" tabindex="-1"></a>      }</span>
+<span id="cb54-120"><a href="m-step.html#cb54-120" tabindex="-1"></a>      <span class="cf">if</span>(obj<span class="sc">$</span>converge){</span>
+<span id="cb54-121"><a href="m-step.html#cb54-121" tabindex="-1"></a>        converge <span class="ot">=</span> <span class="cn">TRUE</span></span>
+<span id="cb54-122"><a href="m-step.html#cb54-122" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb54-123"><a href="m-step.html#cb54-123" tabindex="-1"></a>      }</span>
+<span id="cb54-124"><a href="m-step.html#cb54-124" tabindex="-1"></a>    }</span>
+<span id="cb54-125"><a href="m-step.html#cb54-125" tabindex="-1"></a>    w_prev <span class="ot">=</span> w</span>
+<span id="cb54-126"><a href="m-step.html#cb54-126" tabindex="-1"></a>    z_prev <span class="ot">=</span> z</span>
+<span id="cb54-127"><a href="m-step.html#cb54-127" tabindex="-1"></a>  }</span>
+<span id="cb54-128"><a href="m-step.html#cb54-128" tabindex="-1"></a></span>
+<span id="cb54-129"><a href="m-step.html#cb54-129" tabindex="-1"></a>  <span class="cf">if</span>(<span class="cn">FALSE</span>){</span>
+<span id="cb54-130"><a href="m-step.html#cb54-130" tabindex="-1"></a>    <span class="do">## Calculate optimization objective values for this cluster.</span></span>
+<span id="cb54-131"><a href="m-step.html#cb54-131" tabindex="-1"></a>    obj.value <span class="ot">&lt;-</span> <a href='m-step.html#objective_per_cluster'>objective_per_cluster</a>(<span class="at">y =</span> y, <span class="at">mu =</span> mu, <span class="at">resp =</span> resp,</span>
+<span id="cb54-132"><a href="m-step.html#cb54-132" tabindex="-1"></a>                                       <span class="at">Sigma_inv =</span> sigmainv, <span class="at">TT =</span> TT,</span>
+<span id="cb54-133"><a href="m-step.html#cb54-133" tabindex="-1"></a>                                       <span class="at">d =</span> dimdat, <span class="at">Dlp1 =</span> Dlp1, <span class="at">Dl =</span> Dl, <span class="at">l =</span> l,</span>
+<span id="cb54-134"><a href="m-step.html#cb54-134" tabindex="-1"></a>                                       <span class="at">maxdev =</span> maxdev, <span class="at">lambda =</span> lambda,</span>
+<span id="cb54-135"><a href="m-step.html#cb54-135" tabindex="-1"></a>                                       <span class="at">rho =</span> rho, <span class="at">N =</span> N)</span>
+<span id="cb54-136"><a href="m-step.html#cb54-136" tabindex="-1"></a>    <span class="do">## This is very expensive to do within each ADMM iteration, so it&#39;s commented out for now.</span></span>
+<span id="cb54-137"><a href="m-step.html#cb54-137" tabindex="-1"></a>  }</span>
+<span id="cb54-138"><a href="m-step.html#cb54-138" tabindex="-1"></a>  obj.value <span class="ot">=</span> <span class="cn">NA</span></span>
+<span id="cb54-139"><a href="m-step.html#cb54-139" tabindex="-1"></a></span>
+<span id="cb54-140"><a href="m-step.html#cb54-140" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">mu =</span> mu,</span>
+<span id="cb54-141"><a href="m-step.html#cb54-141" tabindex="-1"></a>              <span class="at">resid_mat =</span> resid_mat,</span>
+<span id="cb54-142"><a href="m-step.html#cb54-142" tabindex="-1"></a>              <span class="at">converge =</span> converge,</span>
+<span id="cb54-143"><a href="m-step.html#cb54-143" tabindex="-1"></a>              <span class="do">## Other variables to return.</span></span>
+<span id="cb54-144"><a href="m-step.html#cb54-144" tabindex="-1"></a>              <span class="at">Z =</span> z,</span>
+<span id="cb54-145"><a href="m-step.html#cb54-145" tabindex="-1"></a>              <span class="at">W =</span> w,</span>
+<span id="cb54-146"><a href="m-step.html#cb54-146" tabindex="-1"></a>              <span class="at">uz =</span> uz,</span>
+<span id="cb54-147"><a href="m-step.html#cb54-147" tabindex="-1"></a>              <span class="at">uw =</span> uw,</span>
+<span id="cb54-148"><a href="m-step.html#cb54-148" tabindex="-1"></a>              <span class="at">inner.iter =</span> iter,</span>
+<span id="cb54-149"><a href="m-step.html#cb54-149" tabindex="-1"></a>              <span class="at">single_admm_objective =</span> obj.value))</span>
+<span id="cb54-150"><a href="m-step.html#cb54-150" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="helpers-for-m-step-mu" class="section level2 hasAnchor" number="8.4">
 <h2><span class="header-section-number">8.4</span> Helpers for M step (<span class="math inline">\(\mu\)</span>)<a href="m-step.html#helpers-for-m-step-mu" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -1430,8 +1434,7 @@ objective value should be the same. Let’s check that.</p>
 <span id="cb67-42"><a href="m-step.html#cb67-42" tabindex="-1"></a>mn_old[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">matlines</span>(<span class="at">lwd =</span> <span class="dv">1</span>, <span class="at">x=</span>x, <span class="at">lty =</span> <span class="dv">1</span>)</span>
 <span id="cb67-43"><a href="m-step.html#cb67-43" tabindex="-1"></a>mn_less_old[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">matlines</span>(<span class="at">lwd =</span> <span class="dv">1</span>, <span class="at">x=</span>x, <span class="at">lty =</span> <span class="dv">2</span>)</span>
 <span id="cb67-44"><a href="m-step.html#cb67-44" tabindex="-1"></a>mn[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">matlines</span>(<span class="at">lwd =</span> <span class="dv">1</span>, <span class="at">x=</span>x, <span class="at">lty =</span> <span class="dv">3</span>)</span>
-<span id="cb67-45"><a href="m-step.html#cb67-45" tabindex="-1"></a></span>
-<span id="cb67-46"><a href="m-step.html#cb67-46" tabindex="-1"></a> </span></code></pre></div>
+<span id="cb67-45"><a href="m-step.html#cb67-45" tabindex="-1"></a> </span></code></pre></div>
 <p>TODO: We just need to bundle this into <code>testthat</code> style tests, and make sure to test several lambda values.</p>
 <p>TODO: maybe do this for unevenly spaced inputs. CVXR needs to take a different D matrix.</p>
 <div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="m-step.html#cb68-1" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;Test the M step of \mu against CVXR&quot;</span>, {})</span></code></pre></div>

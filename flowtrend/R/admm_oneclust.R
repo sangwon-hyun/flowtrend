@@ -22,7 +22,8 @@ admm_oneclust <- function(iclust = 1, niter, y,
                           uz,
                           ## warmstart = FALSE,
                           ## mu.warm = if(!warmstart) NULL,
-                          first_iter,## Not used
+                          first_iter,## Not used 
+                          iter,
                           outer_iter,
                           local_adapt,
                           sigma,
@@ -34,6 +35,7 @@ admm_oneclust <- function(iclust = 1, niter, y,
   resid_mat = matrix(NA, nrow = ceiling(niter/5), ncol = 6)
   colnames(resid_mat) = c("prim1", "prim2", "primresid", "primerr", "dualresid", "dualerr")
   rhofac = rho / rhoinit 
+
 
   ## Main inner LA-ADMM loop
   converge = FALSE 

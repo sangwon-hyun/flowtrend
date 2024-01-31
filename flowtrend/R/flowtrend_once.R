@@ -142,7 +142,8 @@ flowtrend_once <- function(ylist,
                       err_abs = admm_err_abs,
                       local_adapt = admm_local_adapt,
                       local_adapt_niter = admm_local_adapt_niter,
-                      rho_init = rho_init)
+                      rho_init = rho_init,
+                      iter = iter)
                       ## rho_init = (if(iter == 2) rho_init else latest_rho))
     ## latest_rho = res_mu$rho
     mn = res_mu$mns

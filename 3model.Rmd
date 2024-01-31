@@ -919,7 +919,8 @@ Mstep_mu <- function(resp,
                      zerothresh = 1E-6,
                      local_adapt = FALSE,
                      local_adapt_niter = 10,
-                     rho_init = 0.01){
+                     rho_init = 0.01,
+                     iter = NULL){
 
   ####################
   ## Preliminaries ###
@@ -1008,6 +1009,7 @@ Mstep_mu <- function(resp,
                            err_abs = err_abs,
                            zerothresh = zerothresh,
                            sigma_eig_by_clust = sigma_eig_by_clust,
+                           iter = iter,
 
                            ## Warm starts from previous *EM* iteration
                            first_iter = first_iter,
@@ -1332,7 +1334,8 @@ admm_oneclust <- function(iclust = 1, niter, y,
                           uz,
                           ## warmstart = FALSE,
                           ## mu.warm = if(!warmstart) NULL,
-                          first_iter,## Not used
+                          first_iter,## Not used 
+                          iter,
                           outer_iter,
                           local_adapt,
                           sigma,
@@ -1344,6 +1347,7 @@ admm_oneclust <- function(iclust = 1, niter, y,
   resid_mat = matrix(NA, nrow = ceiling(niter/5), ncol = 6)
   colnames(resid_mat) = c("prim1", "prim2", "primresid", "primerr", "dualresid", "dualerr")
   rhofac = rho / rhoinit 
+
 
   ## Main inner LA-ADMM loop
   converge = FALSE 
@@ -2012,7 +2016,6 @@ plot(x = dt$time, y=dt$Y, col = rgb(0,0,0,0.04),
 mn_old[,1,] %>% matlines(lwd = 1, x=x, lty = 1)
 mn_less_old[,1,] %>% matlines(lwd = 1, x=x, lty = 2)
 mn[,1,] %>% matlines(lwd = 1, x=x, lty = 3)
-
  
 ```
 
@@ -2174,7 +2177,8 @@ flowtrend_once <- function(ylist,
                       err_abs = admm_err_abs,
                       local_adapt = admm_local_adapt,
                       local_adapt_niter = admm_local_adapt_niter,
-                      rho_init = rho_init)
+                      rho_init = rho_init,
+                      iter = iter)
                       ## rho_init = (if(iter == 2) rho_init else latest_rho))
     ## latest_rho = res_mu$rho
     mn = res_mu$mns

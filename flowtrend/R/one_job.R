@@ -38,6 +38,7 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
   ## Check whether this job has been done already.
   filename = make_cvscore_filename(iprob, imu, ifold, irestart)
   if(file.exists(file.path(destin, filename))){
+    cat(fill=TRUE)
     cat(filename, "already done", fill=TRUE)
     return(NULL)
   }
@@ -78,7 +79,7 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
     ## Estimate model
     argn <- lapply(names(args), as.name)
     names(argn) <- names(args)
-    call <- as.call(c(list(as.name("flowtrend")), argn))
+    call <- as.call(c(list(as.name("flowtrend_once")), argn))
     res.train = eval(call, args)
 
     ## Assign mn and prob

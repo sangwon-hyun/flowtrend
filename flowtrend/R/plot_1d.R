@@ -10,7 +10,7 @@
 #'
 #' @return ggplot object with data, and optionally, a flowtrend model overlaid.
 #' @export
-plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALSE, idim = NULL){
+plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALSE, idim = NULL, alpha = .1){
 
   ## Basic checks
   if(!is.null(x)){
@@ -39,10 +39,11 @@ plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALS
     ymat <- lapply(1:length(ylist), FUN = function(tt){
       data.frame(time = times[tt], Y = ylist[[tt]])
     }) %>% bind_rows() %>% as_tibble()
+    colnames(ymat) = c("time", "Y", "counts") ## when ylist[[tt]] already has a column name, this is needed.
 
     ## plot long matrix
     gg = ymat %>% ggplot() +
-      geom_point(aes(x = time, y = Y), alpha = .1) +
+      geom_point(aes(x = time, y = Y), alpha = alpha) +
       theme_bw() + ylab("Data") + xlab("Time") 
       ## theme(legend.position = 'none')
   } else {
@@ -50,6 +51,7 @@ plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALS
     ymat <- lapply(1:length(ylist), FUN = function(tt){
       data.frame(time = times[tt], Y = ylist[[tt]], counts = countslist[[tt]])
     }) %>% bind_rows() %>% as_tibble()
+    colnames(ymat) = c("time", "Y", "counts") ## when ylist[[tt]] already has a column name, this is needed.
 
     ## plot long matrix
     gg = ymat %>% ggplot() +

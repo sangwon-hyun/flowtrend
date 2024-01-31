@@ -61,7 +61,8 @@ Mstep_mu <- function(resp,
                      zerothresh = 1E-6,
                      local_adapt = FALSE,
                      local_adapt_niter = 10,
-                     rho_init = 0.01){
+                     rho_init = 0.01,
+                     iter = NULL){
 
   ####################
   ## Preliminaries ###
@@ -150,6 +151,7 @@ Mstep_mu <- function(resp,
                            err_abs = err_abs,
                            zerothresh = zerothresh,
                            sigma_eig_by_clust = sigma_eig_by_clust,
+                           iter = iter,
 
                            ## Warm starts from previous *EM* iteration
                            first_iter = first_iter,
