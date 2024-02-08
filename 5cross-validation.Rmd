@@ -447,6 +447,7 @@ get_max_lambda <- function(destin, maxres_file = "maxres.Rdata",
                              max_lambda_prob = max_lambda_prob,
                              max_lambda_mean = max_lambda_mean,
                              ...)
+    print(maxres)
     save(maxres, file = file.path(destin, maxres_file))
     cat("file was written to ", file.path(destin, maxres_file), fill=TRUE)
     cat("maximum regularization value calculation done.", fill = TRUE)

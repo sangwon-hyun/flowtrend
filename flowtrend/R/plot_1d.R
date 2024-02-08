@@ -11,7 +11,7 @@
 #' @return ggplot object with data, and optionally, a flowtrend model overlaid.
 #' @export
 plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALSE, idim = NULL, alpha = .1){
-
+ 
   ## Basic checks
   if(!is.null(x)){
     stopifnot(length(x) == length(ylist))

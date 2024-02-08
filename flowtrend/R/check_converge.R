@@ -1,7 +1,7 @@
 # Generated from _main.Rmd: do not edit by hand
 
 #' Check convergence of ADMM with a fixed step size (rho).
-converge <- function(mu, rho, w, z, w_prev, z_prev, uw, uz, Dl, tDl,
+check_converge <- function(mu, rho, w, z, w_prev, z_prev, uw, uz, Dl, tDl,
                      err_rel = 1E-4,
                      err_abs = 0
 ){

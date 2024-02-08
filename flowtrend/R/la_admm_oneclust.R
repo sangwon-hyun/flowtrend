@@ -75,7 +75,7 @@ la_admm_oneclust <- function(K, ...){
     some_admm_objectives = some_admm_objectives + padding
 
     ## See if outer iterations should terminate
-    if(res$converge ){
+    if(res$converge){
       res$converge <- T
       break
     }

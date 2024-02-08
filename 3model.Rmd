@@ -1033,7 +1033,6 @@ Mstep_mu <- function(resp,
     Ws[[iclust]] = res$W
     ## The upper triangular matrix remains the same. (code missing?)
 
-   # print(res$converge)
   }
 
   ## Aggregate the yhats into one array
@@ -1147,7 +1146,7 @@ la_admm_oneclust <- function(K, ...){
     some_admm_objectives = some_admm_objectives + padding
 
     ## See if outer iterations should terminate
-    if(res$converge ){
+    if(res$converge){
       res$converge <- T
       break
     }
@@ -1348,11 +1347,7 @@ admm_oneclust <- function(iclust = 1, niter, y,
   colnames(resid_mat) = c("prim1", "prim2", "primresid", "primerr", "dualresid", "dualerr")
   rhofac = rho / rhoinit 
 
-
-  ## Main inner LA-ADMM loop
-  converge = FALSE 
-  start.time = Sys.time()
-  Zlist = list()
+  
 
   ## This doesn't change over iterations
   schurB = myschur(schurB$orig * rhofac) ## In flowmix, this is done on A. Here, it's done on B (in AX + XB + C = 0).
@@ -1412,11 +1407,11 @@ admm_oneclust <- function(iclust = 1, niter, y,
     if( iter > 1  & iter %% 5 == 0){## & !local_adapt){
 
       ## Calculate convergence criterion
-      obj = converge(mu, rho,
-                     w, z,
-                     w_prev, z_prev,
-                     uw, uz,
-                     Dl, tDl, err_rel = err_rel, err_abs = err_abs)
+      obj = check_converge(mu, rho,
+                           w, z,
+                           w_prev, z_prev,
+                           uw, uz,
+                           Dl, tDl, err_rel = err_rel, err_abs = err_abs)
 
       jj = (iter/ 5)
       resid_mat[jj,] = c(
@@ -1428,12 +1423,14 @@ admm_oneclust <- function(iclust = 1, niter, y,
                          obj$dual_err)
 
       if(is.na(obj$converge)){
-        obj$converge <- FALSE
+        obj$converge <- converge = FALSE
         warning("Convergence was NA")
       }
       if(obj$converge){
         converge = TRUE
         break
+      } else {
+        converge = FALSE
       }
     }
     w_prev = w
@@ -1532,7 +1529,7 @@ Here's a function to check convergence of the ADMM with a fixed step size.
 
 ```{r}
 #' Check convergence of ADMM with a fixed step size (rho).
-converge <- function(mu, rho, w, z, w_prev, z_prev, uw, uz, Dl, tDl,
+check_converge <- function(mu, rho, w, z, w_prev, z_prev, uw, uz, Dl, tDl,
                      err_rel = 1E-4,
                      err_abs = 0
 ){

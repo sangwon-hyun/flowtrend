@@ -10,11 +10,12 @@ Generate data.
 
 ```{r 1d-example, eval = FALSE}
 set.seed(100)
-dt       <- gendat_1d(100, rep(100, 100))
-dt_model <- gendat_1d(100, rep(100, 100), return_model = TRUE)
+dt       <- gendat_1d(100, rep(100, 100), offset = 4)
+dt_model <- gendat_1d(100, rep(100, 100), return_model = TRUE, offset=4)
 ylist = dt %>% dt2ylist()
 x = dt %>% pull(time) %>% unique()
 plot_1d(ylist)
+dt_model %>% select(time, cluster, prob) %>% ggplot() + geom_line(aes(x=time, y=prob, group=cluster, col = cluster))
 ```
 
 Next, we fit the model.
@@ -23,15 +24,15 @@ Next, we fit the model.
 set.seed(18)
 obj <- flowtrend(ylist = ylist,
                  x = x,
-                 maxdev = 5,
+                 maxdev = 1,
                  numclust = 3,
                  l = 2,
-                 l_prob = 2,
+                 l_prob = 1,
                  lambda = .1,
-                 lambda_prob = .005,
-                 admm_local_adapt = TRUE,
+                 lambda_prob = .1,
+                 verbose = TRUE,
                  nrestart = 5)
-
+ 
 ## Also reorder the cluster labels of the truth, to match the fitted model.
 ord = obj$mn[,1,] %>% colSums() %>% order(decreasing=TRUE)
 lookup <- setNames(c(1:obj$numclust), ord)

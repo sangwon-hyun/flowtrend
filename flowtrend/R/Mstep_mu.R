@@ -175,7 +175,6 @@ Mstep_mu <- function(resp,
     Ws[[iclust]] = res$W
     ## The upper triangular matrix remains the same. (code missing?)
 
-   # print(res$converge)
   }
 
   ## Aggregate the yhats into one array

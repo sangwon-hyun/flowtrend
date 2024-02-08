@@ -36,11 +36,7 @@ admm_oneclust <- function(iclust = 1, niter, y,
   colnames(resid_mat) = c("prim1", "prim2", "primresid", "primerr", "dualresid", "dualerr")
   rhofac = rho / rhoinit 
 
-
-  ## Main inner LA-ADMM loop
-  converge = FALSE 
-  start.time = Sys.time()
-  Zlist = list()
+  
 
   ## This doesn't change over iterations
   schurB = myschur(schurB$orig * rhofac) ## In flowmix, this is done on A. Here, it's done on B (in AX + XB + C = 0).
@@ -100,11 +96,11 @@ admm_oneclust <- function(iclust = 1, niter, y,
     if( iter > 1  & iter %% 5 == 0){## & !local_adapt){
 
       ## Calculate convergence criterion
-      obj = converge(mu, rho,
-                     w, z,
-                     w_prev, z_prev,
-                     uw, uz,
-                     Dl, tDl, err_rel = err_rel, err_abs = err_abs)
+      obj = check_converge(mu, rho,
+                           w, z,
+                           w_prev, z_prev,
+                           uw, uz,
+                           Dl, tDl, err_rel = err_rel, err_abs = err_abs)
 
       jj = (iter/ 5)
       resid_mat[jj,] = c(
@@ -116,12 +112,14 @@ admm_oneclust <- function(iclust = 1, niter, y,
                          obj$dual_err)
 
       if(is.na(obj$converge)){
-        obj$converge <- FALSE
+        obj$converge <- converge = FALSE
         warning("Convergence was NA")
       }
       if(obj$converge){
         converge = TRUE
         break
+      } else {
+        converge = FALSE
       }
     }
     w_prev = w
