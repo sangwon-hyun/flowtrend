@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2024-02-07" />
+<meta name="date" content="2024-02-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -213,16 +213,16 @@ now.</p>
 <span id="cb118-7"><a href="testing-the-flowtrend-method.html#cb118-7" tabindex="-1"></a>dt_model <span class="sc">%&gt;%</span> <span class="fu">select</span>(time, cluster, prob) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y=</span>prob, <span class="at">group=</span>cluster, <span class="at">col =</span> cluster))</span></code></pre></div>
 <p>Next, we fit the model.</p>
 <div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="testing-the-flowtrend-method.html#cb119-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">18</span>)</span>
-<span id="cb119-2"><a href="testing-the-flowtrend-method.html#cb119-2" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <a href='flowtrend.html#flowtrend_once'>flowtrend_once</a>(<span class="at">ylist =</span> ylist,</span>
-<span id="cb119-3"><a href="testing-the-flowtrend-method.html#cb119-3" tabindex="-1"></a>                      <span class="at">x =</span> x,</span>
-<span id="cb119-4"><a href="testing-the-flowtrend-method.html#cb119-4" tabindex="-1"></a>                      <span class="at">maxdev =</span> <span class="dv">1</span>,</span>
-<span id="cb119-5"><a href="testing-the-flowtrend-method.html#cb119-5" tabindex="-1"></a>                      <span class="at">numclust =</span> <span class="dv">3</span>,</span>
-<span id="cb119-6"><a href="testing-the-flowtrend-method.html#cb119-6" tabindex="-1"></a>                      <span class="at">l =</span> <span class="dv">2</span>,</span>
-<span id="cb119-7"><a href="testing-the-flowtrend-method.html#cb119-7" tabindex="-1"></a>                      <span class="at">l_prob =</span> <span class="dv">1</span>,</span>
-<span id="cb119-8"><a href="testing-the-flowtrend-method.html#cb119-8" tabindex="-1"></a>                      <span class="at">lambda =</span> .<span class="dv">1</span>,</span>
-<span id="cb119-9"><a href="testing-the-flowtrend-method.html#cb119-9" tabindex="-1"></a>                      <span class="at">lambda_prob =</span> .<span class="dv">1</span>,</span>
-<span id="cb119-10"><a href="testing-the-flowtrend-method.html#cb119-10" tabindex="-1"></a>                      <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb119-11"><a href="testing-the-flowtrend-method.html#cb119-11" tabindex="-1"></a><span class="do">##                      nrestart = 5)</span></span>
+<span id="cb119-2"><a href="testing-the-flowtrend-method.html#cb119-2" tabindex="-1"></a>obj <span class="ot">&lt;-</span> <a href='flowtrend.html#flowtrend'>flowtrend</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb119-3"><a href="testing-the-flowtrend-method.html#cb119-3" tabindex="-1"></a>                 <span class="at">x =</span> x,</span>
+<span id="cb119-4"><a href="testing-the-flowtrend-method.html#cb119-4" tabindex="-1"></a>                 <span class="at">maxdev =</span> <span class="dv">1</span>,</span>
+<span id="cb119-5"><a href="testing-the-flowtrend-method.html#cb119-5" tabindex="-1"></a>                 <span class="at">numclust =</span> <span class="dv">3</span>,</span>
+<span id="cb119-6"><a href="testing-the-flowtrend-method.html#cb119-6" tabindex="-1"></a>                 <span class="at">l =</span> <span class="dv">2</span>,</span>
+<span id="cb119-7"><a href="testing-the-flowtrend-method.html#cb119-7" tabindex="-1"></a>                 <span class="at">l_prob =</span> <span class="dv">1</span>,</span>
+<span id="cb119-8"><a href="testing-the-flowtrend-method.html#cb119-8" tabindex="-1"></a>                 <span class="at">lambda =</span> .<span class="dv">1</span>,</span>
+<span id="cb119-9"><a href="testing-the-flowtrend-method.html#cb119-9" tabindex="-1"></a>                 <span class="at">lambda_prob =</span> .<span class="dv">1</span>,</span>
+<span id="cb119-10"><a href="testing-the-flowtrend-method.html#cb119-10" tabindex="-1"></a>                 <span class="at">verbose =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb119-11"><a href="testing-the-flowtrend-method.html#cb119-11" tabindex="-1"></a>                 <span class="at">nrestart =</span> <span class="dv">5</span>)</span>
 <span id="cb119-12"><a href="testing-the-flowtrend-method.html#cb119-12" tabindex="-1"></a> </span>
 <span id="cb119-13"><a href="testing-the-flowtrend-method.html#cb119-13" tabindex="-1"></a><span class="do">## Also reorder the cluster labels of the truth, to match the fitted model.</span></span>
 <span id="cb119-14"><a href="testing-the-flowtrend-method.html#cb119-14" tabindex="-1"></a>ord <span class="ot">=</span> obj<span class="sc">$</span>mn[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">colSums</span>() <span class="sc">%&gt;%</span> <span class="fu">order</span>(<span class="at">decreasing=</span><span class="cn">TRUE</span>)</span>
@@ -399,70 +399,70 @@ particles.</p>
 <span id="cb136-25"><a href="testing-the-flowtrend-method.html#cb136-25" tabindex="-1"></a>  <a href='package-setup.html#plot_1d'>plot_1d</a>(<span class="at">obj =</span> obj, <span class="at">ylist =</span> ylist, <span class="at">x =</span> x)</span>
 <span id="cb136-26"><a href="testing-the-flowtrend-method.html#cb136-26" tabindex="-1"></a>}</span></code></pre></div>
 <pre><code>## 
- EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2024-02-07 20:42:25
- EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2024-02-07 20:42:25
- EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2024-02-07 20:47:58
- EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2024-02-07 20:46:35
- EM iterations.   5 out of 999 with lapsed time 1 seconds and remaining time 199 seconds and will finish at 2024-02-07 20:45:45
- EM iterations.   6 out of 999 with lapsed time 1 seconds and remaining time 166 seconds and will finish at 2024-02-07 20:45:12
- EM iterations.   7 out of 999 with lapsed time 1 seconds and remaining time 142 seconds and will finish at 2024-02-07 20:44:48
- EM iterations.   8 out of 999 with lapsed time 1 seconds and remaining time 124 seconds and will finish at 2024-02-07 20:44:30
- EM iterations.   9 out of 999 with lapsed time 1 seconds and remaining time 110 seconds and will finish at 2024-02-07 20:44:16
- EM iterations.   10 out of 999 with lapsed time 2 seconds and remaining time 198 seconds and will finish at 2024-02-07 20:45:45
- EM iterations.   11 out of 999 with lapsed time 2 seconds and remaining time 180 seconds and will finish at 2024-02-07 20:45:27
- EM iterations.   12 out of 999 with lapsed time 2 seconds and remaining time 164 seconds and will finish at 2024-02-07 20:45:11
- EM iterations.   13 out of 999 with lapsed time 2 seconds and remaining time 152 seconds and will finish at 2024-02-07 20:44:59
- EM iterations.   14 out of 999 with lapsed time 2 seconds and remaining time 141 seconds and will finish at 2024-02-07 20:44:48
- EM iterations.   15 out of 999 with lapsed time 3 seconds and remaining time 197 seconds and will finish at 2024-02-07 20:45:45
- EM iterations.   16 out of 999 with lapsed time 3 seconds and remaining time 184 seconds and will finish at 2024-02-07 20:45:32
- EM iterations.   17 out of 999 with lapsed time 3 seconds and remaining time 173 seconds and will finish at 2024-02-07 20:45:21
- EM iterations.   18 out of 999 with lapsed time 3 seconds and remaining time 164 seconds and will finish at 2024-02-07 20:45:12
- EM iterations.   19 out of 999 with lapsed time 4 seconds and remaining time 206 seconds and will finish at 2024-02-07 20:45:55
- EM iterations.   20 out of 999 with lapsed time 4 seconds and remaining time 196 seconds and will finish at 2024-02-07 20:45:45
- EM iterations.   21 out of 999 with lapsed time 4 seconds and remaining time 186 seconds and will finish at 2024-02-07 20:45:35
- EM iterations.   22 out of 999 with lapsed time 4 seconds and remaining time 178 seconds and will finish at 2024-02-07 20:45:27
- EM iterations.   23 out of 999 with lapsed time 5 seconds and remaining time 212 seconds and will finish at 2024-02-07 20:46:02
- EM iterations.   24 out of 999 with lapsed time 5 seconds and remaining time 203 seconds and will finish at 2024-02-07 20:45:53
- EM iterations.   25 out of 999 with lapsed time 5 seconds and remaining time 195 seconds and will finish at 2024-02-07 20:45:45
- EM iterations.   26 out of 999 with lapsed time 5 seconds and remaining time 187 seconds and will finish at 2024-02-07 20:45:38
- EM iterations.   27 out of 999 with lapsed time 6 seconds and remaining time 216 seconds and will finish at 2024-02-07 20:46:07
- EM iterations.   28 out of 999 with lapsed time 6 seconds and remaining time 208 seconds and will finish at 2024-02-07 20:45:59</code></pre>
+ EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2024-02-08 22:02:20
+ EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2024-02-08 22:02:21
+ EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2024-02-08 22:07:53
+ EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2024-02-08 22:06:30
+ EM iterations.   5 out of 999 with lapsed time 1 seconds and remaining time 199 seconds and will finish at 2024-02-08 22:05:40
+ EM iterations.   6 out of 999 with lapsed time 1 seconds and remaining time 166 seconds and will finish at 2024-02-08 22:05:07
+ EM iterations.   7 out of 999 with lapsed time 1 seconds and remaining time 142 seconds and will finish at 2024-02-08 22:04:44
+ EM iterations.   8 out of 999 with lapsed time 1 seconds and remaining time 124 seconds and will finish at 2024-02-08 22:04:26
+ EM iterations.   9 out of 999 with lapsed time 2 seconds and remaining time 220 seconds and will finish at 2024-02-08 22:06:02
+ EM iterations.   10 out of 999 with lapsed time 2 seconds and remaining time 198 seconds and will finish at 2024-02-08 22:05:40
+ EM iterations.   11 out of 999 with lapsed time 2 seconds and remaining time 180 seconds and will finish at 2024-02-08 22:05:22
+ EM iterations.   12 out of 999 with lapsed time 2 seconds and remaining time 164 seconds and will finish at 2024-02-08 22:05:07
+ EM iterations.   13 out of 999 with lapsed time 2 seconds and remaining time 152 seconds and will finish at 2024-02-08 22:04:55
+ EM iterations.   14 out of 999 with lapsed time 3 seconds and remaining time 211 seconds and will finish at 2024-02-08 22:05:54
+ EM iterations.   15 out of 999 with lapsed time 3 seconds and remaining time 197 seconds and will finish at 2024-02-08 22:05:40
+ EM iterations.   16 out of 999 with lapsed time 3 seconds and remaining time 184 seconds and will finish at 2024-02-08 22:05:27
+ EM iterations.   17 out of 999 with lapsed time 3 seconds and remaining time 173 seconds and will finish at 2024-02-08 22:05:17
+ EM iterations.   18 out of 999 with lapsed time 3 seconds and remaining time 164 seconds and will finish at 2024-02-08 22:05:08
+ EM iterations.   19 out of 999 with lapsed time 4 seconds and remaining time 206 seconds and will finish at 2024-02-08 22:05:50
+ EM iterations.   20 out of 999 with lapsed time 4 seconds and remaining time 196 seconds and will finish at 2024-02-08 22:05:40
+ EM iterations.   21 out of 999 with lapsed time 4 seconds and remaining time 186 seconds and will finish at 2024-02-08 22:05:31
+ EM iterations.   22 out of 999 with lapsed time 4 seconds and remaining time 178 seconds and will finish at 2024-02-08 22:05:23
+ EM iterations.   23 out of 999 with lapsed time 5 seconds and remaining time 212 seconds and will finish at 2024-02-08 22:05:57
+ EM iterations.   24 out of 999 with lapsed time 5 seconds and remaining time 203 seconds and will finish at 2024-02-08 22:05:49
+ EM iterations.   25 out of 999 with lapsed time 5 seconds and remaining time 195 seconds and will finish at 2024-02-08 22:05:41
+ EM iterations.   26 out of 999 with lapsed time 6 seconds and remaining time 225 seconds and will finish at 2024-02-08 22:06:11
+ EM iterations.   27 out of 999 with lapsed time 6 seconds and remaining time 216 seconds and will finish at 2024-02-08 22:06:02
+ EM iterations.   28 out of 999 with lapsed time 6 seconds and remaining time 208 seconds and will finish at 2024-02-08 22:05:55</code></pre>
 <p><img src="_main_files/figure-html/uneven-test-1.png" width="576" /></p>
 <pre><code>## 
- EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2024-02-07 20:42:31
- EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2024-02-07 20:42:32
- EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2024-02-07 20:48:04
- EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2024-02-07 20:46:41
- EM iterations.   5 out of 999 with lapsed time 1 seconds and remaining time 199 seconds and will finish at 2024-02-07 20:45:51
- EM iterations.   6 out of 999 with lapsed time 1 seconds and remaining time 166 seconds and will finish at 2024-02-07 20:45:18
- EM iterations.   7 out of 999 with lapsed time 1 seconds and remaining time 142 seconds and will finish at 2024-02-07 20:44:55
- EM iterations.   8 out of 999 with lapsed time 1 seconds and remaining time 124 seconds and will finish at 2024-02-07 20:44:37
- EM iterations.   9 out of 999 with lapsed time 2 seconds and remaining time 220 seconds and will finish at 2024-02-07 20:46:13
- EM iterations.   10 out of 999 with lapsed time 2 seconds and remaining time 198 seconds and will finish at 2024-02-07 20:45:51
- EM iterations.   11 out of 999 with lapsed time 2 seconds and remaining time 180 seconds and will finish at 2024-02-07 20:45:33
- EM iterations.   12 out of 999 with lapsed time 2 seconds and remaining time 164 seconds and will finish at 2024-02-07 20:45:18
- EM iterations.   13 out of 999 with lapsed time 2 seconds and remaining time 152 seconds and will finish at 2024-02-07 20:45:06
- EM iterations.   14 out of 999 with lapsed time 3 seconds and remaining time 211 seconds and will finish at 2024-02-07 20:46:05
- EM iterations.   15 out of 999 with lapsed time 3 seconds and remaining time 197 seconds and will finish at 2024-02-07 20:45:51
- EM iterations.   16 out of 999 with lapsed time 3 seconds and remaining time 184 seconds and will finish at 2024-02-07 20:45:38
- EM iterations.   17 out of 999 with lapsed time 3 seconds and remaining time 173 seconds and will finish at 2024-02-07 20:45:28
- EM iterations.   18 out of 999 with lapsed time 3 seconds and remaining time 164 seconds and will finish at 2024-02-07 20:45:19
- EM iterations.   19 out of 999 with lapsed time 4 seconds and remaining time 206 seconds and will finish at 2024-02-07 20:46:01
- EM iterations.   20 out of 999 with lapsed time 4 seconds and remaining time 196 seconds and will finish at 2024-02-07 20:45:51
- EM iterations.   21 out of 999 with lapsed time 4 seconds and remaining time 186 seconds and will finish at 2024-02-07 20:45:41
- EM iterations.   22 out of 999 with lapsed time 4 seconds and remaining time 178 seconds and will finish at 2024-02-07 20:45:34
- EM iterations.   23 out of 999 with lapsed time 4 seconds and remaining time 170 seconds and will finish at 2024-02-07 20:45:26
- EM iterations.   24 out of 999 with lapsed time 5 seconds and remaining time 203 seconds and will finish at 2024-02-07 20:45:59
- EM iterations.   25 out of 999 with lapsed time 5 seconds and remaining time 195 seconds and will finish at 2024-02-07 20:45:51
- EM iterations.   26 out of 999 with lapsed time 5 seconds and remaining time 187 seconds and will finish at 2024-02-07 20:45:43
- EM iterations.   27 out of 999 with lapsed time 5 seconds and remaining time 180 seconds and will finish at 2024-02-07 20:45:36
- EM iterations.   28 out of 999 with lapsed time 5 seconds and remaining time 173 seconds and will finish at 2024-02-07 20:45:30
- EM iterations.   29 out of 999 with lapsed time 5 seconds and remaining time 167 seconds and will finish at 2024-02-07 20:45:24
- EM iterations.   30 out of 999 with lapsed time 5 seconds and remaining time 162 seconds and will finish at 2024-02-07 20:45:19
- EM iterations.   31 out of 999 with lapsed time 6 seconds and remaining time 187 seconds and will finish at 2024-02-07 20:45:44
- EM iterations.   32 out of 999 with lapsed time 6 seconds and remaining time 181 seconds and will finish at 2024-02-07 20:45:38
- EM iterations.   33 out of 999 with lapsed time 6 seconds and remaining time 176 seconds and will finish at 2024-02-07 20:45:33
- EM iterations.   34 out of 999 with lapsed time 6 seconds and remaining time 170 seconds and will finish at 2024-02-07 20:45:28</code></pre>
+ EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2024-02-08 22:02:27
+ EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2024-02-08 22:02:27
+ EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2024-02-08 22:07:59
+ EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2024-02-08 22:06:37
+ EM iterations.   5 out of 999 with lapsed time 1 seconds and remaining time 199 seconds and will finish at 2024-02-08 22:05:47
+ EM iterations.   6 out of 999 with lapsed time 1 seconds and remaining time 166 seconds and will finish at 2024-02-08 22:05:14
+ EM iterations.   7 out of 999 with lapsed time 1 seconds and remaining time 142 seconds and will finish at 2024-02-08 22:04:50
+ EM iterations.   8 out of 999 with lapsed time 1 seconds and remaining time 124 seconds and will finish at 2024-02-08 22:04:32
+ EM iterations.   9 out of 999 with lapsed time 2 seconds and remaining time 220 seconds and will finish at 2024-02-08 22:06:09
+ EM iterations.   10 out of 999 with lapsed time 2 seconds and remaining time 198 seconds and will finish at 2024-02-08 22:05:47
+ EM iterations.   11 out of 999 with lapsed time 2 seconds and remaining time 180 seconds and will finish at 2024-02-08 22:05:29
+ EM iterations.   12 out of 999 with lapsed time 2 seconds and remaining time 164 seconds and will finish at 2024-02-08 22:05:13
+ EM iterations.   13 out of 999 with lapsed time 2 seconds and remaining time 152 seconds and will finish at 2024-02-08 22:05:01
+ EM iterations.   14 out of 999 with lapsed time 2 seconds and remaining time 141 seconds and will finish at 2024-02-08 22:04:50
+ EM iterations.   15 out of 999 with lapsed time 3 seconds and remaining time 197 seconds and will finish at 2024-02-08 22:05:47
+ EM iterations.   16 out of 999 with lapsed time 3 seconds and remaining time 184 seconds and will finish at 2024-02-08 22:05:34
+ EM iterations.   17 out of 999 with lapsed time 3 seconds and remaining time 173 seconds and will finish at 2024-02-08 22:05:23
+ EM iterations.   18 out of 999 with lapsed time 3 seconds and remaining time 164 seconds and will finish at 2024-02-08 22:05:14
+ EM iterations.   19 out of 999 with lapsed time 3 seconds and remaining time 155 seconds and will finish at 2024-02-08 22:05:05
+ EM iterations.   20 out of 999 with lapsed time 4 seconds and remaining time 196 seconds and will finish at 2024-02-08 22:05:47
+ EM iterations.   21 out of 999 with lapsed time 4 seconds and remaining time 186 seconds and will finish at 2024-02-08 22:05:37
+ EM iterations.   22 out of 999 with lapsed time 4 seconds and remaining time 178 seconds and will finish at 2024-02-08 22:05:29
+ EM iterations.   23 out of 999 with lapsed time 4 seconds and remaining time 170 seconds and will finish at 2024-02-08 22:05:21
+ EM iterations.   24 out of 999 with lapsed time 4 seconds and remaining time 162 seconds and will finish at 2024-02-08 22:05:13
+ EM iterations.   25 out of 999 with lapsed time 4 seconds and remaining time 156 seconds and will finish at 2024-02-08 22:05:07
+ EM iterations.   26 out of 999 with lapsed time 5 seconds and remaining time 187 seconds and will finish at 2024-02-08 22:05:39
+ EM iterations.   27 out of 999 with lapsed time 5 seconds and remaining time 180 seconds and will finish at 2024-02-08 22:05:32
+ EM iterations.   28 out of 999 with lapsed time 5 seconds and remaining time 173 seconds and will finish at 2024-02-08 22:05:25
+ EM iterations.   29 out of 999 with lapsed time 5 seconds and remaining time 167 seconds and will finish at 2024-02-08 22:05:19
+ EM iterations.   30 out of 999 with lapsed time 5 seconds and remaining time 162 seconds and will finish at 2024-02-08 22:05:14
+ EM iterations.   31 out of 999 with lapsed time 6 seconds and remaining time 187 seconds and will finish at 2024-02-08 22:05:40
+ EM iterations.   32 out of 999 with lapsed time 6 seconds and remaining time 181 seconds and will finish at 2024-02-08 22:05:34
+ EM iterations.   33 out of 999 with lapsed time 6 seconds and remaining time 176 seconds and will finish at 2024-02-08 22:05:29
+ EM iterations.   34 out of 999 with lapsed time 6 seconds and remaining time 170 seconds and will finish at 2024-02-08 22:05:23</code></pre>
 <p><img src="_main_files/figure-html/uneven-test-2.png" width="576" /></p>
 </div>
 </div>

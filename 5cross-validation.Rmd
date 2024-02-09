@@ -1270,6 +1270,18 @@ cv_makebest <- function(destin){
       ## If the "best" flowtrend object has already been created, do nothing.
       best_filename = make_best_refit_filename(iprob, imu)
       if(file.exists(file.path(destin, best_filename))){
+
+      ##   ## Check if any more jobs have been done since before
+      ##   objectives = load_all_refit_objectives(destin, iprob, imu, nrestart)
+      ##   if(any(!is.na(objectives))){
+      ##     nonmissing_irestart = which(!is.na(objectives))## == min(objectives))
+      ##     ## keep_only_best_refit(destin, iprob, imu, nrestart, best_irestart)
+      ##     load(file.path(destin, best_filename))
+      ##   } else {
+      ##     print(paste0("iprob=", iprob, " imu=", imu, " had /refit/ objectives:  ", objectives))
+      ##   }
+      ## }
+
         next
         
       ## Otherwise, attempt to load from all |nrestart| replicates
@@ -1279,7 +1291,6 @@ cv_makebest <- function(destin){
           best_irestart = which(objectives == min(objectives))
           keep_only_best_refit(destin, iprob, imu, nrestart, best_irestart)
         } else {
-          browser()
           print(paste0("iprob=", iprob, " imu=", imu, " had /refit/ objectives:  ", objectives))
         }
       }
@@ -1397,7 +1408,7 @@ cv_aggregate <- function(destin){
         ind = which(myrow == min(myrow, na.rm=TRUE))
         if(length(ind)>1) ind = ind[1]  ## Just choose one, if there is a tie.
         return(ind)
-      })
+      }) %>% as.numeric()
       final.cvscores = sapply(1:nfold, function(ifold){
         cvscores[ifold, best.models[ifold]] ## Why did we get rid of this?
         ## cvscores[ifold]
@@ -1416,7 +1427,7 @@ cv_aggregate <- function(destin){
   ## Find the minimum
   mat = cvscore.mat
   min.inds = which(mat == min(mat, na.rm = TRUE), arr.ind = TRUE)
-
+  
   ## Return the results
   out = list(cvscore.array = cvscore.array,
               cvscore.mat = cvscore.mat,

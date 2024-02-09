@@ -55,6 +55,18 @@ cv_makebest <- function(destin){
       ## If the "best" flowtrend object has already been created, do nothing.
       best_filename = make_best_refit_filename(iprob, imu)
       if(file.exists(file.path(destin, best_filename))){
+
+      ##   ## Check if any more jobs have been done since before
+      ##   objectives = load_all_refit_objectives(destin, iprob, imu, nrestart)
+      ##   if(any(!is.na(objectives))){
+      ##     nonmissing_irestart = which(!is.na(objectives))## == min(objectives))
+      ##     ## keep_only_best_refit(destin, iprob, imu, nrestart, best_irestart)
+      ##     load(file.path(destin, best_filename))
+      ##   } else {
+      ##     print(paste0("iprob=", iprob, " imu=", imu, " had /refit/ objectives:  ", objectives))
+      ##   }
+      ## }
+
         next
         
       ## Otherwise, attempt to load from all |nrestart| replicates
@@ -64,7 +76,6 @@ cv_makebest <- function(destin){
           best_irestart = which(objectives == min(objectives))
           keep_only_best_refit(destin, iprob, imu, nrestart, best_irestart)
         } else {
-          browser()
           print(paste0("iprob=", iprob, " imu=", imu, " had /refit/ objectives:  ", objectives))
         }
       }

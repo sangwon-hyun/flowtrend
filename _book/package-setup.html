@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2024-02-07" />
+<meta name="date" content="2024-02-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -374,51 +374,51 @@ list of <span class="math inline">\(n_t \times d\)</span> matrices.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="package-setup.html#cb8-1" tabindex="-1"></a>dt <span class="ot">=</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="at">TT =</span> <span class="dv">100</span>, <span class="at">ntlist =</span><span class="fu">rep</span>(<span class="dv">100</span>,<span class="dv">100</span>))</span>
 <span id="cb8-2"><a href="package-setup.html#cb8-2" tabindex="-1"></a><span class="fu">print</span>(dt)</span></code></pre></div>
 <pre><code>## # A tibble: 10,000 × 4
-##     time     Y    mu cluster
-##    &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;int&gt;
-##  1     1 -1.62 -1.49       1
-##  2     1 -2.01 -1.49       1
-##  3     1 -2.18 -1.49       1
-##  4     1 -1.34 -1.49       1
-##  5     1 -1.77 -1.49       1
-##  6     1 -1.78 -1.49       1
-##  7     1 -1.14 -1.49       1
-##  8     1 -1.52 -1.49       1
-##  9     1 -2.10 -1.49       1
-## 10     1 -1.07 -1.49       1
+##     time      Y    mu cluster
+##    &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;int&gt;
+##  1     1 -1.25  -1.49       1
+##  2     1 -1.11  -1.49       1
+##  3     1 -0.690 -1.49       1
+##  4     1 -0.901 -1.49       1
+##  5     1 -1.18  -1.49       1
+##  6     1 -2.04  -1.49       1
+##  7     1 -1.77  -1.49       1
+##  8     1 -1.13  -1.49       1
+##  9     1 -1.91  -1.49       1
+## 10     1 -1.76  -1.49       1
 ## # ℹ 9,990 more rows</code></pre>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="package-setup.html#cb10-1" tabindex="-1"></a>ylist <span class="ot">=</span> <a href='package-setup.html#dt2ylist'>dt2ylist</a>(dt)</span>
 <span id="cb10-2"><a href="package-setup.html#cb10-2" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(<span class="fu">str</span>(ylist[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])))</span></code></pre></div>
 <pre><code>## List of 5
-##  $ : num [1:100, 1] -1.62 -2.01 -2.18 -1.34 -1.77 ...
+##  $ : num [1:100, 1] -1.25 -1.109 -0.69 -0.901 -1.183 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] -1.57 -2.34 -1.82 -1.41 -1.75 ...
+##  $ : num [1:100, 1] -1.749 -1.473 -1.519 -0.927 -2.134 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] -0.896 -0.938 -1.957 -1.631 -1.968 ...
+##  $ : num [1:100, 1] -2.41 -1.34 -1.75 -1.59 -1.6 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] -0.756 -1.204 -1.813 -1.316 -1.554 ...
+##  $ : num [1:100, 1] -1.77 -2.02 -1.49 -1.67 -1.25 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] -1.22 -1.79 -1.51 -1.59 -1.59 ...
+##  $ : num [1:100, 1] -2.158 -0.802 -1.742 -1.228 -2.053 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
 ## NULL</code></pre>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="package-setup.html#cb12-1" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(ylist[[<span class="dv">1</span>]]))</span></code></pre></div>
-<pre><code>##              Y
-## [1,] -1.619179
-## [2,] -2.012720
-## [3,] -2.178598
-## [4,] -1.340886
-## [5,] -1.771049
-## [6,] -1.778413</code></pre>
+<pre><code>##               Y
+## [1,] -1.2504698
+## [2,] -1.1088363
+## [3,] -0.6899823
+## [4,] -0.9008499
+## [5,] -1.1831319
+## [6,] -2.0389235</code></pre>
 <p>Next, we’ll make some plotting functions 1d model and data.</p>
 <div id="plotting-1d-data" class="section level2 hasAnchor" number="2.1">
 <h2><span class="header-section-number">2.1</span> Plotting 1d data<a href="package-setup.html#plotting-1d-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -435,7 +435,7 @@ in a single plot. <code><a href='package-setup.html#plot_1d'>plot_1d</a>()</code
 <span id="cb14-9"><a href="package-setup.html#cb14-9" tabindex="-1"></a><span class="co">#&#39; @return ggplot object with data, and optionally, a flowtrend model overlaid.</span></span>
 <span id="cb14-10"><a href="package-setup.html#cb14-10" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
 <span id="cb14-11"><a href="package-setup.html#cb14-11" tabindex="-1"></a><span id='plot_1d'>plot_1d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, <span class="at">countslist=</span><span class="cn">NULL</span>, <span class="at">obj=</span><span class="cn">NULL</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">add_point =</span> <span class="cn">FALSE</span>, <span class="at">idim =</span> <span class="cn">NULL</span>, <span class="at">alpha =</span> .<span class="dv">1</span>){</span>
-<span id="cb14-12"><a href="package-setup.html#cb14-12" tabindex="-1"></a> </span>
+<span id="cb14-12"><a href="package-setup.html#cb14-12" tabindex="-1"></a></span>
 <span id="cb14-13"><a href="package-setup.html#cb14-13" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
 <span id="cb14-14"><a href="package-setup.html#cb14-14" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x)){</span>
 <span id="cb14-15"><a href="package-setup.html#cb14-15" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">length</span>(x) <span class="sc">==</span> <span class="fu">length</span>(ylist))</span>
@@ -509,20 +509,28 @@ in a single plot. <code><a href='package-setup.html#plot_1d'>plot_1d</a>()</code
 <span id="cb14-83"><a href="package-setup.html#cb14-83" tabindex="-1"></a>  </span>
 <span id="cb14-84"><a href="package-setup.html#cb14-84" tabindex="-1"></a>    <span class="do">## Add the estimated 95% probability regions for data.</span></span>
 <span id="cb14-85"><a href="package-setup.html#cb14-85" tabindex="-1"></a>    stdev <span class="ot">=</span> obj<span class="sc">$</span>sigma <span class="sc">%&gt;%</span> .[,,<span class="dv">1</span>] <span class="sc">%&gt;%</span> <span class="fu">sqrt</span>()</span>
-<span id="cb14-86"><a href="package-setup.html#cb14-86" tabindex="-1"></a>    band_long <span class="ot">=</span></span>
-<span id="cb14-87"><a href="package-setup.html#cb14-87" tabindex="-1"></a>      mn_long <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">upper =</span> <span class="fu">case_when</span>(cluster <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">1</span>],</span>
-<span id="cb14-88"><a href="package-setup.html#cb14-88" tabindex="-1"></a>                                           cluster <span class="sc">==</span> <span class="st">&quot;2&quot;</span> <span class="sc">~</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">2</span>],</span>
-<span id="cb14-89"><a href="package-setup.html#cb14-89" tabindex="-1"></a>                                           cluster <span class="sc">==</span> <span class="st">&quot;3&quot;</span> <span class="sc">~</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">3</span>]),</span>
-<span id="cb14-90"><a href="package-setup.html#cb14-90" tabindex="-1"></a>                         <span class="at">lower =</span> <span class="fu">case_when</span>(cluster <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">1</span>],</span>
-<span id="cb14-91"><a href="package-setup.html#cb14-91" tabindex="-1"></a>                                           cluster <span class="sc">==</span> <span class="st">&quot;2&quot;</span> <span class="sc">~</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">2</span>],</span>
-<span id="cb14-92"><a href="package-setup.html#cb14-92" tabindex="-1"></a>                                           cluster <span class="sc">==</span> <span class="st">&quot;3&quot;</span> <span class="sc">~</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">3</span>]))</span>
-<span id="cb14-93"><a href="package-setup.html#cb14-93" tabindex="-1"></a>    gg <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> upper, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
-<span id="cb14-94"><a href="package-setup.html#cb14-94" tabindex="-1"></a>                   <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(<span class="dv">1</span>), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb14-95"><a href="package-setup.html#cb14-95" tabindex="-1"></a>      <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> lower, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
-<span id="cb14-96"><a href="package-setup.html#cb14-96" tabindex="-1"></a>                <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(<span class="dv">1</span>), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb14-97"><a href="package-setup.html#cb14-97" tabindex="-1"></a>      <span class="fu">guides</span>(<span class="at">size =</span> <span class="st">&quot;none&quot;</span>) <span class="co"># To turn off line size from legend</span></span>
-<span id="cb14-98"><a href="package-setup.html#cb14-98" tabindex="-1"></a>  }</span>
-<span id="cb14-99"><a href="package-setup.html#cb14-99" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb14-86"><a href="package-setup.html#cb14-86" tabindex="-1"></a>    <span class="do">## band_long =</span></span>
+<span id="cb14-87"><a href="package-setup.html#cb14-87" tabindex="-1"></a>    <span class="do">##   mn_long %&gt;% mutate(upper = case_when(cluster == &quot;1&quot; ~ mean + 1.96 * stdev[1],</span></span>
+<span id="cb14-88"><a href="package-setup.html#cb14-88" tabindex="-1"></a>    <span class="do">##                                        cluster == &quot;2&quot; ~ mean + 1.96 * stdev[2],</span></span>
+<span id="cb14-89"><a href="package-setup.html#cb14-89" tabindex="-1"></a>    <span class="do">##                                        cluster == &quot;3&quot; ~ mean + 1.96 * stdev[3]),</span></span>
+<span id="cb14-90"><a href="package-setup.html#cb14-90" tabindex="-1"></a>    <span class="do">##                      lower = case_when(cluster == &quot;1&quot; ~ mean - 1.96 * stdev[1],</span></span>
+<span id="cb14-91"><a href="package-setup.html#cb14-91" tabindex="-1"></a>    <span class="do">##                                        cluster == &quot;2&quot; ~ mean - 1.96 * stdev[2],</span></span>
+<span id="cb14-92"><a href="package-setup.html#cb14-92" tabindex="-1"></a>    <span class="do">##                                        cluster == &quot;3&quot; ~ mean - 1.96 * stdev[3]))</span></span>
+<span id="cb14-93"><a href="package-setup.html#cb14-93" tabindex="-1"></a></span>
+<span id="cb14-94"><a href="package-setup.html#cb14-94" tabindex="-1"></a>    mn_long_by_clust <span class="ot">=</span> mn_long <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(cluster) <span class="sc">%&gt;%</span> <span class="fu">group_split</span>()</span>
+<span id="cb14-95"><a href="package-setup.html#cb14-95" tabindex="-1"></a>    band_long_by_clust <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(iclust){</span>
+<span id="cb14-96"><a href="package-setup.html#cb14-96" tabindex="-1"></a>      mn_long_by_clust[[iclust]] <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">upper =</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[iclust]) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">lower =</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[iclust])</span>
+<span id="cb14-97"><a href="package-setup.html#cb14-97" tabindex="-1"></a>    })</span>
+<span id="cb14-98"><a href="package-setup.html#cb14-98" tabindex="-1"></a>    band_long <span class="ot">=</span> band_long_by_clust <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>()</span>
+<span id="cb14-99"><a href="package-setup.html#cb14-99" tabindex="-1"></a></span>
+<span id="cb14-100"><a href="package-setup.html#cb14-100" tabindex="-1"></a></span>
+<span id="cb14-101"><a href="package-setup.html#cb14-101" tabindex="-1"></a>    gg <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> upper, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
+<span id="cb14-102"><a href="package-setup.html#cb14-102" tabindex="-1"></a>                   <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(.<span class="dv">7</span>), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb14-103"><a href="package-setup.html#cb14-103" tabindex="-1"></a>      <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> lower, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
+<span id="cb14-104"><a href="package-setup.html#cb14-104" tabindex="-1"></a>                <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(.<span class="dv">7</span>), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb14-105"><a href="package-setup.html#cb14-105" tabindex="-1"></a>      <span class="fu">guides</span>(<span class="at">size =</span> <span class="st">&quot;none&quot;</span>) <span class="co"># To turn off line size from legend</span></span>
+<span id="cb14-106"><a href="package-setup.html#cb14-106" tabindex="-1"></a>  }</span>
+<span id="cb14-107"><a href="package-setup.html#cb14-107" tabindex="-1"></a>}</span></code></pre></div>
 <p>The plotting function <code><a href='package-setup.html#plot_1d'>plot_1d</a>()</code> will be even more useful when we have a model,
 but can also simply plot the data <code>ylist</code>. Let’s try this out.</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="package-setup.html#cb15-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>

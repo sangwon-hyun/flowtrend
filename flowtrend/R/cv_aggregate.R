@@ -52,7 +52,7 @@ cv_aggregate <- function(destin){
         ind = which(myrow == min(myrow, na.rm=TRUE))
         if(length(ind)>1) ind = ind[1]  ## Just choose one, if there is a tie.
         return(ind)
-      })
+      }) %>% as.numeric()
       final.cvscores = sapply(1:nfold, function(ifold){
         cvscores[ifold, best.models[ifold]] ## Why did we get rid of this?
         ## cvscores[ifold]
@@ -71,7 +71,7 @@ cv_aggregate <- function(destin){
   ## Find the minimum
   mat = cvscore.mat
   min.inds = which(mat == min(mat, na.rm = TRUE), arr.ind = TRUE)
-
+  
   ## Return the results
   out = list(cvscore.array = cvscore.array,
               cvscore.mat = cvscore.mat,
