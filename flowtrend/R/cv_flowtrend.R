@@ -35,7 +35,8 @@ cv_flowtrend <- function(## Data
                           ## Other settings
                           maxdev,
                           numclust,
-                          nfold,
+                         nfold,
+                         blocksize,
                           nrestart,
                           verbose = FALSE,
                           refit = FALSE,
@@ -59,7 +60,7 @@ cv_flowtrend <- function(## Data
   ## Define the CV folds
   ## folds = make_cv_folds(ylist = ylist, nfold = nfold, blocksize = 1)
   if(is.null(folds)){
-    folds = make_cv_folds(ylist = ylist, nfold = nfold)
+    folds = make_cv_folds(ylist = ylist, nfold = nfold, blocksize = blocksize)
   } else {
     stopifnot(length(folds) == nfold)
   }

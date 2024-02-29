@@ -4,10 +4,18 @@
 \alias{make_cv_folds}
 \title{Define the time folds cross-validation.}
 \usage{
-make_cv_folds(ylist = NULL, nfold, TT = NULL)
+make_cv_folds(ylist = NULL, nfold, TT = NULL, blocksize = 1)
 }
 \arguments{
+\item{ylist}{Data.}
+
 \item{nfold}{Number of folds.}
+
+\item{TT}{Length of data; if provided, ylist is ignored.}
+
+\item{blocksize}{Defaults to 1. If larger than 1, creates a set of time folds
+that use contiguous time blocks (by calling
+\code{make_cv_folds_in_blocks()}).}
 }
 \value{
 List of fold indices.

@@ -24,6 +24,7 @@ cv-many-single-jobs
 running-cross-validation
 summarizing-the-output
 cv-on-your-own-computer
+plotting
 testing-the-flowtrend-method
 id_1d-example
 testing-monotonicity-of-objective-values

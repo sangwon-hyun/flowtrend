@@ -566,18 +566,31 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
 ## Define CV data folds
 
 `make_cv_folds()` makes the cross-validation "folds", which are the $K$
-(`nfold`) list of data indices. These are not times! They simply split of
+(`nfold`) list of data indices. These are not times! They simply split 
 `1:length(ylist)`.
 
 
 ```{r make_cv_folds}
 #' Define the time folds cross-validation.
 #'
+#' @param ylist Data.
+#' @param TT Length of data; if provided, ylist is ignored.
 #' @param nfold Number of folds.
+#' @param blocksize Defaults to 1. If larger than 1, creates a set of time folds
+#'   that use contiguous time blocks (by calling
+#'   \code{make_cv_folds_in_blocks()}).
 #' @return List of fold indices.
 #' @export
 #'
-make_cv_folds <- function(ylist=NULL, nfold, TT=NULL){
+make_cv_folds <- function(ylist=NULL, nfold, TT=NULL, blocksize = 1){
+
+
+  if(blocksize > 1){
+    return(make_cv_folds_in_blocks(ylist=ylist,
+                                   nfold,
+                                   TT=TT,
+                                   blocksize = blocksize))
+  }
 
   ## Make hour-long index list
   if(is.null(TT)) TT = length(ylist)
@@ -610,6 +623,57 @@ for(ifold in 1:nfold){
   abline(v = inds[[ifold]], col = ifold, lwd = 2)
 }
 ```
+
+This is another function that makes the fold indices but using blocks of time
+points.
+
+```{r}
+#' Define the "blocked" time folds for cross-validation.
+#' This means that contiguous of times will be used to define CV folds.
+#'
+#' The first fold will be ( 1 2 3 16 17 18 31 32 33 46 47 48 61 62 63 76 77 78
+#' 91 92 93), the second fold will be (4 5 6 19 20 21 34 35 36 49 50 51 64 65 66
+#' 79 80 81 94 95 96), and so forth.
+#'
+#' @param nfold Number of folds.
+#' @param blocksize Size of block (e.g. 3 will produce the example above).
+#' @return List of fold indices.
+#' @export
+#'
+make_cv_folds_in_blocks <- function(ylist=NULL, nfold, TT=NULL, blocksize){
+
+  ## Make hour-long index list
+  if(is.null(TT)) TT = length(ylist)
+  endpoints = round(seq(from = 1, to = TT + blocksize,
+                        by = blocksize))
+  inds = Map(function(begin, end){
+    if(begin >= TT-1) return(NULL)
+    return(seq(begin+1, pmin(end,TT-1)))
+  }, endpoints[-length(endpoints)],  endpoints[-1])
+  null.elt = sapply(inds, is.null)
+  if(any(null.elt)){
+    inds = inds[-which(null.elt)]
+  }
+
+  ## Further make these into (e.g. 5) blocks of test indices.
+  test.ii.list = lapply(1:nfold, function(ifold){
+    which.test.inds = seq(from = ifold, to = length(inds), by = nfold)
+    test.ii = unlist(inds[which.test.inds])
+    return(test.ii)
+  })
+  names(test.ii.list) = paste0("Fold", 1:nfold)
+
+  ## Useful plotting code showing the plots.
+  if(FALSE){
+    plot(NA, xlim = c(0,TT), ylim=1:2)
+    lapply(1:nfold, function(ifold){
+      a = test.ii.list[[ifold]]; abline(v=a, col=ifold)
+    })
+  }
+  return(test.ii.list)
+} 
+```
+
 
 ## CV = many single jobs
 
@@ -1023,7 +1087,8 @@ cv_flowtrend <- function(## Data
                           ## Other settings
                           maxdev,
                           numclust,
-                          nfold,
+                         nfold,
+                         blocksize,
                           nrestart,
                           verbose = FALSE,
                           refit = FALSE,
@@ -1047,7 +1112,7 @@ cv_flowtrend <- function(## Data
   ## Define the CV folds
   ## folds = make_cv_folds(ylist = ylist, nfold = nfold, blocksize = 1)
   if(is.null(folds)){
-    folds = make_cv_folds(ylist = ylist, nfold = nfold)
+    folds = make_cv_folds(ylist = ylist, nfold = nfold, blocksize = blocksize)
   } else {
     stopifnot(length(folds) == nfold)
   }
@@ -1179,10 +1244,9 @@ If you look closely, you'll notice that `cv_aggregate()` is the workhorse.
 #' @export
 cv_summary <- function(destin = ".",
                        save = FALSE,
-                       filename = "summary.RDS"
-                       ){
-  ## Load data
-  load(file = file.path(destin, 'meta.Rdata'), verbose = FALSE)
+                       filename = "summary.RDS"){
+  
+  load(file.path(destin,'meta.Rdata'))
 
   ## This loads all the necessary things: nrestart, nfold, cv_gridsize
   stopifnot(exists("nrestart"))
@@ -1205,14 +1269,45 @@ cv_summary <- function(destin = ".",
   out = list(bestres = bestres,
              cvscore.mat = cvscore.mat,
              min.inds = min.inds,
+             lambda_means = lambda_means,
+             lambda_probs = lambda_probs,
              ## List of all best models for all lambda pairs.
              bestreslist = bestreslist,
              destin = destin)
 
-  if(save){ saveRDS(out, file=file.path(destin, filename))}
+  if(save){
+    saveRDS(out, file=file.path(destin, filename))
+  }
   return(out)
 }
 ```
+
+
+Because the metadata (`meta.Rdata`) file is a list object, and you want to
+prevent loading it to your function environment (lest it overwrite existing
+variables), we write a short helper function to load it.
+
+```{r}
+##' Load contents from the Rdata file |filename| and return a list.
+##' This is specifically for when the Rddata file you load contains a /named/ R
+##' list.
+##'
+##' This is basically trying to treat the Rdata file more like an RDS file that contains a list.
+##'
+##' @param filename Name of the Rdata file
+##'
+##' @return List object with contents of the Rdata file.
+##' @export
+load_Rdata <- function(filename){
+  ## loads an RData file, and returns it
+  load(filename, new_env <- new.env())
+  obj = lapply(ls(envir = new_env), get)
+  names(obj) = ls(new_env)
+  return(obj)
+}
+```
+
+
 
 ```{r cv_makebest}
 #' From the results saved in \code{destin}, aggregate all |nrestart| files to retain only the "best" restart, and delete the rest.
@@ -1570,3 +1665,151 @@ for(refit in c(FALSE, TRUE)){
 }
 ```
 
+
+
+
+## Plotting
+
+```{r}
+##' Makes a series of plots.
+##' 
+##' @param destin This directly has (1) summary.RDS, (2) meta.Rdata, and (3) datobj.RDS; optionally, it may have a dt_model
+##' @return Nothing; but the pdf plots are created.
+##' 
+##' @export
+plot_from_summary <- function(destin){
+  ## Load the results
+  cvres = readRDS(file.path(destin, paste0("summary.RDS")))
+  load(file.path(destin, paste0("meta.Rdata")), verbose=FALSE)
+  datobj = readRDS(file.path(destin, paste0("datobj.RDS")))
+  if(file.exists(file.path(destin, "dt_model.RDS"))){
+    dt.model = readRDS(file.path(destin, paste0("dt_model.RDS")))
+  } else {
+    dt.model = NULL
+  }
+  ylist = datobj$ybin_list %>% lapply(cbind)
+  countslist = datobj$counts_list
+  
+  ## rows are prob, cols are means
+  pdf(file.path(destin, "cvscoremat.pdf"), width = 6, height = 6)
+  cvscoremat_lattice_plot =  
+  cvres$cvscore.mat %>% drawmat_precise(ylab = "lambda_prob", xlab = "lambda_mean") +
+    latticeExtra::layer(lattice::panel.points(x = cvres$min.inds[2],
+                                              y = nrow(cvres$cvscore.mat) + 1 - cvres$min.inds[1], 
+                                              pch = 4, col = "orange", cex=2))
+  plot(cvscoremat_lattice_plot)
+  graphics.off()
+  
+  ## The minimum values.
+  min_lam_prob = lambda_probs[cvres$min.inds[2]]
+  min_lam_mean = lambda_means[cvres$min.inds[1]]
+  
+  ## each line is a different lambda_mean
+  pdf(file.path(destin, "cvscoremat-lines-over-means.pdf"), width = 7, height = 7)
+  a = cvres$cvscore.mat %>% t() %>% matplot(x = lambda_probs, type='o', col = 'grey', main = "each line is a different lambda_mean", log = "x")
+
+  abline(v=min_lam_prob, col = 'red')
+  graphics.off()
+  
+  pdf(file.path(destin, "cvscoremat-lines-over-probs.pdf"), width = 7, height = 7)
+  cvres$cvscore.mat %>% matplot(x=lambda_means, type='o', col = 'grey', main = "each line is a different lambda_prob", log = "x")
+  abline(v=min_lam_mean, col = 'red')
+  graphics.off()
+
+  n_lam_prob = nrow(cvres$cvscore.mat)
+  n_lam_mean = ncol(cvres$cvscore.mat)
+  
+  ## Reorder clusters
+  cvres$bestres = reorder_clust(cvres$bestres)
+  for(ii in 1:n_lam_prob){
+    for(jj in 1:n_lam_mean){
+      ## Reorder the cluster labels of the fitted ("best") models.
+      reordered_obj = reorder_kl(newres = cvres$bestreslist[[paste0(ii, "-", jj)]],
+                                 origres = cvres$bestres,##cvres$bestreslist[["1-1"]],
+                                 ylist_particle = datobj$ylist)
+      cvres$bestreslist[[paste0(ii, "-", jj)]] = reordered_obj
+    }
+  }
+  
+  ## Make plots of the "best" model
+  g1 = flowtrend::plot_1d(ylist = ylist,
+                          countslist = countslist,
+                          obj=cvres$bestres)
+  if(!is.null(dt.model)){
+    g1 = g1 + geom_line(aes(x = time, y = mean, group = cluster),
+                        data = dt.model,## %>% subset(time %ni% held_out),
+                        linetype = "dashed", size=1, alpha = .7)
+  }
+  
+  g2 = flowtrend::plot_prob(cvres$bestres, x=1:length(ylist))
+  if(!is.null(dt.model)){
+    g2 = g2 + geom_line(aes(x=time, y=prob, group = cluster), linetype = "dashed",
+                        data=dt.model  %>% select(time, cluster, prob) %>% unique())
+  }
+  do.call(ggpubr::ggarrange, c(list(g1, g2), ncol = 1, nrow = 2)) -> g
+  g %>% ggsave(file = file.path(destin, paste0("mean-and-prob.pdf")), width = 10, height=7)
+  
+  
+  ## Make all model plots
+  lambda_means = colnames(cvres$cvscore.mat) %>% as.numeric()
+  lambda_probs = rownames(cvres$cvscore.mat) %>% as.numeric()
+  kk = 1
+  glist = list()
+  for(ii in 1:n_lam_prob){
+    for(jj in 1:n_lam_mean){
+      ## Visualize
+      g = flowtrend::plot_1d(ylist = ylist, countslist = countslist, obj = cvres$bestreslist[[paste0(ii, "-", jj)]])
+      g = g + ggtitle(paste0("lam=", signif(lambda_means[[jj]],3), ", lam_prob=", signif(lambda_probs[[ii]], 3)))
+      g = g + theme(legend.position="none")
+
+      optimal = ((ii == cvres$min.inds[1]) & (jj == cvres$min.inds[2]))
+      if(optimal){
+        g = g + theme(panel.border = element_rect(colour = "black", fill=NA, size=5))
+      }
+
+      ## Save plot
+      glist[[kk]] = g
+      kk = kk + 1
+    }
+  }
+  all_bestres = do.call(ggpubr::ggarrange, c(glist, ncol = n_lam_mean, nrow = n_lam_prob))
+  all_bestres %>%
+    ggsave(file = file.path(destin, paste0("all_bestres.pdf")),
+           width = 40, height=30)
+  
+  ##  All probabilities
+  lambda_means = colnames(cvres$cvscore.mat) %>% as.numeric()
+  kk = 1
+  glist = list()
+  for(ii in 1:n_lam_prob){
+    for(jj in 1:n_lam_mean){
+      ## Visualize
+      g = flowtrend::plot_prob(obj = cvres$bestreslist[[paste0(ii, "-", jj)]], x=1:length(ylist))
+      g = g + ggtitle(paste0("lam=", signif(lambda_means[[jj]],3), ", lam_prob=", signif(lambda_probs[[ii]], 3)))
+      if(!is.null(dt.model)){
+        g = g + geom_line(aes(x = time, y = prob, group = cluster),##, color = cluster),
+                          data = dt.model, linetype = "dashed") 
+      }
+      g = g + theme(legend.position = "none")
+
+      optimal = ((ii == cvres$min.inds[1]) & (jj == cvres$min.inds[2]))
+      if(optimal){
+        g = g + theme(panel.border = element_rect(colour = "black", fill=NA, size=5))
+      }
+  
+      ## Save plot
+      glist[[kk]] = g
+      kk = kk + 1
+    }
+  }
+  
+  all_probs = do.call(ggpubr::ggarrange, c(glist, ncol=n_lam_mean, nrow=n_lam_prob))
+  all_probs %>%
+    ggsave(file = file.path(destin, paste0("all_probs.pdf")),
+           width = 40, height=30)
+  list_of_plots = list(all_probs = all_probs, all_bestres = all_bestres,
+                       cvscoremat_lattice_plot = cvscoremat_lattice_plot ,
+                       mean_plot = g1, prob_plot = g2)
+  return(list_of_plots)
+}
+```

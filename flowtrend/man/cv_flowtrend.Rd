@@ -17,6 +17,7 @@ cv_flowtrend(
   maxdev,
   numclust,
   nfold,
+  blocksize,
   nrestart,
   verbose = FALSE,
   refit = FALSE,
@@ -49,6 +50,8 @@ you piecewise constant means; l=1 is piecewise linear, and so forth.}
 
 \item{nfold}{Number of cross-validation folds. Defaults to 5.}
 
+\item{blocksize}{Contiguous time blocks from which to form CV time folds.}
+
 \item{nrestart}{Number of repetitions.}
 
 \item{verbose}{Loud or not? EM iteration progress is printed.}
@@ -64,8 +67,6 @@ regularization parameters.}
 as CV folds). Defaults to NULL.}
 
 \item{...}{Additional arguments to flowtrend().}
-
-\item{blocksize}{Contiguous time blocks from which to form CV time folds.}
 }
 \value{
 No return.

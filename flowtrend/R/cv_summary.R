@@ -16,10 +16,9 @@
 #' @export
 cv_summary <- function(destin = ".",
                        save = FALSE,
-                       filename = "summary.RDS"
-                       ){
-  ## Load data
-  load(file = file.path(destin, 'meta.Rdata'), verbose = FALSE)
+                       filename = "summary.RDS"){
+  
+  load(file.path(destin,'meta.Rdata'))
 
   ## This loads all the necessary things: nrestart, nfold, cv_gridsize
   stopifnot(exists("nrestart"))
@@ -42,10 +41,14 @@ cv_summary <- function(destin = ".",
   out = list(bestres = bestres,
              cvscore.mat = cvscore.mat,
              min.inds = min.inds,
+             lambda_means = lambda_means,
+             lambda_probs = lambda_probs,
              ## List of all best models for all lambda pairs.
              bestreslist = bestreslist,
              destin = destin)
 
-  if(save){ saveRDS(out, file=file.path(destin, filename))}
+  if(save){
+    saveRDS(out, file=file.path(destin, filename))
+  }
   return(out)
 }
