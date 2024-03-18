@@ -28,7 +28,9 @@ cv_summary <- function(destin = ".",
   ## Get the results of the cross-validation.
   a = cv_aggregate(destin)
   cvscore.mat = a$cvscore.mat
+  cvscore.mat.se = a$cvscore.mat.se
   min.inds = a$min.inds
+  min.inds.1se = a$min.inds.1se
 
   ## Get results from refitting
   bestreslist = cv_aggregate_res(destin = destin)
@@ -40,7 +42,9 @@ cv_summary <- function(destin = ".",
   }
   out = list(bestres = bestres,
              cvscore.mat = cvscore.mat,
+             cvscore.mat.se = cvscore.mat.se,
              min.inds = min.inds,
+             min.inds.1se = min.inds.1se,
              lambda_means = lambda_means,
              lambda_probs = lambda_probs,
              ## List of all best models for all lambda pairs.

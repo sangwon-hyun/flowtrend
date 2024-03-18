@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>16 Helpers for simulations in the paper | Creating the flowtrend R package</title>
+  <meta name="description" content="16 Helpers for simulations in the paper | Creating the flowtrend R package" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="16 Helpers for simulations in the paper | Creating the flowtrend R package" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="16 Helpers for simulations in the paper | Creating the flowtrend R package" />
+  
+  
+  
+
+<meta name="author" content="Sangwon Hyun" />
+
+
+<meta name="date" content="2024-03-18" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="documenting-the-package-and-building.html"/>
+
+<script src="libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="package-setup.html"><a href="package-setup.html#plotting-1d-data"><i class="fa fa-check"></i><b>2.1</b> Plotting 1d data</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="d-data.html"><a href="d-data.html"><i class="fa fa-check"></i><b>3</b> 2d data</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="d-data.html"><a href="d-data.html#generating-2d-data"><i class="fa fa-check"></i><b>3.1</b> Generating 2d data</a></li>
+<li class="chapter" data-level="3.2" data-path="d-data.html"><a href="d-data.html#plotting-2d-data"><i class="fa fa-check"></i><b>3.2</b> Plotting 2d data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="d-data-1.html"><a href="d-data-1.html"><i class="fa fa-check"></i><b>4</b> 3d data</a></li>
+<li class="chapter" data-level="5" data-path="trend-filtering.html"><a href="trend-filtering.html"><i class="fa fa-check"></i><b>5</b> Trend filtering</a></li>
+<li class="chapter" data-level="6" data-path="objective-data-log-likelihood.html"><a href="objective-data-log-likelihood.html"><i class="fa fa-check"></i><b>6</b> Objective (data log-likelihood)</a></li>
+<li class="chapter" data-level="7" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html"><i class="fa fa-check"></i><b>7</b> Initial parameters for EM algorithm</a></li>
+<li class="chapter" data-level="8" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>8</b> E step</a></li>
+<li class="chapter" data-level="9" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>9</b> M step</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>9.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
+<li class="chapter" data-level="9.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>9.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
+<li class="chapter" data-level="9.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>9.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
+<li class="chapter" data-level="9.4" data-path="m-step.html"><a href="m-step.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>9.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
+<li class="chapter" data-level="9.5" data-path="m-step.html"><a href="m-step.html#all-rcpp-functions"><i class="fa fa-check"></i><b>9.5</b> All Rcpp functions</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="flowtrend.html"><a href="flowtrend.html"><i class="fa fa-check"></i><b>10</b> flowtrend</a></li>
+<li class="chapter" data-level="11" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>11</b> Reordering clusters</a></li>
+<li class="chapter" data-level="12" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html"><i class="fa fa-check"></i><b>12</b> Tuning the regularization parameters for <code>flowtrend</code></a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>12.1</b> Predicting and evaluating on new time points</a></li>
+<li class="chapter" data-level="12.2" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>12.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
+<li class="chapter" data-level="12.3" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#define-cv-data-folds"><i class="fa fa-check"></i><b>12.3</b> Define CV data folds</a></li>
+<li class="chapter" data-level="12.4" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-many-single-jobs"><i class="fa fa-check"></i><b>12.4</b> CV = many single jobs</a></li>
+<li class="chapter" data-level="12.5" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#running-cross-validation"><i class="fa fa-check"></i><b>12.5</b> Running cross-validation</a></li>
+<li class="chapter" data-level="12.6" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#summarizing-the-output"><i class="fa fa-check"></i><b>12.6</b> Summarizing the output</a></li>
+<li class="chapter" data-level="12.7" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>12.7</b> CV on your own computer</a></li>
+<li class="chapter" data-level="12.8" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#plotting"><i class="fa fa-check"></i><b>12.8</b> Plotting</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="se-rule-for-cross-validation.html"><a href="se-rule-for-cross-validation.html"><i class="fa fa-check"></i><b>13</b> 1SE rule for cross validation</a></li>
+<li class="chapter" data-level="14" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>14</b> Testing the flowtrend method</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>14.1</b> 1d example</a></li>
+<li class="chapter" data-level="14.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values"><i class="fa fa-check"></i><b>14.2</b> Testing monotonicity of objective values</a></li>
+<li class="chapter" data-level="14.3" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_2d-example"><i class="fa fa-check"></i><b>14.3</b> 2d example</a></li>
+<li class="chapter" data-level="14.4" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#working-with-binned-dataset"><i class="fa fa-check"></i><b>14.4</b> Working with “binned” dataset</a></li>
+<li class="chapter" data-level="14.5" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#unevenly-spaced-inputs-x"><i class="fa fa-check"></i><b>14.5</b> Unevenly spaced inputs (x)</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>15</b> Documenting the package and building</a></li>
+<li class="chapter" data-level="16" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html"><i class="fa fa-check"></i><b>16</b> Helpers for simulations in the paper</a>
+<ul>
+<li class="chapter" data-level="16.1" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#two-alternative-estimators"><i class="fa fa-check"></i><b>16.1</b> Two alternative estimators</a></li>
+<li class="chapter" data-level="16.2" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>16.2</b> Example using <code><a href='helpers-for-simulations-in-the-paper.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations-in-the-paper.html#overfit_flowmeans'>overfit_flowmeans</a>()</code></a></li>
+<li class="chapter" data-level="16.3" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>16.3</b> Evaluating performance: soft RAND index</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Creating the <code>flowtrend</code> R package</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="helpers-for-simulations-in-the-paper" class="section level1 hasAnchor" number="16">
+<h1><span class="header-section-number">16</span> Helpers for simulations in the paper<a href="helpers-for-simulations-in-the-paper.html#helpers-for-simulations-in-the-paper" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>There are two alternatives to consider when estimating mixture models in a
+series of cytograms.</p>
+<ul>
+<li>The first is to estimate the mixture models to be identical across all time
+points. This is equivalent to collapsing all cytograms into one and estimating
+a single Gaussian mixture model on it.</li>
+<li>The second alternative is to estimate separate Gaussian mixture models on each
+cytogram, then connect the cytograms as much as one can, e.g., by finding
+similar clusters across time points and combining them.</li>
+</ul>
+<div id="two-alternative-estimators" class="section level2 hasAnchor" number="16.1">
+<h2><span class="header-section-number">16.1</span> Two alternative estimators<a href="helpers-for-simulations-in-the-paper.html#two-alternative-estimators" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We will call the two alternatives <code>underfit_flowmean()</code> and <code>overfit_flowmean()</code>.</p>
+<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="helpers-for-simulations-in-the-paper.html#cb230-1" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">document</span>() <span class="co"># &lt;-- use instead of devtools::document() </span></span></code></pre></div>
+<p>Here is a plotter function.</p>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="helpers-for-simulations-in-the-paper.html#cb231-1" tabindex="-1"></a><span class="co">#&#39; Pool the entire series of cytograms, fit a flowMeans model, and re-aggregate parameters</span></span>
+<span id="cb231-2"><a href="helpers-for-simulations-in-the-paper.html#cb231-2" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb231-3"><a href="helpers-for-simulations-in-the-paper.html#cb231-3" tabindex="-1"></a><span class="co">#&#39; @param ylist Data.</span></span>
+<span id="cb231-4"><a href="helpers-for-simulations-in-the-paper.html#cb231-4" tabindex="-1"></a><span class="co">#&#39; @param numclust Number of clusters.</span></span>
+<span id="cb231-5"><a href="helpers-for-simulations-in-the-paper.html#cb231-5" tabindex="-1"></a><span class="co">#&#39; @return List object with flowtrend model estimates using l=lprob=0 and</span></span>
+<span id="cb231-6"><a href="helpers-for-simulations-in-the-paper.html#cb231-6" tabindex="-1"></a><span class="co">#&#39;   extremely large regularization parameters so that all cytograms are the</span></span>
+<span id="cb231-7"><a href="helpers-for-simulations-in-the-paper.html#cb231-7" tabindex="-1"></a><span class="co">#&#39;   same across time.</span></span>
+<span id="cb231-8"><a href="helpers-for-simulations-in-the-paper.html#cb231-8" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb231-9"><a href="helpers-for-simulations-in-the-paper.html#cb231-9" tabindex="-1"></a><span id='underfit_flowmeans'>underfit_flowmeans</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, numclust){</span>
+<span id="cb231-10"><a href="helpers-for-simulations-in-the-paper.html#cb231-10" tabindex="-1"></a></span>
+<span id="cb231-11"><a href="helpers-for-simulations-in-the-paper.html#cb231-11" tabindex="-1"></a>  <span class="do">## Pool all data</span></span>
+<span id="cb231-12"><a href="helpers-for-simulations-in-the-paper.html#cb231-12" tabindex="-1"></a>  TT <span class="ot">&lt;-</span> <span class="fu">length</span>(ylist)</span>
+<span id="cb231-13"><a href="helpers-for-simulations-in-the-paper.html#cb231-13" tabindex="-1"></a>  nt <span class="ot">&lt;-</span> <span class="fu">sapply</span>(ylist, nrow)</span>
+<span id="cb231-14"><a href="helpers-for-simulations-in-the-paper.html#cb231-14" tabindex="-1"></a>  ylist_pooled <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, ylist) <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
+<span id="cb231-15"><a href="helpers-for-simulations-in-the-paper.html#cb231-15" tabindex="-1"></a></span>
+<span id="cb231-16"><a href="helpers-for-simulations-in-the-paper.html#cb231-16" tabindex="-1"></a>  <span class="do">## Fit the model</span></span>
+<span id="cb231-17"><a href="helpers-for-simulations-in-the-paper.html#cb231-17" tabindex="-1"></a>  fmns_pooled <span class="ot">&lt;-</span> flowMeans<span class="sc">::</span><span class="fu">flowMeans</span>(<span class="at">x =</span> ylist_pooled, <span class="at">NumC =</span> numclust)</span>
+<span id="cb231-18"><a href="helpers-for-simulations-in-the-paper.html#cb231-18" tabindex="-1"></a>  labeled_ylist <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Y =</span> ylist_pooled<span class="sc">$</span>Y,</span>
+<span id="cb231-19"><a href="helpers-for-simulations-in-the-paper.html#cb231-19" tabindex="-1"></a>                              <span class="at">Cluster =</span> fmns_pooled<span class="sc">@</span>Label,</span>
+<span id="cb231-20"><a href="helpers-for-simulations-in-the-paper.html#cb231-20" tabindex="-1"></a>                              <span class="at">Time =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="at">times =</span> nt))</span>
+<span id="cb231-21"><a href="helpers-for-simulations-in-the-paper.html#cb231-21" tabindex="-1"></a>  </span>
+<span id="cb231-22"><a href="helpers-for-simulations-in-the-paper.html#cb231-22" tabindex="-1"></a>  <span class="do">## Format nicer output for objective calculations</span></span>
+<span id="cb231-23"><a href="helpers-for-simulations-in-the-paper.html#cb231-23" tabindex="-1"></a>  params <span class="ot">&lt;-</span> labeled_ylist <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Cluster, Time) <span class="sc">%&gt;%</span> </span>
+<span id="cb231-24"><a href="helpers-for-simulations-in-the-paper.html#cb231-24" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">mu =</span> <span class="fu">mean</span>(Y), <span class="at">prob =</span> <span class="fu">n</span>(), <span class="at">sigma =</span> <span class="fu">var</span>(Y)) <span class="sc">%&gt;%</span> </span>
+<span id="cb231-25"><a href="helpers-for-simulations-in-the-paper.html#cb231-25" tabindex="-1"></a>    <span class="fu">group_by</span>(Time) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">prob =</span> prob<span class="sc">/</span><span class="fu">sum</span>(prob))</span>
+<span id="cb231-26"><a href="helpers-for-simulations-in-the-paper.html#cb231-26" tabindex="-1"></a>  mu <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> TT, <span class="at">ncol =</span> numclust)</span>
+<span id="cb231-27"><a href="helpers-for-simulations-in-the-paper.html#cb231-27" tabindex="-1"></a>  sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> TT, <span class="at">ncol =</span> numclust)</span>
+<span id="cb231-28"><a href="helpers-for-simulations-in-the-paper.html#cb231-28" tabindex="-1"></a>  prob <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> TT, <span class="at">ncol =</span> numclust)</span>
+<span id="cb231-29"><a href="helpers-for-simulations-in-the-paper.html#cb231-29" tabindex="-1"></a>  </span>
+<span id="cb231-30"><a href="helpers-for-simulations-in-the-paper.html#cb231-30" tabindex="-1"></a>  <span class="do">## Fill in missing times for some clusters</span></span>
+<span id="cb231-31"><a href="helpers-for-simulations-in-the-paper.html#cb231-31" tabindex="-1"></a>  <span class="cf">for</span>(tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT){</span>
+<span id="cb231-32"><a href="helpers-for-simulations-in-the-paper.html#cb231-32" tabindex="-1"></a>    </span>
+<span id="cb231-33"><a href="helpers-for-simulations-in-the-paper.html#cb231-33" tabindex="-1"></a>    params.tt <span class="ot">&lt;-</span> params <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Time <span class="sc">==</span> tt)</span>
+<span id="cb231-34"><a href="helpers-for-simulations-in-the-paper.html#cb231-34" tabindex="-1"></a>    <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){</span>
+<span id="cb231-35"><a href="helpers-for-simulations-in-the-paper.html#cb231-35" tabindex="-1"></a>      </span>
+<span id="cb231-36"><a href="helpers-for-simulations-in-the-paper.html#cb231-36" tabindex="-1"></a>      mu[tt,iclust] <span class="ot">&lt;-</span> params.tt<span class="sc">$</span>mu[iclust]</span>
+<span id="cb231-37"><a href="helpers-for-simulations-in-the-paper.html#cb231-37" tabindex="-1"></a>      sigma[tt,iclust] <span class="ot">&lt;-</span> params.tt<span class="sc">$</span>sigma[iclust]</span>
+<span id="cb231-38"><a href="helpers-for-simulations-in-the-paper.html#cb231-38" tabindex="-1"></a>      prob[tt,iclust] <span class="ot">&lt;-</span> params.tt<span class="sc">$</span>prob[iclust]</span>
+<span id="cb231-39"><a href="helpers-for-simulations-in-the-paper.html#cb231-39" tabindex="-1"></a>      </span>
+<span id="cb231-40"><a href="helpers-for-simulations-in-the-paper.html#cb231-40" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">is.na</span>(mu[tt,iclust])){</span>
+<span id="cb231-41"><a href="helpers-for-simulations-in-the-paper.html#cb231-41" tabindex="-1"></a>        mu[tt,iclust] <span class="ot">&lt;-</span> mu[tt<span class="dv">-1</span>,iclust]</span>
+<span id="cb231-42"><a href="helpers-for-simulations-in-the-paper.html#cb231-42" tabindex="-1"></a>      }</span>
+<span id="cb231-43"><a href="helpers-for-simulations-in-the-paper.html#cb231-43" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">is.na</span>(sigma[tt,iclust])){</span>
+<span id="cb231-44"><a href="helpers-for-simulations-in-the-paper.html#cb231-44" tabindex="-1"></a>        sigma[tt,iclust] <span class="ot">&lt;-</span> sigma[tt<span class="dv">-1</span>,iclust]</span>
+<span id="cb231-45"><a href="helpers-for-simulations-in-the-paper.html#cb231-45" tabindex="-1"></a>      }</span>
+<span id="cb231-46"><a href="helpers-for-simulations-in-the-paper.html#cb231-46" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">is.na</span>(prob[tt,iclust])){</span>
+<span id="cb231-47"><a href="helpers-for-simulations-in-the-paper.html#cb231-47" tabindex="-1"></a>        prob[tt,iclust] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb231-48"><a href="helpers-for-simulations-in-the-paper.html#cb231-48" tabindex="-1"></a>      }</span>
+<span id="cb231-49"><a href="helpers-for-simulations-in-the-paper.html#cb231-49" tabindex="-1"></a>    }</span>
+<span id="cb231-50"><a href="helpers-for-simulations-in-the-paper.html#cb231-50" tabindex="-1"></a>  }</span>
+<span id="cb231-51"><a href="helpers-for-simulations-in-the-paper.html#cb231-51" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">labeled_ylist =</span> labeled_ylist,</span>
+<span id="cb231-52"><a href="helpers-for-simulations-in-the-paper.html#cb231-52" tabindex="-1"></a>              <span class="at">params =</span> params,</span>
+<span id="cb231-53"><a href="helpers-for-simulations-in-the-paper.html#cb231-53" tabindex="-1"></a>              <span class="at">mu =</span> mu,</span>
+<span id="cb231-54"><a href="helpers-for-simulations-in-the-paper.html#cb231-54" tabindex="-1"></a>              <span class="at">prob =</span> prob,</span>
+<span id="cb231-55"><a href="helpers-for-simulations-in-the-paper.html#cb231-55" tabindex="-1"></a>              <span class="at">sigma =</span> sigma,</span>
+<span id="cb231-56"><a href="helpers-for-simulations-in-the-paper.html#cb231-56" tabindex="-1"></a>              <span class="at">numclust =</span> numclust))</span>
+<span id="cb231-57"><a href="helpers-for-simulations-in-the-paper.html#cb231-57" tabindex="-1"></a>}</span></code></pre></div>
+<p>Here’s a helper to reorder the clusters of the output created using
+<code><a href='helpers-for-simulations-in-the-paper.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> or <code><a href='helpers-for-simulations-in-the-paper.html#overfit_flowmeans'>overfit_flowmeans</a>()</code>.</p>
+<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="helpers-for-simulations-in-the-paper.html#cb232-1" tabindex="-1"></a><span class="co">#&#39; Plotter for underfit and overfit flowmeans.</span></span>
+<span id="cb232-2"><a href="helpers-for-simulations-in-the-paper.html#cb232-2" tabindex="-1"></a><span class="co">#&#39; @param ylist Data</span></span>
+<span id="cb232-3"><a href="helpers-for-simulations-in-the-paper.html#cb232-3" tabindex="-1"></a><span class="co">#&#39; @param obj Output from \code{<a href='helpers-for-simulations-in-the-paper.html#underfit_flowmeans'>underfit_flowmeans</a>()}</span></span>
+<span id="cb232-4"><a href="helpers-for-simulations-in-the-paper.html#cb232-4" tabindex="-1"></a><span class="co">#&#39; @return ggplot object</span></span>
+<span id="cb232-5"><a href="helpers-for-simulations-in-the-paper.html#cb232-5" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb232-6"><a href="helpers-for-simulations-in-the-paper.html#cb232-6" tabindex="-1"></a><span id='plot_1d_flowmeans'>plot_1d_flowmeans</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(obj, ylist){</span>
+<span id="cb232-7"><a href="helpers-for-simulations-in-the-paper.html#cb232-7" tabindex="-1"></a>  <span class="do">## Make plot of only data</span></span>
+<span id="cb232-8"><a href="helpers-for-simulations-in-the-paper.html#cb232-8" tabindex="-1"></a></span>
+<span id="cb232-9"><a href="helpers-for-simulations-in-the-paper.html#cb232-9" tabindex="-1"></a>  gg <span class="ot">=</span> <a href='package-setup.html#plot_1d'>plot_1d</a>(ylist)</span>
+<span id="cb232-10"><a href="helpers-for-simulations-in-the-paper.html#cb232-10" tabindex="-1"></a></span>
+<span id="cb232-11"><a href="helpers-for-simulations-in-the-paper.html#cb232-11" tabindex="-1"></a>  <span id='my_wrangle'>my_wrangle</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(a, values_to){</span>
+<span id="cb232-12"><a href="helpers-for-simulations-in-the-paper.html#cb232-12" tabindex="-1"></a>    a <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="st">&quot;1&quot;</span>, <span class="st">&quot;2&quot;</span>, <span class="st">&quot;3&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb232-13"><a href="helpers-for-simulations-in-the-paper.html#cb232-13" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">time=</span><span class="fu">row_number</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb232-14"><a href="helpers-for-simulations-in-the-paper.html#cb232-14" tabindex="-1"></a>      <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> values_to)</span>
+<span id="cb232-15"><a href="helpers-for-simulations-in-the-paper.html#cb232-15" tabindex="-1"></a>  }</span>
+<span id="cb232-16"><a href="helpers-for-simulations-in-the-paper.html#cb232-16" tabindex="-1"></a></span>
+<span id="cb232-17"><a href="helpers-for-simulations-in-the-paper.html#cb232-17" tabindex="-1"></a>  numclust <span class="ot">=</span> obj<span class="sc">$</span>numclust</span>
+<span id="cb232-18"><a href="helpers-for-simulations-in-the-paper.html#cb232-18" tabindex="-1"></a>  mn_long <span class="ot">=</span> obj<span class="sc">$</span>mu <span class="sc">%&gt;%</span> <a href='helpers-for-simulations-in-the-paper.html#my_wrangle'>my_wrangle</a>(<span class="st">&quot;mean&quot;</span>)</span>
+<span id="cb232-19"><a href="helpers-for-simulations-in-the-paper.html#cb232-19" tabindex="-1"></a>  prob_long <span class="ot">=</span> obj<span class="sc">$</span>prob <span class="sc">%&gt;%</span> <a href='helpers-for-simulations-in-the-paper.html#my_wrangle'>my_wrangle</a>(<span class="st">&quot;prob&quot;</span>)</span>
+<span id="cb232-20"><a href="helpers-for-simulations-in-the-paper.html#cb232-20" tabindex="-1"></a>  <span class="do">## prob_long = probmat %&gt;% pivot_longer(-time, names_to = &quot;cluster&quot;, values_to = &quot;prob&quot;)</span></span>
+<span id="cb232-21"><a href="helpers-for-simulations-in-the-paper.html#cb232-21" tabindex="-1"></a>  est_long <span class="ot">=</span> <span class="fu">full_join</span>(mn_long, prob_long, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;time&quot;</span>,<span class="st">&quot;cluster&quot;</span>))</span>
+<span id="cb232-22"><a href="helpers-for-simulations-in-the-paper.html#cb232-22" tabindex="-1"></a>  gg <span class="ot">=</span> gg <span class="sc">+</span> <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">linewidth =</span> prob, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
+<span id="cb232-23"><a href="helpers-for-simulations-in-the-paper.html#cb232-23" tabindex="-1"></a>                        <span class="at">data =</span> est_long,</span>
+<span id="cb232-24"><a href="helpers-for-simulations-in-the-paper.html#cb232-24" tabindex="-1"></a>                        <span class="at">lineend =</span> <span class="st">&quot;round&quot;</span>, <span class="at">linejoin=</span><span class="st">&quot;mitre&quot;</span>)</span>
+<span id="cb232-25"><a href="helpers-for-simulations-in-the-paper.html#cb232-25" tabindex="-1"></a>  </span>
+<span id="cb232-26"><a href="helpers-for-simulations-in-the-paper.html#cb232-26" tabindex="-1"></a>  <span class="do">## Add the estimated 95% probability regions for data.</span></span>
+<span id="cb232-27"><a href="helpers-for-simulations-in-the-paper.html#cb232-27" tabindex="-1"></a>  <span class="do">## stdev = obj$sigma %&gt;% .[,,1] %&gt;% sqrt()</span></span>
+<span id="cb232-28"><a href="helpers-for-simulations-in-the-paper.html#cb232-28" tabindex="-1"></a>  sigma_long <span class="ot">=</span> obj<span class="sc">$</span>sigma <span class="sc">%&gt;%</span> <span class="fu">sqrt</span>() <span class="sc">%&gt;%</span> <a href='helpers-for-simulations-in-the-paper.html#my_wrangle'>my_wrangle</a>(<span class="st">&quot;stdev&quot;</span>)</span>
+<span id="cb232-29"><a href="helpers-for-simulations-in-the-paper.html#cb232-29" tabindex="-1"></a>  band_long <span class="ot">=</span> <span class="fu">full_join</span>(mn_long, sigma_long, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;time&quot;</span>, <span class="st">&quot;cluster&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb232-30"><a href="helpers-for-simulations-in-the-paper.html#cb232-30" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">upper =</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev)  <span class="sc">%&gt;%</span> </span>
+<span id="cb232-31"><a href="helpers-for-simulations-in-the-paper.html#cb232-31" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lower =</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev)</span>
+<span id="cb232-32"><a href="helpers-for-simulations-in-the-paper.html#cb232-32" tabindex="-1"></a></span>
+<span id="cb232-33"><a href="helpers-for-simulations-in-the-paper.html#cb232-33" tabindex="-1"></a>  gg <span class="ot">=</span> gg <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> upper, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
+<span id="cb232-34"><a href="helpers-for-simulations-in-the-paper.html#cb232-34" tabindex="-1"></a>                 <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(.<span class="dv">7</span>), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb232-35"><a href="helpers-for-simulations-in-the-paper.html#cb232-35" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> lower, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
+<span id="cb232-36"><a href="helpers-for-simulations-in-the-paper.html#cb232-36" tabindex="-1"></a>              <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(.<span class="dv">7</span>), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb232-37"><a href="helpers-for-simulations-in-the-paper.html#cb232-37" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">size =</span> <span class="st">&quot;none&quot;</span>) <span class="co"># To turn off line size from legend</span></span>
+<span id="cb232-38"><a href="helpers-for-simulations-in-the-paper.html#cb232-38" tabindex="-1"></a>  <span class="fu">return</span>(gg)</span>
+<span id="cb232-39"><a href="helpers-for-simulations-in-the-paper.html#cb232-39" tabindex="-1"></a>}</span></code></pre></div>
+<p>Next, coding <code><a href='helpers-for-simulations-in-the-paper.html#overfit_flowmeans'>overfit_flowmeans</a>()</code>:</p>
+<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="helpers-for-simulations-in-the-paper.html#cb233-1" tabindex="-1"></a><span class="co">#&#39; Reordering function</span></span>
+<span id="cb233-2"><a href="helpers-for-simulations-in-the-paper.html#cb233-2" tabindex="-1"></a><span id='reorder_flowmeans'>reorder_flowmeans</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(obj, new_order){</span>
+<span id="cb233-3"><a href="helpers-for-simulations-in-the-paper.html#cb233-3" tabindex="-1"></a>  obj<span class="sc">$</span>prob <span class="ot">=</span> obj<span class="sc">$</span>prob[,new_order]</span>
+<span id="cb233-4"><a href="helpers-for-simulations-in-the-paper.html#cb233-4" tabindex="-1"></a>  obj<span class="sc">$</span>mu <span class="ot">=</span> obj<span class="sc">$</span>mu[,new_order]</span>
+<span id="cb233-5"><a href="helpers-for-simulations-in-the-paper.html#cb233-5" tabindex="-1"></a>  obj<span class="sc">$</span>sigma <span class="ot">=</span> obj<span class="sc">$</span>sigma[,new_order]</span>
+<span id="cb233-6"><a href="helpers-for-simulations-in-the-paper.html#cb233-6" tabindex="-1"></a>  obj<span class="sc">$</span>relabels <span class="ot">=</span>  <span class="fu">lapply</span>(obj<span class="sc">$</span>relabels, <span class="cf">function</span>(a){</span>
+<span id="cb233-7"><a href="helpers-for-simulations-in-the-paper.html#cb233-7" tabindex="-1"></a>    a[a<span class="sc">==</span><span class="dv">1</span>] <span class="ot">=</span> new_order[<span class="dv">1</span>]</span>
+<span id="cb233-8"><a href="helpers-for-simulations-in-the-paper.html#cb233-8" tabindex="-1"></a>    a[a<span class="sc">==</span><span class="dv">2</span>] <span class="ot">=</span> new_order[<span class="dv">2</span>] <span class="do">## 3</span></span>
+<span id="cb233-9"><a href="helpers-for-simulations-in-the-paper.html#cb233-9" tabindex="-1"></a>    a[a<span class="sc">==</span><span class="dv">3</span>] <span class="ot">=</span> new_order[<span class="dv">3</span>] <span class="do">## 2</span></span>
+<span id="cb233-10"><a href="helpers-for-simulations-in-the-paper.html#cb233-10" tabindex="-1"></a>    <span class="fu">return</span>(a)</span>
+<span id="cb233-11"><a href="helpers-for-simulations-in-the-paper.html#cb233-11" tabindex="-1"></a>  })</span>
+<span id="cb233-12"><a href="helpers-for-simulations-in-the-paper.html#cb233-12" tabindex="-1"></a>  <span class="fu">return</span>(obj)</span>
+<span id="cb233-13"><a href="helpers-for-simulations-in-the-paper.html#cb233-13" tabindex="-1"></a>}</span></code></pre></div>
+<p>The <code>many_mixtures()</code> function uses a few helpers:</p>
+<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="helpers-for-simulations-in-the-paper.html#cb234-1" tabindex="-1"></a><span class="co">#&#39; Apply flowmeans sequentially and then cluster match</span></span>
+<span id="cb234-2"><a href="helpers-for-simulations-in-the-paper.html#cb234-2" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb234-3"><a href="helpers-for-simulations-in-the-paper.html#cb234-3" tabindex="-1"></a><span class="co">#&#39; @param ylist Data.</span></span>
+<span id="cb234-4"><a href="helpers-for-simulations-in-the-paper.html#cb234-4" tabindex="-1"></a><span class="co">#&#39; @param numclust Number of clusters.</span></span>
+<span id="cb234-5"><a href="helpers-for-simulations-in-the-paper.html#cb234-5" tabindex="-1"></a><span class="co">#&#39; @return </span></span>
+<span id="cb234-6"><a href="helpers-for-simulations-in-the-paper.html#cb234-6" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb234-7"><a href="helpers-for-simulations-in-the-paper.html#cb234-7" tabindex="-1"></a><span id='overfit_flowmeans'>overfit_flowmeans</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, numclust, <span class="at">verbose =</span> <span class="cn">FALSE</span>){</span>
+<span id="cb234-8"><a href="helpers-for-simulations-in-the-paper.html#cb234-8" tabindex="-1"></a>  </span>
+<span id="cb234-9"><a href="helpers-for-simulations-in-the-paper.html#cb234-9" tabindex="-1"></a>  fmns_obj <span class="ot">&lt;-</span> <span class="fu">lapply</span>(ylist, <span class="at">FUN =</span> flowmeans_each, <span class="at">numclust =</span> numclust)</span>
+<span id="cb234-10"><a href="helpers-for-simulations-in-the-paper.html#cb234-10" tabindex="-1"></a>  hybrid_out <span class="ot">&lt;-</span> <a href='helpers-for-simulations-in-the-paper.html#match_clusters'>match_clusters</a>(fmns_obj)</span>
+<span id="cb234-11"><a href="helpers-for-simulations-in-the-paper.html#cb234-11" tabindex="-1"></a>  <span class="fu">return</span>(hybrid_out)</span>
+<span id="cb234-12"><a href="helpers-for-simulations-in-the-paper.html#cb234-12" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb235-1"><a href="helpers-for-simulations-in-the-paper.html#cb235-1" tabindex="-1"></a><span class="co">#&#39; Apply flowmeans in each.</span></span>
+<span id="cb235-2"><a href="helpers-for-simulations-in-the-paper.html#cb235-2" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb235-3"><a href="helpers-for-simulations-in-the-paper.html#cb235-3" tabindex="-1"></a><span class="co">#&#39; @param ylist Data.</span></span>
+<span id="cb235-4"><a href="helpers-for-simulations-in-the-paper.html#cb235-4" tabindex="-1"></a><span class="co">#&#39; @param numclust Number of clusters.</span></span>
+<span id="cb235-5"><a href="helpers-for-simulations-in-the-paper.html#cb235-5" tabindex="-1"></a><span class="co">#&#39; @return </span></span>
+<span id="cb235-6"><a href="helpers-for-simulations-in-the-paper.html#cb235-6" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb235-7"><a href="helpers-for-simulations-in-the-paper.html#cb235-7" tabindex="-1"></a><span id='flowmeans_each'>flowmeans_each</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, numclust){</span>
+<span id="cb235-8"><a href="helpers-for-simulations-in-the-paper.html#cb235-8" tabindex="-1"></a></span>
+<span id="cb235-9"><a href="helpers-for-simulations-in-the-paper.html#cb235-9" tabindex="-1"></a>  <span class="do">## Get cluster labels from the peaks</span></span>
+<span id="cb235-10"><a href="helpers-for-simulations-in-the-paper.html#cb235-10" tabindex="-1"></a>  fmns_obj <span class="ot">&lt;-</span> flowMeans<span class="sc">::</span><span class="fu">flowMeans</span>(<span class="at">x =</span> ylist, <span class="at">NumC =</span> numclust)</span>
+<span id="cb235-11"><a href="helpers-for-simulations-in-the-paper.html#cb235-11" tabindex="-1"></a>  labeled_ylist <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">cluster =</span> fmns_obj<span class="sc">@</span>Label, ylist)</span>
+<span id="cb235-12"><a href="helpers-for-simulations-in-the-paper.html#cb235-12" tabindex="-1"></a>  </span>
+<span id="cb235-13"><a href="helpers-for-simulations-in-the-paper.html#cb235-13" tabindex="-1"></a>  <span class="do">## Calculate cluster parameters</span></span>
+<span id="cb235-14"><a href="helpers-for-simulations-in-the-paper.html#cb235-14" tabindex="-1"></a>  cluster_params <span class="ot">&lt;-</span> labeled_ylist <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(cluster) <span class="sc">%&gt;%</span> </span>
+<span id="cb235-15"><a href="helpers-for-simulations-in-the-paper.html#cb235-15" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">mu =</span> <span class="fu">mean</span>(Y),</span>
+<span id="cb235-16"><a href="helpers-for-simulations-in-the-paper.html#cb235-16" tabindex="-1"></a>              <span class="at">prob =</span> <span class="fu">n</span>()<span class="sc">/</span><span class="fu">nrow</span>(labeled_ylist), </span>
+<span id="cb235-17"><a href="helpers-for-simulations-in-the-paper.html#cb235-17" tabindex="-1"></a>              <span class="at">sigma =</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(<span class="fu">var</span>(Y)), <span class="fu">var</span>(Y), <span class="fl">1e-10</span>))</span>
+<span id="cb235-18"><a href="helpers-for-simulations-in-the-paper.html#cb235-18" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">fmns_obj =</span> fmns_obj, <span class="at">cluster_params =</span> cluster_params))</span>
+<span id="cb235-19"><a href="helpers-for-simulations-in-the-paper.html#cb235-19" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="example-using-underfit_flowmeans-and-overfit_flowmeans" class="section level2 hasAnchor" number="16.2">
+<h2><span class="header-section-number">16.2</span> Example using <code><a href='helpers-for-simulations-in-the-paper.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations-in-the-paper.html#overfit_flowmeans'>overfit_flowmeans</a>()</code><a href="helpers-for-simulations-in-the-paper.html#example-using-underfit_flowmeans-and-overfit_flowmeans" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb236-1"><a href="helpers-for-simulations-in-the-paper.html#cb236-1" tabindex="-1"></a><span class="co">#&#39; Apply the hungarian matching algorithm to each time point.</span></span>
+<span id="cb236-2"><a href="helpers-for-simulations-in-the-paper.html#cb236-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb236-3"><a href="helpers-for-simulations-in-the-paper.html#cb236-3" tabindex="-1"></a><span class="co">#&#39; @param flowmeans_obj</span></span>
+<span id="cb236-4"><a href="helpers-for-simulations-in-the-paper.html#cb236-4" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb236-5"><a href="helpers-for-simulations-in-the-paper.html#cb236-5" tabindex="-1"></a><span class="co">#&#39; @return</span></span>
+<span id="cb236-6"><a href="helpers-for-simulations-in-the-paper.html#cb236-6" tabindex="-1"></a><span id='match_clusters'>match_clusters</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(fmns_obj){</span>
+<span id="cb236-7"><a href="helpers-for-simulations-in-the-paper.html#cb236-7" tabindex="-1"></a>  </span>
+<span id="cb236-8"><a href="helpers-for-simulations-in-the-paper.html#cb236-8" tabindex="-1"></a>  <span class="do">## Initialize some objects</span></span>
+<span id="cb236-9"><a href="helpers-for-simulations-in-the-paper.html#cb236-9" tabindex="-1"></a>  TT <span class="ot">&lt;-</span> <span class="fu">length</span>(fmns_obj)</span>
+<span id="cb236-10"><a href="helpers-for-simulations-in-the-paper.html#cb236-10" tabindex="-1"></a>  numc <span class="ot">&lt;-</span> <span class="fu">nrow</span>(fmns_obj[[<span class="dv">1</span>]]<span class="sc">$</span>cluster_params)</span>
+<span id="cb236-11"><a href="helpers-for-simulations-in-the-paper.html#cb236-11" tabindex="-1"></a>  mu <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> TT, <span class="at">ncol =</span> numc)</span>
+<span id="cb236-12"><a href="helpers-for-simulations-in-the-paper.html#cb236-12" tabindex="-1"></a>  sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> TT, <span class="at">ncol =</span> numc)</span>
+<span id="cb236-13"><a href="helpers-for-simulations-in-the-paper.html#cb236-13" tabindex="-1"></a>  prob <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> TT, <span class="at">ncol =</span> numc)</span>
+<span id="cb236-14"><a href="helpers-for-simulations-in-the-paper.html#cb236-14" tabindex="-1"></a>  costs <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, TT)</span>
+<span id="cb236-15"><a href="helpers-for-simulations-in-the-paper.html#cb236-15" tabindex="-1"></a>  relabels <span class="ot">&lt;-</span> <span class="fu">list</span>(fmns_obj[[<span class="dv">1</span>]]<span class="sc">$</span>fmns_obj<span class="sc">@</span>Label)</span>
+<span id="cb236-16"><a href="helpers-for-simulations-in-the-paper.html#cb236-16" tabindex="-1"></a>  </span>
+<span id="cb236-17"><a href="helpers-for-simulations-in-the-paper.html#cb236-17" tabindex="-1"></a>  <span class="do">## First row is spoken for</span></span>
+<span id="cb236-18"><a href="helpers-for-simulations-in-the-paper.html#cb236-18" tabindex="-1"></a>  mu[<span class="dv">1</span>,] <span class="ot">&lt;-</span> fmns_obj[[<span class="dv">1</span>]]<span class="sc">$</span>cluster_params<span class="sc">$</span>mu</span>
+<span id="cb236-19"><a href="helpers-for-simulations-in-the-paper.html#cb236-19" tabindex="-1"></a>  sigma[<span class="dv">1</span>,] <span class="ot">&lt;-</span> fmns_obj[[<span class="dv">1</span>]]<span class="sc">$</span>cluster_params<span class="sc">$</span>sigma</span>
+<span id="cb236-20"><a href="helpers-for-simulations-in-the-paper.html#cb236-20" tabindex="-1"></a>  prob[<span class="dv">1</span>,] <span class="ot">&lt;-</span> fmns_obj[[<span class="dv">1</span>]]<span class="sc">$</span>cluster_params<span class="sc">$</span>prob</span>
+<span id="cb236-21"><a href="helpers-for-simulations-in-the-paper.html#cb236-21" tabindex="-1"></a>  </span>
+<span id="cb236-22"><a href="helpers-for-simulations-in-the-paper.html#cb236-22" tabindex="-1"></a>  <span class="do">## Fill in the rest of the rows by sequentially matching clusters from t-1 to</span></span>
+<span id="cb236-23"><a href="helpers-for-simulations-in-the-paper.html#cb236-23" tabindex="-1"></a>  <span class="do">## t, using the Hungarian Algorithm</span></span>
+<span id="cb236-24"><a href="helpers-for-simulations-in-the-paper.html#cb236-24" tabindex="-1"></a>  <span class="cf">for</span>(tt <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>TT){</span>
+<span id="cb236-25"><a href="helpers-for-simulations-in-the-paper.html#cb236-25" tabindex="-1"></a>    dt_to_tp1 <span class="ot">&lt;-</span> <a href='helpers-for-simulations-in-the-paper.html#my_symmetric_kl'>my_symmetric_kl</a>(<span class="at">c1 =</span> fmns_obj[[tt<span class="dv">-1</span>]]<span class="sc">$</span>cluster_params,</span>
+<span id="cb236-26"><a href="helpers-for-simulations-in-the-paper.html#cb236-26" tabindex="-1"></a>                              <span class="at">c2 =</span> fmns_obj[[tt]]<span class="sc">$</span>cluster_params)</span>
+<span id="cb236-27"><a href="helpers-for-simulations-in-the-paper.html#cb236-27" tabindex="-1"></a>    hng_tt <span class="ot">&lt;-</span> RcppHungarian<span class="sc">::</span><span class="fu">HungarianSolver</span>(dt_to_tp1)</span>
+<span id="cb236-28"><a href="helpers-for-simulations-in-the-paper.html#cb236-28" tabindex="-1"></a>    hng_order <span class="ot">&lt;-</span> hng_tt<span class="sc">$</span>pairs <span class="sc">%&gt;%</span> <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(.[,<span class="dv">2</span>]) <span class="sc">%&gt;%</span> .[,<span class="dv">1</span>]</span>
+<span id="cb236-29"><a href="helpers-for-simulations-in-the-paper.html#cb236-29" tabindex="-1"></a></span>
+<span id="cb236-30"><a href="helpers-for-simulations-in-the-paper.html#cb236-30" tabindex="-1"></a>    fmns_obj[[tt]]<span class="sc">$</span>cluster_params <span class="ot">&lt;-</span> fmns_obj[[tt]]<span class="sc">$</span>cluster_params[hng_order,]</span>
+<span id="cb236-31"><a href="helpers-for-simulations-in-the-paper.html#cb236-31" tabindex="-1"></a>    mu[tt,] <span class="ot">&lt;-</span> fmns_obj[[tt]]<span class="sc">$</span>cluster_params<span class="sc">$</span>mu</span>
+<span id="cb236-32"><a href="helpers-for-simulations-in-the-paper.html#cb236-32" tabindex="-1"></a>    prob[tt,] <span class="ot">&lt;-</span> fmns_obj[[tt]]<span class="sc">$</span>cluster_params<span class="sc">$</span>prob</span>
+<span id="cb236-33"><a href="helpers-for-simulations-in-the-paper.html#cb236-33" tabindex="-1"></a>    sigma[tt,] <span class="ot">&lt;-</span> fmns_obj[[tt]]<span class="sc">$</span>cluster_params<span class="sc">$</span>sigma[hng_order]</span>
+<span id="cb236-34"><a href="helpers-for-simulations-in-the-paper.html#cb236-34" tabindex="-1"></a>    costs[tt] <span class="ot">&lt;-</span> hng_tt<span class="sc">$</span>cost</span>
+<span id="cb236-35"><a href="helpers-for-simulations-in-the-paper.html#cb236-35" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">mean</span>(<span class="fu">abs</span>(mu[tt,] <span class="sc">-</span> mu[tt<span class="dv">-1</span>,]))<span class="sc">/</span><span class="fu">max</span>(<span class="fu">abs</span>(mu[tt,])) <span class="sc">&gt;</span> <span class="dv">1</span>){</span>
+<span id="cb236-36"><a href="helpers-for-simulations-in-the-paper.html#cb236-36" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="fu">paste</span>(<span class="st">&quot;Bad Match at time&quot;</span>, tt, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>))</span>
+<span id="cb236-37"><a href="helpers-for-simulations-in-the-paper.html#cb236-37" tabindex="-1"></a>    }</span>
+<span id="cb236-38"><a href="helpers-for-simulations-in-the-paper.html#cb236-38" tabindex="-1"></a></span>
+<span id="cb236-39"><a href="helpers-for-simulations-in-the-paper.html#cb236-39" tabindex="-1"></a>    <span class="do">## Convert labels</span></span>
+<span id="cb236-40"><a href="helpers-for-simulations-in-the-paper.html#cb236-40" tabindex="-1"></a>    <span id='label.convert'>label.convert</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(c1){hng_tt<span class="sc">$</span>pairs[c1,<span class="dv">2</span>]}</span>
+<span id="cb236-41"><a href="helpers-for-simulations-in-the-paper.html#cb236-41" tabindex="-1"></a>    relabels[[tt]] <span class="ot">&lt;-</span> <span class="fu">sapply</span>(fmns_obj[[tt]]<span class="sc">$</span>fmns_obj<span class="sc">@</span>Label, label.convert)</span>
+<span id="cb236-42"><a href="helpers-for-simulations-in-the-paper.html#cb236-42" tabindex="-1"></a>  }</span>
+<span id="cb236-43"><a href="helpers-for-simulations-in-the-paper.html#cb236-43" tabindex="-1"></a>  </span>
+<span id="cb236-44"><a href="helpers-for-simulations-in-the-paper.html#cb236-44" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">mu =</span> mu, <span class="at">prob =</span> prob, <span class="at">sigma =</span> sigma, <span class="at">costs =</span> costs, <span class="at">relabels =</span> relabels))</span>
+<span id="cb236-45"><a href="helpers-for-simulations-in-the-paper.html#cb236-45" tabindex="-1"></a>}</span>
+<span id="cb236-46"><a href="helpers-for-simulations-in-the-paper.html#cb236-46" tabindex="-1"></a></span>
+<span id="cb236-47"><a href="helpers-for-simulations-in-the-paper.html#cb236-47" tabindex="-1"></a><span class="co">#&#39; Given two K x 2 columns with parameters, make K x K distance matrix.</span></span>
+<span id="cb236-48"><a href="helpers-for-simulations-in-the-paper.html#cb236-48" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb236-49"><a href="helpers-for-simulations-in-the-paper.html#cb236-49" tabindex="-1"></a><span class="co">#&#39; @param c1 Data frame with K rows and 2 columns (mu and sigma)</span></span>
+<span id="cb236-50"><a href="helpers-for-simulations-in-the-paper.html#cb236-50" tabindex="-1"></a><span class="co">#&#39; @param c2 Another data frame of the same size as \code{c1}.</span></span>
+<span id="cb236-51"><a href="helpers-for-simulations-in-the-paper.html#cb236-51" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb236-52"><a href="helpers-for-simulations-in-the-paper.html#cb236-52" tabindex="-1"></a><span class="co">#&#39; @return K x K matrix.</span></span>
+<span id="cb236-53"><a href="helpers-for-simulations-in-the-paper.html#cb236-53" tabindex="-1"></a><span id='my_symmetric_kl'>my_symmetric_kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(c1, c2){</span>
+<span id="cb236-54"><a href="helpers-for-simulations-in-the-paper.html#cb236-54" tabindex="-1"></a>  </span>
+<span id="cb236-55"><a href="helpers-for-simulations-in-the-paper.html#cb236-55" tabindex="-1"></a>  <span class="do">## Make sure were using the same number of clusters</span></span>
+<span id="cb236-56"><a href="helpers-for-simulations-in-the-paper.html#cb236-56" tabindex="-1"></a>  assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">nrow</span>(c1) <span class="sc">==</span> <span class="fu">nrow</span>(c2))</span>
+<span id="cb236-57"><a href="helpers-for-simulations-in-the-paper.html#cb236-57" tabindex="-1"></a>  numclust <span class="ot">&lt;-</span> <span class="fu">nrow</span>(c1)</span>
+<span id="cb236-58"><a href="helpers-for-simulations-in-the-paper.html#cb236-58" tabindex="-1"></a></span>
+<span id="cb236-59"><a href="helpers-for-simulations-in-the-paper.html#cb236-59" tabindex="-1"></a>  <span class="do">## Fill out distance matrix</span></span>
+<span id="cb236-60"><a href="helpers-for-simulations-in-the-paper.html#cb236-60" tabindex="-1"></a>  dist_cs <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">ncol =</span> numclust, <span class="at">nrow =</span> numclust)</span>
+<span id="cb236-61"><a href="helpers-for-simulations-in-the-paper.html#cb236-61" tabindex="-1"></a>  <span class="cf">for</span>(iclust_1 <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){</span>
+<span id="cb236-62"><a href="helpers-for-simulations-in-the-paper.html#cb236-62" tabindex="-1"></a>    <span class="cf">for</span>(iclust_2 <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){</span>
+<span id="cb236-63"><a href="helpers-for-simulations-in-the-paper.html#cb236-63" tabindex="-1"></a>      dist_cs[iclust_2, iclust_1] <span class="ot">&lt;-</span></span>
+<span id="cb236-64"><a href="helpers-for-simulations-in-the-paper.html#cb236-64" tabindex="-1"></a>        <a href='helpers-for-simulations-in-the-paper.html#one_symmetric_kl'>one_symmetric_kl</a>(<span class="at">mu1 =</span> c1<span class="sc">$</span>mu[iclust_1],</span>
+<span id="cb236-65"><a href="helpers-for-simulations-in-the-paper.html#cb236-65" tabindex="-1"></a>                         <span class="at">mu2 =</span> c2<span class="sc">$</span>mu[iclust_2], </span>
+<span id="cb236-66"><a href="helpers-for-simulations-in-the-paper.html#cb236-66" tabindex="-1"></a>                         <span class="at">sigma1 =</span> <span class="fu">sqrt</span>(c1<span class="sc">$</span>sigma[iclust_1]),</span>
+<span id="cb236-67"><a href="helpers-for-simulations-in-the-paper.html#cb236-67" tabindex="-1"></a>                         <span class="at">sigma2 =</span> <span class="fu">sqrt</span>(c2<span class="sc">$</span>sigma[iclust_2]))</span>
+<span id="cb236-68"><a href="helpers-for-simulations-in-the-paper.html#cb236-68" tabindex="-1"></a>    }</span>
+<span id="cb236-69"><a href="helpers-for-simulations-in-the-paper.html#cb236-69" tabindex="-1"></a>  }</span>
+<span id="cb236-70"><a href="helpers-for-simulations-in-the-paper.html#cb236-70" tabindex="-1"></a>  <span class="fu">rownames</span>(dist_cs) <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="st">&quot;C1&quot;</span>, numclust)</span>
+<span id="cb236-71"><a href="helpers-for-simulations-in-the-paper.html#cb236-71" tabindex="-1"></a>  <span class="fu">colnames</span>(dist_cs) <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="st">&quot;C2&quot;</span>, numclust)</span>
+<span id="cb236-72"><a href="helpers-for-simulations-in-the-paper.html#cb236-72" tabindex="-1"></a>  <span class="fu">return</span>(dist_cs)</span>
+<span id="cb236-73"><a href="helpers-for-simulations-in-the-paper.html#cb236-73" tabindex="-1"></a>}</span>
+<span id="cb236-74"><a href="helpers-for-simulations-in-the-paper.html#cb236-74" tabindex="-1"></a></span>
+<span id="cb236-75"><a href="helpers-for-simulations-in-the-paper.html#cb236-75" tabindex="-1"></a><span class="co">#&#39; Symmetric KL divergence between two Gaussian distributions.</span></span>
+<span id="cb236-76"><a href="helpers-for-simulations-in-the-paper.html#cb236-76" tabindex="-1"></a><span class="co">#&#39; @param mu1 Mean for distribution 1.</span></span>
+<span id="cb236-77"><a href="helpers-for-simulations-in-the-paper.html#cb236-77" tabindex="-1"></a><span class="co">#&#39; @param mu2 Mean for distribution 2.</span></span>
+<span id="cb236-78"><a href="helpers-for-simulations-in-the-paper.html#cb236-78" tabindex="-1"></a><span class="co">#&#39; @param sigma1 Standard deviation for distribution 1.</span></span>
+<span id="cb236-79"><a href="helpers-for-simulations-in-the-paper.html#cb236-79" tabindex="-1"></a><span class="co">#&#39; @param sigma2 Standard deviation for distribution 2.</span></span>
+<span id="cb236-80"><a href="helpers-for-simulations-in-the-paper.html#cb236-80" tabindex="-1"></a><span id='one_symmetric_kl'>one_symmetric_kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mu1, mu2, sigma1, sigma2){</span>
+<span id="cb236-81"><a href="helpers-for-simulations-in-the-paper.html#cb236-81" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">length</span>(mu1)<span class="sc">==</span><span class="dv">1</span> <span class="sc">&amp;</span> <span class="fu">length</span>(mu2) <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span></span>
+<span id="cb236-82"><a href="helpers-for-simulations-in-the-paper.html#cb236-82" tabindex="-1"></a>            <span class="fu">length</span>(sigma1) <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> <span class="fu">length</span>(sigma2) <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb236-83"><a href="helpers-for-simulations-in-the-paper.html#cb236-83" tabindex="-1"></a>  kl12 <span class="ot">&lt;-</span> <span class="fu">log</span>(sigma2<span class="sc">/</span>sigma1) <span class="sc">+</span> (sigma1<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (mu1 <span class="sc">-</span> mu2)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb236-84"><a href="helpers-for-simulations-in-the-paper.html#cb236-84" tabindex="-1"></a>  kl21 <span class="ot">&lt;-</span> <span class="fu">log</span>(sigma1<span class="sc">/</span>sigma2) <span class="sc">+</span> (sigma2<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (mu2 <span class="sc">-</span> mu1)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma1<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb236-85"><a href="helpers-for-simulations-in-the-paper.html#cb236-85" tabindex="-1"></a>  kl_sym <span class="ot">&lt;-</span> <span class="fl">0.5</span><span class="sc">*</span>(kl12 <span class="sc">+</span> kl21)</span>
+<span id="cb236-86"><a href="helpers-for-simulations-in-the-paper.html#cb236-86" tabindex="-1"></a>  <span class="fu">return</span>(kl_sym)</span>
+<span id="cb236-87"><a href="helpers-for-simulations-in-the-paper.html#cb236-87" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="evaluating-performance-soft-rand-index" class="section level2 hasAnchor" number="16.3">
+<h2><span class="header-section-number">16.3</span> Evaluating performance: soft RAND index<a href="helpers-for-simulations-in-the-paper.html#evaluating-performance-soft-rand-index" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We will use a “soft” Rand index that replaces the regular Rand index:</p>
+<p><span class="math display">\[ \sum_{i, i&#39;} 1\{ \hat C_i = \hat C_{i&#39;}, C_i^* \neq C_{i&#39;}^*\}.\]</span></p>
+<p>which measures, for every pair of points <span class="math inline">\(i\)</span> and <span class="math inline">\(i&#39;\)</span>, the number of times that
+the two clustering mechanisms <em>disagree</em>.</p>
+<p>Now, let’s say that the two mechanisms give <em>probabilities</em>:</p>
+<p><span class="math display">\[\hat \gamma_{ik} = \hat P(\hat C_i = k),\]</span>
+<span class="math display">\[\hat \gamma^*_{ik} = \hat P(\hat C_i^* = k).\]</span></p>
+<p>Then, the probability that the clustering is the same <span class="math inline">\(P(C_i^* = C_{i&#39;}^*)\)</span> for
+the pair of points <span class="math inline">\(i\)</span> and <span class="math inline">\(i&#39;\)</span> is:</p>
+<p><span class="math display">\[ (\gamma_i^*)^T (\gamma_{i&#39;}^*) = \sum_{k=1} P(C_i = k) P(C_i^* = k) = P(C_i^* = C_{i&#39;}^*).\]</span></p>
+<p>and the probaility they are different is:</p>
+<p><span class="math display">\[ (\gamma_i^*)^T (\gamma_{i&#39;}^*) = \sum_{k=1} P(C_i = k) P(C_i^* = k) = P(C_i^* = C_{i&#39;}^*).\]</span></p>
+<p>So, we can measure the difference as:</p>
+<p><span class="math display">\[\sum_{i,i&#39;} (\hat \gamma_i^T \hat \gamma_{i&#39;})\cdot(1-  \gamma^*_i^T \gamma^*_{i&#39;}) \]</span></p>
+<p>And when one of the clusterings is absolute, we can still use a 0-1 vector.</p>
+<div class="sourceCode" id="cb237"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb237-1"><a href="helpers-for-simulations-in-the-paper.html#cb237-1" tabindex="-1"></a><span class="do">## Generate data</span></span>
+<span id="cb237-2"><a href="helpers-for-simulations-in-the-paper.html#cb237-2" tabindex="-1"></a>numclust <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb237-3"><a href="helpers-for-simulations-in-the-paper.html#cb237-3" tabindex="-1"></a>TT <span class="ot">=</span> <span class="dv">100</span></span>
+<span id="cb237-4"><a href="helpers-for-simulations-in-the-paper.html#cb237-4" tabindex="-1"></a>dimdat <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb237-5"><a href="helpers-for-simulations-in-the-paper.html#cb237-5" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">0</span>)</span>
+<span id="cb237-6"><a href="helpers-for-simulations-in-the-paper.html#cb237-6" tabindex="-1"></a>dt <span class="ot">=</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="at">TT =</span> TT, <span class="at">ntlist =</span> <span class="fu">rep</span>(TT, <span class="dv">100</span>))</span>
+<span id="cb237-7"><a href="helpers-for-simulations-in-the-paper.html#cb237-7" tabindex="-1"></a>ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='package-setup.html#dt2ylist'>dt2ylist</a>()</span>
+<span id="cb237-8"><a href="helpers-for-simulations-in-the-paper.html#cb237-8" tabindex="-1"></a>truth <span class="ot">=</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="at">TT =</span> TT, <span class="at">ntlist =</span> <span class="fu">rep</span>(TT, <span class="dv">100</span>), <span class="at">return_model=</span><span class="cn">TRUE</span>)</span>
+<span id="cb237-9"><a href="helpers-for-simulations-in-the-paper.html#cb237-9" tabindex="-1"></a></span>
+<span id="cb237-10"><a href="helpers-for-simulations-in-the-paper.html#cb237-10" tabindex="-1"></a><span class="do">## Fit the two methods</span></span>
+<span id="cb237-11"><a href="helpers-for-simulations-in-the-paper.html#cb237-11" tabindex="-1"></a>obj_underfit <span class="ot">=</span> <a href='helpers-for-simulations-in-the-paper.html#underfit_flowmeans'>underfit_flowmeans</a>(<span class="at">ylist =</span> ylist, <span class="at">numclust =</span> <span class="dv">3</span>)</span>
+<span id="cb237-12"><a href="helpers-for-simulations-in-the-paper.html#cb237-12" tabindex="-1"></a>obj_overfit <span class="ot">=</span> <a href='helpers-for-simulations-in-the-paper.html#overfit_flowmeans'>overfit_flowmeans</a>(<span class="at">ylist =</span> ylist, <span class="at">numclust =</span> <span class="dv">3</span>)</span>
+<span id="cb237-13"><a href="helpers-for-simulations-in-the-paper.html#cb237-13" tabindex="-1"></a></span>
+<span id="cb237-14"><a href="helpers-for-simulations-in-the-paper.html#cb237-14" tabindex="-1"></a><span class="do">## Make the mean plots</span></span>
+<span id="cb237-15"><a href="helpers-for-simulations-in-the-paper.html#cb237-15" tabindex="-1"></a>o <span class="ot">=</span> obj_underfit<span class="sc">$</span>mu <span class="sc">%&gt;%</span> <span class="fu">colMeans</span>() <span class="sc">%&gt;%</span> <span class="fu">order</span>()</span>
+<span id="cb237-16"><a href="helpers-for-simulations-in-the-paper.html#cb237-16" tabindex="-1"></a>obj_underfit <span class="ot">=</span> <a href='helpers-for-simulations-in-the-paper.html#reorder_flowmeans'>reorder_flowmeans</a>(obj_underfit, o)</span>
+<span id="cb237-17"><a href="helpers-for-simulations-in-the-paper.html#cb237-17" tabindex="-1"></a>g1 <span class="ot">=</span> <a href='helpers-for-simulations-in-the-paper.html#plot_1d_flowmeans'>plot_1d_flowmeans</a>(<a href='helpers-for-simulations-in-the-paper.html#reorder_flowmeans'>reorder_flowmeans</a>(obj_underfit, o), ylist) <span class="sc">+</span></span>
+<span id="cb237-18"><a href="helpers-for-simulations-in-the-paper.html#cb237-18" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y=</span>mean, <span class="at">group =</span> cluster), <span class="at">data =</span> truth,  <span class="at">col =</span> <span class="st">&#39;black&#39;</span>)</span>
+<span id="cb237-19"><a href="helpers-for-simulations-in-the-paper.html#cb237-19" tabindex="-1"></a></span>
+<span id="cb237-20"><a href="helpers-for-simulations-in-the-paper.html#cb237-20" tabindex="-1"></a>o <span class="ot">=</span> obj_overfit<span class="sc">$</span>mu <span class="sc">%&gt;%</span> <span class="fu">colMeans</span>() <span class="sc">%&gt;%</span> <span class="fu">order</span>()</span>
+<span id="cb237-21"><a href="helpers-for-simulations-in-the-paper.html#cb237-21" tabindex="-1"></a>obj_overfit <span class="ot">=</span> <a href='helpers-for-simulations-in-the-paper.html#reorder_flowmeans'>reorder_flowmeans</a>(obj_overfit, o)</span>
+<span id="cb237-22"><a href="helpers-for-simulations-in-the-paper.html#cb237-22" tabindex="-1"></a>g2 <span class="ot">=</span> <a href='helpers-for-simulations-in-the-paper.html#plot_1d_flowmeans'>plot_1d_flowmeans</a>(obj_overfit, ylist) <span class="sc">+</span></span>
+<span id="cb237-23"><a href="helpers-for-simulations-in-the-paper.html#cb237-23" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y=</span>mean, <span class="at">group =</span> cluster), <span class="at">data =</span> truth, <span class="at">col =</span> <span class="st">&#39;black&#39;</span>)</span>
+<span id="cb237-24"><a href="helpers-for-simulations-in-the-paper.html#cb237-24" tabindex="-1"></a></span>
+<span id="cb237-25"><a href="helpers-for-simulations-in-the-paper.html#cb237-25" tabindex="-1"></a><span class="fu">do.call</span>(ggpubr<span class="sc">::</span>ggarrange, <span class="fu">c</span>(<span class="fu">list</span>(g1, g2), <span class="at">ncol=</span><span class="dv">1</span>, <span class="at">nrow=</span><span class="dv">2</span>))</span>
+<span id="cb237-26"><a href="helpers-for-simulations-in-the-paper.html#cb237-26" tabindex="-1"></a></span>
+<span id="cb237-27"><a href="helpers-for-simulations-in-the-paper.html#cb237-27" tabindex="-1"></a><span class="do">## Make the probability plots</span></span>
+<span id="cb237-28"><a href="helpers-for-simulations-in-the-paper.html#cb237-28" tabindex="-1"></a>g1 <span class="ot">=</span> obj_overfit<span class="sc">$</span>prob <span class="sc">%&gt;%</span> <a href='helpers-for-simulations-in-the-paper.html#my_wrangle'>my_wrangle</a>(<span class="st">&quot;prob&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb237-29"><a href="helpers-for-simulations-in-the-paper.html#cb237-29" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb237-30"><a href="helpers-for-simulations-in-the-paper.html#cb237-30" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y =</span> prob, <span class="at">group =</span> cluster, <span class="at">col =</span> cluster), <span class="at">size =</span> <span class="fu">rel</span>(<span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb237-31"><a href="helpers-for-simulations-in-the-paper.html#cb237-31" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Estimated cluster probability&quot;</span>) <span class="sc">+</span></span>
+<span id="cb237-32"><a href="helpers-for-simulations-in-the-paper.html#cb237-32" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y=</span>prob, <span class="at">group =</span> cluster), <span class="at">data =</span> truth, <span class="at">col =</span> <span class="st">&#39;black&#39;</span>)</span>
+<span id="cb237-33"><a href="helpers-for-simulations-in-the-paper.html#cb237-33" tabindex="-1"></a></span>
+<span id="cb237-34"><a href="helpers-for-simulations-in-the-paper.html#cb237-34" tabindex="-1"></a>g2 <span class="ot">=</span> obj_underfit<span class="sc">$</span>prob <span class="sc">%&gt;%</span> <a href='helpers-for-simulations-in-the-paper.html#my_wrangle'>my_wrangle</a>(<span class="st">&quot;prob&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb237-35"><a href="helpers-for-simulations-in-the-paper.html#cb237-35" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb237-36"><a href="helpers-for-simulations-in-the-paper.html#cb237-36" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y =</span> prob, <span class="at">group =</span> cluster, <span class="at">col =</span> cluster), <span class="at">size =</span> <span class="fu">rel</span>(<span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb237-37"><a href="helpers-for-simulations-in-the-paper.html#cb237-37" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">&quot;Estimated cluster probability&quot;</span>) <span class="sc">+</span></span>
+<span id="cb237-38"><a href="helpers-for-simulations-in-the-paper.html#cb237-38" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y=</span>prob, <span class="at">group =</span> cluster), <span class="at">data =</span> truth, <span class="at">col =</span> <span class="st">&#39;black&#39;</span>)</span>
+<span id="cb237-39"><a href="helpers-for-simulations-in-the-paper.html#cb237-39" tabindex="-1"></a></span>
+<span id="cb237-40"><a href="helpers-for-simulations-in-the-paper.html#cb237-40" tabindex="-1"></a><span class="fu">do.call</span>(ggpubr<span class="sc">::</span>ggarrange, <span class="fu">c</span>(<span class="fu">list</span>(g1, g2), <span class="at">ncol=</span><span class="dv">1</span>, <span class="at">nrow=</span><span class="dv">2</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb238-1"><a href="helpers-for-simulations-in-the-paper.html#cb238-1" tabindex="-1"></a><span class="co">#&#39; A &quot;soft&quot; version of a rand index between two sets of responsibility</span></span>
+<span id="cb238-2"><a href="helpers-for-simulations-in-the-paper.html#cb238-2" tabindex="-1"></a><span class="co">#&#39; (membership probability) matrices.</span></span>
+<span id="cb238-3"><a href="helpers-for-simulations-in-the-paper.html#cb238-3" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb238-4"><a href="helpers-for-simulations-in-the-paper.html#cb238-4" tabindex="-1"></a><span class="co">#&#39; @param resp_list1 One list of responsibility matrices.</span></span>
+<span id="cb238-5"><a href="helpers-for-simulations-in-the-paper.html#cb238-5" tabindex="-1"></a><span class="co">#&#39; @param resp_list2 Another list of responsibility matrices.</span></span>
+<span id="cb238-6"><a href="helpers-for-simulations-in-the-paper.html#cb238-6" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb238-7"><a href="helpers-for-simulations-in-the-paper.html#cb238-7" tabindex="-1"></a><span class="co">#&#39; @return A single soft rand index number</span></span>
+<span id="cb238-8"><a href="helpers-for-simulations-in-the-paper.html#cb238-8" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb238-9"><a href="helpers-for-simulations-in-the-paper.html#cb238-9" tabindex="-1"></a><span id='soft_rand'>soft_rand</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(resp_list1, resp_list2){</span>
+<span id="cb238-10"><a href="helpers-for-simulations-in-the-paper.html#cb238-10" tabindex="-1"></a>  </span>
+<span id="cb238-11"><a href="helpers-for-simulations-in-the-paper.html#cb238-11" tabindex="-1"></a>  <span id='soft_rand_onetime'>soft_rand_onetime</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(resp1, resp2){</span>
+<span id="cb238-12"><a href="helpers-for-simulations-in-the-paper.html#cb238-12" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">nrow</span>(resp1) <span class="sc">==</span> <span class="fu">nrow</span>(resp2))</span>
+<span id="cb238-13"><a href="helpers-for-simulations-in-the-paper.html#cb238-13" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">ncol</span>(resp1) <span class="sc">==</span> <span class="fu">ncol</span>(resp2))</span>
+<span id="cb238-14"><a href="helpers-for-simulations-in-the-paper.html#cb238-14" tabindex="-1"></a>    nt <span class="ot">=</span> <span class="fu">nrow</span>(resp1)</span>
+<span id="cb238-15"><a href="helpers-for-simulations-in-the-paper.html#cb238-15" tabindex="-1"></a>    </span>
+<span id="cb238-16"><a href="helpers-for-simulations-in-the-paper.html#cb238-16" tabindex="-1"></a>    <span class="do">## Form the score</span></span>
+<span id="cb238-17"><a href="helpers-for-simulations-in-the-paper.html#cb238-17" tabindex="-1"></a>    amat <span class="ot">=</span> resp1 <span class="sc">%*%</span> <span class="fu">t</span>(resp1)</span>
+<span id="cb238-18"><a href="helpers-for-simulations-in-the-paper.html#cb238-18" tabindex="-1"></a>    bmat <span class="ot">=</span> resp2 <span class="sc">%*%</span> <span class="fu">t</span>(resp2)</span>
+<span id="cb238-19"><a href="helpers-for-simulations-in-the-paper.html#cb238-19" tabindex="-1"></a>    multmat1 <span class="ot">=</span> amat <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> bmat)</span>
+<span id="cb238-20"><a href="helpers-for-simulations-in-the-paper.html#cb238-20" tabindex="-1"></a>    multmat2 <span class="ot">=</span> (<span class="dv">1</span><span class="sc">-</span>amat) <span class="sc">*</span> (bmat)</span>
+<span id="cb238-21"><a href="helpers-for-simulations-in-the-paper.html#cb238-21" tabindex="-1"></a>    multmat1[<span class="fu">diag</span>(multmat1)] <span class="ot">=</span> <span class="dv">0</span> <span class="do">## Remove diagonals</span></span>
+<span id="cb238-22"><a href="helpers-for-simulations-in-the-paper.html#cb238-22" tabindex="-1"></a>    multmat2[<span class="fu">diag</span>(multmat2)] <span class="ot">=</span> <span class="dv">0</span> <span class="do">## Remove diagonals</span></span>
+<span id="cb238-23"><a href="helpers-for-simulations-in-the-paper.html#cb238-23" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">sum</span>(multmat1) <span class="sc">+</span> <span class="fu">sum</span>(multmat2))</span>
+<span id="cb238-24"><a href="helpers-for-simulations-in-the-paper.html#cb238-24" tabindex="-1"></a>  }</span>
+<span id="cb238-25"><a href="helpers-for-simulations-in-the-paper.html#cb238-25" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">mapply</span>(soft_rand_onetime, resp_list1, resp_list2))</span>
+<span id="cb238-26"><a href="helpers-for-simulations-in-the-paper.html#cb238-26" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## EM will restart 1 times
+## EM restart: 1
+## 
+ EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2024-03-18 10:45:15
+ EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2024-03-18 10:45:16
+ EM iterations.   3 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2024-03-18 10:45:16
+ EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2024-03-18 10:49:25
+ EM iterations.   5 out of 999 with lapsed time 1 seconds and remaining time 199 seconds and will finish at 2024-03-18 10:48:35
+ EM iterations.   6 out of 999 with lapsed time 1 seconds and remaining time 166 seconds and will finish at 2024-03-18 10:48:02
+ EM iterations.   7 out of 999 with lapsed time 1 seconds and remaining time 142 seconds and will finish at 2024-03-18 10:47:38
+ EM iterations.   8 out of 999 with lapsed time 1 seconds and remaining time 124 seconds and will finish at 2024-03-18 10:47:21
+ EM iterations.   9 out of 999 with lapsed time 1 seconds and remaining time 110 seconds and will finish at 2024-03-18 10:47:07
+ EM iterations.   10 out of 999 with lapsed time 2 seconds and remaining time 198 seconds and will finish at 2024-03-18 10:48:35
+ EM iterations.   11 out of 999 with lapsed time 2 seconds and remaining time 180 seconds and will finish at 2024-03-18 10:48:17
+ EM iterations.   12 out of 999 with lapsed time 2 seconds and remaining time 164 seconds and will finish at 2024-03-18 10:48:01
+ EM iterations.   13 out of 999 with lapsed time 2 seconds and remaining time 152 seconds and will finish at 2024-03-18 10:47:49
+ EM iterations.   14 out of 999 with lapsed time 2 seconds and remaining time 141 seconds and will finish at 2024-03-18 10:47:38
+ EM iterations.   15 out of 999 with lapsed time 2 seconds and remaining time 131 seconds and will finish at 2024-03-18 10:47:28
+ EM iterations.   16 out of 999 with lapsed time 2 seconds and remaining time 123 seconds and will finish at 2024-03-18 10:47:20
+ EM iterations.   17 out of 999 with lapsed time 2 seconds and remaining time 116 seconds and will finish at 2024-03-18 10:47:13
+ EM iterations.   18 out of 999 with lapsed time 2 seconds and remaining time 109 seconds and will finish at 2024-03-18 10:47:07
+ EM iterations.   19 out of 999 with lapsed time 2 seconds and remaining time 103 seconds and will finish at 2024-03-18 10:47:01
+ EM iterations.   20 out of 999 with lapsed time 2 seconds and remaining time 98 seconds and will finish at 2024-03-18 10:46:56
+ EM iterations.   21 out of 999 with lapsed time 3 seconds and remaining time 140 seconds and will finish at 2024-03-18 10:47:38
+ EM iterations.   22 out of 999 with lapsed time 3 seconds and remaining time 133 seconds and will finish at 2024-03-18 10:47:31
+ EM iterations.   23 out of 999 with lapsed time 3 seconds and remaining time 127 seconds and will finish at 2024-03-18 10:47:25</code></pre>
+<pre><code>## EM will restart 1 times
+## EM restart: 1
+## 
+ EM iterations.   1 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2024-03-18 10:45:18</code></pre>
+<pre><code>## Warning in <a href='m-step.html#la_admm_oneclust'>la_admm_oneclust</a>(K = (if (local_adapt) local_adapt_niter else 1), : ADMM didn&#39;t converge for one cluster.</code></pre>
+<pre><code>## 
+ EM iterations.   2 out of 999 with lapsed time 0 seconds and remaining time 0 seconds and will finish at 2024-03-18 10:45:19
+ EM iterations.   3 out of 999 with lapsed time 1 seconds and remaining time 332 seconds and will finish at 2024-03-18 10:50:51
+ EM iterations.   4 out of 999 with lapsed time 1 seconds and remaining time 249 seconds and will finish at 2024-03-18 10:49:28
+ EM iterations.   5 out of 999 with lapsed time 1 seconds and remaining time 199 seconds and will finish at 2024-03-18 10:48:38
+ EM iterations.   6 out of 999 with lapsed time 1 seconds and remaining time 166 seconds and will finish at 2024-03-18 10:48:05
+ EM iterations.   7 out of 999 with lapsed time 1 seconds and remaining time 142 seconds and will finish at 2024-03-18 10:47:41
+ EM iterations.   8 out of 999 with lapsed time 1 seconds and remaining time 124 seconds and will finish at 2024-03-18 10:47:23
+ EM iterations.   9 out of 999 with lapsed time 1 seconds and remaining time 110 seconds and will finish at 2024-03-18 10:47:09
+ EM iterations.   10 out of 999 with lapsed time 1 seconds and remaining time 99 seconds and will finish at 2024-03-18 10:46:58
+ EM iterations.   11 out of 999 with lapsed time 1 seconds and remaining time 90 seconds and will finish at 2024-03-18 10:46:50
+ EM iterations.   12 out of 999 with lapsed time 1 seconds and remaining time 82 seconds and will finish at 2024-03-18 10:46:42
+ EM iterations.   13 out of 999 with lapsed time 2 seconds and remaining time 152 seconds and will finish at 2024-03-18 10:47:52
+ EM iterations.   14 out of 999 with lapsed time 2 seconds and remaining time 141 seconds and will finish at 2024-03-18 10:47:41
+ EM iterations.   15 out of 999 with lapsed time 2 seconds and remaining time 131 seconds and will finish at 2024-03-18 10:47:31
+ EM iterations.   16 out of 999 with lapsed time 2 seconds and remaining time 123 seconds and will finish at 2024-03-18 10:47:23
+ EM iterations.   17 out of 999 with lapsed time 2 seconds and remaining time 116 seconds and will finish at 2024-03-18 10:47:16
+ EM iterations.   18 out of 999 with lapsed time 2 seconds and remaining time 109 seconds and will finish at 2024-03-18 10:47:09
+ EM iterations.   19 out of 999 with lapsed time 2 seconds and remaining time 103 seconds and will finish at 2024-03-18 10:47:03
+ EM iterations.   20 out of 999 with lapsed time 2 seconds and remaining time 98 seconds and will finish at 2024-03-18 10:46:58
+ EM iterations.   21 out of 999 with lapsed time 2 seconds and remaining time 93 seconds and will finish at 2024-03-18 10:46:53
+ EM iterations.   22 out of 999 with lapsed time 2 seconds and remaining time 89 seconds and will finish at 2024-03-18 10:46:50
+ EM iterations.   23 out of 999 with lapsed time 2 seconds and remaining time 85 seconds and will finish at 2024-03-18 10:46:46
+ EM iterations.   24 out of 999 with lapsed time 3 seconds and remaining time 122 seconds and will finish at 2024-03-18 10:47:23
+ EM iterations.   25 out of 999 with lapsed time 3 seconds and remaining time 117 seconds and will finish at 2024-03-18 10:47:18
+ EM iterations.   26 out of 999 with lapsed time 3 seconds and remaining time 112 seconds and will finish at 2024-03-18 10:47:13
+ EM iterations.   27 out of 999 with lapsed time 3 seconds and remaining time 108 seconds and will finish at 2024-03-18 10:47:09
+ EM iterations.   28 out of 999 with lapsed time 3 seconds and remaining time 104 seconds and will finish at 2024-03-18 10:47:05
+ EM iterations.   29 out of 999 with lapsed time 3 seconds and remaining time 100 seconds and will finish at 2024-03-18 10:47:01
+ EM iterations.   30 out of 999 with lapsed time 3 seconds and remaining time 97 seconds and will finish at 2024-03-18 10:46:58
+ EM iterations.   31 out of 999 with lapsed time 3 seconds and remaining time 94 seconds and will finish at 2024-03-18 10:46:55
+ EM iterations.   32 out of 999 with lapsed time 3 seconds and remaining time 91 seconds and will finish at 2024-03-18 10:46:52</code></pre>
+<pre><code>## [1] 185623.2</code></pre>
+<pre><code>## [1] 176154.6</code></pre>
+<pre><code>## [1] 174036.5</code></pre>
+<p><img src="_main_files/figure-html/try-soft-rand-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/try-soft-rand-2.png" width="672" /></p>
+<pre><code>## [1] 185623.2</code></pre>
+<pre><code>## [1] 176154.6</code></pre>
+<p>So up next:</p>
+<ol style="list-style-type: decimal">
+<li><p>run the simulations for several signal sizes; x10 times per signal size.</p></li>
+<li><p>for each of them, measure the adjusted RAND index against the truth (one is hard),</p></li>
+</ol>
+<p>And for the rest of the time, measure the RAND index.</p>
+<p>Organizing the simulations for a moment:</p>
+<ol style="list-style-type: decimal">
+<li><p>output/flowtrend/1dsim-pseudoreal/signal-0/isim-1.
+signal-0 through signal-12
+Run isim = 1,2,3 for each case.</p></li>
+<li><p>Run the 10-fold cross-validation on the</p></li>
+</ol>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="documenting-the-package-and-building.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

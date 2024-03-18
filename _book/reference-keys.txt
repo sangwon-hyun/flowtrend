@@ -4,6 +4,7 @@ plotting-1d-data
 d-data
 generating-2d-data
 plotting-2d-data
+d-data-1
 trend-filtering
 objective-data-log-likelihood
 initial-parameters-for-em-algorithm
@@ -25,6 +26,7 @@ running-cross-validation
 summarizing-the-output
 cv-on-your-own-computer
 plotting
+se-rule-for-cross-validation
 testing-the-flowtrend-method
 id_1d-example
 testing-monotonicity-of-objective-values
@@ -32,3 +34,7 @@ id_2d-example
 working-with-binned-dataset
 unevenly-spaced-inputs-x
 documenting-the-package-and-building
+helpers-for-simulations-in-the-paper
+two-alternative-estimators
+example-using-underfit_flowmeans-and-overfit_flowmeans
+evaluating-performance-soft-rand-index

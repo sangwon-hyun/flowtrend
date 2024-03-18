@@ -97,16 +97,18 @@ get_best_match_from_kl <- function(resp_new, resp_orig){
   ## Return the ordering
   return(o)
 }
+```
 
-##' From two probability matrices, form a (K x K) distance matrix of the
-##' (n)-vectors. The distance between the vectors is the symmetric KL
-##' divergence.
-##'
-##' @param mat1 Matrix 1 of size (n x K).
-##' @param mat2 Matrix 2 of size (n x K).
-##'
-##' @return K x K matrix containing symmetric KL divergence of each column of
-##'   \code{mat1} and \code{mat2}.
+```{r}
+#' From two probability matrices, form a (K x K) distance matrix of the
+#' (n)-vectors. The distance between the vectors is the symmetric KL
+#' divergence.
+#'
+#' @param mat1 Matrix 1 of size (n x K).
+#' @param mat2 Matrix 2 of size (n x K).
+#'
+#' @return K x K matrix containing symmetric KL divergence of each column of
+#'   \code{mat1} and \code{mat2}.
 form_symmetric_kl_distmat <- function(mat1, mat2){
 
   ## Manually add some small, in case some columns are all zero
@@ -126,13 +128,15 @@ form_symmetric_kl_distmat <- function(mat1, mat2){
   stopifnot(all(!is.na(distmat)))
   return(distmat)
 }
+```
 
-##' Symmetric KL divergence, of two probability vectors.
-##'
-##' @param vec1 First probability vector.
-##' @param vec2 Second prbability vector.
-##'
-##' @return Symmetric KL divergence (scalar).
+```{r}
+#' Symmetric KL divergence, of two probability vectors.
+#'
+#' @param vec1 First probability vector.
+#' @param vec2 Second prbability vector.
+#'
+#' @return Symmetric KL divergence (scalar).
 symmetric_kl <- function(vec1, vec2){
   stopifnot(all(vec1 <= 1) & all(vec1 >= 0))
   stopifnot(all(vec2 <= 1) & all(vec2 >= 0))

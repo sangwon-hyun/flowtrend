@@ -16,25 +16,6 @@ gendat_1d <- function(TT, ntlist, offset = 0, return_model = FALSE,
 
   ## Basic checks
   stopifnot(length(ntlist) == TT)
-
-
-  ## ## Temporary
-  ## prob_link = cbind(1:10, (11:2)/2)
-  ## matplot(prob_link)
-  ## probs = exp(prob_link[,1])/(exp(prob_link[,2]) + exp(prob_link[,1]))  
-  ## plot(probs)
-  ## diff(probs) %>% plot()
-  ## ## End of temporary
-
-  ## Make cluster probabilities, by time
-  ## cluster_prob1 = sapply(1:TT, function(tt) 1 + (tt/TT) * 5)
-  ## cluster_prob2 = sapply(1:TT, function(tt) 8 - (tt/TT) * 5)
-  ## cluster_prob3 = rep(3, TT)
-  ## TT = 100
-  ## prob_link1_1 = sapply(1:TT, function(tt){ 3 + (tt/TT) })
-  ## prob_link1_2 = sapply(1:TT, function(tt){ 4 - (tt/TT)*2 })
-  ## prob_link1 = pmin(prob_link1_1, prob_link1_2)
-  ## plot(prob_link1)
   prob_link1 = rep(NA, TT)
   prob_link1[1] = 2
   for(tt in 2:floor(TT/2)){

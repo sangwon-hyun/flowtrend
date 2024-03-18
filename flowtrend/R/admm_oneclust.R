@@ -73,6 +73,7 @@ admm_oneclust <- function(iclust = 1, niter, y,
 
     if(any(abs(mu)>1E2)){
       stop("mu is blowing up!")
+      browser()
       ## break
     }
     wlist = lapply(1:dimdat, function(j){

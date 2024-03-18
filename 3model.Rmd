@@ -1384,6 +1384,7 @@ admm_oneclust <- function(iclust = 1, niter, y,
 
     if(any(abs(mu)>1E2)){
       stop("mu is blowing up!")
+      browser()
       ## break
     }
     wlist = lapply(1:dimdat, function(j){
@@ -2218,6 +2219,7 @@ flowtrend_once <- function(ylist,
                         TT = TT,
                         N = N,
                         l = l,
+                        l_prob = l_prob,
                         x = x,
                         numclust = numclust,
                         lambda = lambda,

@@ -37,12 +37,13 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
 
   ## Check whether this job has been done already.
   filename = make_cvscore_filename(iprob, imu, ifold, irestart)
-  if(file.exists(file.path(destin, filename))){
+  best_filename = make_best_cvscore_filename(iprob, imu, ifold)
+  ## if(file.exists(file.path(destin, filename)) ){
+  if(file.exists(file.path(destin, filename)) | file.exists(file.path(destin, best_filename)) ){
     cat(fill=TRUE)
-    cat(filename, "already done", fill=TRUE)
+    cat(filename, "already done.", fill=TRUE)
     return(NULL)
   }
-
 
   ## Get the seed ready
   if(!is.null(seedtab)){

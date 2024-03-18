@@ -24,8 +24,10 @@ one_job_refit <- function(iprob, imu, destin,
 
     ## Writing file
     filename = make_refit_filename(iprob = iprob, imu = imu, irestart = irestart)
-    if(file.exists(file.path(destin, filename))){
-      cat(filename, "already done", fill=TRUE)
+    best_filename = make_best_refit_filename(iprob, imu)
+    ## if(file.exists(file.path(destin, filename)) ){
+    if(file.exists(file.path(destin, filename)) |  file.exists(file.path(destin, best_filename))){
+      cat(filename, "already done.", fill=TRUE)
       next
     } else {
 

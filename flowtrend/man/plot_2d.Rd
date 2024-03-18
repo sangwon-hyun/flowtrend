@@ -4,7 +4,26 @@
 \alias{plot_2d}
 \title{Simple plotter for 2d particle data.}
 \usage{
-plot_2d(ylist, obj = NULL, tt)
+plot_2d(
+  ylist,
+  countslist = NULL,
+  obj = NULL,
+  tt,
+  point_color = "blue",
+  raster_colours = c("white", "blue")
+)
+}
+\arguments{
+\item{ylist}{data}
+
+\item{countslist}{data}
+
+\item{obj}{flowtrend (or flowmix) object.}
+
+\item{time}{Out of 1 through \code{lengthy(list)}, which time point to plot.}
+}
+\value{
+ggplot object.
 }
 \description{
 Simple plotter for 2d particle data.

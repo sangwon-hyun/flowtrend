@@ -25,6 +25,7 @@ cv_makebest <- function(destin){
   for(iprob in 1:cv_gridsize){
     for(imu in 1:cv_gridsize){
       for(ifold in 1:nfold){
+        print(c(iprob, imu, ifold))
 
         ## If the "best" flowtrend object has already been created, do nothing.
         best_filename = make_best_cvscore_filename(iprob, imu, ifold)
@@ -37,7 +38,7 @@ cv_makebest <- function(destin){
 
           ## If all |nrestart| files exist, delete all files but the best model.
           if(all(!is.na(objectives))){
-            best_irestart = which(objectives == min(objectives))
+            best_irestart = which(objectives == min(objectives)) %>% .[1] ## If there is a tie, leave it.
             keep_only_best(destin, iprob, imu, ifold, nrestart, best_irestart)
           }
           else {
@@ -73,7 +74,7 @@ cv_makebest <- function(destin){
       } else {
         objectives = load_all_refit_objectives(destin, iprob, imu, nrestart)
         if(all(!is.na(objectives))){
-          best_irestart = which(objectives == min(objectives))
+          best_irestart = which(objectives == min(objectives)) %>% .[1] ## If there is a tie, leave it.
           keep_only_best_refit(destin, iprob, imu, nrestart, best_irestart)
         } else {
           print(paste0("iprob=", iprob, " imu=", imu, " had /refit/ objectives:  ", objectives))

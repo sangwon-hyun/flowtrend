@@ -726,12 +726,13 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
 
   ## Check whether this job has been done already.
   filename = make_cvscore_filename(iprob, imu, ifold, irestart)
-  if(file.exists(file.path(destin, filename))){
+  best_filename = make_best_cvscore_filename(iprob, imu, ifold)
+  ## if(file.exists(file.path(destin, filename)) ){
+  if(file.exists(file.path(destin, filename)) | file.exists(file.path(destin, best_filename)) ){
     cat(fill=TRUE)
-    cat(filename, "already done", fill=TRUE)
+    cat(filename, "already done.", fill=TRUE)
     return(NULL)
   }
-
 
   ## Get the seed ready
   if(!is.null(seedtab)){
@@ -858,8 +859,10 @@ one_job_refit <- function(iprob, imu, destin,
 
     ## Writing file
     filename = make_refit_filename(iprob = iprob, imu = imu, irestart = irestart)
-    if(file.exists(file.path(destin, filename))){
-      cat(filename, "already done", fill=TRUE)
+    best_filename = make_best_refit_filename(iprob, imu)
+    ## if(file.exists(file.path(destin, filename)) ){
+    if(file.exists(file.path(destin, filename)) |  file.exists(file.path(destin, best_filename))){
+      cat(filename, "already done.", fill=TRUE)
       next
     } else {
 
@@ -1256,7 +1259,9 @@ cv_summary <- function(destin = ".",
   ## Get the results of the cross-validation.
   a = cv_aggregate(destin)
   cvscore.mat = a$cvscore.mat
+  cvscore.mat.se = a$cvscore.mat.se
   min.inds = a$min.inds
+  min.inds.1se = a$min.inds.1se
 
   ## Get results from refitting
   bestreslist = cv_aggregate_res(destin = destin)
@@ -1268,7 +1273,9 @@ cv_summary <- function(destin = ".",
   }
   out = list(bestres = bestres,
              cvscore.mat = cvscore.mat,
+             cvscore.mat.se = cvscore.mat.se,
              min.inds = min.inds,
+             min.inds.1se = min.inds.1se,
              lambda_means = lambda_means,
              lambda_probs = lambda_probs,
              ## List of all best models for all lambda pairs.
@@ -1335,6 +1342,7 @@ cv_makebest <- function(destin){
   for(iprob in 1:cv_gridsize){
     for(imu in 1:cv_gridsize){
       for(ifold in 1:nfold){
+        print(c(iprob, imu, ifold))
 
         ## If the "best" flowtrend object has already been created, do nothing.
         best_filename = make_best_cvscore_filename(iprob, imu, ifold)
@@ -1347,7 +1355,7 @@ cv_makebest <- function(destin){
 
           ## If all |nrestart| files exist, delete all files but the best model.
           if(all(!is.na(objectives))){
-            best_irestart = which(objectives == min(objectives))
+            best_irestart = which(objectives == min(objectives)) %>% .[1] ## If there is a tie, leave it.
             keep_only_best(destin, iprob, imu, ifold, nrestart, best_irestart)
           }
           else {
@@ -1383,7 +1391,7 @@ cv_makebest <- function(destin){
       } else {
         objectives = load_all_refit_objectives(destin, iprob, imu, nrestart)
         if(all(!is.na(objectives))){
-          best_irestart = which(objectives == min(objectives))
+          best_irestart = which(objectives == min(objectives)) %>% .[1] ## If there is a tie, leave it.
           keep_only_best_refit(destin, iprob, imu, nrestart, best_irestart)
         } else {
           print(paste0("iprob=", iprob, " imu=", imu, " had /refit/ objectives:  ", objectives))
@@ -1472,6 +1480,7 @@ cv_aggregate <- function(destin){
   ## Aggregate the results
   cvscore.array = array(NA, dim = c(cv_gridsize, cv_gridsize, nfold, nrestart)) 
   cvscore.mat = matrix(NA, nrow = cv_gridsize, ncol = cv_gridsize)
+  cvscore.mat.se = matrix(NA, nrow = cv_gridsize, ncol = cv_gridsize)
   for(iprob in 1:cv_gridsize){
     for(imu in 1:cv_gridsize){
       obj = matrix(NA, nrow=nfold, ncol=nrestart)
@@ -1509,6 +1518,7 @@ cv_aggregate <- function(destin){
         ## cvscores[ifold]
       })
       cvscore.mat[iprob, imu] = mean(final.cvscores)
+      cvscore.mat.se[iprob, imu] = sd(final.cvscores)
     }
   }
 
@@ -1522,13 +1532,31 @@ cv_aggregate <- function(destin){
   ## Find the minimum
   mat = cvscore.mat
   min.inds = which(mat == min(mat, na.rm = TRUE), arr.ind = TRUE)
+
+  ## Find the 1SE minimum index too
+  mat = cvscore.mat
+  ## sdmat = (out$cvscore.mat) ## This is fake
+  ## sdmat[] = sd(out$cvscore.mat) ## This is fake
+  sdmat = cvscore.mat.se ## This is fake
+
+  upper = mat[min.inds] + sdmat[min.inds]
+  possible_inds = which(mat < upper, arr.ind=TRUE)
+  ## ## Because there is no good heuristic, we'll just go up in both directions.
+  ## my_ord = order(abs(possible_inds[,2] - possible_inds[,1]))
+  ## possible_inds[my_ord, ] %>% apply(2, which.max)
+  ## Or even just stick with the ones on the diagonal direction.
+  myrows = which(possible_inds[,2] == possible_inds[,1])
+  possible_inds = possible_inds[myrows, ] 
+  min.inds.1se = possible_inds[which.max(possible_inds[,1]),]
   
   ## Return the results
   out = list(cvscore.array = cvscore.array,
               cvscore.mat = cvscore.mat,
+              cvscore.mat.se = cvscore.mat.se,
               lambda_means = lambda_means,
               lambda_probs = lambda_probs,
-              min.inds = min.inds)
+              min.inds = min.inds,
+              min.inds.1se = min.inds.1se)
   return(out)
 }
 ```
@@ -1670,15 +1698,15 @@ for(refit in c(FALSE, TRUE)){
 
 ## Plotting
 
-```{r}
-##' Makes a series of plots.
-##' 
-##' @param destin This directly has (1) summary.RDS, (2) meta.Rdata, and (3) datobj.RDS; optionally, it may have a dt_model
-##' @return Nothing; but the pdf plots are created.
-##' 
-##' @export
+```{r plot_from_summary}
+#' Makes a series of plots.
+#' 
+#' @param destin This directly has (1) summary.RDS, (2) meta.Rdata, and (3) datobj.RDS; optionally, it may have a dt_model
+#' @return Nothing; but the pdf plots are created.
+#' 
+#' @export
 plot_from_summary <- function(destin){
-  ## Load the results
+  ## Load the results 
   cvres = readRDS(file.path(destin, paste0("summary.RDS")))
   load(file.path(destin, paste0("meta.Rdata")), verbose=FALSE)
   datobj = readRDS(file.path(destin, paste0("datobj.RDS")))
@@ -1696,8 +1724,11 @@ plot_from_summary <- function(destin){
   cvres$cvscore.mat %>% drawmat_precise(ylab = "lambda_prob", xlab = "lambda_mean") +
     latticeExtra::layer(lattice::panel.points(x = cvres$min.inds[2],
                                               y = nrow(cvres$cvscore.mat) + 1 - cvres$min.inds[1], 
+                                              pch = 4, col = "orange", cex=2)) +
+    latticeExtra::layer(lattice::panel.points(x = cvres$min.inds.1se[2],
+                                              y = nrow(cvres$cvscore.mat) + 1 - cvres$min.inds.1se[1], 
                                               pch = 4, col = "orange", cex=2))
-  plot(cvscoremat_lattice_plot)
+  plot(cvscoremat_lattice_plot) ## Need to load library(lattice) before this.
   graphics.off()
   
   ## The minimum values.
@@ -1757,13 +1788,29 @@ plot_from_summary <- function(destin){
   glist = list()
   for(ii in 1:n_lam_prob){
     for(jj in 1:n_lam_mean){
+
+      ## Calculate number of knots (complexity, df)
+      knots_mean = sapply(1:2, function(iclust){
+        abs_means = cvres$bestreslist[[paste0(ii, "-", jj)]] %>% .$mn %>% .[,1,iclust] %>% diff(differences=3) %>% abs()
+        df = sum(abs_means > 1E-4)
+      })
+      knots_prob = sapply(1:2, function(iclust){
+        abs_probs = cvres$bestreslist[[paste0(ii, "-", jj)]] %>% .$prob_link %>% .[,iclust] %>% diff(differences=2) %>% abs()
+        df = sum(abs_probs > 1E-4)
+      })
+
       ## Visualize
       g = flowtrend::plot_1d(ylist = ylist, countslist = countslist, obj = cvres$bestreslist[[paste0(ii, "-", jj)]])
       g = g + ggtitle(paste0("lam=", signif(lambda_means[[jj]],3), ", lam_prob=", signif(lambda_probs[[ii]], 3)))
       g = g + theme(legend.position="none")
 
+      g = g + annotate("text",  x=Inf, y = Inf,
+                       label = paste0("knots(prob,mean)=", knots_prob,", ",knots_mean), vjust=1, hjust=1)
+
+
       optimal = ((ii == cvres$min.inds[1]) & (jj == cvres$min.inds[2]))
-      if(optimal){
+      onese = ((ii == cvres$min.inds.1se[1]) & (jj == cvres$min.inds.1se[2]))
+      if(optimal | onese){
         g = g + theme(panel.border = element_rect(colour = "black", fill=NA, size=5))
       }
 
@@ -1793,7 +1840,8 @@ plot_from_summary <- function(destin){
       g = g + theme(legend.position = "none")
 
       optimal = ((ii == cvres$min.inds[1]) & (jj == cvres$min.inds[2]))
-      if(optimal){
+      onese = ((ii == cvres$min.inds.1se[1]) & (jj == cvres$min.inds.1se[2]))
+      if(optimal | onese){
         g = g + theme(panel.border = element_rect(colour = "black", fill=NA, size=5))
       }
   
@@ -1813,3 +1861,12 @@ plot_from_summary <- function(destin){
   return(list_of_plots)
 }
 ```
+
+
+# 1SE rule for cross validation
+
+
+```{r}
+
+```
+

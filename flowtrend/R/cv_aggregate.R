@@ -21,6 +21,7 @@ cv_aggregate <- function(destin){
   ## Aggregate the results
   cvscore.array = array(NA, dim = c(cv_gridsize, cv_gridsize, nfold, nrestart)) 
   cvscore.mat = matrix(NA, nrow = cv_gridsize, ncol = cv_gridsize)
+  cvscore.mat.se = matrix(NA, nrow = cv_gridsize, ncol = cv_gridsize)
   for(iprob in 1:cv_gridsize){
     for(imu in 1:cv_gridsize){
       obj = matrix(NA, nrow=nfold, ncol=nrestart)
@@ -58,6 +59,7 @@ cv_aggregate <- function(destin){
         ## cvscores[ifold]
       })
       cvscore.mat[iprob, imu] = mean(final.cvscores)
+      cvscore.mat.se[iprob, imu] = sd(final.cvscores)
     }
   }
 
@@ -71,12 +73,30 @@ cv_aggregate <- function(destin){
   ## Find the minimum
   mat = cvscore.mat
   min.inds = which(mat == min(mat, na.rm = TRUE), arr.ind = TRUE)
+
+  ## Find the 1SE minimum index too
+  mat = cvscore.mat
+  ## sdmat = (out$cvscore.mat) ## This is fake
+  ## sdmat[] = sd(out$cvscore.mat) ## This is fake
+  sdmat = cvscore.mat.se ## This is fake
+
+  upper = mat[min.inds] + sdmat[min.inds]
+  possible_inds = which(mat < upper, arr.ind=TRUE)
+  ## ## Because there is no good heuristic, we'll just go up in both directions.
+  ## my_ord = order(abs(possible_inds[,2] - possible_inds[,1]))
+  ## possible_inds[my_ord, ] %>% apply(2, which.max)
+  ## Or even just stick with the ones on the diagonal direction.
+  myrows = which(possible_inds[,2] == possible_inds[,1])
+  possible_inds = possible_inds[myrows, ] 
+  min.inds.1se = possible_inds[which.max(possible_inds[,1]),]
   
   ## Return the results
   out = list(cvscore.array = cvscore.array,
               cvscore.mat = cvscore.mat,
+              cvscore.mat.se = cvscore.mat.se,
               lambda_means = lambda_means,
               lambda_probs = lambda_probs,
-              min.inds = min.inds)
+              min.inds = min.inds,
+              min.inds.1se = min.inds.1se)
   return(out)
 }

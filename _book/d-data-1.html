@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>4 2d data | Creating the flowtrend R package</title>
-  <meta name="description" content="4 2d data | Creating the flowtrend R package" />
-  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
+  <title>4 3d data | Creating the flowtrend R package</title>
+  <meta name="description" content="4 3d data | Creating the flowtrend R package" />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="4 2d data | Creating the flowtrend R package" />
+  <meta property="og:title" content="4 3d data | Creating the flowtrend R package" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="4 2d data | Creating the flowtrend R package" />
+  <meta name="twitter:title" content="4 3d data | Creating the flowtrend R package" />
   
   
   
@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2023-04-18" />
+<meta name="date" content="2024-03-18" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="d-data.html"/>
 <link rel="next" href="trend-filtering.html"/>
-<script src="libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -57,7 +57,7 @@
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -120,6 +120,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 </head>
 
@@ -134,17 +138,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <ul class="summary">
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a></li>
-<li class="chapter" data-level="3" data-path="d-data.html"><a href="d-data.html"><i class="fa fa-check"></i><b>3</b> 1d data</a>
+<li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="d-data.html"><a href="d-data.html#generating-1d-data"><i class="fa fa-check"></i><b>3.1</b> Generating 1d data</a></li>
-<li class="chapter" data-level="3.2" data-path="d-data.html"><a href="d-data.html#plotting-1d-data"><i class="fa fa-check"></i><b>3.2</b> Plotting 1d data</a></li>
+<li class="chapter" data-level="2.1" data-path="package-setup.html"><a href="package-setup.html#plotting-1d-data"><i class="fa fa-check"></i><b>2.1</b> Plotting 1d data</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="d-data-1.html"><a href="d-data-1.html"><i class="fa fa-check"></i><b>4</b> 2d data</a>
+<li class="chapter" data-level="3" data-path="d-data.html"><a href="d-data.html"><i class="fa fa-check"></i><b>3</b> 2d data</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="d-data-1.html"><a href="d-data-1.html#generating-2d-data"><i class="fa fa-check"></i><b>4.1</b> Generating 2d data</a></li>
-<li class="chapter" data-level="4.2" data-path="d-data-1.html"><a href="d-data-1.html#plotting-2d-data"><i class="fa fa-check"></i><b>4.2</b> Plotting 2d data</a></li>
+<li class="chapter" data-level="3.1" data-path="d-data.html"><a href="d-data.html#generating-2d-data"><i class="fa fa-check"></i><b>3.1</b> Generating 2d data</a></li>
+<li class="chapter" data-level="3.2" data-path="d-data.html"><a href="d-data.html#plotting-2d-data"><i class="fa fa-check"></i><b>3.2</b> Plotting 2d data</a></li>
 </ul></li>
+<li class="chapter" data-level="4" data-path="d-data-1.html"><a href="d-data-1.html"><i class="fa fa-check"></i><b>4</b> 3d data</a></li>
 <li class="chapter" data-level="5" data-path="trend-filtering.html"><a href="trend-filtering.html"><i class="fa fa-check"></i><b>5</b> Trend filtering</a></li>
 <li class="chapter" data-level="6" data-path="objective-data-log-likelihood.html"><a href="objective-data-log-likelihood.html"><i class="fa fa-check"></i><b>6</b> Objective (data log-likelihood)</a></li>
 <li class="chapter" data-level="7" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html"><i class="fa fa-check"></i><b>7</b> Initial parameters for EM algorithm</a></li>
@@ -156,7 +159,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>9.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
 <li class="chapter" data-level="9.4" data-path="m-step.html"><a href="m-step.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>9.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
 <li class="chapter" data-level="9.5" data-path="m-step.html"><a href="m-step.html#all-rcpp-functions"><i class="fa fa-check"></i><b>9.5</b> All Rcpp functions</a></li>
-<li class="chapter" data-level="9.6" data-path="m-step.html"><a href="m-step.html#ported-over-from-flowmix"><i class="fa fa-check"></i><b>9.6</b> Ported over from flowmix</a></li>
 </ul></li>
 <li class="chapter" data-level="10" data-path="flowtrend.html"><a href="flowtrend.html"><i class="fa fa-check"></i><b>10</b> flowtrend</a></li>
 <li class="chapter" data-level="11" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>11</b> Reordering clusters</a></li>
@@ -169,13 +171,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.5" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#running-cross-validation"><i class="fa fa-check"></i><b>12.5</b> Running cross-validation</a></li>
 <li class="chapter" data-level="12.6" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#summarizing-the-output"><i class="fa fa-check"></i><b>12.6</b> Summarizing the output</a></li>
 <li class="chapter" data-level="12.7" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>12.7</b> CV on your own computer</a></li>
+<li class="chapter" data-level="12.8" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#plotting"><i class="fa fa-check"></i><b>12.8</b> Plotting</a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>13</b> Testing the flowtrend method</a>
+<li class="chapter" data-level="13" data-path="se-rule-for-cross-validation.html"><a href="se-rule-for-cross-validation.html"><i class="fa fa-check"></i><b>13</b> 1SE rule for cross validation</a></li>
+<li class="chapter" data-level="14" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>14</b> Testing the flowtrend method</a>
 <ul>
-<li class="chapter" data-level="13.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>13.1</b> 1d example</a></li>
+<li class="chapter" data-level="14.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>14.1</b> 1d example</a></li>
+<li class="chapter" data-level="14.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values"><i class="fa fa-check"></i><b>14.2</b> Testing monotonicity of objective values</a></li>
+<li class="chapter" data-level="14.3" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_2d-example"><i class="fa fa-check"></i><b>14.3</b> 2d example</a></li>
+<li class="chapter" data-level="14.4" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#working-with-binned-dataset"><i class="fa fa-check"></i><b>14.4</b> Working with “binned” dataset</a></li>
+<li class="chapter" data-level="14.5" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#unevenly-spaced-inputs-x"><i class="fa fa-check"></i><b>14.5</b> Unevenly spaced inputs (x)</a></li>
 </ul></li>
-<li class="chapter" data-level="14" data-path="d-to-1d.html"><a href="d-to-1d.html"><i class="fa fa-check"></i><b>14</b> 2d to 1d</a></li>
 <li class="chapter" data-level="15" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>15</b> Documenting the package and building</a></li>
+<li class="chapter" data-level="16" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html"><i class="fa fa-check"></i><b>16</b> Helpers for simulations in the paper</a>
+<ul>
+<li class="chapter" data-level="16.1" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#two-alternative-estimators"><i class="fa fa-check"></i><b>16.1</b> Two alternative estimators</a></li>
+<li class="chapter" data-level="16.2" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>16.2</b> Example using <code><a href='helpers-for-simulations-in-the-paper.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations-in-the-paper.html#overfit_flowmeans'>overfit_flowmeans</a>()</code></a></li>
+<li class="chapter" data-level="16.3" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>16.3</b> Evaluating performance: soft RAND index</a></li>
+</ul></li>
 </ul>
 
       </nav>
@@ -194,117 +207,261 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="d-data-1" class="section level1 hasAnchor" number="4">
-<h1><span class="header-section-number">4</span> 2d data<a href="d-data-1.html#d-data-1" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="generating-2d-data" class="section level2 hasAnchor" number="4.1">
-<h2><span class="header-section-number">4.1</span> Generating 2d data<a href="d-data-1.html#generating-2d-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="d-data-1.html#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Generates some synthetic 2-dimensional data with three clusters. </span></span>
-<span id="cb16-2"><a href="d-data-1.html#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb16-3"><a href="d-data-1.html#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param TT Number of time points.</span></span>
-<span id="cb16-4"><a href="d-data-1.html#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param nt Number of particles at each time.</span></span>
-<span id="cb16-5"><a href="d-data-1.html#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb16-6"><a href="d-data-1.html#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return List containing (1) ylist, (2) mnlist, (3) clusterlist.</span></span>
-<span id="cb16-7"><a href="d-data-1.html#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb16-8"><a href="d-data-1.html#cb16-8" aria-hidden="true" tabindex="-1"></a><span id='gendat_2d'>gendat_2d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(TT, ntlist){</span>
-<span id="cb16-9"><a href="d-data-1.html#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-10"><a href="d-data-1.html#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-11"><a href="d-data-1.html#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
-<span id="cb16-12"><a href="d-data-1.html#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">length</span>(ntlist) <span class="sc">==</span> TT)</span>
-<span id="cb16-13"><a href="d-data-1.html#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-14"><a href="d-data-1.html#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Make cluster probabilities, by time</span></span>
-<span id="cb16-15"><a href="d-data-1.html#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-16"><a href="d-data-1.html#cb16-16" aria-hidden="true" tabindex="-1"></a>  probs <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="at">FUN =</span> <span class="cf">function</span>(tt){</span>
-<span id="cb16-17"><a href="d-data-1.html#cb16-17" aria-hidden="true" tabindex="-1"></a>    cluster_prob1 <span class="ot">=</span> <span class="fu">sin</span>(tt<span class="sc">/</span><span class="dv">24</span> <span class="sc">*</span> <span class="dv">2</span> <span class="sc">*</span> pi) <span class="sc">+</span> <span class="dv">1</span> <span class="sc">+</span> (tt<span class="sc">/</span>TT)<span class="sc">*</span><span class="dv">5</span></span>
-<span id="cb16-18"><a href="d-data-1.html#cb16-18" aria-hidden="true" tabindex="-1"></a>    cluster_prob2 <span class="ot">=</span> <span class="fu">cos</span>(tt<span class="sc">/</span><span class="dv">24</span> <span class="sc">*</span> <span class="dv">2</span> <span class="sc">*</span> pi) <span class="sc">+</span> <span class="dv">1</span> </span>
-<span id="cb16-19"><a href="d-data-1.html#cb16-19" aria-hidden="true" tabindex="-1"></a>    cluster_prob3 <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb16-20"><a href="d-data-1.html#cb16-20" aria-hidden="true" tabindex="-1"></a>    cluster_prob <span class="ot">=</span> <span class="fu">c</span>(cluster_prob1, cluster_prob2, cluster_prob3)</span>
-<span id="cb16-21"><a href="d-data-1.html#cb16-21" aria-hidden="true" tabindex="-1"></a>    cluster_prob <span class="ot">=</span> cluster_prob<span class="sc">/</span><span class="fu">sum</span>(cluster_prob)</span>
-<span id="cb16-22"><a href="d-data-1.html#cb16-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(cluster_prob)</span>
-<span id="cb16-23"><a href="d-data-1.html#cb16-23" aria-hidden="true" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
-<span id="cb16-24"><a href="d-data-1.html#cb16-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(probs) <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span></span>
-<span id="cb16-25"><a href="d-data-1.html#cb16-25" aria-hidden="true" tabindex="-1"></a>  probs_long <span class="ot">=</span> <span class="fu">as_tibble</span>(probs) <span class="sc">%&gt;%</span></span>
-<span id="cb16-26"><a href="d-data-1.html#cb16-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_column</span>(<span class="at">time =</span> <span class="dv">1</span><span class="sc">:</span>TT) <span class="sc">%&gt;%</span></span>
-<span id="cb16-27"><a href="d-data-1.html#cb16-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="st">&quot;time&quot;</span>, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;prob&quot;</span>)</span>
-<span id="cb16-28"><a href="d-data-1.html#cb16-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-29"><a href="d-data-1.html#cb16-29" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Make cluster means, by time</span></span>
-<span id="cb16-30"><a href="d-data-1.html#cb16-30" aria-hidden="true" tabindex="-1"></a>  means <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim =</span> <span class="fu">c</span>(TT, <span class="dv">3</span>, <span class="dv">2</span>))</span>
-<span id="cb16-31"><a href="d-data-1.html#cb16-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
-<span id="cb16-32"><a href="d-data-1.html#cb16-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT){</span>
-<span id="cb16-33"><a href="d-data-1.html#cb16-33" aria-hidden="true" tabindex="-1"></a>      means[tt, <span class="dv">1</span>, <span class="dv">1</span>] <span class="ot">=</span> means[tt, <span class="dv">1</span>, <span class="dv">2</span>] <span class="ot">=</span> tt<span class="sc">/</span>TT <span class="sc">+</span> <span class="fl">0.5</span></span>
-<span id="cb16-34"><a href="d-data-1.html#cb16-34" aria-hidden="true" tabindex="-1"></a>      means[tt, <span class="dv">2</span>, <span class="dv">1</span>]  <span class="ot">=</span> <span class="fu">sin</span>(tt<span class="sc">/</span><span class="dv">24</span> <span class="sc">*</span> <span class="dv">2</span> <span class="sc">*</span> pi)<span class="do">##seq(-1, 1, length.out = TT)[tt]*3.1415)</span></span>
-<span id="cb16-35"><a href="d-data-1.html#cb16-35" aria-hidden="true" tabindex="-1"></a>      means[tt, <span class="dv">2</span>, <span class="dv">2</span>] <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb16-36"><a href="d-data-1.html#cb16-36" aria-hidden="true" tabindex="-1"></a>      means[tt, <span class="dv">3</span>, <span class="dv">1</span>] <span class="ot">=</span> means[tt, <span class="dv">3</span>, <span class="dv">2</span>] <span class="ot">=</span> <span class="sc">-</span><span class="dv">3</span><span class="sc">+</span><span class="fu">cos</span>(tt<span class="sc">/</span><span class="dv">24</span> <span class="sc">*</span> <span class="dv">2</span> <span class="sc">*</span> pi)<span class="do">##seq(-1, 1, length.out = TT)[tt]*6.282)</span></span>
-<span id="cb16-37"><a href="d-data-1.html#cb16-37" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb16-38"><a href="d-data-1.html#cb16-38" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb16-39"><a href="d-data-1.html#cb16-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dimnames</span>(means)[[<span class="dv">2</span>]]  <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
-<span id="cb16-40"><a href="d-data-1.html#cb16-40" aria-hidden="true" tabindex="-1"></a>  means_long <span class="ot">=</span> <span class="fu">as_tibble</span>(means) <span class="sc">%&gt;%</span></span>
-<span id="cb16-41"><a href="d-data-1.html#cb16-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_column</span>(<span class="at">time =</span> <span class="dv">1</span><span class="sc">:</span>TT) <span class="sc">%&gt;%</span></span>
-<span id="cb16-42"><a href="d-data-1.html#cb16-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="st">&quot;time&quot;</span>, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;mean&quot;</span>)</span>
-<span id="cb16-43"><a href="d-data-1.html#cb16-43" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">=</span> <span class="fu">full_join</span>(means_long, probs_long, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;time&quot;</span>, <span class="st">&quot;cluster&quot;</span>))</span>
-<span id="cb16-44"><a href="d-data-1.html#cb16-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-45"><a href="d-data-1.html#cb16-45" aria-hidden="true" tabindex="-1"></a>  ylist <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb16-46"><a href="d-data-1.html#cb16-46" aria-hidden="true" tabindex="-1"></a>  mulist <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb16-47"><a href="d-data-1.html#cb16-47" aria-hidden="true" tabindex="-1"></a>  clusterlist <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb16-48"><a href="d-data-1.html#cb16-48" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT){</span>
-<span id="cb16-49"><a href="d-data-1.html#cb16-49" aria-hidden="true" tabindex="-1"></a>    Y <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">&quot;list&quot;</span>, <span class="at">length =</span> <span class="dv">2</span>)</span>
-<span id="cb16-50"><a href="d-data-1.html#cb16-50" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">&quot;list&quot;</span>, <span class="at">length =</span> <span class="dv">2</span>)</span>
-<span id="cb16-51"><a href="d-data-1.html#cb16-51" aria-hidden="true" tabindex="-1"></a>    clusters_count <span class="ot">&lt;-</span> <span class="fu">rmultinom</span>(<span class="at">n =</span> <span class="dv">1</span>, <span class="at">size =</span> ntlist[tt], <span class="at">prob =</span> probs[tt,])</span>
-<span id="cb16-52"><a href="d-data-1.html#cb16-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-53"><a href="d-data-1.html#cb16-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
-<span id="cb16-54"><a href="d-data-1.html#cb16-54" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(ii <span class="sc">==</span> <span class="dv">1</span>){</span>
-<span id="cb16-55"><a href="d-data-1.html#cb16-55" aria-hidden="true" tabindex="-1"></a>        mn <span class="ot">=</span> means[tt,ii,,drop<span class="ot">=</span><span class="cn">TRUE</span>]</span>
-<span id="cb16-56"><a href="d-data-1.html#cb16-56" aria-hidden="true" tabindex="-1"></a>        Sigma1 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>), <span class="at">ncol =</span> <span class="dv">2</span>)</span>
-<span id="cb16-57"><a href="d-data-1.html#cb16-57" aria-hidden="true" tabindex="-1"></a>        Y[[ii]] <span class="ot">&lt;-</span> <span class="fu">replicate</span>(clusters_count[ii,<span class="dv">1</span>], mn <span class="sc">+</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">1</span>, <span class="at">mu=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">Sigma=</span> Sigma1)) <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
-<span id="cb16-58"><a href="d-data-1.html#cb16-58" aria-hidden="true" tabindex="-1"></a>        mu[[ii]] <span class="ot">&lt;-</span> <span class="fu">replicate</span>(clusters_count[ii,<span class="dv">1</span>], mn) <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
-<span id="cb16-59"><a href="d-data-1.html#cb16-59" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb16-60"><a href="d-data-1.html#cb16-60" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(ii <span class="sc">==</span> <span class="dv">2</span>){</span>
-<span id="cb16-61"><a href="d-data-1.html#cb16-61" aria-hidden="true" tabindex="-1"></a>        mn <span class="ot">=</span> means[tt,ii,, drop<span class="ot">=</span><span class="cn">TRUE</span>]</span>
-<span id="cb16-62"><a href="d-data-1.html#cb16-62" aria-hidden="true" tabindex="-1"></a>        Y[[ii]] <span class="ot">&lt;-</span> <span class="fu">replicate</span>(clusters_count[ii,<span class="dv">1</span>], mn <span class="sc">+</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">1</span>, <span class="at">mu=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">Sigma =</span> <span class="fu">diag</span>(<span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.1</span>)))) <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
-<span id="cb16-63"><a href="d-data-1.html#cb16-63" aria-hidden="true" tabindex="-1"></a>        mu[[ii]] <span class="ot">&lt;-</span> <span class="fu">replicate</span>(clusters_count[ii,<span class="dv">1</span>], mn) <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
-<span id="cb16-64"><a href="d-data-1.html#cb16-64" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb16-65"><a href="d-data-1.html#cb16-65" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(ii <span class="sc">==</span> <span class="dv">3</span>){</span>
-<span id="cb16-66"><a href="d-data-1.html#cb16-66" aria-hidden="true" tabindex="-1"></a>        mn <span class="ot">=</span> means[tt,ii,, drop<span class="ot">=</span><span class="cn">TRUE</span>]</span>
-<span id="cb16-67"><a href="d-data-1.html#cb16-67" aria-hidden="true" tabindex="-1"></a>        Y[[ii]] <span class="ot">&lt;-</span> <span class="fu">replicate</span>(clusters_count[ii,<span class="dv">1</span>], mn <span class="sc">+</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">1</span>, <span class="at">mu=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">Sigma =</span> <span class="fu">diag</span>(<span class="fu">c</span>(<span class="fl">0.35</span>, <span class="fl">0.35</span>)))) <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
-<span id="cb16-68"><a href="d-data-1.html#cb16-68" aria-hidden="true" tabindex="-1"></a>        mu[[ii]] <span class="ot">&lt;-</span> <span class="fu">replicate</span>(clusters_count[ii,<span class="dv">1</span>], mn) <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
-<span id="cb16-69"><a href="d-data-1.html#cb16-69" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb16-70"><a href="d-data-1.html#cb16-70" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb16-71"><a href="d-data-1.html#cb16-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-72"><a href="d-data-1.html#cb16-72" aria-hidden="true" tabindex="-1"></a>    Y <span class="ot">&lt;-</span> Y <span class="sc">%&gt;%</span> purrr<span class="sc">::</span><span class="fu">compact</span>() <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind, .)</span>
-<span id="cb16-73"><a href="d-data-1.html#cb16-73" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> mu <span class="sc">%&gt;%</span> purrr<span class="sc">::</span><span class="fu">compact</span>() <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind, .)</span>
-<span id="cb16-74"><a href="d-data-1.html#cb16-74" aria-hidden="true" tabindex="-1"></a>    cluster <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">times =</span> clusters_count)</span>
-<span id="cb16-75"><a href="d-data-1.html#cb16-75" aria-hidden="true" tabindex="-1"></a>    ylist[[tt]] <span class="ot">=</span> Y</span>
-<span id="cb16-76"><a href="d-data-1.html#cb16-76" aria-hidden="true" tabindex="-1"></a>    mulist[[tt]] <span class="ot">=</span> mu</span>
-<span id="cb16-77"><a href="d-data-1.html#cb16-77" aria-hidden="true" tabindex="-1"></a>    clusterlist[[tt]] <span class="ot">=</span> cluster</span>
-<span id="cb16-78"><a href="d-data-1.html#cb16-78" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb16-79"><a href="d-data-1.html#cb16-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">ylist =</span> ylist, <span class="at">mulist =</span> mulist, <span class="at">clusterlist =</span> clusterlist, <span class="at">probs =</span> probs, <span class="at">means =</span> means))</span>
-<span id="cb16-80"><a href="d-data-1.html#cb16-80" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-</div>
-<div id="plotting-2d-data" class="section level2 hasAnchor" number="4.2">
-<h2><span class="header-section-number">4.2</span> Plotting 2d data<a href="d-data-1.html#plotting-2d-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Here’s a simpler plotting function for 2d data at the particle level.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="d-data-1.html#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Simple plotter for 2d particle data.</span></span>
-<span id="cb17-2"><a href="d-data-1.html#cb17-2" aria-hidden="true" tabindex="-1"></a><span id='plot_2d'>plot_2d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, tt){</span>
-<span id="cb17-3"><a href="d-data-1.html#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="d-data-1.html#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Get data from one timepoint</span></span>
-<span id="cb17-5"><a href="d-data-1.html#cb17-5" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">=</span> ylist <span class="sc">%&gt;%</span> .[[tt]]</span>
-<span id="cb17-6"><a href="d-data-1.html#cb17-6" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">=</span> y <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
-<span id="cb17-7"><a href="d-data-1.html#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(y) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;dim&quot;</span>, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
-<span id="cb17-8"><a href="d-data-1.html#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-9"><a href="d-data-1.html#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Make a simple scatterplot</span></span>
-<span id="cb17-10"><a href="d-data-1.html#cb17-10" aria-hidden="true" tabindex="-1"></a>  y <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb17-11"><a href="d-data-1.html#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>dim1, <span class="at">y=</span>dim2), <span class="at">alpha =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb17-12"><a href="d-data-1.html#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb17-13"><a href="d-data-1.html#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_fixed</span>()</span>
-<span id="cb17-14"><a href="d-data-1.html#cb17-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<p>Let’s try it out.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="d-data-1.html#cb18-1" aria-hidden="true" tabindex="-1"></a>datobj <span class="ot">=</span> <a href='d-data-1.html#gendat_2d'>gendat_2d</a>(<span class="dv">2</span>, <span class="fu">c</span>(<span class="dv">1000</span>,<span class="dv">1000</span>))</span>
-<span id="cb18-2"><a href="d-data-1.html#cb18-2" aria-hidden="true" tabindex="-1"></a><a href='d-data-1.html#plot_2d'>plot_2d</a>(datobj<span class="sc">$</span>ylist, <span class="dv">1</span>)</span></code></pre></div>
-<pre><code>## Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.
-## ℹ Using compatibility `.name_repair`.
-## ℹ The deprecated feature was likely used in the litr package.
-##   Please report the issue to the authors.</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-4-1.png" width="480" /></p>
+<h1><span class="header-section-number">4</span> 3d data<a href="d-data-1.html#d-data-1" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Given 3d data <code>ylist</code> and an estimated model object <code>obj</code>, we want to plot both
+in three two-dimensional plot. <code><a href='d-data-1.html#plot_3d'>plot_3d</a>()</code> lets you do this.</p>
+<p>First, here’s a plotting helper.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="d-data-1.html#cb20-1" tabindex="-1"></a><span class="co">#&#39; Combine list of ggplots</span></span>
+<span id="cb20-2"><a href="d-data-1.html#cb20-2" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb20-3"><a href="d-data-1.html#cb20-3" tabindex="-1"></a><span id='my_mfrow'>my_mfrow</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(glist, <span class="at">ncol =</span> <span class="cn">NULL</span>, <span class="at">nrow =</span> <span class="cn">NULL</span>){</span>
+<span id="cb20-4"><a href="d-data-1.html#cb20-4" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(ncol)) ncol <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb20-5"><a href="d-data-1.html#cb20-5" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(nrow)) ncol <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb20-6"><a href="d-data-1.html#cb20-6" tabindex="-1"></a>  <span class="fu">do.call</span>(ggpubr<span class="sc">::</span>ggarrange, <span class="fu">c</span>(glist, <span class="at">ncol=</span>ncol, <span class="at">nrow=</span>nrow))</span>
+<span id="cb20-7"><a href="d-data-1.html#cb20-7" tabindex="-1"></a>}</span></code></pre></div>
+<p>(TODO: change tt to time (and all the user-facing functions should have the same
+arguments and argument order))</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="d-data-1.html#cb21-1" tabindex="-1"></a><span class="co">#&#39; Makes three 2-dimensional plots of the 3d data</span></span>
+<span id="cb21-2"><a href="d-data-1.html#cb21-2" tabindex="-1"></a><span class="co">#&#39; @param ylist data</span></span>
+<span id="cb21-3"><a href="d-data-1.html#cb21-3" tabindex="-1"></a><span class="co">#&#39; @param countslist data</span></span>
+<span id="cb21-4"><a href="d-data-1.html#cb21-4" tabindex="-1"></a><span class="co">#&#39; @param obj flowmix or flowtrend object</span></span>
+<span id="cb21-5"><a href="d-data-1.html#cb21-5" tabindex="-1"></a><span class="co">#&#39; @param tt Time point</span></span>
+<span id="cb21-6"><a href="d-data-1.html#cb21-6" tabindex="-1"></a><span class="co">#&#39; @param return_list_of_plots If TRUE, return the list of three plots instead</span></span>
+<span id="cb21-7"><a href="d-data-1.html#cb21-7" tabindex="-1"></a><span class="co">#&#39;   of the combined plot</span></span>
+<span id="cb21-8"><a href="d-data-1.html#cb21-8" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb21-9"><a href="d-data-1.html#cb21-9" tabindex="-1"></a><span class="co">#&#39; @return</span></span>
+<span id="cb21-10"><a href="d-data-1.html#cb21-10" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb21-11"><a href="d-data-1.html#cb21-11" tabindex="-1"></a><span id='plot_3d'>plot_3d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, <span class="at">obj =</span> <span class="cn">NULL</span>, tt, <span class="at">countslist =</span> <span class="cn">NULL</span>,</span>
+<span id="cb21-12"><a href="d-data-1.html#cb21-12" tabindex="-1"></a>                    <span class="at">return_list_of_plots =</span> <span class="cn">FALSE</span>){</span>
+<span id="cb21-13"><a href="d-data-1.html#cb21-13" tabindex="-1"></a></span>
+<span id="cb21-14"><a href="d-data-1.html#cb21-14" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb21-15"><a href="d-data-1.html#cb21-15" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">ncol</span>(ylist[[<span class="dv">1</span>]]) <span class="sc">==</span> <span class="dv">3</span>)</span>
+<span id="cb21-16"><a href="d-data-1.html#cb21-16" tabindex="-1"></a></span>
+<span id="cb21-17"><a href="d-data-1.html#cb21-17" tabindex="-1"></a>  <span class="do">## Extract data</span></span>
+<span id="cb21-18"><a href="d-data-1.html#cb21-18" tabindex="-1"></a>  <span class="do">## y = ylist[[tt]][,dims]</span></span>
+<span id="cb21-19"><a href="d-data-1.html#cb21-19" tabindex="-1"></a>  labs <span class="ot">=</span> <span class="fu">colnames</span>(ylist[[<span class="dv">1</span>]])</span>
+<span id="cb21-20"><a href="d-data-1.html#cb21-20" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(labs))  labs <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;dim&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb21-21"><a href="d-data-1.html#cb21-21" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(countslist)){</span>
+<span id="cb21-22"><a href="d-data-1.html#cb21-22" tabindex="-1"></a>    counts <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">nrow</span>(ylist[[<span class="dv">1</span>]]))</span>
+<span id="cb21-23"><a href="d-data-1.html#cb21-23" tabindex="-1"></a>  }</span>
+<span id="cb21-24"><a href="d-data-1.html#cb21-24" tabindex="-1"></a></span>
+<span id="cb21-25"><a href="d-data-1.html#cb21-25" tabindex="-1"></a>  <span class="do">## Aggregate counts into the two dimensions</span></span>
+<span id="cb21-26"><a href="d-data-1.html#cb21-26" tabindex="-1"></a>  y2d_list <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb21-27"><a href="d-data-1.html#cb21-27" tabindex="-1"></a>  counts2d_list <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb21-28"><a href="d-data-1.html#cb21-28" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
+<span id="cb21-29"><a href="d-data-1.html#cb21-29" tabindex="-1"></a>    dims <span class="ot">=</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>), <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>))[[ii]]</span>
+<span id="cb21-30"><a href="d-data-1.html#cb21-30" tabindex="-1"></a>    yy <span class="ot">=</span> flowmix<span class="sc">::</span><span class="fu">collapse_3d_to_2d</span>(ylist[[tt]], countslist[[tt]], dims)</span>
+<span id="cb21-31"><a href="d-data-1.html#cb21-31" tabindex="-1"></a>    y2d <span class="ot">=</span> yy[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span>
+<span id="cb21-32"><a href="d-data-1.html#cb21-32" tabindex="-1"></a>    <span class="fu">colnames</span>(y2d) <span class="ot">=</span> labs[dims]</span>
+<span id="cb21-33"><a href="d-data-1.html#cb21-33" tabindex="-1"></a>    y2d_list[[ii]] <span class="ot">=</span> y2d</span>
+<span id="cb21-34"><a href="d-data-1.html#cb21-34" tabindex="-1"></a>    counts2d_list[[ii]] <span class="ot">=</span> yy[,<span class="dv">3</span>]</span>
+<span id="cb21-35"><a href="d-data-1.html#cb21-35" tabindex="-1"></a>  }</span>
+<span id="cb21-36"><a href="d-data-1.html#cb21-36" tabindex="-1"></a>  total_range <span class="ot">=</span> <span class="fu">sapply</span>(counts2d_list, range) <span class="sc">%&gt;%</span> <span class="fu">range</span>()</span>
+<span id="cb21-37"><a href="d-data-1.html#cb21-37" tabindex="-1"></a></span>
+<span id="cb21-38"><a href="d-data-1.html#cb21-38" tabindex="-1"></a>  <span class="do">## Create three 2d plots</span></span>
+<span id="cb21-39"><a href="d-data-1.html#cb21-39" tabindex="-1"></a>  plotlist <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb21-40"><a href="d-data-1.html#cb21-40" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
+<span id="cb21-41"><a href="d-data-1.html#cb21-41" tabindex="-1"></a>    dims <span class="ot">=</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>), <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>))[[ii]]</span>
+<span id="cb21-42"><a href="d-data-1.html#cb21-42" tabindex="-1"></a></span>
+<span id="cb21-43"><a href="d-data-1.html#cb21-43" tabindex="-1"></a>    <span class="do">## Make data plot</span></span>
+<span id="cb21-44"><a href="d-data-1.html#cb21-44" tabindex="-1"></a>    one_countslist <span class="ot">=</span> (<span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(countslist)) <span class="fu">list</span>(counts2d_list[[ii]]) <span class="cf">else</span> <span class="cn">NULL</span>)</span>
+<span id="cb21-45"><a href="d-data-1.html#cb21-45" tabindex="-1"></a>    p <span class="ot">=</span> flowtrend<span class="sc">::</span><a href='d-data.html#plot_2d'>plot_2d</a>(<span class="fu">list</span>(y2d_list[[ii]]),</span>
+<span id="cb21-46"><a href="d-data-1.html#cb21-46" tabindex="-1"></a>                           one_countslist, <span class="at">obj=</span><span class="cn">NULL</span>, <span class="dv">1</span>) </span>
+<span id="cb21-47"><a href="d-data-1.html#cb21-47" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(countslist)){</span>
+<span id="cb21-48"><a href="d-data-1.html#cb21-48" tabindex="-1"></a>      p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">scale_fill_gradientn</span>(</span>
+<span id="cb21-49"><a href="d-data-1.html#cb21-49" tabindex="-1"></a>                  <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;yellow&quot;</span>), <span class="at">limits =</span> total_range,</span>
+<span id="cb21-50"><a href="d-data-1.html#cb21-50" tabindex="-1"></a>                  <span class="at">guide =</span> <span class="st">&quot;none&quot;</span>)</span>
+<span id="cb21-51"><a href="d-data-1.html#cb21-51" tabindex="-1"></a>    }</span>
+<span id="cb21-52"><a href="d-data-1.html#cb21-52" tabindex="-1"></a></span>
+<span id="cb21-53"><a href="d-data-1.html#cb21-53" tabindex="-1"></a>    <span class="do">## Adding visualizations of the model |obj| at time tt</span></span>
+<span id="cb21-54"><a href="d-data-1.html#cb21-54" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(obj)){</span>
+<span id="cb21-55"><a href="d-data-1.html#cb21-55" tabindex="-1"></a>      </span>
+<span id="cb21-56"><a href="d-data-1.html#cb21-56" tabindex="-1"></a>      <span class="do">## Make data matrix</span></span>
+<span id="cb21-57"><a href="d-data-1.html#cb21-57" tabindex="-1"></a>      mnlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>obj<span class="sc">$</span>numclust, <span class="cf">function</span>(iclust){</span>
+<span id="cb21-58"><a href="d-data-1.html#cb21-58" tabindex="-1"></a>        one_mnmat <span class="ot">=</span> obj<span class="sc">$</span>mn[tt,dims,iclust] <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
+<span id="cb21-59"><a href="d-data-1.html#cb21-59" tabindex="-1"></a>        <span class="fu">colnames</span>(one_mnmat) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;dim&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
+<span id="cb21-60"><a href="d-data-1.html#cb21-60" tabindex="-1"></a>        one_mnmat <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">cluster =</span> iclust)</span>
+<span id="cb21-61"><a href="d-data-1.html#cb21-61" tabindex="-1"></a>      })</span>
+<span id="cb21-62"><a href="d-data-1.html#cb21-62" tabindex="-1"></a>      mnmat <span class="ot">=</span> <span class="fu">do.call</span>(rbind, mnlist)</span>
+<span id="cb21-63"><a href="d-data-1.html#cb21-63" tabindex="-1"></a>      mn_colours <span class="ot">=</span> <span class="fu">rep</span>(<span class="st">&quot;red&quot;</span>, obj<span class="sc">$</span>numclust)</span>
+<span id="cb21-64"><a href="d-data-1.html#cb21-64" tabindex="-1"></a></span>
+<span id="cb21-65"><a href="d-data-1.html#cb21-65" tabindex="-1"></a>      <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>obj<span class="sc">$</span>numclust){</span>
+<span id="cb21-66"><a href="d-data-1.html#cb21-66" tabindex="-1"></a>        </span>
+<span id="cb21-67"><a href="d-data-1.html#cb21-67" tabindex="-1"></a>        <span class="do">## Add ellipse</span></span>
+<span id="cb21-68"><a href="d-data-1.html#cb21-68" tabindex="-1"></a>        el <span class="ot">=</span> ellipse<span class="sc">::</span><span class="fu">ellipse</span>(<span class="at">x =</span> obj<span class="sc">$</span>sigma[iclust,dims,dims],</span>
+<span id="cb21-69"><a href="d-data-1.html#cb21-69" tabindex="-1"></a>                              <span class="at">centre =</span> obj<span class="sc">$</span>mn[tt,dims,iclust]) <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
+<span id="cb21-70"><a href="d-data-1.html#cb21-70" tabindex="-1"></a>        p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">data =</span> el,</span>
+<span id="cb21-71"><a href="d-data-1.html#cb21-71" tabindex="-1"></a>                          <span class="at">colour =</span> mn_colours[iclust], <span class="at">lty =</span> <span class="dv">2</span>,</span>
+<span id="cb21-72"><a href="d-data-1.html#cb21-72" tabindex="-1"></a>                          <span class="at">linewidth =</span> <span class="fu">pmin</span>(obj<span class="sc">$</span>prob[tt,iclust] <span class="sc">*</span> <span class="dv">8</span>, <span class="fl">0.8</span>))</span>
+<span id="cb21-73"><a href="d-data-1.html#cb21-73" tabindex="-1"></a>        </span>
+<span id="cb21-74"><a href="d-data-1.html#cb21-74" tabindex="-1"></a>        <span class="do">## Add mean</span></span>
+<span id="cb21-75"><a href="d-data-1.html#cb21-75" tabindex="-1"></a>        p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> dim1, <span class="at">y =</span> dim2),</span>
+<span id="cb21-76"><a href="d-data-1.html#cb21-76" tabindex="-1"></a>                           <span class="at">data =</span> mnmat <span class="sc">%&gt;%</span> <span class="fu">subset</span>(cluster <span class="sc">==</span> iclust),</span>
+<span id="cb21-77"><a href="d-data-1.html#cb21-77" tabindex="-1"></a>                           <span class="at">colour =</span> mn_colours[iclust],</span>
+<span id="cb21-78"><a href="d-data-1.html#cb21-78" tabindex="-1"></a>                           <span class="at">size =</span> obj<span class="sc">$</span>prob[tt,iclust] <span class="sc">*</span> <span class="dv">10</span>)</span>
+<span id="cb21-79"><a href="d-data-1.html#cb21-79" tabindex="-1"></a></span>
+<span id="cb21-80"><a href="d-data-1.html#cb21-80" tabindex="-1"></a>        <span class="do">## Add cluster number as a label</span></span>
+<span id="cb21-81"><a href="d-data-1.html#cb21-81" tabindex="-1"></a>        cex <span class="ot">=</span> <span class="fu">rel</span>(<span class="dv">3</span>)</span>
+<span id="cb21-82"><a href="d-data-1.html#cb21-82" tabindex="-1"></a>        fac <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb21-83"><a href="d-data-1.html#cb21-83" tabindex="-1"></a>        labels <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span>(obj<span class="sc">$</span>numclust)</span>
+<span id="cb21-84"><a href="d-data-1.html#cb21-84" tabindex="-1"></a>        dt <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">dim1 =</span> mnmat[,<span class="dv">1</span>], <span class="at">dim2 =</span> mnmat[,<span class="dv">2</span>], <span class="at">prob =</span> obj<span class="sc">$</span>prob[tt,] <span class="sc">*</span> fac)</span>
+<span id="cb21-85"><a href="d-data-1.html#cb21-85" tabindex="-1"></a>        p <span class="ot">=</span> p <span class="sc">+</span> ggrepel<span class="sc">::</span><span class="fu">geom_text_repel</span>(<span class="fu">aes</span>(<span class="at">x =</span> dim1, <span class="at">y =</span> dim2, <span class="at">label =</span> labels,</span>
+<span id="cb21-86"><a href="d-data-1.html#cb21-86" tabindex="-1"></a>                                             <span class="at">point.size =</span> <span class="fu">sqrt</span>(prob)),</span>
+<span id="cb21-87"><a href="d-data-1.html#cb21-87" tabindex="-1"></a>                                         <span class="at">col =</span> mn_colours,</span>
+<span id="cb21-88"><a href="d-data-1.html#cb21-88" tabindex="-1"></a>                                         <span class="at">cex =</span> cex,</span>
+<span id="cb21-89"><a href="d-data-1.html#cb21-89" tabindex="-1"></a>                                         <span class="at">bg.color =</span> <span class="st">&quot;white&quot;</span>,</span>
+<span id="cb21-90"><a href="d-data-1.html#cb21-90" tabindex="-1"></a>                                         <span class="at">bg.r =</span> <span class="fl">0.1</span>,</span>
+<span id="cb21-91"><a href="d-data-1.html#cb21-91" tabindex="-1"></a>                                         <span class="at">fontface =</span> <span class="st">&quot;bold&quot;</span>,</span>
+<span id="cb21-92"><a href="d-data-1.html#cb21-92" tabindex="-1"></a>                                         <span class="at">force_pull   =</span> <span class="dv">5</span>, <span class="co"># do not pull toward data points</span></span>
+<span id="cb21-93"><a href="d-data-1.html#cb21-93" tabindex="-1"></a>                                         <span class="do">## data = mnmat,</span></span>
+<span id="cb21-94"><a href="d-data-1.html#cb21-94" tabindex="-1"></a>                                         <span class="at">data =</span> dt,</span>
+<span id="cb21-95"><a href="d-data-1.html#cb21-95" tabindex="-1"></a>                                         <span class="at">seed =</span> <span class="dv">1</span>)</span>
+<span id="cb21-96"><a href="d-data-1.html#cb21-96" tabindex="-1"></a></span>
+<span id="cb21-97"><a href="d-data-1.html#cb21-97" tabindex="-1"></a>      }</span>
+<span id="cb21-98"><a href="d-data-1.html#cb21-98" tabindex="-1"></a>    }</span>
+<span id="cb21-99"><a href="d-data-1.html#cb21-99" tabindex="-1"></a></span>
+<span id="cb21-100"><a href="d-data-1.html#cb21-100" tabindex="-1"></a>    <span class="do">## Format a bit more and save</span></span>
+<span id="cb21-101"><a href="d-data-1.html#cb21-101" tabindex="-1"></a>    <span class="cf">if</span>(ii <span class="sc">==</span> <span class="dv">1</span>){</span>
+<span id="cb21-102"><a href="d-data-1.html#cb21-102" tabindex="-1"></a>      p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">&quot;Time=&quot;</span>, tt))</span>
+<span id="cb21-103"><a href="d-data-1.html#cb21-103" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb21-104"><a href="d-data-1.html#cb21-104" tabindex="-1"></a>      p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;&quot;</span>)</span>
+<span id="cb21-105"><a href="d-data-1.html#cb21-105" tabindex="-1"></a>    }</span>
+<span id="cb21-106"><a href="d-data-1.html#cb21-106" tabindex="-1"></a>    p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>) </span>
+<span id="cb21-107"><a href="d-data-1.html#cb21-107" tabindex="-1"></a>    plotlist[[ii]] <span class="ot">=</span> p</span>
+<span id="cb21-108"><a href="d-data-1.html#cb21-108" tabindex="-1"></a>  }</span>
+<span id="cb21-109"><a href="d-data-1.html#cb21-109" tabindex="-1"></a></span>
+<span id="cb21-110"><a href="d-data-1.html#cb21-110" tabindex="-1"></a>  p_combined <span class="ot">=</span> <a href='d-data-1.html#my_mfrow'>my_mfrow</a>(plotlist)</span>
+<span id="cb21-111"><a href="d-data-1.html#cb21-111" tabindex="-1"></a></span>
+<span id="cb21-112"><a href="d-data-1.html#cb21-112" tabindex="-1"></a>  <span class="do">## Return the plots</span></span>
+<span id="cb21-113"><a href="d-data-1.html#cb21-113" tabindex="-1"></a>  <span class="cf">if</span>(return_list_of_plots) <span class="fu">return</span>(plotlist)</span>
+<span id="cb21-114"><a href="d-data-1.html#cb21-114" tabindex="-1"></a>  <span class="fu">return</span>(p_combined)</span>
+<span id="cb21-115"><a href="d-data-1.html#cb21-115" tabindex="-1"></a>}</span></code></pre></div>
+<p>(This is test code.)</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="d-data-1.html#cb22-1" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">&quot;~/repos/flowtrend/index.Rmd&quot;</span>)</span>
+<span id="cb22-2"><a href="d-data-1.html#cb22-2" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;~/repos/flowmix/paper-data/MGL1704-hourly-only-binned.Rdata&quot;</span>, <span class="at">verbose=</span><span class="cn">TRUE</span>)</span>
+<span id="cb22-3"><a href="d-data-1.html#cb22-3" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;~/repos/flowmix/paper-data/cvres-2-64-10.Rdata&quot;</span>, <span class="at">verbose=</span><span class="cn">TRUE</span>)</span>
+<span id="cb22-4"><a href="d-data-1.html#cb22-4" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="d-data-1.html#cb22-5" tabindex="-1"></a><span class="do">## Shift/scale data to make it equivalent to what the model used for fitting.</span></span>
+<span id="cb22-6"><a href="d-data-1.html#cb22-6" tabindex="-1"></a>range.diam <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.6706111</span>,  <span class="fl">1.3070264</span>)</span>
+<span id="cb22-7"><a href="d-data-1.html#cb22-7" tabindex="-1"></a>range.chl <span class="ot">=</span>  <span class="fu">c</span>(<span class="fl">0.101313</span>, <span class="fl">7.955767</span>)</span>
+<span id="cb22-8"><a href="d-data-1.html#cb22-8" tabindex="-1"></a>range.pe <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.101313</span>, <span class="fl">7.955767</span>)</span>
+<span id="cb22-9"><a href="d-data-1.html#cb22-9" tabindex="-1"></a>ybin_list <span class="ot">=</span> <span class="fu">lapply</span>(ybin_list, <span class="cf">function</span>(y){</span>
+<span id="cb22-10"><a href="d-data-1.html#cb22-10" tabindex="-1"></a>  y[,<span class="dv">1</span>]  <span class="ot">=</span> y[,<span class="dv">1</span>] <span class="sc">-</span> <span class="fu">min</span>(range.diam)</span>
+<span id="cb22-11"><a href="d-data-1.html#cb22-11" tabindex="-1"></a>  y[,<span class="dv">1</span>] <span class="ot">=</span> y[,<span class="dv">1</span>] <span class="sc">/</span> width.diam</span>
+<span id="cb22-12"><a href="d-data-1.html#cb22-12" tabindex="-1"></a>  y[,<span class="dv">1</span>] <span class="ot">=</span> y[,<span class="dv">1</span>] <span class="sc">*</span> <span class="fu">max</span>(range.chl)</span>
+<span id="cb22-13"><a href="d-data-1.html#cb22-13" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
+<span id="cb22-14"><a href="d-data-1.html#cb22-14" tabindex="-1"></a>})</span>
+<span id="cb22-15"><a href="d-data-1.html#cb22-15" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="d-data-1.html#cb22-16" tabindex="-1"></a><span class="do">## For back-compatibility</span></span>
+<span id="cb22-17"><a href="d-data-1.html#cb22-17" tabindex="-1"></a>res <span class="ot">=</span> cvres<span class="sc">$</span>bestres</span>
+<span id="cb22-18"><a href="d-data-1.html#cb22-18" tabindex="-1"></a>res<span class="sc">$</span>prob <span class="ot">=</span> res<span class="sc">$</span>pie</span>
+<span id="cb22-19"><a href="d-data-1.html#cb22-19" tabindex="-1"></a></span>
+<span id="cb22-20"><a href="d-data-1.html#cb22-20" tabindex="-1"></a><span class="do">## Make the plot</span></span>
+<span id="cb22-21"><a href="d-data-1.html#cb22-21" tabindex="-1"></a><a href='d-data-1.html#plot_3d'>plot_3d</a>(<span class="at">ylist =</span> ybin_list, <span class="at">countslist =</span> biomass_list, <span class="at">obj =</span> res, <span class="at">tt =</span> <span class="dv">280</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="d-data-1.html#cb23-1" tabindex="-1"></a><span class="co">#&#39; Generates some synthetic 3-dimensional data with three clusters. </span></span>
+<span id="cb23-2"><a href="d-data-1.html#cb23-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb23-3"><a href="d-data-1.html#cb23-3" tabindex="-1"></a><span class="co">#&#39; @param TT Number of time points.</span></span>
+<span id="cb23-4"><a href="d-data-1.html#cb23-4" tabindex="-1"></a><span class="co">#&#39; @param nt Number of particles at each time.</span></span>
+<span id="cb23-5"><a href="d-data-1.html#cb23-5" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb23-6"><a href="d-data-1.html#cb23-6" tabindex="-1"></a><span class="co">#&#39; @return List containing (1) ylist, (2) mnlist, (3) clusterlist.</span></span>
+<span id="cb23-7"><a href="d-data-1.html#cb23-7" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb23-8"><a href="d-data-1.html#cb23-8" tabindex="-1"></a><span id='gendat_3d'>gendat_3d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(TT, ntlist){</span>
+<span id="cb23-9"><a href="d-data-1.html#cb23-9" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="d-data-1.html#cb23-10" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb23-11"><a href="d-data-1.html#cb23-11" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">length</span>(ntlist) <span class="sc">==</span> TT)</span>
+<span id="cb23-12"><a href="d-data-1.html#cb23-12" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="d-data-1.html#cb23-13" tabindex="-1"></a>  <span class="do">## Make cluster probabilities, by time</span></span>
+<span id="cb23-14"><a href="d-data-1.html#cb23-14" tabindex="-1"></a>  cluster_prob1 <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt) <span class="fu">sin</span>(tt<span class="sc">/</span><span class="dv">24</span> <span class="sc">*</span> <span class="dv">2</span> <span class="sc">*</span> pi)<span class="sc">/</span><span class="dv">3</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">+</span> (tt<span class="sc">/</span>TT)<span class="sc">*</span><span class="dv">5</span>)</span>
+<span id="cb23-15"><a href="d-data-1.html#cb23-15" tabindex="-1"></a>  cluster_prob2 <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt) <span class="fu">cos</span>(tt<span class="sc">/</span><span class="dv">24</span> <span class="sc">*</span> <span class="dv">2</span> <span class="sc">*</span> pi)<span class="sc">/</span><span class="dv">3</span> <span class="sc">+</span> <span class="dv">8</span> <span class="sc">-</span> (tt<span class="sc">/</span>TT)<span class="sc">*</span><span class="dv">5</span>)</span>
+<span id="cb23-16"><a href="d-data-1.html#cb23-16" tabindex="-1"></a>  cluster_prob3 <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">3</span>, TT)</span>
+<span id="cb23-17"><a href="d-data-1.html#cb23-17" tabindex="-1"></a>  probs <span class="ot">=</span> <span class="fu">cbind</span>(cluster_prob1, cluster_prob2, cluster_prob3)</span>
+<span id="cb23-18"><a href="d-data-1.html#cb23-18" tabindex="-1"></a>  probs <span class="ot">=</span> probs<span class="sc">/</span><span class="fu">rowSums</span>(probs)</span>
+<span id="cb23-19"><a href="d-data-1.html#cb23-19" tabindex="-1"></a>  <span class="fu">colnames</span>(probs) <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span></span>
+<span id="cb23-20"><a href="d-data-1.html#cb23-20" tabindex="-1"></a>  probs_long <span class="ot">=</span> <span class="fu">as_tibble</span>(probs) <span class="sc">%&gt;%</span></span>
+<span id="cb23-21"><a href="d-data-1.html#cb23-21" tabindex="-1"></a>    <span class="fu">add_column</span>(<span class="at">time =</span> <span class="dv">1</span><span class="sc">:</span>TT) <span class="sc">%&gt;%</span></span>
+<span id="cb23-22"><a href="d-data-1.html#cb23-22" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="st">&quot;time&quot;</span>, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;prob&quot;</span>)</span>
+<span id="cb23-23"><a href="d-data-1.html#cb23-23" tabindex="-1"></a>  probs_long <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>time,<span class="at">y=</span>prob, <span class="at">group=</span>cluster, <span class="at">col=</span>cluster)) <span class="sc">+</span> <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span>
+<span id="cb23-24"><a href="d-data-1.html#cb23-24" tabindex="-1"></a></span>
+<span id="cb23-25"><a href="d-data-1.html#cb23-25" tabindex="-1"></a>  <span class="do">## Make cluster means, by time</span></span>
+<span id="cb23-26"><a href="d-data-1.html#cb23-26" tabindex="-1"></a>  numclust <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb23-27"><a href="d-data-1.html#cb23-27" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb23-28"><a href="d-data-1.html#cb23-28" tabindex="-1"></a>  <span class="do">## means &lt;- array(NA, dim = c(TT, 3, 2))</span></span>
+<span id="cb23-29"><a href="d-data-1.html#cb23-29" tabindex="-1"></a>  means <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim =</span> <span class="fu">c</span>(TT, numclust, dimdat))</span>
+<span id="cb23-30"><a href="d-data-1.html#cb23-30" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
+<span id="cb23-31"><a href="d-data-1.html#cb23-31" tabindex="-1"></a>    <span class="cf">for</span>(tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT){</span>
+<span id="cb23-32"><a href="d-data-1.html#cb23-32" tabindex="-1"></a></span>
+<span id="cb23-33"><a href="d-data-1.html#cb23-33" tabindex="-1"></a>      <span class="do">## First cluster </span></span>
+<span id="cb23-34"><a href="d-data-1.html#cb23-34" tabindex="-1"></a>      means[tt, <span class="dv">1</span>, <span class="dv">1</span>] <span class="ot">=</span> means[tt, <span class="dv">1</span>, <span class="dv">2</span>] <span class="ot">=</span> means[tt, <span class="dv">1</span>, <span class="dv">3</span>] <span class="ot">=</span> tt<span class="sc">/</span>TT <span class="sc">+</span> <span class="fl">0.5</span></span>
+<span id="cb23-35"><a href="d-data-1.html#cb23-35" tabindex="-1"></a></span>
+<span id="cb23-36"><a href="d-data-1.html#cb23-36" tabindex="-1"></a>      <span class="do">## Second cluster </span></span>
+<span id="cb23-37"><a href="d-data-1.html#cb23-37" tabindex="-1"></a>      means[tt, <span class="dv">2</span>, <span class="dv">1</span>]  <span class="ot">=</span> <span class="fu">sin</span>(tt<span class="sc">/</span><span class="dv">24</span> <span class="sc">*</span> <span class="dv">2</span> <span class="sc">*</span> pi)<span class="do">##seq(-1, 1, length.out = TT)[tt]*3.1415)</span></span>
+<span id="cb23-38"><a href="d-data-1.html#cb23-38" tabindex="-1"></a>      means[tt, <span class="dv">2</span>, <span class="dv">2</span>] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb23-39"><a href="d-data-1.html#cb23-39" tabindex="-1"></a>      means[tt, <span class="dv">2</span>, <span class="dv">3</span>] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb23-40"><a href="d-data-1.html#cb23-40" tabindex="-1"></a></span>
+<span id="cb23-41"><a href="d-data-1.html#cb23-41" tabindex="-1"></a>      <span class="do">## Third cluster</span></span>
+<span id="cb23-42"><a href="d-data-1.html#cb23-42" tabindex="-1"></a>      means[tt, <span class="dv">3</span>, <span class="dv">1</span>] <span class="ot">=</span> means[tt, <span class="dv">3</span>, <span class="dv">2</span>] <span class="ot">=</span> means[tt, <span class="dv">3</span>, <span class="dv">3</span>] <span class="ot">=</span></span>
+<span id="cb23-43"><a href="d-data-1.html#cb23-43" tabindex="-1"></a>        <span class="sc">-</span><span class="dv">3</span><span class="sc">+</span><span class="fu">cos</span>(tt<span class="sc">/</span><span class="dv">24</span> <span class="sc">*</span> <span class="dv">2</span> <span class="sc">*</span> pi)<span class="do">##seq(-1, 1, length.out = TT)[tt]*6.282)</span></span>
+<span id="cb23-44"><a href="d-data-1.html#cb23-44" tabindex="-1"></a>    }</span>
+<span id="cb23-45"><a href="d-data-1.html#cb23-45" tabindex="-1"></a>  }</span>
+<span id="cb23-46"><a href="d-data-1.html#cb23-46" tabindex="-1"></a>  <span class="fu">dimnames</span>(means)[[<span class="dv">2</span>]]  <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb23-47"><a href="d-data-1.html#cb23-47" tabindex="-1"></a>  means_long <span class="ot">=</span> <span class="fu">as_tibble</span>(means) <span class="sc">%&gt;%</span></span>
+<span id="cb23-48"><a href="d-data-1.html#cb23-48" tabindex="-1"></a>    <span class="fu">add_column</span>(<span class="at">time =</span> <span class="dv">1</span><span class="sc">:</span>TT) <span class="sc">%&gt;%</span></span>
+<span id="cb23-49"><a href="d-data-1.html#cb23-49" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="st">&quot;time&quot;</span>, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;mean&quot;</span>)</span>
+<span id="cb23-50"><a href="d-data-1.html#cb23-50" tabindex="-1"></a>  model <span class="ot">=</span> <span class="fu">full_join</span>(means_long, probs_long, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;time&quot;</span>, <span class="st">&quot;cluster&quot;</span>))</span>
+<span id="cb23-51"><a href="d-data-1.html#cb23-51" tabindex="-1"></a></span>
+<span id="cb23-52"><a href="d-data-1.html#cb23-52" tabindex="-1"></a>  ylist <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb23-53"><a href="d-data-1.html#cb23-53" tabindex="-1"></a>  mulist <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb23-54"><a href="d-data-1.html#cb23-54" tabindex="-1"></a>  clusterlist <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb23-55"><a href="d-data-1.html#cb23-55" tabindex="-1"></a>  <span class="cf">for</span>(tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT){</span>
+<span id="cb23-56"><a href="d-data-1.html#cb23-56" tabindex="-1"></a>    Y <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">&quot;list&quot;</span>, <span class="at">length =</span> numclust)</span>
+<span id="cb23-57"><a href="d-data-1.html#cb23-57" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">&quot;list&quot;</span>, <span class="at">length =</span> numclust)</span>
+<span id="cb23-58"><a href="d-data-1.html#cb23-58" tabindex="-1"></a>    clusters_count <span class="ot">&lt;-</span> <span class="fu">rmultinom</span>(<span class="at">n =</span> <span class="dv">1</span>, <span class="at">size =</span> ntlist[tt], <span class="at">prob =</span> probs[tt,])</span>
+<span id="cb23-59"><a href="d-data-1.html#cb23-59" tabindex="-1"></a></span>
+<span id="cb23-60"><a href="d-data-1.html#cb23-60" tabindex="-1"></a>    <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
+<span id="cb23-61"><a href="d-data-1.html#cb23-61" tabindex="-1"></a>      <span class="cf">if</span>(ii <span class="sc">==</span> <span class="dv">1</span>){</span>
+<span id="cb23-62"><a href="d-data-1.html#cb23-62" tabindex="-1"></a>        mn <span class="ot">=</span> means[tt,ii,,drop<span class="ot">=</span><span class="cn">TRUE</span>]</span>
+<span id="cb23-63"><a href="d-data-1.html#cb23-63" tabindex="-1"></a>        Sigma1 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="fl">0.3</span>, <span class="dv">9</span>), <span class="at">ncol =</span> <span class="dv">3</span>)</span>
+<span id="cb23-64"><a href="d-data-1.html#cb23-64" tabindex="-1"></a>        <span class="fu">diag</span>(Sigma1) <span class="ot">=</span> <span class="fl">0.4</span></span>
+<span id="cb23-65"><a href="d-data-1.html#cb23-65" tabindex="-1"></a>        <span class="do">## Sigma1 = matrix(c(0.4, 0.3, 0.3, 0.4), ncol = 2)</span></span>
+<span id="cb23-66"><a href="d-data-1.html#cb23-66" tabindex="-1"></a>        Y[[ii]] <span class="ot">&lt;-</span> <span class="fu">replicate</span>(clusters_count[ii,<span class="dv">1</span>], mn <span class="sc">+</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">1</span>, <span class="at">mu=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">Sigma=</span> Sigma1)) <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
+<span id="cb23-67"><a href="d-data-1.html#cb23-67" tabindex="-1"></a>        mu[[ii]] <span class="ot">&lt;-</span> <span class="fu">replicate</span>(clusters_count[ii,<span class="dv">1</span>], mn) <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
+<span id="cb23-68"><a href="d-data-1.html#cb23-68" tabindex="-1"></a>      }</span>
+<span id="cb23-69"><a href="d-data-1.html#cb23-69" tabindex="-1"></a>      <span class="cf">if</span>(ii <span class="sc">==</span> <span class="dv">2</span>){</span>
+<span id="cb23-70"><a href="d-data-1.html#cb23-70" tabindex="-1"></a>        mn <span class="ot">=</span> means[tt,ii,, drop<span class="ot">=</span><span class="cn">TRUE</span>]</span>
+<span id="cb23-71"><a href="d-data-1.html#cb23-71" tabindex="-1"></a>        Y[[ii]] <span class="ot">&lt;-</span> <span class="fu">replicate</span>(clusters_count[ii,<span class="dv">1</span>], mn <span class="sc">+</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">1</span>, <span class="at">mu=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">Sigma =</span> <span class="fu">diag</span>(<span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>)))) <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
+<span id="cb23-72"><a href="d-data-1.html#cb23-72" tabindex="-1"></a>        mu[[ii]] <span class="ot">&lt;-</span> <span class="fu">replicate</span>(clusters_count[ii,<span class="dv">1</span>], mn) <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
+<span id="cb23-73"><a href="d-data-1.html#cb23-73" tabindex="-1"></a>      }</span>
+<span id="cb23-74"><a href="d-data-1.html#cb23-74" tabindex="-1"></a>      <span class="cf">if</span>(ii <span class="sc">==</span> <span class="dv">3</span>){</span>
+<span id="cb23-75"><a href="d-data-1.html#cb23-75" tabindex="-1"></a>        mn <span class="ot">=</span> means[tt,ii,, drop<span class="ot">=</span><span class="cn">TRUE</span>]</span>
+<span id="cb23-76"><a href="d-data-1.html#cb23-76" tabindex="-1"></a>        Y[[ii]] <span class="ot">&lt;-</span> <span class="fu">replicate</span>(clusters_count[ii,<span class="dv">1</span>], mn <span class="sc">+</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="dv">1</span>, <span class="at">mu=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">Sigma =</span> <span class="fu">diag</span>(<span class="fu">c</span>(<span class="fl">0.35</span>, <span class="fl">0.35</span>, <span class="fl">0.35</span>)))) <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
+<span id="cb23-77"><a href="d-data-1.html#cb23-77" tabindex="-1"></a>        mu[[ii]] <span class="ot">&lt;-</span> <span class="fu">replicate</span>(clusters_count[ii,<span class="dv">1</span>], mn) <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
+<span id="cb23-78"><a href="d-data-1.html#cb23-78" tabindex="-1"></a>      }</span>
+<span id="cb23-79"><a href="d-data-1.html#cb23-79" tabindex="-1"></a>    }</span>
+<span id="cb23-80"><a href="d-data-1.html#cb23-80" tabindex="-1"></a></span>
+<span id="cb23-81"><a href="d-data-1.html#cb23-81" tabindex="-1"></a>    Y <span class="ot">&lt;-</span> Y <span class="sc">%&gt;%</span> purrr<span class="sc">::</span><span class="fu">compact</span>() <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind, .)</span>
+<span id="cb23-82"><a href="d-data-1.html#cb23-82" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> mu <span class="sc">%&gt;%</span> purrr<span class="sc">::</span><span class="fu">compact</span>() <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind, .)</span>
+<span id="cb23-83"><a href="d-data-1.html#cb23-83" tabindex="-1"></a>    cluster <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">times =</span> clusters_count)</span>
+<span id="cb23-84"><a href="d-data-1.html#cb23-84" tabindex="-1"></a>    <span class="fu">colnames</span>(Y) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;dim&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb23-85"><a href="d-data-1.html#cb23-85" tabindex="-1"></a>    ylist[[tt]] <span class="ot">=</span> Y</span>
+<span id="cb23-86"><a href="d-data-1.html#cb23-86" tabindex="-1"></a>    mulist[[tt]] <span class="ot">=</span> mu</span>
+<span id="cb23-87"><a href="d-data-1.html#cb23-87" tabindex="-1"></a>    clusterlist[[tt]] <span class="ot">=</span> cluster</span>
+<span id="cb23-88"><a href="d-data-1.html#cb23-88" tabindex="-1"></a>  }</span>
+<span id="cb23-89"><a href="d-data-1.html#cb23-89" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">ylist =</span> ylist, <span class="at">mulist =</span> mulist,</span>
+<span id="cb23-90"><a href="d-data-1.html#cb23-90" tabindex="-1"></a>              <span class="at">clusterlist =</span> clusterlist,</span>
+<span id="cb23-91"><a href="d-data-1.html#cb23-91" tabindex="-1"></a>              <span class="at">probs =</span> probs, <span class="at">means =</span> means))</span>
+<span id="cb23-92"><a href="d-data-1.html#cb23-92" tabindex="-1"></a>}</span></code></pre></div>
+<p>Now, trying this out on some synthetic data and estimated model.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="d-data-1.html#cb24-1" tabindex="-1"></a>datobj <span class="ot">=</span> <a href='d-data-1.html#gendat_3d'>gendat_3d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>,<span class="dv">100</span>))</span>
+<span id="cb24-2"><a href="d-data-1.html#cb24-2" tabindex="-1"></a><a href='d-data-1.html#plot_3d'>plot_3d</a>(<span class="at">ylist =</span> datobj<span class="sc">$</span>ylist, <span class="at">tt =</span> <span class="dv">1</span>)</span>
+<span id="cb24-3"><a href="d-data-1.html#cb24-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2321</span>)</span>
+<span id="cb24-4"><a href="d-data-1.html#cb24-4" tabindex="-1"></a>obj <span class="ot">=</span> <a href='flowtrend.html#flowtrend'>flowtrend</a>(<span class="at">ylist =</span> datobj<span class="sc">$</span>ylist,</span>
+<span id="cb24-5"><a href="d-data-1.html#cb24-5" tabindex="-1"></a>                <span class="at">l =</span> <span class="dv">2</span>, <span class="at">l_prob =</span> <span class="dv">1</span>,</span>
+<span id="cb24-6"><a href="d-data-1.html#cb24-6" tabindex="-1"></a>                <span class="at">lambda =</span> .<span class="dv">01</span>, <span class="at">lambda_prob =</span> .<span class="dv">01</span>,</span>
+<span id="cb24-7"><a href="d-data-1.html#cb24-7" tabindex="-1"></a>                <span class="at">numclust =</span> <span class="dv">3</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb24-8"><a href="d-data-1.html#cb24-8" tabindex="-1"></a>                <span class="at">maxdev =</span> <span class="dv">3</span>,</span>
+<span id="cb24-9"><a href="d-data-1.html#cb24-9" tabindex="-1"></a>                <span class="at">niter =</span> <span class="dv">50</span>,</span>
+<span id="cb24-10"><a href="d-data-1.html#cb24-10" tabindex="-1"></a>                <span class="at">nrestart =</span> <span class="dv">3</span>)</span>
+<span id="cb24-11"><a href="d-data-1.html#cb24-11" tabindex="-1"></a><a href='d-data-1.html#plot_3d'>plot_3d</a>(<span class="at">ylist =</span> datobj<span class="sc">$</span>ylist, <span class="at">tt =</span> tt, <span class="at">obj =</span> obj)</span></code></pre></div>
 
-</div>
 </div>
             </section>
 

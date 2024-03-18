@@ -139,7 +139,7 @@ And the plot below are some snapshots in time $t$.
 ```{r plot-2d-in-1d, fig.width = 8, fig.height = 7}
 timelist = c(10, 20, 30, 40, 60, 80)
 plist = lapply(timelist, function(tt){
-  plot_2d(dt$ylist, obj, tt = tt) + coord_fixed() + ylim(-6, 3) + xlim(-6, 3)
+  plot_2d(dt$ylist, obj = obj, tt = tt) + coord_fixed() + ylim(-6, 3) + xlim(-6, 3)
 })
 do.call(ggpubr::ggarrange, c(plist, ncol=3, nrow=2))
 ```

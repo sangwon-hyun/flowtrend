@@ -75,5 +75,7 @@ gendat_2d <- function(TT, ntlist){
     mulist[[tt]] = mu
     clusterlist[[tt]] = cluster
   }
-  return(list(ylist = ylist, mulist = mulist, clusterlist = clusterlist, probs = probs, means = means))
+  return(list(ylist = ylist, mulist = mulist,
+              clusterlist = clusterlist,
+              probs = probs, means = means))
 }
