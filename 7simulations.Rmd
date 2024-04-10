@@ -29,12 +29,16 @@ underfit_flowmeans <- function(ylist, numclust){
   TT <- length(ylist)
   nt <- sapply(ylist, nrow)
   ylist_pooled <- do.call(rbind, ylist) %>% as_tibble()
+  colnames(ylist_pooled) = "Y"
 
   ## Fit the model
   fmns_pooled <- flowMeans::flowMeans(x = ylist_pooled, NumC = numclust)
   labeled_ylist <- data.frame(Y = ylist_pooled$Y,
                               Cluster = fmns_pooled@Label,
                               Time = rep(1:TT, times = nt))
+
+  ## Separate out list of memberships
+  memlist = labeled_ylist %>% group_by(Time) %>% group_split() %>% lapply(function(a)pull(a, Cluster))
   
   ## Format nicer output for objective calculations
   params <- labeled_ylist %>% group_by(Cluster, Time) %>% 
@@ -51,7 +55,7 @@ underfit_flowmeans <- function(ylist, numclust){
     for(iclust in 1:numclust){
       
       mu[tt,iclust] <- params.tt$mu[iclust]
-      sigma[tt,iclust] <- params.tt$sigma[iclust]
+      sigma[tt,iclust] <- params.tt$sigma[clust]
       prob[tt,iclust] <- params.tt$prob[iclust]
       
       if(is.na(mu[tt,iclust])){
@@ -66,6 +70,7 @@ underfit_flowmeans <- function(ylist, numclust){
     }
   }
   return(list(labeled_ylist = labeled_ylist,
+              memlist = memlist,
               params = params,
               mu = mu,
               prob = prob,
@@ -79,13 +84,14 @@ Here is a plotter function.
 ```{r}
 #' Plotter for underfit and overfit flowmeans.
 #' @param ylist Data
+#' @param countslist Optional: counts for each ylist
 #' @param obj Output from \code{underfit_flowmeans()}
 #' @return ggplot object
 #' @export
-plot_1d_flowmeans <- function(obj, ylist){
+plot_1d_flowmeans <- function(obj, ylist, countslist=NULL){
   ## Make plot of only data
 
-  gg = plot_1d(ylist)
+  gg = plot_1d(ylist=ylist, countslist=countslist)
 
   my_wrangle <- function(a, values_to){
     a %>% as_tibble() %>% setNames(c("1", "2", "3")) %>%
@@ -124,14 +130,19 @@ Here's a helper to reorder the clusters of the output created using
 ```{r}
 #' Reordering function
 reorder_flowmeans <- function(obj, new_order){
+  numclust = max(new_order)
   obj$prob = obj$prob[,new_order]
   obj$mu = obj$mu[,new_order]
   obj$sigma = obj$sigma[,new_order]
-  obj$relabels =  lapply(obj$relabels, function(a){
-    a[a==1] = new_order[1]
-    a[a==2] = new_order[2] ## 3
-    a[a==3] = new_order[3] ## 2
-    return(a)
+  obj$memlist =  lapply(obj$memlist, function(a){
+    a_copy = a
+    for(iclust in 1:numclust){
+      a_copy[which(a==iclust)] = new_order[iclust]
+    }
+      ## a[a==1] = new_order[1]
+      ## a[a==2] = new_order[2] ## 3
+      ## a[a==3] = new_order[3] ## 2
+    return(a_copy)
   })
   return(obj)
 }
@@ -166,9 +177,13 @@ The `many_mixtures()` function uses a few helpers:
 #' @export
 flowmeans_each <- function(ylist, numclust){
 
+  ## Basic check
+  stopifnot(ncol(ylist[[1]])==1)
+
   ## Get cluster labels from the peaks
   fmns_obj <- flowMeans::flowMeans(x = ylist, NumC = numclust)
-  labeled_ylist <- data.frame(cluster = fmns_obj@Label, ylist)
+  labeled_ylist <- data.frame(cluster = fmns_obj@Label, ylist) %>% tibble::as_tibble()
+  colnames(labeled_ylist)[2] = "Y"
   
   ## Calculate cluster parameters
   cluster_params <- labeled_ylist %>% group_by(cluster) %>% 
@@ -194,7 +209,7 @@ match_clusters <- function(fmns_obj){
   sigma <- matrix(nrow = TT, ncol = numc)
   prob <- matrix(nrow = TT, ncol = numc)
   costs <- rep(NA, TT)
-  relabels <- list(fmns_obj[[1]]$fmns_obj@Label)
+  memlist <- list(fmns_obj[[1]]$fmns_obj@Label)
   
   ## First row is spoken for
   mu[1,] <- fmns_obj[[1]]$cluster_params$mu
@@ -220,10 +235,10 @@ match_clusters <- function(fmns_obj){
 
     ## Convert labels
     label.convert <- function(c1){hng_tt$pairs[c1,2]}
-    relabels[[tt]] <- sapply(fmns_obj[[tt]]$fmns_obj@Label, label.convert)
+    memlist[[tt]] <- sapply(fmns_obj[[tt]]$fmns_obj@Label, label.convert)
   }
   
-  return(list(mu = mu, prob = prob, sigma = sigma, costs = costs, relabels = relabels))
+  return(list(mu = mu, prob = prob, sigma = sigma, costs = costs, memlist = memlist))
 }
 
 #' Given two K x 2 columns with parameters, make K x K distance matrix.
@@ -349,7 +364,7 @@ And when one of the clusterings is absolute, we can still use a 0-1 vector.
 
 ```{r soft-rand}
 #' A "soft" version of a rand index between two sets of responsibility
-#' (membership probability) matrices.
+#' (membership probability) matrices. Measures the /disagreement/ between the two clusterings.
 #' 
 #' @param resp_list1 One list of responsibility matrices.
 #' @param resp_list2 Another list of responsibility matrices.
@@ -364,20 +379,24 @@ soft_rand <- function(resp_list1, resp_list2){
     nt = nrow(resp1)
     
     ## Form the score
-    amat = resp1 %*% t(resp1)
-    bmat = resp2 %*% t(resp2)
-    multmat1 = amat * (1 - bmat)
-    multmat2 = (1-amat) * (bmat)
-    multmat1[diag(multmat1)] = 0 ## Remove diagonals
-    multmat2[diag(multmat2)] = 0 ## Remove diagonals
-    return(sum(multmat1) + sum(multmat2))
+    mat11 = resp1 %*% t(resp1)
+    mat22 = resp2 %*% t(resp2)
+
+    a = mat11 * mat22
+    b = (1-mat11) * (1-mat22)
+    c = mat11 * (1-mat22)
+    d = (1-mat11) * mat22
+    return(c(a = sum(a), b = sum(b), c = sum(c), d = sum(d)))
   }
-  sum(mapply(soft_rand_onetime, resp_list1, resp_list2))
+  abcd_over_time = mapply(soft_rand_onetime, resp_list1, resp_list2)
+  abcdmat = abcd_over_time %>% t()
+  abcd = abcdmat %>% colSums()
+  score = (abcd["a"] + abcd["b"])/  (sum(abcd))
+  return(score)
 }
 ```
 
-```{r try-soft-rand}
-
+```{r try-soft-rand, eval = FALSE}
 numclust = 3
 TT = 100
 dimdat = 1
@@ -394,6 +413,7 @@ res2 = flowtrend(ylist=ylist, numclust=3, l=2, l_prob=1, lambda = 1,
 soft_rand(res$resp, res2$resp)
 soft_rand(res$resp, res$resp)
 soft_rand(res2$resp, res2$resp)
+
 g1 = plot_1d(ylist=ylist, obj=res2)
 g2 = plot_1d(ylist=ylist, obj=res)
 do.call(ggpubr::ggarrange, c(list(g1, g2), ncol=1, nrow=2))
@@ -403,19 +423,8 @@ do.call(ggpubr::ggarrange, c(list(g1, g2), ncol=1, nrow=2))
 ## Case 2: one is the TRUTH; based on the
 
 ## Case 3: one is a hard clustering. 
-plot(ylist[[1]], col = obj$relabels[[1]])
-
-get_resp_from_labels <- function(labels){
-  lapply(labels, function(one_time_label){
-  one_resp = rep(0,3)
-  resp = sapply(obj$relabels[[1]], function(ii){
-    one_resp[ii] = 1
-    return(one_resp)
-  }) %>% t()
-  return(resp)
-})
-  }
-obj$resp = get_resp_from_labels(obj$relabels)
+plot(ylist[[1]], col = obj$memlist[[1]])
+obj$resp = get_resp_from_labels(obj$memlist)
 soft_rand(res$resp, res2$resp)
 soft_rand(res$resp, res$resp)
 
@@ -423,22 +432,44 @@ soft_rand(res$resp, res$resp)
 a = dt %>% group_by(time ) %>% group_split() %>%
   lapply(function(one_dt) one_dt %>% pull(cluster))
 
+
+#' Helper to get, from labels
+get_resp_from_labels <- function(labels){
+  numclust = max(labels[[1]])
+  lapply(labels, function(one_time_label){
+  one_resp = rep(0,3)
+  resp = sapply(obj$memlist[[1]], function(ii){
+    one_resp[ii] = 1
+    return(one_resp)
+  }) %>% t()
+  return(resp)
+  })
+}
 ```
 
 
-So up next:
+It's also helpful to have a function that takes a list of discrete memberships
+(integers 1,..,K) and convert it to a list of responsibility matrices similar in
+format to `obj$resp` of a flowtrend object `obj`.
 
-(1) run the simulations for several signal sizes; x10 times per signal size.
+```{r}
+#' Convert list of memberships into a list of responsibilities.
+#' 
+#' @param memlist List of memberships
+#'
+#' @return
+#' @export
+memlist_to_respmat <- function(memlist){
+  numclust = max(sapply(memlist, max))
+  respmats = lapply(memlist, function(mem){
+    respmat = lapply(mem, function(onemem){
+      onerow = rep(0, numclust)##c(0,0)
+      onerow[onemem] = 1
+      return(onerow)
+    }) %>% do.call(rbind, .)
+    return(respmat)
+  })
+  return(respmats)
+}
+```
 
-(2) for each of them, measure the adjusted RAND index against the truth (one is hard),
-
-
-And for the rest of the time, measure the RAND index.
-
-Organizing the simulations for a moment:
-
-1. output/flowtrend/1dsim-pseudoreal/signal-0/isim-1.
-signal-0 through signal-12
-Run isim = 1,2,3 for each case.
-
-2. Run the 10-fold cross-validation on the 

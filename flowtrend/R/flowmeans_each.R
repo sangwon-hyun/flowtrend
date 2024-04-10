@@ -8,9 +8,13 @@
 #' @export
 flowmeans_each <- function(ylist, numclust){
 
+  ## Basic check
+  stopifnot(ncol(ylist[[1]])==1)
+
   ## Get cluster labels from the peaks
   fmns_obj <- flowMeans::flowMeans(x = ylist, NumC = numclust)
-  labeled_ylist <- data.frame(cluster = fmns_obj@Label, ylist)
+  labeled_ylist <- data.frame(cluster = fmns_obj@Label, ylist) %>% tibble::as_tibble()
+  colnames(labeled_ylist)[2] = "Y"
   
   ## Calculate cluster parameters
   cluster_params <- labeled_ylist %>% group_by(cluster) %>% 

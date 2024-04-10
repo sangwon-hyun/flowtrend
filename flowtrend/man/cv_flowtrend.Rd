@@ -25,6 +25,7 @@ cv_flowtrend(
   mc.cores = 1,
   folds = NULL,
   seedtab = NULL,
+  niter = 1000,
   ...
 )
 }
@@ -65,6 +66,8 @@ regularization parameters.}
 
 \item{folds}{Manually provide CV folds (list of time points of data to use
 as CV folds). Defaults to NULL.}
+
+\item{niter}{Maximum number of EM iterations.}
 
 \item{...}{Additional arguments to flowtrend().}
 }

@@ -2,13 +2,14 @@
 
 #' Plotter for underfit and overfit flowmeans.
 #' @param ylist Data
+#' @param countslist Optional: counts for each ylist
 #' @param obj Output from \code{underfit_flowmeans()}
 #' @return ggplot object
 #' @export
-plot_1d_flowmeans <- function(obj, ylist){
+plot_1d_flowmeans <- function(obj, ylist, countslist=NULL){
   ## Make plot of only data
 
-  gg = plot_1d(ylist)
+  gg = plot_1d(ylist=ylist, countslist=countslist)
 
   my_wrangle <- function(a, values_to){
     a %>% as_tibble() %>% setNames(c("1", "2", "3")) %>%

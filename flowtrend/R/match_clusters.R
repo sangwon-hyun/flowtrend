@@ -14,7 +14,7 @@ match_clusters <- function(fmns_obj){
   sigma <- matrix(nrow = TT, ncol = numc)
   prob <- matrix(nrow = TT, ncol = numc)
   costs <- rep(NA, TT)
-  relabels <- list(fmns_obj[[1]]$fmns_obj@Label)
+  memlist <- list(fmns_obj[[1]]$fmns_obj@Label)
   
   ## First row is spoken for
   mu[1,] <- fmns_obj[[1]]$cluster_params$mu
@@ -40,10 +40,10 @@ match_clusters <- function(fmns_obj){
 
     ## Convert labels
     label.convert <- function(c1){hng_tt$pairs[c1,2]}
-    relabels[[tt]] <- sapply(fmns_obj[[tt]]$fmns_obj@Label, label.convert)
+    memlist[[tt]] <- sapply(fmns_obj[[tt]]$fmns_obj@Label, label.convert)
   }
   
-  return(list(mu = mu, prob = prob, sigma = sigma, costs = costs, relabels = relabels))
+  return(list(mu = mu, prob = prob, sigma = sigma, costs = costs, memlist = memlist))
 }
 
 #' Given two K x 2 columns with parameters, make K x K distance matrix.

@@ -48,9 +48,9 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
   ## Get the seed ready
   if(!is.null(seedtab)){
     seed = seedtab %>%
-      dplyr::filter(iprob == !!iprob,
-                    imu == !!imu,
-                    ifold == !!ifold,
+      dplyr::filter(iprob == !!iprob & 
+                    imu == !!imu &
+                    ifold == !!ifold &
                     irestart == !!irestart) %>%
       dplyr::select(seed1, seed2, seed3, seed4, seed5, seed6, seed7) %>% unlist() %>% as.integer()
   } else {

@@ -43,7 +43,8 @@ cv_flowtrend <- function(## Data
                           save_meta = FALSE,
                           mc.cores = 1,
                           folds = NULL,
-                          seedtab = NULL,
+                         seedtab = NULL,
+                         niter = 1000,
                           ...){
 
   ## Basic checks
@@ -143,7 +144,8 @@ cv_flowtrend <- function(## Data
               numclust = numclust,
               maxdev = maxdev,
               verbose = FALSE,
-              seedtab = seedtab)
+              seedtab = seedtab,
+              niter = niter)
     } else {
       one_job_refit(iprob = iprob,
                     imu = imu,
@@ -159,7 +161,8 @@ cv_flowtrend <- function(## Data
                     maxdev = maxdev,
                     nrestart = nrestart,
                     verbose = FALSE,
-                    seedtab = seedtab)
+                    seedtab = seedtab,
+                    niter = niter)
     }
     return(NULL)
   }, mc.cores = mc.cores)

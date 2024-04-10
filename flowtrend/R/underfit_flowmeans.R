@@ -14,12 +14,16 @@ underfit_flowmeans <- function(ylist, numclust){
   TT <- length(ylist)
   nt <- sapply(ylist, nrow)
   ylist_pooled <- do.call(rbind, ylist) %>% as_tibble()
+  colnames(ylist_pooled) = "Y"
 
   ## Fit the model
   fmns_pooled <- flowMeans::flowMeans(x = ylist_pooled, NumC = numclust)
   labeled_ylist <- data.frame(Y = ylist_pooled$Y,
                               Cluster = fmns_pooled@Label,
                               Time = rep(1:TT, times = nt))
+
+  ## Separate out list of memberships
+  memlist = labeled_ylist %>% group_by(Time) %>% group_split() %>% lapply(function(a)pull(a, Cluster))
   
   ## Format nicer output for objective calculations
   params <- labeled_ylist %>% group_by(Cluster, Time) %>% 
@@ -51,6 +55,7 @@ underfit_flowmeans <- function(ylist, numclust){
     }
   }
   return(list(labeled_ylist = labeled_ylist,
+              memlist = memlist,
               params = params,
               mu = mu,
               prob = prob,
