@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun" />
 
 
-<meta name="date" content="2024-04-09" />
+<meta name="date" content="2024-04-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -263,7 +263,7 @@ similar clusters across time points and combining them.</li>
 <span id="cb231-38"><a href="helpers-for-simulations-in-the-paper.html#cb231-38" tabindex="-1"></a>    <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){</span>
 <span id="cb231-39"><a href="helpers-for-simulations-in-the-paper.html#cb231-39" tabindex="-1"></a>      </span>
 <span id="cb231-40"><a href="helpers-for-simulations-in-the-paper.html#cb231-40" tabindex="-1"></a>      mu[tt,iclust] <span class="ot">&lt;-</span> params.tt<span class="sc">$</span>mu[iclust]</span>
-<span id="cb231-41"><a href="helpers-for-simulations-in-the-paper.html#cb231-41" tabindex="-1"></a>      sigma[tt,iclust] <span class="ot">&lt;-</span> params.tt<span class="sc">$</span>sigma[iclust]</span>
+<span id="cb231-41"><a href="helpers-for-simulations-in-the-paper.html#cb231-41" tabindex="-1"></a>      sigma[tt,iclust] <span class="ot">&lt;-</span> params.tt<span class="sc">$</span>sigma[clust]</span>
 <span id="cb231-42"><a href="helpers-for-simulations-in-the-paper.html#cb231-42" tabindex="-1"></a>      prob[tt,iclust] <span class="ot">&lt;-</span> params.tt<span class="sc">$</span>prob[iclust]</span>
 <span id="cb231-43"><a href="helpers-for-simulations-in-the-paper.html#cb231-43" tabindex="-1"></a>      </span>
 <span id="cb231-44"><a href="helpers-for-simulations-in-the-paper.html#cb231-44" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">is.na</span>(mu[tt,iclust])){</span>

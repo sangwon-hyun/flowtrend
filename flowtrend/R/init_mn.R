@@ -14,6 +14,7 @@ init_mn <- function(ylist, numclust, TT, dimdat, countslist = NULL, seed=NULL){
   if(!is.null(seed)){
     assertthat::assert_that(all((seed %>% sapply(., class)) == "integer"))
     assertthat::assert_that(length(seed) == 7)
+    RNGkind("L'Ecuyer-CMRG") 
     .Random.seed <<- seed
   }
 
