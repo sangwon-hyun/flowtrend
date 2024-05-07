@@ -4,34 +4,34 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>11 Reordering clusters | Creating the flowtrend R package</title>
-  <meta name="description" content="11 Reordering clusters | Creating the flowtrend R package" />
+  <title>4 Reordering clusters | Creating the flowtrend R package</title>
+  <meta name="description" content="4 Reordering clusters | Creating the flowtrend R package" />
   <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="11 Reordering clusters | Creating the flowtrend R package" />
+  <meta property="og:title" content="4 Reordering clusters | Creating the flowtrend R package" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="11 Reordering clusters | Creating the flowtrend R package" />
+  <meta name="twitter:title" content="4 Reordering clusters | Creating the flowtrend R package" />
   
   
   
 
-<meta name="author" content="Sangwon Hyun" />
+<meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien" />
 
 
-<meta name="date" content="2024-04-11" />
+<meta name="date" content="2024-05-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="flowtrend.html"/>
-<link rel="next" href="tuning-the-regularization-parameters-for-flowtrend.html"/>
+<link rel="prev" href="building-the-modelalgorithm.html"/>
+<link rel="next" href="tuning-lambda.html"/>
 <script src="libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
@@ -140,55 +140,68 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
 <li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="package-setup.html"><a href="package-setup.html#plotting-1d-data"><i class="fa fa-check"></i><b>2.1</b> Plotting 1d data</a></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="d-data.html"><a href="d-data.html"><i class="fa fa-check"></i><b>3</b> 2d data</a>
+<li class="chapter" data-level="2.1" data-path="package-setup.html"><a href="package-setup.html#d-data"><i class="fa fa-check"></i><b>2.1</b> 1d data</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="d-data.html"><a href="d-data.html#generating-2d-data"><i class="fa fa-check"></i><b>3.1</b> Generating 2d data</a></li>
-<li class="chapter" data-level="3.2" data-path="d-data.html"><a href="d-data.html#plotting-2d-data"><i class="fa fa-check"></i><b>3.2</b> Plotting 2d data</a></li>
+<li class="chapter" data-level="2.1.1" data-path="package-setup.html"><a href="package-setup.html#generating-1d-data"><i class="fa fa-check"></i><b>2.1.1</b> Generating 1d data</a></li>
+<li class="chapter" data-level="2.1.2" data-path="package-setup.html"><a href="package-setup.html#plotting-1d-data"><i class="fa fa-check"></i><b>2.1.2</b> Plotting 1d data</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="d-data-1.html"><a href="d-data-1.html"><i class="fa fa-check"></i><b>4</b> 3d data</a></li>
-<li class="chapter" data-level="5" data-path="trend-filtering.html"><a href="trend-filtering.html"><i class="fa fa-check"></i><b>5</b> Trend filtering</a></li>
-<li class="chapter" data-level="6" data-path="objective-data-log-likelihood.html"><a href="objective-data-log-likelihood.html"><i class="fa fa-check"></i><b>6</b> Objective (data log-likelihood)</a></li>
-<li class="chapter" data-level="7" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html"><i class="fa fa-check"></i><b>7</b> Initial parameters for EM algorithm</a></li>
-<li class="chapter" data-level="8" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>8</b> E step</a></li>
-<li class="chapter" data-level="9" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>9</b> M step</a>
+<li class="chapter" data-level="2.2" data-path="package-setup.html"><a href="package-setup.html#d-data-1"><i class="fa fa-check"></i><b>2.2</b> 2d data</a>
 <ul>
-<li class="chapter" data-level="9.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>9.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
-<li class="chapter" data-level="9.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>9.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
-<li class="chapter" data-level="9.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>9.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
-<li class="chapter" data-level="9.4" data-path="m-step.html"><a href="m-step.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>9.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
-<li class="chapter" data-level="9.5" data-path="m-step.html"><a href="m-step.html#all-rcpp-functions"><i class="fa fa-check"></i><b>9.5</b> All Rcpp functions</a></li>
+<li class="chapter" data-level="2.2.1" data-path="package-setup.html"><a href="package-setup.html#generating-2d-data"><i class="fa fa-check"></i><b>2.2.1</b> Generating 2d data</a></li>
+<li class="chapter" data-level="2.2.2" data-path="package-setup.html"><a href="package-setup.html#plotting-2d-data"><i class="fa fa-check"></i><b>2.2.2</b> Plotting 2d data</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="flowtrend.html"><a href="flowtrend.html"><i class="fa fa-check"></i><b>10</b> flowtrend</a></li>
-<li class="chapter" data-level="11" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>11</b> Reordering clusters</a></li>
-<li class="chapter" data-level="12" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html"><i class="fa fa-check"></i><b>12</b> Tuning the regularization parameters for <code>flowtrend</code></a>
+<li class="chapter" data-level="2.3" data-path="package-setup.html"><a href="package-setup.html#d-data-2"><i class="fa fa-check"></i><b>2.3</b> 3d data</a>
 <ul>
-<li class="chapter" data-level="12.1" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>12.1</b> Predicting and evaluating on new time points</a></li>
-<li class="chapter" data-level="12.2" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>12.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
-<li class="chapter" data-level="12.3" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#define-cv-data-folds"><i class="fa fa-check"></i><b>12.3</b> Define CV data folds</a></li>
-<li class="chapter" data-level="12.4" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-many-single-jobs"><i class="fa fa-check"></i><b>12.4</b> CV = many single jobs</a></li>
-<li class="chapter" data-level="12.5" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#running-cross-validation"><i class="fa fa-check"></i><b>12.5</b> Running cross-validation</a></li>
-<li class="chapter" data-level="12.6" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#summarizing-the-output"><i class="fa fa-check"></i><b>12.6</b> Summarizing the output</a></li>
-<li class="chapter" data-level="12.7" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>12.7</b> CV on your own computer</a></li>
-<li class="chapter" data-level="12.8" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#plotting"><i class="fa fa-check"></i><b>12.8</b> Plotting</a></li>
+<li class="chapter" data-level="2.3.1" data-path="package-setup.html"><a href="package-setup.html#plotting-3d-data"><i class="fa fa-check"></i><b>2.3.1</b> Plotting 3d data</a></li>
+<li class="chapter" data-level="2.3.2" data-path="package-setup.html"><a href="package-setup.html#generating-3d-data"><i class="fa fa-check"></i><b>2.3.2</b> Generating 3d data</a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="se-rule-for-cross-validation.html"><a href="se-rule-for-cross-validation.html"><i class="fa fa-check"></i><b>13</b> 1SE rule for cross validation</a></li>
-<li class="chapter" data-level="14" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>14</b> Testing the flowtrend method</a>
+</ul></li>
+<li class="chapter" data-level="3" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html"><i class="fa fa-check"></i><b>3</b> Building the model/algorithm</a>
 <ul>
-<li class="chapter" data-level="14.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>14.1</b> 1d example</a></li>
-<li class="chapter" data-level="14.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values"><i class="fa fa-check"></i><b>14.2</b> Testing monotonicity of objective values</a></li>
-<li class="chapter" data-level="14.3" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_2d-example"><i class="fa fa-check"></i><b>14.3</b> 2d example</a></li>
-<li class="chapter" data-level="14.4" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#working-with-binned-dataset"><i class="fa fa-check"></i><b>14.4</b> Working with “binned” dataset</a></li>
-<li class="chapter" data-level="14.5" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#unevenly-spaced-inputs-x"><i class="fa fa-check"></i><b>14.5</b> Unevenly spaced inputs (x)</a></li>
-</ul></li>
-<li class="chapter" data-level="15" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>15</b> Documenting the package and building</a></li>
-<li class="chapter" data-level="16" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html"><i class="fa fa-check"></i><b>16</b> Helpers for simulations in the paper</a>
+<li class="chapter" data-level="3.1" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#trend-filtering"><i class="fa fa-check"></i><b>3.1</b> Trend filtering</a></li>
+<li class="chapter" data-level="3.2" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#objective-data-log-likelihood"><i class="fa fa-check"></i><b>3.2</b> Objective (data log-likelihood)</a></li>
+<li class="chapter" data-level="3.3" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#initial-parameters-for-em-algorithm"><i class="fa fa-check"></i><b>3.3</b> Initial parameters for EM algorithm</a></li>
+<li class="chapter" data-level="3.4" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#e-step"><i class="fa fa-check"></i><b>3.4</b> E step</a></li>
+<li class="chapter" data-level="3.5" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step"><i class="fa fa-check"></i><b>3.5</b> M step</a>
 <ul>
-<li class="chapter" data-level="16.1" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#two-alternative-estimators"><i class="fa fa-check"></i><b>16.1</b> Two alternative estimators</a></li>
-<li class="chapter" data-level="16.2" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>16.2</b> Example using <code><a href='helpers-for-simulations-in-the-paper.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations-in-the-paper.html#overfit_flowmeans'>overfit_flowmeans</a>()</code></a></li>
-<li class="chapter" data-level="16.3" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>16.3</b> Evaluating performance: soft RAND index</a></li>
+<li class="chapter" data-level="3.5.1" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step-for-pi"><i class="fa fa-check"></i><b>3.5.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
+<li class="chapter" data-level="3.5.2" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step-for-sigma"><i class="fa fa-check"></i><b>3.5.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
+<li class="chapter" data-level="3.5.3" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step-for-mu"><i class="fa fa-check"></i><b>3.5.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
+<li class="chapter" data-level="3.5.4" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>3.5.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
+<li class="chapter" data-level="3.5.5" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#all-rcpp-functions"><i class="fa fa-check"></i><b>3.5.5</b> All Rcpp functions</a></li>
 </ul></li>
+<li class="chapter" data-level="3.6" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#the-main-flowtrend-function"><i class="fa fa-check"></i><b>3.6</b> The main “flowtrend” function</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>4</b> Reordering clusters</a></li>
+<li class="chapter" data-level="5" data-path="tuning-lambda.html"><a href="tuning-lambda.html"><i class="fa fa-check"></i><b>5</b> Tuning <span class="math inline">\(\lambda\)</span></a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="tuning-lambda.html"><a href="tuning-lambda.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>5.1</b> Predicting and evaluating on new time points</a></li>
+<li class="chapter" data-level="5.2" data-path="tuning-lambda.html"><a href="tuning-lambda.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>5.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
+<li class="chapter" data-level="5.3" data-path="tuning-lambda.html"><a href="tuning-lambda.html#define-cv-data-folds"><i class="fa fa-check"></i><b>5.3</b> Define CV data folds</a></li>
+<li class="chapter" data-level="5.4" data-path="tuning-lambda.html"><a href="tuning-lambda.html#cv-many-single-jobs"><i class="fa fa-check"></i><b>5.4</b> CV = many single jobs</a></li>
+<li class="chapter" data-level="5.5" data-path="tuning-lambda.html"><a href="tuning-lambda.html#running-cross-validation"><i class="fa fa-check"></i><b>5.5</b> Running cross-validation</a></li>
+<li class="chapter" data-level="5.6" data-path="tuning-lambda.html"><a href="tuning-lambda.html#summarizing-the-output"><i class="fa fa-check"></i><b>5.6</b> Summarizing the output</a></li>
+<li class="chapter" data-level="5.7" data-path="tuning-lambda.html"><a href="tuning-lambda.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>5.7</b> CV on your own computer</a></li>
+<li class="chapter" data-level="5.8" data-path="tuning-lambda.html"><a href="tuning-lambda.html#plotting"><i class="fa fa-check"></i><b>5.8</b> Plotting</a></li>
+<li class="chapter" data-level="5.9" data-path="tuning-lambda.html"><a href="tuning-lambda.html#se-rule-for-cross-validation"><i class="fa fa-check"></i><b>5.9</b> 1SE rule for cross validation</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>6</b> Testing the flowtrend method</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>6.1</b> 1d example</a></li>
+<li class="chapter" data-level="6.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values"><i class="fa fa-check"></i><b>6.2</b> Testing monotonicity of objective values</a></li>
+<li class="chapter" data-level="6.3" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_2d-example"><i class="fa fa-check"></i><b>6.3</b> 2d example</a></li>
+<li class="chapter" data-level="6.4" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#working-with-binned-dataset"><i class="fa fa-check"></i><b>6.4</b> Working with “binned” dataset</a></li>
+<li class="chapter" data-level="6.5" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#unevenly-spaced-inputs-x"><i class="fa fa-check"></i><b>6.5</b> Unevenly spaced inputs (x)</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html"><i class="fa fa-check"></i><b>7</b> Helpers for simulations</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#two-alternative-estimators"><i class="fa fa-check"></i><b>7.1</b> Two alternative estimators</a></li>
+<li class="chapter" data-level="7.2" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>7.2</b> Example using <code><a href='helpers-for-simulations.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations.html#overfit_flowmeans'>overfit_flowmeans</a>()</code></a></li>
+<li class="chapter" data-level="7.3" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>7.3</b> Evaluating performance: soft RAND index</a></li>
+<li class="chapter" data-level="7.4" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#generating-pseudo-real-data"><i class="fa fa-check"></i><b>7.4</b> Generating “pseudo-real” data</a></li>
+<li class="chapter" data-level="7.5" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#miscellaneous-helpers"><i class="fa fa-check"></i><b>7.5</b> Miscellaneous helpers</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>8</b> Documenting the package and building</a></li>
 </ul>
 
       </nav>
@@ -206,8 +219,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="reordering-clusters" class="section level1 hasAnchor" number="11">
-<h1><span class="header-section-number">11</span> Reordering clusters<a href="reordering-clusters.html#reordering-clusters" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="reordering-clusters" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">4</span> Reordering clusters<a href="reordering-clusters.html#reordering-clusters" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>It’s useful to be able to reorder, or <em>permute</em>, one model’s cluster labels
 (cluster 1,2,.. of <code>newres</code> which are arbitrary) to that of another model
 <code>origres</code>. The function <code><a href='reordering-clusters.html#reorder_kl'>reorder_kl</a>()</code> does this by (1) taking the posterior
@@ -219,191 +232,191 @@ the <span class="math inline">\(K\)</span> columns</p>
 <p>(TODO: This is currently just copy-pasted from <code>flowmix</code>. But actually, this is
 an example of a function that can be directly borrowed; all the work is done in
 <code><a href='reordering-clusters.html#reorder_clust'>reorder_clust</a>()</code>. So we’ll deal with that!)</p>
-<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="reordering-clusters.html#cb74-1" tabindex="-1"></a><span class="co">#&#39; Reorder the cluster numbers for a new flowtrend object \code{newres}; the best</span></span>
-<span id="cb74-2"><a href="reordering-clusters.html#cb74-2" tabindex="-1"></a><span class="co">#&#39; permutation (reordering) is to match the original flowmix object</span></span>
-<span id="cb74-3"><a href="reordering-clusters.html#cb74-3" tabindex="-1"></a><span class="co">#&#39; \code{origres}.</span></span>
-<span id="cb74-4"><a href="reordering-clusters.html#cb74-4" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb74-5"><a href="reordering-clusters.html#cb74-5" tabindex="-1"></a><span class="co">#&#39; @param newres New flowtrend object to reorder.</span></span>
-<span id="cb74-6"><a href="reordering-clusters.html#cb74-6" tabindex="-1"></a><span class="co">#&#39; @param origres Original flowtrend object.</span></span>
-<span id="cb74-7"><a href="reordering-clusters.html#cb74-7" tabindex="-1"></a><span class="co">#&#39; @param ylist_particle The particle-level data.</span></span>
-<span id="cb74-8"><a href="reordering-clusters.html#cb74-8" tabindex="-1"></a><span class="co">#&#39; @param fac Defaults to 100, to take 1/100&#39;th of the particles from each time point.</span></span>
-<span id="cb74-9"><a href="reordering-clusters.html#cb74-9" tabindex="-1"></a><span class="co">#&#39; @param verbose Loud or not?</span></span>
-<span id="cb74-10"><a href="reordering-clusters.html#cb74-10" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb74-11"><a href="reordering-clusters.html#cb74-11" tabindex="-1"></a><span class="co">#&#39; @return Reordered res</span></span>
-<span id="cb74-12"><a href="reordering-clusters.html#cb74-12" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb74-13"><a href="reordering-clusters.html#cb74-13" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb74-14"><a href="reordering-clusters.html#cb74-14" tabindex="-1"></a><span id='reorder_kl'>reorder_kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(newres, origres, ylist_particle, <span class="at">fac =</span> <span class="dv">100</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>){</span>
-<span id="cb74-15"><a href="reordering-clusters.html#cb74-15" tabindex="-1"></a></span>
-<span id="cb74-16"><a href="reordering-clusters.html#cb74-16" tabindex="-1"></a>  <span class="do">## Randomly sample  1/100 of the original particles (mainly for memory reasons)</span></span>
-<span id="cb74-17"><a href="reordering-clusters.html#cb74-17" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="fu">length</span>(ylist_particle)</span>
-<span id="cb74-18"><a href="reordering-clusters.html#cb74-18" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">sapply</span>(ylist_particle, nrow) <span class="sc">%&gt;%</span> <span class="fu">sum</span>()</span>
-<span id="cb74-19"><a href="reordering-clusters.html#cb74-19" tabindex="-1"></a>  ntlist <span class="ot">=</span> <span class="fu">sapply</span>(ylist_particle, nrow)</span>
-<span id="cb74-20"><a href="reordering-clusters.html#cb74-20" tabindex="-1"></a>  indlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){</span>
-<span id="cb74-21"><a href="reordering-clusters.html#cb74-21" tabindex="-1"></a>    nt <span class="ot">=</span> ntlist[[tt]]</span>
-<span id="cb74-22"><a href="reordering-clusters.html#cb74-22" tabindex="-1"></a>    ind <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>nt, <span class="fu">round</span>(nt <span class="sc">/</span> fac), <span class="at">replace=</span><span class="cn">FALSE</span>)</span>
-<span id="cb74-23"><a href="reordering-clusters.html#cb74-23" tabindex="-1"></a>  })</span>
-<span id="cb74-24"><a href="reordering-clusters.html#cb74-24" tabindex="-1"></a></span>
-<span id="cb74-25"><a href="reordering-clusters.html#cb74-25" tabindex="-1"></a>  <span class="do">## Sample responsibilities</span></span>
-<span id="cb74-26"><a href="reordering-clusters.html#cb74-26" tabindex="-1"></a>  ylist_particle_small <span class="ot">=</span> <span class="fu">Map</span>(<span class="cf">function</span>(ind, y){ y[ind,,drop <span class="ot">=</span> <span class="cn">FALSE</span>]  }, indlist, ylist_particle)</span>
-<span id="cb74-27"><a href="reordering-clusters.html#cb74-27" tabindex="-1"></a></span>
-<span id="cb74-28"><a href="reordering-clusters.html#cb74-28" tabindex="-1"></a>  <span class="do">## Calculate new responsibilities</span></span>
-<span id="cb74-29"><a href="reordering-clusters.html#cb74-29" tabindex="-1"></a>  resp_orig_small <span class="ot">&lt;-</span> <a href='e-step.html#Estep'>Estep</a>(origres<span class="sc">$</span>mn, origres<span class="sc">$</span>sigma, origres<span class="sc">$</span>prob,</span>
-<span id="cb74-30"><a href="reordering-clusters.html#cb74-30" tabindex="-1"></a>                           <span class="at">ylist =</span> ylist_particle_small,</span>
-<span id="cb74-31"><a href="reordering-clusters.html#cb74-31" tabindex="-1"></a>                           <span class="at">numclust =</span> origres<span class="sc">$</span>numclust, <span class="at">first_iter =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb74-32"><a href="reordering-clusters.html#cb74-32" tabindex="-1"></a>  resp_new_small <span class="ot">&lt;-</span> <a href='e-step.html#Estep'>Estep</a>(newres<span class="sc">$</span>mn, newres<span class="sc">$</span>sigma, newres<span class="sc">$</span>prob,</span>
-<span id="cb74-33"><a href="reordering-clusters.html#cb74-33" tabindex="-1"></a>                          <span class="at">ylist =</span> ylist_particle_small,</span>
-<span id="cb74-34"><a href="reordering-clusters.html#cb74-34" tabindex="-1"></a>                          <span class="at">numclust =</span> newres<span class="sc">$</span>numclust, <span class="at">first_iter =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb74-35"><a href="reordering-clusters.html#cb74-35" tabindex="-1"></a>  assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">all</span>(<span class="fu">sapply</span>(resp_orig_small, dim) <span class="sc">==</span> <span class="fu">sapply</span>(resp_new_small, dim)))</span>
-<span id="cb74-36"><a href="reordering-clusters.html#cb74-36" tabindex="-1"></a></span>
-<span id="cb74-37"><a href="reordering-clusters.html#cb74-37" tabindex="-1"></a>  <span class="do">## Get best ordering (using symm. KL divergence and Hungarian algorithm for</span></span>
-<span id="cb74-38"><a href="reordering-clusters.html#cb74-38" tabindex="-1"></a>  <span class="do">## matching)</span></span>
-<span id="cb74-39"><a href="reordering-clusters.html#cb74-39" tabindex="-1"></a>  best_ord <span class="ot">&lt;-</span> <a href='reordering-clusters.html#get_best_match_from_kl'>get_best_match_from_kl</a>(resp_new_small, resp_orig_small)</span>
-<span id="cb74-40"><a href="reordering-clusters.html#cb74-40" tabindex="-1"></a></span>
-<span id="cb74-41"><a href="reordering-clusters.html#cb74-41" tabindex="-1"></a>  <span class="cf">if</span>(verbose) <span class="fu">cat</span>(<span class="st">&quot;New order is&quot;</span>, best_ord, <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
-<span id="cb74-42"><a href="reordering-clusters.html#cb74-42" tabindex="-1"></a>  newres_reordered_kl <span class="ot">=</span> newres <span class="sc">%&gt;%</span> <a href='reordering-clusters.html#reorder_clust'>reorder_clust</a>(<span class="at">ord =</span> best_ord)</span>
-<span id="cb74-43"><a href="reordering-clusters.html#cb74-43" tabindex="-1"></a></span>
-<span id="cb74-44"><a href="reordering-clusters.html#cb74-44" tabindex="-1"></a>  <span class="do">## Return the reordered object</span></span>
-<span id="cb74-45"><a href="reordering-clusters.html#cb74-45" tabindex="-1"></a>  <span class="fu">return</span>(newres_reordered_kl)</span>
-<span id="cb74-46"><a href="reordering-clusters.html#cb74-46" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="reordering-clusters.html#cb75-1" tabindex="-1"></a><span class="co">#&#39; Reorder the cluster numbers for a new flowtrend object \code{newres}; the best</span></span>
+<span id="cb75-2"><a href="reordering-clusters.html#cb75-2" tabindex="-1"></a><span class="co">#&#39; permutation (reordering) is to match the original flowmix object</span></span>
+<span id="cb75-3"><a href="reordering-clusters.html#cb75-3" tabindex="-1"></a><span class="co">#&#39; \code{origres}.</span></span>
+<span id="cb75-4"><a href="reordering-clusters.html#cb75-4" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb75-5"><a href="reordering-clusters.html#cb75-5" tabindex="-1"></a><span class="co">#&#39; @param newres New flowtrend object to reorder.</span></span>
+<span id="cb75-6"><a href="reordering-clusters.html#cb75-6" tabindex="-1"></a><span class="co">#&#39; @param origres Original flowtrend object.</span></span>
+<span id="cb75-7"><a href="reordering-clusters.html#cb75-7" tabindex="-1"></a><span class="co">#&#39; @param ylist_particle The particle-level data.</span></span>
+<span id="cb75-8"><a href="reordering-clusters.html#cb75-8" tabindex="-1"></a><span class="co">#&#39; @param fac Defaults to 100, to take 1/100&#39;th of the particles from each time point.</span></span>
+<span id="cb75-9"><a href="reordering-clusters.html#cb75-9" tabindex="-1"></a><span class="co">#&#39; @param verbose Loud or not?</span></span>
+<span id="cb75-10"><a href="reordering-clusters.html#cb75-10" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb75-11"><a href="reordering-clusters.html#cb75-11" tabindex="-1"></a><span class="co">#&#39; @return Reordered res</span></span>
+<span id="cb75-12"><a href="reordering-clusters.html#cb75-12" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb75-13"><a href="reordering-clusters.html#cb75-13" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb75-14"><a href="reordering-clusters.html#cb75-14" tabindex="-1"></a><span id='reorder_kl'>reorder_kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(newres, origres, ylist_particle, <span class="at">fac =</span> <span class="dv">100</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>){</span>
+<span id="cb75-15"><a href="reordering-clusters.html#cb75-15" tabindex="-1"></a></span>
+<span id="cb75-16"><a href="reordering-clusters.html#cb75-16" tabindex="-1"></a>  <span class="do">## Randomly sample  1/100 of the original particles (mainly for memory reasons)</span></span>
+<span id="cb75-17"><a href="reordering-clusters.html#cb75-17" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="fu">length</span>(ylist_particle)</span>
+<span id="cb75-18"><a href="reordering-clusters.html#cb75-18" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">sapply</span>(ylist_particle, nrow) <span class="sc">%&gt;%</span> <span class="fu">sum</span>()</span>
+<span id="cb75-19"><a href="reordering-clusters.html#cb75-19" tabindex="-1"></a>  ntlist <span class="ot">=</span> <span class="fu">sapply</span>(ylist_particle, nrow)</span>
+<span id="cb75-20"><a href="reordering-clusters.html#cb75-20" tabindex="-1"></a>  indlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){</span>
+<span id="cb75-21"><a href="reordering-clusters.html#cb75-21" tabindex="-1"></a>    nt <span class="ot">=</span> ntlist[[tt]]</span>
+<span id="cb75-22"><a href="reordering-clusters.html#cb75-22" tabindex="-1"></a>    ind <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>nt, <span class="fu">round</span>(nt <span class="sc">/</span> fac), <span class="at">replace=</span><span class="cn">FALSE</span>)</span>
+<span id="cb75-23"><a href="reordering-clusters.html#cb75-23" tabindex="-1"></a>  })</span>
+<span id="cb75-24"><a href="reordering-clusters.html#cb75-24" tabindex="-1"></a></span>
+<span id="cb75-25"><a href="reordering-clusters.html#cb75-25" tabindex="-1"></a>  <span class="do">## Sample responsibilities</span></span>
+<span id="cb75-26"><a href="reordering-clusters.html#cb75-26" tabindex="-1"></a>  ylist_particle_small <span class="ot">=</span> <span class="fu">Map</span>(<span class="cf">function</span>(ind, y){ y[ind,,drop <span class="ot">=</span> <span class="cn">FALSE</span>]  }, indlist, ylist_particle)</span>
+<span id="cb75-27"><a href="reordering-clusters.html#cb75-27" tabindex="-1"></a></span>
+<span id="cb75-28"><a href="reordering-clusters.html#cb75-28" tabindex="-1"></a>  <span class="do">## Calculate new responsibilities</span></span>
+<span id="cb75-29"><a href="reordering-clusters.html#cb75-29" tabindex="-1"></a>  resp_orig_small <span class="ot">&lt;-</span> <a href='building-the-modelalgorithm.html#Estep'>Estep</a>(origres<span class="sc">$</span>mn, origres<span class="sc">$</span>sigma, origres<span class="sc">$</span>prob,</span>
+<span id="cb75-30"><a href="reordering-clusters.html#cb75-30" tabindex="-1"></a>                           <span class="at">ylist =</span> ylist_particle_small,</span>
+<span id="cb75-31"><a href="reordering-clusters.html#cb75-31" tabindex="-1"></a>                           <span class="at">numclust =</span> origres<span class="sc">$</span>numclust, <span class="at">first_iter =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb75-32"><a href="reordering-clusters.html#cb75-32" tabindex="-1"></a>  resp_new_small <span class="ot">&lt;-</span> <a href='building-the-modelalgorithm.html#Estep'>Estep</a>(newres<span class="sc">$</span>mn, newres<span class="sc">$</span>sigma, newres<span class="sc">$</span>prob,</span>
+<span id="cb75-33"><a href="reordering-clusters.html#cb75-33" tabindex="-1"></a>                          <span class="at">ylist =</span> ylist_particle_small,</span>
+<span id="cb75-34"><a href="reordering-clusters.html#cb75-34" tabindex="-1"></a>                          <span class="at">numclust =</span> newres<span class="sc">$</span>numclust, <span class="at">first_iter =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb75-35"><a href="reordering-clusters.html#cb75-35" tabindex="-1"></a>  assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">all</span>(<span class="fu">sapply</span>(resp_orig_small, dim) <span class="sc">==</span> <span class="fu">sapply</span>(resp_new_small, dim)))</span>
+<span id="cb75-36"><a href="reordering-clusters.html#cb75-36" tabindex="-1"></a></span>
+<span id="cb75-37"><a href="reordering-clusters.html#cb75-37" tabindex="-1"></a>  <span class="do">## Get best ordering (using symm. KL divergence and Hungarian algorithm for</span></span>
+<span id="cb75-38"><a href="reordering-clusters.html#cb75-38" tabindex="-1"></a>  <span class="do">## matching)</span></span>
+<span id="cb75-39"><a href="reordering-clusters.html#cb75-39" tabindex="-1"></a>  best_ord <span class="ot">&lt;-</span> <a href='reordering-clusters.html#get_best_match_from_kl'>get_best_match_from_kl</a>(resp_new_small, resp_orig_small)</span>
+<span id="cb75-40"><a href="reordering-clusters.html#cb75-40" tabindex="-1"></a></span>
+<span id="cb75-41"><a href="reordering-clusters.html#cb75-41" tabindex="-1"></a>  <span class="cf">if</span>(verbose) <span class="fu">cat</span>(<span class="st">&quot;New order is&quot;</span>, best_ord, <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
+<span id="cb75-42"><a href="reordering-clusters.html#cb75-42" tabindex="-1"></a>  newres_reordered_kl <span class="ot">=</span> newres <span class="sc">%&gt;%</span> <a href='reordering-clusters.html#reorder_clust'>reorder_clust</a>(<span class="at">ord =</span> best_ord)</span>
+<span id="cb75-43"><a href="reordering-clusters.html#cb75-43" tabindex="-1"></a></span>
+<span id="cb75-44"><a href="reordering-clusters.html#cb75-44" tabindex="-1"></a>  <span class="do">## Return the reordered object</span></span>
+<span id="cb75-45"><a href="reordering-clusters.html#cb75-45" tabindex="-1"></a>  <span class="fu">return</span>(newres_reordered_kl)</span>
+<span id="cb75-46"><a href="reordering-clusters.html#cb75-46" tabindex="-1"></a>}</span></code></pre></div>
 <p>This function uses <code><a href='reordering-clusters.html#get_best_match_from_kl'>get_best_match_from_kl</a>()</code>, which takes two lists containing
 responsibilities (posterior probabilities of particles) – one from each model
 – and returns the cluster ordering to apply to the model that produced
 <code>resp_new</code>. We define this function and a couple of helper functions next.</p>
-<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="reordering-clusters.html#cb75-1" tabindex="-1"></a><span class="co">#&#39; Compute KL divergence from responsibilities between two models&#39;</span></span>
-<span id="cb75-2"><a href="reordering-clusters.html#cb75-2" tabindex="-1"></a><span class="co">#&#39; responsibilities \code{resp_new} and \code{resp_old}.</span></span>
-<span id="cb75-3"><a href="reordering-clusters.html#cb75-3" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb75-4"><a href="reordering-clusters.html#cb75-4" tabindex="-1"></a><span class="co">#&#39; @param resp_new New responsibilities</span></span>
-<span id="cb75-5"><a href="reordering-clusters.html#cb75-5" tabindex="-1"></a><span class="co">#&#39; @param resp_orig Original responsiblities.</span></span>
-<span id="cb75-6"><a href="reordering-clusters.html#cb75-6" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb75-7"><a href="reordering-clusters.html#cb75-7" tabindex="-1"></a><span class="co">#&#39; @return Calculate reordering \code{o} of the clusters in model represented</span></span>
-<span id="cb75-8"><a href="reordering-clusters.html#cb75-8" tabindex="-1"></a><span class="co">#&#39;   by \code{resp_new}. To be clear, \code{o[i]} of new model is the best</span></span>
-<span id="cb75-9"><a href="reordering-clusters.html#cb75-9" tabindex="-1"></a><span class="co">#&#39;   match with the i&#39;th cluster of the original model.</span></span>
-<span id="cb75-10"><a href="reordering-clusters.html#cb75-10" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb75-11"><a href="reordering-clusters.html#cb75-11" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb75-12"><a href="reordering-clusters.html#cb75-12" tabindex="-1"></a><span class="co">#&#39; @importFrom clue solve_LSAP</span></span>
-<span id="cb75-13"><a href="reordering-clusters.html#cb75-13" tabindex="-1"></a><span id='get_best_match_from_kl'>get_best_match_from_kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(resp_new, resp_orig){</span>
-<span id="cb75-14"><a href="reordering-clusters.html#cb75-14" tabindex="-1"></a></span>
-<span id="cb75-15"><a href="reordering-clusters.html#cb75-15" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
-<span id="cb75-16"><a href="reordering-clusters.html#cb75-16" tabindex="-1"></a>  . <span class="ot">=</span> <span class="cn">NULL</span> <span class="do">## Fixing check()</span></span>
-<span id="cb75-17"><a href="reordering-clusters.html#cb75-17" tabindex="-1"></a>  assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">all</span>(<span class="fu">sapply</span>(resp_new, dim) <span class="sc">==</span> <span class="fu">sapply</span>(resp_orig , dim)))</span>
-<span id="cb75-18"><a href="reordering-clusters.html#cb75-18" tabindex="-1"></a></span>
-<span id="cb75-19"><a href="reordering-clusters.html#cb75-19" tabindex="-1"></a>  <span class="do">## Row-bind all the responsibilities to make a long matrix</span></span>
-<span id="cb75-20"><a href="reordering-clusters.html#cb75-20" tabindex="-1"></a>  distmat <span class="ot">=</span> <a href='reordering-clusters.html#form_symmetric_kl_distmat'>form_symmetric_kl_distmat</a>(resp_orig <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind,.),</span>
-<span id="cb75-21"><a href="reordering-clusters.html#cb75-21" tabindex="-1"></a>                                      resp_new <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind,.))</span>
-<span id="cb75-22"><a href="reordering-clusters.html#cb75-22" tabindex="-1"></a></span>
-<span id="cb75-23"><a href="reordering-clusters.html#cb75-23" tabindex="-1"></a>  <span class="do">## Use Hungarian algorithm to solve.</span></span>
-<span id="cb75-24"><a href="reordering-clusters.html#cb75-24" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> clue<span class="sc">::</span><span class="fu">solve_LSAP</span>(distmat)</span>
-<span id="cb75-25"><a href="reordering-clusters.html#cb75-25" tabindex="-1"></a>  o <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(fit)</span>
-<span id="cb75-26"><a href="reordering-clusters.html#cb75-26" tabindex="-1"></a></span>
-<span id="cb75-27"><a href="reordering-clusters.html#cb75-27" tabindex="-1"></a>  <span class="do">## Return the ordering</span></span>
-<span id="cb75-28"><a href="reordering-clusters.html#cb75-28" tabindex="-1"></a>  <span class="fu">return</span>(o)</span>
-<span id="cb75-29"><a href="reordering-clusters.html#cb75-29" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="reordering-clusters.html#cb76-1" tabindex="-1"></a><span class="co">#&#39; From two probability matrices, form a (K x K) distance matrix of the</span></span>
-<span id="cb76-2"><a href="reordering-clusters.html#cb76-2" tabindex="-1"></a><span class="co">#&#39; (n)-vectors. The distance between the vectors is the symmetric KL</span></span>
-<span id="cb76-3"><a href="reordering-clusters.html#cb76-3" tabindex="-1"></a><span class="co">#&#39; divergence.</span></span>
-<span id="cb76-4"><a href="reordering-clusters.html#cb76-4" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb76-5"><a href="reordering-clusters.html#cb76-5" tabindex="-1"></a><span class="co">#&#39; @param mat1 Matrix 1 of size (n x K).</span></span>
-<span id="cb76-6"><a href="reordering-clusters.html#cb76-6" tabindex="-1"></a><span class="co">#&#39; @param mat2 Matrix 2 of size (n x K).</span></span>
-<span id="cb76-7"><a href="reordering-clusters.html#cb76-7" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb76-8"><a href="reordering-clusters.html#cb76-8" tabindex="-1"></a><span class="co">#&#39; @return K x K matrix containing symmetric KL divergence of each column of</span></span>
-<span id="cb76-9"><a href="reordering-clusters.html#cb76-9" tabindex="-1"></a><span class="co">#&#39;   \code{mat1} and \code{mat2}.</span></span>
-<span id="cb76-10"><a href="reordering-clusters.html#cb76-10" tabindex="-1"></a><span id='form_symmetric_kl_distmat'>form_symmetric_kl_distmat</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mat1, mat2){</span>
-<span id="cb76-11"><a href="reordering-clusters.html#cb76-11" tabindex="-1"></a></span>
-<span id="cb76-12"><a href="reordering-clusters.html#cb76-12" tabindex="-1"></a>  <span class="do">## Manually add some small, in case some columns are all zero</span></span>
-<span id="cb76-13"><a href="reordering-clusters.html#cb76-13" tabindex="-1"></a>  mat1 <span class="ot">=</span> (mat1 <span class="sc">+</span> <span class="fl">1E-10</span>) <span class="sc">%&gt;%</span> <span class="fu">pmin</span>(<span class="dv">1</span>)</span>
-<span id="cb76-14"><a href="reordering-clusters.html#cb76-14" tabindex="-1"></a>  mat2 <span class="ot">=</span> (mat2 <span class="sc">+</span> <span class="fl">1E-10</span>) <span class="sc">%&gt;%</span> <span class="fu">pmin</span>(<span class="dv">1</span>)</span>
-<span id="cb76-15"><a href="reordering-clusters.html#cb76-15" tabindex="-1"></a></span>
-<span id="cb76-16"><a href="reordering-clusters.html#cb76-16" tabindex="-1"></a>  <span class="do">## Calculate and return distance matrix.</span></span>
-<span id="cb76-17"><a href="reordering-clusters.html#cb76-17" tabindex="-1"></a>  KK1 <span class="ot">=</span> <span class="fu">ncol</span>(mat1)</span>
-<span id="cb76-18"><a href="reordering-clusters.html#cb76-18" tabindex="-1"></a>  KK2 <span class="ot">=</span> <span class="fu">ncol</span>(mat2)</span>
-<span id="cb76-19"><a href="reordering-clusters.html#cb76-19" tabindex="-1"></a>  distmat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">ncol=</span>KK2, <span class="at">nrow=</span>KK1)</span>
-<span id="cb76-20"><a href="reordering-clusters.html#cb76-20" tabindex="-1"></a>  <span class="cf">for</span>(kk1 <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>KK1){</span>
-<span id="cb76-21"><a href="reordering-clusters.html#cb76-21" tabindex="-1"></a>    <span class="cf">for</span>(kk2 <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>KK2){</span>
-<span id="cb76-22"><a href="reordering-clusters.html#cb76-22" tabindex="-1"></a>      mydist <span class="ot">=</span> <a href='reordering-clusters.html#symmetric_kl'>symmetric_kl</a>(mat1[,kk1, <span class="at">drop=</span><span class="cn">TRUE</span>], mat2[,kk2, <span class="at">drop=</span><span class="cn">TRUE</span>])</span>
-<span id="cb76-23"><a href="reordering-clusters.html#cb76-23" tabindex="-1"></a>      distmat[kk1, kk2] <span class="ot">=</span> mydist</span>
-<span id="cb76-24"><a href="reordering-clusters.html#cb76-24" tabindex="-1"></a>    }</span>
-<span id="cb76-25"><a href="reordering-clusters.html#cb76-25" tabindex="-1"></a>  }</span>
-<span id="cb76-26"><a href="reordering-clusters.html#cb76-26" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(<span class="sc">!</span><span class="fu">is.na</span>(distmat)))</span>
-<span id="cb76-27"><a href="reordering-clusters.html#cb76-27" tabindex="-1"></a>  <span class="fu">return</span>(distmat)</span>
-<span id="cb76-28"><a href="reordering-clusters.html#cb76-28" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="reordering-clusters.html#cb77-1" tabindex="-1"></a><span class="co">#&#39; Symmetric KL divergence, of two probability vectors.</span></span>
-<span id="cb77-2"><a href="reordering-clusters.html#cb77-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb77-3"><a href="reordering-clusters.html#cb77-3" tabindex="-1"></a><span class="co">#&#39; @param vec1 First probability vector.</span></span>
-<span id="cb77-4"><a href="reordering-clusters.html#cb77-4" tabindex="-1"></a><span class="co">#&#39; @param vec2 Second prbability vector.</span></span>
-<span id="cb77-5"><a href="reordering-clusters.html#cb77-5" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb77-6"><a href="reordering-clusters.html#cb77-6" tabindex="-1"></a><span class="co">#&#39; @return Symmetric KL divergence (scalar).</span></span>
-<span id="cb77-7"><a href="reordering-clusters.html#cb77-7" tabindex="-1"></a><span id='symmetric_kl'>symmetric_kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(vec1, vec2){</span>
-<span id="cb77-8"><a href="reordering-clusters.html#cb77-8" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(vec1 <span class="sc">&lt;=</span> <span class="dv">1</span>) <span class="sc">&amp;</span> <span class="fu">all</span>(vec1 <span class="sc">&gt;=</span> <span class="dv">0</span>))</span>
-<span id="cb77-9"><a href="reordering-clusters.html#cb77-9" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(vec2 <span class="sc">&lt;=</span> <span class="dv">1</span>) <span class="sc">&amp;</span> <span class="fu">all</span>(vec2 <span class="sc">&gt;=</span> <span class="dv">0</span>))</span>
-<span id="cb77-10"><a href="reordering-clusters.html#cb77-10" tabindex="-1"></a>  <span id='kl'>kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(vec1, vec2){</span>
-<span id="cb77-11"><a href="reordering-clusters.html#cb77-11" tabindex="-1"></a>    <span class="fu">sum</span>(vec1 <span class="sc">*</span> <span class="fu">log</span>(vec1 <span class="sc">/</span> vec2))</span>
-<span id="cb77-12"><a href="reordering-clusters.html#cb77-12" tabindex="-1"></a>  }</span>
-<span id="cb77-13"><a href="reordering-clusters.html#cb77-13" tabindex="-1"></a>  <span class="fu">return</span>((<a href='reordering-clusters.html#kl'>kl</a>(vec1, vec2) <span class="sc">+</span> <a href='reordering-clusters.html#kl'>kl</a>(vec2, vec1))<span class="sc">/</span><span class="dv">2</span>)</span>
-<span id="cb77-14"><a href="reordering-clusters.html#cb77-14" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="reordering-clusters.html#cb76-1" tabindex="-1"></a><span class="co">#&#39; Compute KL divergence from responsibilities between two models&#39;</span></span>
+<span id="cb76-2"><a href="reordering-clusters.html#cb76-2" tabindex="-1"></a><span class="co">#&#39; responsibilities \code{resp_new} and \code{resp_old}.</span></span>
+<span id="cb76-3"><a href="reordering-clusters.html#cb76-3" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb76-4"><a href="reordering-clusters.html#cb76-4" tabindex="-1"></a><span class="co">#&#39; @param resp_new New responsibilities</span></span>
+<span id="cb76-5"><a href="reordering-clusters.html#cb76-5" tabindex="-1"></a><span class="co">#&#39; @param resp_orig Original responsiblities.</span></span>
+<span id="cb76-6"><a href="reordering-clusters.html#cb76-6" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb76-7"><a href="reordering-clusters.html#cb76-7" tabindex="-1"></a><span class="co">#&#39; @return Calculate reordering \code{o} of the clusters in model represented</span></span>
+<span id="cb76-8"><a href="reordering-clusters.html#cb76-8" tabindex="-1"></a><span class="co">#&#39;   by \code{resp_new}. To be clear, \code{o[i]} of new model is the best</span></span>
+<span id="cb76-9"><a href="reordering-clusters.html#cb76-9" tabindex="-1"></a><span class="co">#&#39;   match with the i&#39;th cluster of the original model.</span></span>
+<span id="cb76-10"><a href="reordering-clusters.html#cb76-10" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb76-11"><a href="reordering-clusters.html#cb76-11" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb76-12"><a href="reordering-clusters.html#cb76-12" tabindex="-1"></a><span class="co">#&#39; @importFrom clue solve_LSAP</span></span>
+<span id="cb76-13"><a href="reordering-clusters.html#cb76-13" tabindex="-1"></a><span id='get_best_match_from_kl'>get_best_match_from_kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(resp_new, resp_orig){</span>
+<span id="cb76-14"><a href="reordering-clusters.html#cb76-14" tabindex="-1"></a></span>
+<span id="cb76-15"><a href="reordering-clusters.html#cb76-15" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb76-16"><a href="reordering-clusters.html#cb76-16" tabindex="-1"></a>  . <span class="ot">=</span> <span class="cn">NULL</span> <span class="do">## Fixing check()</span></span>
+<span id="cb76-17"><a href="reordering-clusters.html#cb76-17" tabindex="-1"></a>  assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">all</span>(<span class="fu">sapply</span>(resp_new, dim) <span class="sc">==</span> <span class="fu">sapply</span>(resp_orig , dim)))</span>
+<span id="cb76-18"><a href="reordering-clusters.html#cb76-18" tabindex="-1"></a></span>
+<span id="cb76-19"><a href="reordering-clusters.html#cb76-19" tabindex="-1"></a>  <span class="do">## Row-bind all the responsibilities to make a long matrix</span></span>
+<span id="cb76-20"><a href="reordering-clusters.html#cb76-20" tabindex="-1"></a>  distmat <span class="ot">=</span> <a href='reordering-clusters.html#form_symmetric_kl_distmat'>form_symmetric_kl_distmat</a>(resp_orig <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind,.),</span>
+<span id="cb76-21"><a href="reordering-clusters.html#cb76-21" tabindex="-1"></a>                                      resp_new <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind,.))</span>
+<span id="cb76-22"><a href="reordering-clusters.html#cb76-22" tabindex="-1"></a></span>
+<span id="cb76-23"><a href="reordering-clusters.html#cb76-23" tabindex="-1"></a>  <span class="do">## Use Hungarian algorithm to solve.</span></span>
+<span id="cb76-24"><a href="reordering-clusters.html#cb76-24" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> clue<span class="sc">::</span><span class="fu">solve_LSAP</span>(distmat)</span>
+<span id="cb76-25"><a href="reordering-clusters.html#cb76-25" tabindex="-1"></a>  o <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(fit)</span>
+<span id="cb76-26"><a href="reordering-clusters.html#cb76-26" tabindex="-1"></a></span>
+<span id="cb76-27"><a href="reordering-clusters.html#cb76-27" tabindex="-1"></a>  <span class="do">## Return the ordering</span></span>
+<span id="cb76-28"><a href="reordering-clusters.html#cb76-28" tabindex="-1"></a>  <span class="fu">return</span>(o)</span>
+<span id="cb76-29"><a href="reordering-clusters.html#cb76-29" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="reordering-clusters.html#cb77-1" tabindex="-1"></a><span class="co">#&#39; From two probability matrices, form a (K x K) distance matrix of the</span></span>
+<span id="cb77-2"><a href="reordering-clusters.html#cb77-2" tabindex="-1"></a><span class="co">#&#39; (n)-vectors. The distance between the vectors is the symmetric KL</span></span>
+<span id="cb77-3"><a href="reordering-clusters.html#cb77-3" tabindex="-1"></a><span class="co">#&#39; divergence.</span></span>
+<span id="cb77-4"><a href="reordering-clusters.html#cb77-4" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb77-5"><a href="reordering-clusters.html#cb77-5" tabindex="-1"></a><span class="co">#&#39; @param mat1 Matrix 1 of size (n x K).</span></span>
+<span id="cb77-6"><a href="reordering-clusters.html#cb77-6" tabindex="-1"></a><span class="co">#&#39; @param mat2 Matrix 2 of size (n x K).</span></span>
+<span id="cb77-7"><a href="reordering-clusters.html#cb77-7" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb77-8"><a href="reordering-clusters.html#cb77-8" tabindex="-1"></a><span class="co">#&#39; @return K x K matrix containing symmetric KL divergence of each column of</span></span>
+<span id="cb77-9"><a href="reordering-clusters.html#cb77-9" tabindex="-1"></a><span class="co">#&#39;   \code{mat1} and \code{mat2}.</span></span>
+<span id="cb77-10"><a href="reordering-clusters.html#cb77-10" tabindex="-1"></a><span id='form_symmetric_kl_distmat'>form_symmetric_kl_distmat</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mat1, mat2){</span>
+<span id="cb77-11"><a href="reordering-clusters.html#cb77-11" tabindex="-1"></a></span>
+<span id="cb77-12"><a href="reordering-clusters.html#cb77-12" tabindex="-1"></a>  <span class="do">## Manually add some small, in case some columns are all zero</span></span>
+<span id="cb77-13"><a href="reordering-clusters.html#cb77-13" tabindex="-1"></a>  mat1 <span class="ot">=</span> (mat1 <span class="sc">+</span> <span class="fl">1E-10</span>) <span class="sc">%&gt;%</span> <span class="fu">pmin</span>(<span class="dv">1</span>)</span>
+<span id="cb77-14"><a href="reordering-clusters.html#cb77-14" tabindex="-1"></a>  mat2 <span class="ot">=</span> (mat2 <span class="sc">+</span> <span class="fl">1E-10</span>) <span class="sc">%&gt;%</span> <span class="fu">pmin</span>(<span class="dv">1</span>)</span>
+<span id="cb77-15"><a href="reordering-clusters.html#cb77-15" tabindex="-1"></a></span>
+<span id="cb77-16"><a href="reordering-clusters.html#cb77-16" tabindex="-1"></a>  <span class="do">## Calculate and return distance matrix.</span></span>
+<span id="cb77-17"><a href="reordering-clusters.html#cb77-17" tabindex="-1"></a>  KK1 <span class="ot">=</span> <span class="fu">ncol</span>(mat1)</span>
+<span id="cb77-18"><a href="reordering-clusters.html#cb77-18" tabindex="-1"></a>  KK2 <span class="ot">=</span> <span class="fu">ncol</span>(mat2)</span>
+<span id="cb77-19"><a href="reordering-clusters.html#cb77-19" tabindex="-1"></a>  distmat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">ncol=</span>KK2, <span class="at">nrow=</span>KK1)</span>
+<span id="cb77-20"><a href="reordering-clusters.html#cb77-20" tabindex="-1"></a>  <span class="cf">for</span>(kk1 <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>KK1){</span>
+<span id="cb77-21"><a href="reordering-clusters.html#cb77-21" tabindex="-1"></a>    <span class="cf">for</span>(kk2 <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>KK2){</span>
+<span id="cb77-22"><a href="reordering-clusters.html#cb77-22" tabindex="-1"></a>      mydist <span class="ot">=</span> <a href='reordering-clusters.html#symmetric_kl'>symmetric_kl</a>(mat1[,kk1, <span class="at">drop=</span><span class="cn">TRUE</span>], mat2[,kk2, <span class="at">drop=</span><span class="cn">TRUE</span>])</span>
+<span id="cb77-23"><a href="reordering-clusters.html#cb77-23" tabindex="-1"></a>      distmat[kk1, kk2] <span class="ot">=</span> mydist</span>
+<span id="cb77-24"><a href="reordering-clusters.html#cb77-24" tabindex="-1"></a>    }</span>
+<span id="cb77-25"><a href="reordering-clusters.html#cb77-25" tabindex="-1"></a>  }</span>
+<span id="cb77-26"><a href="reordering-clusters.html#cb77-26" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(<span class="sc">!</span><span class="fu">is.na</span>(distmat)))</span>
+<span id="cb77-27"><a href="reordering-clusters.html#cb77-27" tabindex="-1"></a>  <span class="fu">return</span>(distmat)</span>
+<span id="cb77-28"><a href="reordering-clusters.html#cb77-28" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="reordering-clusters.html#cb78-1" tabindex="-1"></a><span class="co">#&#39; Symmetric KL divergence, of two probability vectors.</span></span>
+<span id="cb78-2"><a href="reordering-clusters.html#cb78-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb78-3"><a href="reordering-clusters.html#cb78-3" tabindex="-1"></a><span class="co">#&#39; @param vec1 First probability vector.</span></span>
+<span id="cb78-4"><a href="reordering-clusters.html#cb78-4" tabindex="-1"></a><span class="co">#&#39; @param vec2 Second prbability vector.</span></span>
+<span id="cb78-5"><a href="reordering-clusters.html#cb78-5" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb78-6"><a href="reordering-clusters.html#cb78-6" tabindex="-1"></a><span class="co">#&#39; @return Symmetric KL divergence (scalar).</span></span>
+<span id="cb78-7"><a href="reordering-clusters.html#cb78-7" tabindex="-1"></a><span id='symmetric_kl'>symmetric_kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(vec1, vec2){</span>
+<span id="cb78-8"><a href="reordering-clusters.html#cb78-8" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(vec1 <span class="sc">&lt;=</span> <span class="dv">1</span>) <span class="sc">&amp;</span> <span class="fu">all</span>(vec1 <span class="sc">&gt;=</span> <span class="dv">0</span>))</span>
+<span id="cb78-9"><a href="reordering-clusters.html#cb78-9" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(vec2 <span class="sc">&lt;=</span> <span class="dv">1</span>) <span class="sc">&amp;</span> <span class="fu">all</span>(vec2 <span class="sc">&gt;=</span> <span class="dv">0</span>))</span>
+<span id="cb78-10"><a href="reordering-clusters.html#cb78-10" tabindex="-1"></a>  <span id='kl'>kl</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(vec1, vec2){</span>
+<span id="cb78-11"><a href="reordering-clusters.html#cb78-11" tabindex="-1"></a>    <span class="fu">sum</span>(vec1 <span class="sc">*</span> <span class="fu">log</span>(vec1 <span class="sc">/</span> vec2))</span>
+<span id="cb78-12"><a href="reordering-clusters.html#cb78-12" tabindex="-1"></a>  }</span>
+<span id="cb78-13"><a href="reordering-clusters.html#cb78-13" tabindex="-1"></a>  <span class="fu">return</span>((<a href='reordering-clusters.html#kl'>kl</a>(vec1, vec2) <span class="sc">+</span> <a href='reordering-clusters.html#kl'>kl</a>(vec2, vec1))<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb78-14"><a href="reordering-clusters.html#cb78-14" tabindex="-1"></a>}</span></code></pre></div>
 <p>Finally, the function that actually performs the manual reordering the clusters
 of an estimated model <code>obj</code> is <code><a href='reordering-clusters.html#reorder_clust'>reorder_clust</a>()</code>.</p>
-<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="reordering-clusters.html#cb78-1" tabindex="-1"></a><span class="co">#&#39; Reorder the results of one object so that cluster 1 through</span></span>
-<span id="cb78-2"><a href="reordering-clusters.html#cb78-2" tabindex="-1"></a><span class="co">#&#39; \code{numclust} is in a particular order. The default is decreasing order of</span></span>
-<span id="cb78-3"><a href="reordering-clusters.html#cb78-3" tabindex="-1"></a><span class="co">#&#39; the averages (over time) of the cluster means.</span></span>
-<span id="cb78-4"><a href="reordering-clusters.html#cb78-4" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb78-5"><a href="reordering-clusters.html#cb78-5" tabindex="-1"></a><span class="co">#&#39; @param res Model object.</span></span>
-<span id="cb78-6"><a href="reordering-clusters.html#cb78-6" tabindex="-1"></a><span class="co">#&#39; @param ord Defaults to NULL. Use if you have an ordering in mind.</span></span>
-<span id="cb78-7"><a href="reordering-clusters.html#cb78-7" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb78-8"><a href="reordering-clusters.html#cb78-8" tabindex="-1"></a><span class="co">#&#39; @return Same object, but with clusters reordered.</span></span>
-<span id="cb78-9"><a href="reordering-clusters.html#cb78-9" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb78-10"><a href="reordering-clusters.html#cb78-10" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb78-11"><a href="reordering-clusters.html#cb78-11" tabindex="-1"></a><span id='reorder_clust'>reorder_clust</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(res, <span class="at">ord =</span> <span class="cn">NULL</span>){</span>
-<span id="cb78-12"><a href="reordering-clusters.html#cb78-12" tabindex="-1"></a></span>
-<span id="cb78-13"><a href="reordering-clusters.html#cb78-13" tabindex="-1"></a>  <span class="do">## Find an order by sums (averages)</span></span>
-<span id="cb78-14"><a href="reordering-clusters.html#cb78-14" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(ord)) ord <span class="ot">=</span> res<span class="sc">$</span>mn[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">colSums</span>() <span class="sc">%&gt;%</span> <span class="fu">order</span>(<span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb78-15"><a href="reordering-clusters.html#cb78-15" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(ord)) <span class="fu">all</span>(<span class="fu">sort</span>(ord) <span class="sc">==</span> <span class="dv">1</span><span class="sc">:</span>res<span class="sc">$</span>numclust)</span>
-<span id="cb78-16"><a href="reordering-clusters.html#cb78-16" tabindex="-1"></a></span>
-<span id="cb78-17"><a href="reordering-clusters.html#cb78-17" tabindex="-1"></a>  <span class="do">## Reorder mean</span></span>
-<span id="cb78-18"><a href="reordering-clusters.html#cb78-18" tabindex="-1"></a>  res<span class="sc">$</span>mn <span class="ot">=</span> res<span class="sc">$</span>mn[,,ord, drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
-<span id="cb78-19"><a href="reordering-clusters.html#cb78-19" tabindex="-1"></a></span>
-<span id="cb78-20"><a href="reordering-clusters.html#cb78-20" tabindex="-1"></a>  <span class="do">## Reorder sigma</span></span>
-<span id="cb78-21"><a href="reordering-clusters.html#cb78-21" tabindex="-1"></a>  res<span class="sc">$</span>sigma <span class="ot">=</span> res<span class="sc">$</span>sigma[ord,,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
-<span id="cb78-22"><a href="reordering-clusters.html#cb78-22" tabindex="-1"></a></span>
-<span id="cb78-23"><a href="reordering-clusters.html#cb78-23" tabindex="-1"></a>  <span class="do">## Reorder prob</span></span>
-<span id="cb78-24"><a href="reordering-clusters.html#cb78-24" tabindex="-1"></a>  res<span class="sc">$</span>prob <span class="ot">=</span> res<span class="sc">$</span>prob[,ord, drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
-<span id="cb78-25"><a href="reordering-clusters.html#cb78-25" tabindex="-1"></a></span>
-<span id="cb78-26"><a href="reordering-clusters.html#cb78-26" tabindex="-1"></a>  <span class="do">## Reorder the responsibilities</span></span>
-<span id="cb78-27"><a href="reordering-clusters.html#cb78-27" tabindex="-1"></a>  <span class="cf">if</span>(<span class="st">&#39;resp&#39;</span> <span class="sc">%in%</span> res){</span>
-<span id="cb78-28"><a href="reordering-clusters.html#cb78-28" tabindex="-1"></a>    resp_temp <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb78-29"><a href="reordering-clusters.html#cb78-29" tabindex="-1"></a>    <span class="cf">for</span>(tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT){</span>
-<span id="cb78-30"><a href="reordering-clusters.html#cb78-30" tabindex="-1"></a>      rep_temp[[tt]] <span class="ot">=</span> res<span class="sc">$</span>resp[[tt]][,ord]</span>
-<span id="cb78-31"><a href="reordering-clusters.html#cb78-31" tabindex="-1"></a>    }</span>
-<span id="cb78-32"><a href="reordering-clusters.html#cb78-32" tabindex="-1"></a>  }</span>
-<span id="cb78-33"><a href="reordering-clusters.html#cb78-33" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
-<span id="cb78-34"><a href="reordering-clusters.html#cb78-34" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="reordering-clusters.html#cb79-1" tabindex="-1"></a><span class="co">#&#39; Reorder the results of one object so that cluster 1 through</span></span>
+<span id="cb79-2"><a href="reordering-clusters.html#cb79-2" tabindex="-1"></a><span class="co">#&#39; \code{numclust} is in a particular order. The default is decreasing order of</span></span>
+<span id="cb79-3"><a href="reordering-clusters.html#cb79-3" tabindex="-1"></a><span class="co">#&#39; the averages (over time) of the cluster means.</span></span>
+<span id="cb79-4"><a href="reordering-clusters.html#cb79-4" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb79-5"><a href="reordering-clusters.html#cb79-5" tabindex="-1"></a><span class="co">#&#39; @param res Model object.</span></span>
+<span id="cb79-6"><a href="reordering-clusters.html#cb79-6" tabindex="-1"></a><span class="co">#&#39; @param ord Defaults to NULL. Use if you have an ordering in mind.</span></span>
+<span id="cb79-7"><a href="reordering-clusters.html#cb79-7" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb79-8"><a href="reordering-clusters.html#cb79-8" tabindex="-1"></a><span class="co">#&#39; @return Same object, but with clusters reordered.</span></span>
+<span id="cb79-9"><a href="reordering-clusters.html#cb79-9" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb79-10"><a href="reordering-clusters.html#cb79-10" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb79-11"><a href="reordering-clusters.html#cb79-11" tabindex="-1"></a><span id='reorder_clust'>reorder_clust</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(res, <span class="at">ord =</span> <span class="cn">NULL</span>){</span>
+<span id="cb79-12"><a href="reordering-clusters.html#cb79-12" tabindex="-1"></a></span>
+<span id="cb79-13"><a href="reordering-clusters.html#cb79-13" tabindex="-1"></a>  <span class="do">## Find an order by sums (averages)</span></span>
+<span id="cb79-14"><a href="reordering-clusters.html#cb79-14" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(ord)) ord <span class="ot">=</span> res<span class="sc">$</span>mn[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">colSums</span>() <span class="sc">%&gt;%</span> <span class="fu">order</span>(<span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb79-15"><a href="reordering-clusters.html#cb79-15" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(ord)) <span class="fu">all</span>(<span class="fu">sort</span>(ord) <span class="sc">==</span> <span class="dv">1</span><span class="sc">:</span>res<span class="sc">$</span>numclust)</span>
+<span id="cb79-16"><a href="reordering-clusters.html#cb79-16" tabindex="-1"></a></span>
+<span id="cb79-17"><a href="reordering-clusters.html#cb79-17" tabindex="-1"></a>  <span class="do">## Reorder mean</span></span>
+<span id="cb79-18"><a href="reordering-clusters.html#cb79-18" tabindex="-1"></a>  res<span class="sc">$</span>mn <span class="ot">=</span> res<span class="sc">$</span>mn[,,ord, drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb79-19"><a href="reordering-clusters.html#cb79-19" tabindex="-1"></a></span>
+<span id="cb79-20"><a href="reordering-clusters.html#cb79-20" tabindex="-1"></a>  <span class="do">## Reorder sigma</span></span>
+<span id="cb79-21"><a href="reordering-clusters.html#cb79-21" tabindex="-1"></a>  res<span class="sc">$</span>sigma <span class="ot">=</span> res<span class="sc">$</span>sigma[ord,,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb79-22"><a href="reordering-clusters.html#cb79-22" tabindex="-1"></a></span>
+<span id="cb79-23"><a href="reordering-clusters.html#cb79-23" tabindex="-1"></a>  <span class="do">## Reorder prob</span></span>
+<span id="cb79-24"><a href="reordering-clusters.html#cb79-24" tabindex="-1"></a>  res<span class="sc">$</span>prob <span class="ot">=</span> res<span class="sc">$</span>prob[,ord, drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb79-25"><a href="reordering-clusters.html#cb79-25" tabindex="-1"></a></span>
+<span id="cb79-26"><a href="reordering-clusters.html#cb79-26" tabindex="-1"></a>  <span class="do">## Reorder the responsibilities</span></span>
+<span id="cb79-27"><a href="reordering-clusters.html#cb79-27" tabindex="-1"></a>  <span class="cf">if</span>(<span class="st">&#39;resp&#39;</span> <span class="sc">%in%</span> res){</span>
+<span id="cb79-28"><a href="reordering-clusters.html#cb79-28" tabindex="-1"></a>    resp_temp <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb79-29"><a href="reordering-clusters.html#cb79-29" tabindex="-1"></a>    <span class="cf">for</span>(tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT){</span>
+<span id="cb79-30"><a href="reordering-clusters.html#cb79-30" tabindex="-1"></a>      rep_temp[[tt]] <span class="ot">=</span> res<span class="sc">$</span>resp[[tt]][,ord]</span>
+<span id="cb79-31"><a href="reordering-clusters.html#cb79-31" tabindex="-1"></a>    }</span>
+<span id="cb79-32"><a href="reordering-clusters.html#cb79-32" tabindex="-1"></a>  }</span>
+<span id="cb79-33"><a href="reordering-clusters.html#cb79-33" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb79-34"><a href="reordering-clusters.html#cb79-34" tabindex="-1"></a>}</span></code></pre></div>
 <p>Here’s an example of how to use this.</p>
-<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="reordering-clusters.html#cb79-1" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">&quot;~/repos/FlowTF&quot;</span>)</span>
-<span id="cb79-2"><a href="reordering-clusters.html#cb79-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
-<span id="cb79-3"><a href="reordering-clusters.html#cb79-3" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>)</span>
-<span id="cb79-4"><a href="reordering-clusters.html#cb79-4" tabindex="-1"></a>dt_model <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>, <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb79-5"><a href="reordering-clusters.html#cb79-5" tabindex="-1"></a>ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='package-setup.html#dt2ylist'>dt2ylist</a>()</span>
-<span id="cb79-6"><a href="reordering-clusters.html#cb79-6" tabindex="-1"></a>x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
-<span id="cb79-7"><a href="reordering-clusters.html#cb79-7" tabindex="-1"></a></span>
-<span id="cb79-8"><a href="reordering-clusters.html#cb79-8" tabindex="-1"></a><span class="do">## Fit model twice.</span></span>
-<span id="cb79-9"><a href="reordering-clusters.html#cb79-9" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb79-10"><a href="reordering-clusters.html#cb79-10" tabindex="-1"></a>objlist <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="cf">function</span>(isim){</span>
-<span id="cb79-11"><a href="reordering-clusters.html#cb79-11" tabindex="-1"></a>  <a href='flowtrend.html#flowtrend'>flowtrend</a>(<span class="at">ylist =</span> ylist,</span>
-<span id="cb79-12"><a href="reordering-clusters.html#cb79-12" tabindex="-1"></a>             <span class="at">x =</span> x,</span>
-<span id="cb79-13"><a href="reordering-clusters.html#cb79-13" tabindex="-1"></a>             <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
-<span id="cb79-14"><a href="reordering-clusters.html#cb79-14" tabindex="-1"></a>             <span class="at">numclust =</span> <span class="dv">3</span>,</span>
-<span id="cb79-15"><a href="reordering-clusters.html#cb79-15" tabindex="-1"></a>             <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
-<span id="cb79-16"><a href="reordering-clusters.html#cb79-16" tabindex="-1"></a>             <span class="at">l =</span> <span class="dv">1</span>,</span>
-<span id="cb79-17"><a href="reordering-clusters.html#cb79-17" tabindex="-1"></a>             <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
-<span id="cb79-18"><a href="reordering-clusters.html#cb79-18" tabindex="-1"></a>             <span class="at">lambda_prob =</span> .<span class="dv">005</span>,</span>
-<span id="cb79-19"><a href="reordering-clusters.html#cb79-19" tabindex="-1"></a>             <span class="at">nrestart =</span> <span class="dv">1</span>, <span class="at">verbose =</span> <span class="cn">TRUE</span>)})</span>
-<span id="cb79-20"><a href="reordering-clusters.html#cb79-20" tabindex="-1"></a></span>
-<span id="cb79-21"><a href="reordering-clusters.html#cb79-21" tabindex="-1"></a><span class="do">## Perform the reordering, make three plots</span></span>
-<span id="cb79-22"><a href="reordering-clusters.html#cb79-22" tabindex="-1"></a>newres <span class="ot">=</span> objlist[[<span class="dv">1</span>]]</span>
-<span id="cb79-23"><a href="reordering-clusters.html#cb79-23" tabindex="-1"></a>origres <span class="ot">=</span> objlist[[<span class="dv">2</span>]]</span>
-<span id="cb79-24"><a href="reordering-clusters.html#cb79-24" tabindex="-1"></a>newres_reordered <span class="ot">=</span> <a href='reordering-clusters.html#reorder_kl'>reorder_kl</a>(newres, origres, ylist, <span class="at">fac =</span> <span class="dv">100</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb79-25"><a href="reordering-clusters.html#cb79-25" tabindex="-1"></a><a href='package-setup.html#plot_1d'>plot_1d</a>(ylist, newres, <span class="at">x =</span> x, <span class="at">add_point =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;before reordering, model 1&quot;</span>)</span>
-<span id="cb79-26"><a href="reordering-clusters.html#cb79-26" tabindex="-1"></a><a href='package-setup.html#plot_1d'>plot_1d</a>(ylist, origres, <span class="at">x =</span> x, <span class="at">add_point =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;model 2&quot;</span>)</span>
-<span id="cb79-27"><a href="reordering-clusters.html#cb79-27" tabindex="-1"></a><a href='package-setup.html#plot_1d'>plot_1d</a>(ylist, newres_reordered, <span class="at">x =</span> x, <span class="at">add_point =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;reordered model 1&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="reordering-clusters.html#cb80-1" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">&quot;~/repos/FlowTF&quot;</span>)</span>
+<span id="cb80-2"><a href="reordering-clusters.html#cb80-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb80-3"><a href="reordering-clusters.html#cb80-3" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>)</span>
+<span id="cb80-4"><a href="reordering-clusters.html#cb80-4" tabindex="-1"></a>dt_model <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>, <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb80-5"><a href="reordering-clusters.html#cb80-5" tabindex="-1"></a>ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='package-setup.html#dt2ylist'>dt2ylist</a>()</span>
+<span id="cb80-6"><a href="reordering-clusters.html#cb80-6" tabindex="-1"></a>x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
+<span id="cb80-7"><a href="reordering-clusters.html#cb80-7" tabindex="-1"></a></span>
+<span id="cb80-8"><a href="reordering-clusters.html#cb80-8" tabindex="-1"></a><span class="do">## Fit model twice.</span></span>
+<span id="cb80-9"><a href="reordering-clusters.html#cb80-9" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb80-10"><a href="reordering-clusters.html#cb80-10" tabindex="-1"></a>objlist <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="cf">function</span>(isim){</span>
+<span id="cb80-11"><a href="reordering-clusters.html#cb80-11" tabindex="-1"></a>  <a href='building-the-modelalgorithm.html#flowtrend'>flowtrend</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb80-12"><a href="reordering-clusters.html#cb80-12" tabindex="-1"></a>             <span class="at">x =</span> x,</span>
+<span id="cb80-13"><a href="reordering-clusters.html#cb80-13" tabindex="-1"></a>             <span class="at">maxdev =</span> <span class="dv">5</span>,</span>
+<span id="cb80-14"><a href="reordering-clusters.html#cb80-14" tabindex="-1"></a>             <span class="at">numclust =</span> <span class="dv">3</span>,</span>
+<span id="cb80-15"><a href="reordering-clusters.html#cb80-15" tabindex="-1"></a>             <span class="at">lambda =</span> <span class="fl">0.02</span>,</span>
+<span id="cb80-16"><a href="reordering-clusters.html#cb80-16" tabindex="-1"></a>             <span class="at">l =</span> <span class="dv">1</span>,</span>
+<span id="cb80-17"><a href="reordering-clusters.html#cb80-17" tabindex="-1"></a>             <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
+<span id="cb80-18"><a href="reordering-clusters.html#cb80-18" tabindex="-1"></a>             <span class="at">lambda_prob =</span> .<span class="dv">005</span>,</span>
+<span id="cb80-19"><a href="reordering-clusters.html#cb80-19" tabindex="-1"></a>             <span class="at">nrestart =</span> <span class="dv">1</span>, <span class="at">verbose =</span> <span class="cn">TRUE</span>)})</span>
+<span id="cb80-20"><a href="reordering-clusters.html#cb80-20" tabindex="-1"></a></span>
+<span id="cb80-21"><a href="reordering-clusters.html#cb80-21" tabindex="-1"></a><span class="do">## Perform the reordering, make three plots</span></span>
+<span id="cb80-22"><a href="reordering-clusters.html#cb80-22" tabindex="-1"></a>newres <span class="ot">=</span> objlist[[<span class="dv">1</span>]]</span>
+<span id="cb80-23"><a href="reordering-clusters.html#cb80-23" tabindex="-1"></a>origres <span class="ot">=</span> objlist[[<span class="dv">2</span>]]</span>
+<span id="cb80-24"><a href="reordering-clusters.html#cb80-24" tabindex="-1"></a>newres_reordered <span class="ot">=</span> <a href='reordering-clusters.html#reorder_kl'>reorder_kl</a>(newres, origres, ylist, <span class="at">fac =</span> <span class="dv">100</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb80-25"><a href="reordering-clusters.html#cb80-25" tabindex="-1"></a><a href='package-setup.html#plot_1d'>plot_1d</a>(ylist, newres, <span class="at">x =</span> x, <span class="at">add_point =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;before reordering, model 1&quot;</span>)</span>
+<span id="cb80-26"><a href="reordering-clusters.html#cb80-26" tabindex="-1"></a><a href='package-setup.html#plot_1d'>plot_1d</a>(ylist, origres, <span class="at">x =</span> x, <span class="at">add_point =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;model 2&quot;</span>)</span>
+<span id="cb80-27"><a href="reordering-clusters.html#cb80-27" tabindex="-1"></a><a href='package-setup.html#plot_1d'>plot_1d</a>(ylist, newres_reordered, <span class="at">x =</span> x, <span class="at">add_point =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;reordered model 1&quot;</span>)</span></code></pre></div>
 
 </div>
             </section>
@@ -411,8 +424,8 @@ of an estimated model <code>obj</code> is <code><a href='reordering-clusters.htm
           </div>
         </div>
       </div>
-<a href="flowtrend.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="tuning-the-regularization-parameters-for-flowtrend.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="building-the-modelalgorithm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="tuning-lambda.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

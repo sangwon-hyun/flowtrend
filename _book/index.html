@@ -20,10 +20,10 @@
   
   
 
-<meta name="author" content="Sangwon Hyun" />
+<meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien" />
 
 
-<meta name="date" content="2024-04-11" />
+<meta name="date" content="2024-05-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -140,55 +140,68 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
 <li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="package-setup.html"><a href="package-setup.html#plotting-1d-data"><i class="fa fa-check"></i><b>2.1</b> Plotting 1d data</a></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="d-data.html"><a href="d-data.html"><i class="fa fa-check"></i><b>3</b> 2d data</a>
+<li class="chapter" data-level="2.1" data-path="package-setup.html"><a href="package-setup.html#d-data"><i class="fa fa-check"></i><b>2.1</b> 1d data</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="d-data.html"><a href="d-data.html#generating-2d-data"><i class="fa fa-check"></i><b>3.1</b> Generating 2d data</a></li>
-<li class="chapter" data-level="3.2" data-path="d-data.html"><a href="d-data.html#plotting-2d-data"><i class="fa fa-check"></i><b>3.2</b> Plotting 2d data</a></li>
+<li class="chapter" data-level="2.1.1" data-path="package-setup.html"><a href="package-setup.html#generating-1d-data"><i class="fa fa-check"></i><b>2.1.1</b> Generating 1d data</a></li>
+<li class="chapter" data-level="2.1.2" data-path="package-setup.html"><a href="package-setup.html#plotting-1d-data"><i class="fa fa-check"></i><b>2.1.2</b> Plotting 1d data</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="d-data-1.html"><a href="d-data-1.html"><i class="fa fa-check"></i><b>4</b> 3d data</a></li>
-<li class="chapter" data-level="5" data-path="trend-filtering.html"><a href="trend-filtering.html"><i class="fa fa-check"></i><b>5</b> Trend filtering</a></li>
-<li class="chapter" data-level="6" data-path="objective-data-log-likelihood.html"><a href="objective-data-log-likelihood.html"><i class="fa fa-check"></i><b>6</b> Objective (data log-likelihood)</a></li>
-<li class="chapter" data-level="7" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html"><i class="fa fa-check"></i><b>7</b> Initial parameters for EM algorithm</a></li>
-<li class="chapter" data-level="8" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>8</b> E step</a></li>
-<li class="chapter" data-level="9" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>9</b> M step</a>
+<li class="chapter" data-level="2.2" data-path="package-setup.html"><a href="package-setup.html#d-data-1"><i class="fa fa-check"></i><b>2.2</b> 2d data</a>
 <ul>
-<li class="chapter" data-level="9.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>9.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
-<li class="chapter" data-level="9.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>9.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
-<li class="chapter" data-level="9.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>9.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
-<li class="chapter" data-level="9.4" data-path="m-step.html"><a href="m-step.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>9.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
-<li class="chapter" data-level="9.5" data-path="m-step.html"><a href="m-step.html#all-rcpp-functions"><i class="fa fa-check"></i><b>9.5</b> All Rcpp functions</a></li>
+<li class="chapter" data-level="2.2.1" data-path="package-setup.html"><a href="package-setup.html#generating-2d-data"><i class="fa fa-check"></i><b>2.2.1</b> Generating 2d data</a></li>
+<li class="chapter" data-level="2.2.2" data-path="package-setup.html"><a href="package-setup.html#plotting-2d-data"><i class="fa fa-check"></i><b>2.2.2</b> Plotting 2d data</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="flowtrend.html"><a href="flowtrend.html"><i class="fa fa-check"></i><b>10</b> flowtrend</a></li>
-<li class="chapter" data-level="11" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>11</b> Reordering clusters</a></li>
-<li class="chapter" data-level="12" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html"><i class="fa fa-check"></i><b>12</b> Tuning the regularization parameters for <code>flowtrend</code></a>
+<li class="chapter" data-level="2.3" data-path="package-setup.html"><a href="package-setup.html#d-data-2"><i class="fa fa-check"></i><b>2.3</b> 3d data</a>
 <ul>
-<li class="chapter" data-level="12.1" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>12.1</b> Predicting and evaluating on new time points</a></li>
-<li class="chapter" data-level="12.2" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>12.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
-<li class="chapter" data-level="12.3" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#define-cv-data-folds"><i class="fa fa-check"></i><b>12.3</b> Define CV data folds</a></li>
-<li class="chapter" data-level="12.4" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-many-single-jobs"><i class="fa fa-check"></i><b>12.4</b> CV = many single jobs</a></li>
-<li class="chapter" data-level="12.5" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#running-cross-validation"><i class="fa fa-check"></i><b>12.5</b> Running cross-validation</a></li>
-<li class="chapter" data-level="12.6" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#summarizing-the-output"><i class="fa fa-check"></i><b>12.6</b> Summarizing the output</a></li>
-<li class="chapter" data-level="12.7" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>12.7</b> CV on your own computer</a></li>
-<li class="chapter" data-level="12.8" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#plotting"><i class="fa fa-check"></i><b>12.8</b> Plotting</a></li>
+<li class="chapter" data-level="2.3.1" data-path="package-setup.html"><a href="package-setup.html#plotting-3d-data"><i class="fa fa-check"></i><b>2.3.1</b> Plotting 3d data</a></li>
+<li class="chapter" data-level="2.3.2" data-path="package-setup.html"><a href="package-setup.html#generating-3d-data"><i class="fa fa-check"></i><b>2.3.2</b> Generating 3d data</a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="se-rule-for-cross-validation.html"><a href="se-rule-for-cross-validation.html"><i class="fa fa-check"></i><b>13</b> 1SE rule for cross validation</a></li>
-<li class="chapter" data-level="14" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>14</b> Testing the flowtrend method</a>
+</ul></li>
+<li class="chapter" data-level="3" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html"><i class="fa fa-check"></i><b>3</b> Building the model/algorithm</a>
 <ul>
-<li class="chapter" data-level="14.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>14.1</b> 1d example</a></li>
-<li class="chapter" data-level="14.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values"><i class="fa fa-check"></i><b>14.2</b> Testing monotonicity of objective values</a></li>
-<li class="chapter" data-level="14.3" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_2d-example"><i class="fa fa-check"></i><b>14.3</b> 2d example</a></li>
-<li class="chapter" data-level="14.4" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#working-with-binned-dataset"><i class="fa fa-check"></i><b>14.4</b> Working with “binned” dataset</a></li>
-<li class="chapter" data-level="14.5" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#unevenly-spaced-inputs-x"><i class="fa fa-check"></i><b>14.5</b> Unevenly spaced inputs (x)</a></li>
-</ul></li>
-<li class="chapter" data-level="15" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>15</b> Documenting the package and building</a></li>
-<li class="chapter" data-level="16" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html"><i class="fa fa-check"></i><b>16</b> Helpers for simulations in the paper</a>
+<li class="chapter" data-level="3.1" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#trend-filtering"><i class="fa fa-check"></i><b>3.1</b> Trend filtering</a></li>
+<li class="chapter" data-level="3.2" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#objective-data-log-likelihood"><i class="fa fa-check"></i><b>3.2</b> Objective (data log-likelihood)</a></li>
+<li class="chapter" data-level="3.3" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#initial-parameters-for-em-algorithm"><i class="fa fa-check"></i><b>3.3</b> Initial parameters for EM algorithm</a></li>
+<li class="chapter" data-level="3.4" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#e-step"><i class="fa fa-check"></i><b>3.4</b> E step</a></li>
+<li class="chapter" data-level="3.5" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step"><i class="fa fa-check"></i><b>3.5</b> M step</a>
 <ul>
-<li class="chapter" data-level="16.1" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#two-alternative-estimators"><i class="fa fa-check"></i><b>16.1</b> Two alternative estimators</a></li>
-<li class="chapter" data-level="16.2" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>16.2</b> Example using <code><a href='helpers-for-simulations-in-the-paper.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations-in-the-paper.html#overfit_flowmeans'>overfit_flowmeans</a>()</code></a></li>
-<li class="chapter" data-level="16.3" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>16.3</b> Evaluating performance: soft RAND index</a></li>
+<li class="chapter" data-level="3.5.1" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step-for-pi"><i class="fa fa-check"></i><b>3.5.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
+<li class="chapter" data-level="3.5.2" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step-for-sigma"><i class="fa fa-check"></i><b>3.5.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
+<li class="chapter" data-level="3.5.3" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step-for-mu"><i class="fa fa-check"></i><b>3.5.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
+<li class="chapter" data-level="3.5.4" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>3.5.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
+<li class="chapter" data-level="3.5.5" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#all-rcpp-functions"><i class="fa fa-check"></i><b>3.5.5</b> All Rcpp functions</a></li>
 </ul></li>
+<li class="chapter" data-level="3.6" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#the-main-flowtrend-function"><i class="fa fa-check"></i><b>3.6</b> The main “flowtrend” function</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>4</b> Reordering clusters</a></li>
+<li class="chapter" data-level="5" data-path="tuning-lambda.html"><a href="tuning-lambda.html"><i class="fa fa-check"></i><b>5</b> Tuning <span class="math inline">\(\lambda\)</span></a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="tuning-lambda.html"><a href="tuning-lambda.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>5.1</b> Predicting and evaluating on new time points</a></li>
+<li class="chapter" data-level="5.2" data-path="tuning-lambda.html"><a href="tuning-lambda.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>5.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
+<li class="chapter" data-level="5.3" data-path="tuning-lambda.html"><a href="tuning-lambda.html#define-cv-data-folds"><i class="fa fa-check"></i><b>5.3</b> Define CV data folds</a></li>
+<li class="chapter" data-level="5.4" data-path="tuning-lambda.html"><a href="tuning-lambda.html#cv-many-single-jobs"><i class="fa fa-check"></i><b>5.4</b> CV = many single jobs</a></li>
+<li class="chapter" data-level="5.5" data-path="tuning-lambda.html"><a href="tuning-lambda.html#running-cross-validation"><i class="fa fa-check"></i><b>5.5</b> Running cross-validation</a></li>
+<li class="chapter" data-level="5.6" data-path="tuning-lambda.html"><a href="tuning-lambda.html#summarizing-the-output"><i class="fa fa-check"></i><b>5.6</b> Summarizing the output</a></li>
+<li class="chapter" data-level="5.7" data-path="tuning-lambda.html"><a href="tuning-lambda.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>5.7</b> CV on your own computer</a></li>
+<li class="chapter" data-level="5.8" data-path="tuning-lambda.html"><a href="tuning-lambda.html#plotting"><i class="fa fa-check"></i><b>5.8</b> Plotting</a></li>
+<li class="chapter" data-level="5.9" data-path="tuning-lambda.html"><a href="tuning-lambda.html#se-rule-for-cross-validation"><i class="fa fa-check"></i><b>5.9</b> 1SE rule for cross validation</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>6</b> Testing the flowtrend method</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>6.1</b> 1d example</a></li>
+<li class="chapter" data-level="6.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values"><i class="fa fa-check"></i><b>6.2</b> Testing monotonicity of objective values</a></li>
+<li class="chapter" data-level="6.3" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_2d-example"><i class="fa fa-check"></i><b>6.3</b> 2d example</a></li>
+<li class="chapter" data-level="6.4" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#working-with-binned-dataset"><i class="fa fa-check"></i><b>6.4</b> Working with “binned” dataset</a></li>
+<li class="chapter" data-level="6.5" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#unevenly-spaced-inputs-x"><i class="fa fa-check"></i><b>6.5</b> Unevenly spaced inputs (x)</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html"><i class="fa fa-check"></i><b>7</b> Helpers for simulations</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#two-alternative-estimators"><i class="fa fa-check"></i><b>7.1</b> Two alternative estimators</a></li>
+<li class="chapter" data-level="7.2" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>7.2</b> Example using <code><a href='helpers-for-simulations.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations.html#overfit_flowmeans'>overfit_flowmeans</a>()</code></a></li>
+<li class="chapter" data-level="7.3" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>7.3</b> Evaluating performance: soft RAND index</a></li>
+<li class="chapter" data-level="7.4" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#generating-pseudo-real-data"><i class="fa fa-check"></i><b>7.4</b> Generating “pseudo-real” data</a></li>
+<li class="chapter" data-level="7.5" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#miscellaneous-helpers"><i class="fa fa-check"></i><b>7.5</b> Miscellaneous helpers</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>8</b> Documenting the package and building</a></li>
 </ul>
 
       </nav>
@@ -208,8 +221,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="header">
 <h1 class="title">Creating the <code>flowtrend</code> R package</h1>
-<p class="author"><em>Sangwon Hyun</em></p>
-<p class="date"><em>2024-04-11</em></p>
+<p class="author"><em>Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien</em></p>
+<p class="date"><em>2024-05-07</em></p>
 </div>
 <div id="introduction" class="section level1 hasAnchor" number="1">
 <h1><span class="header-section-number">1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
@@ -217,8 +230,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 mixture models across time. The documentation and package are both created using
 one simple command:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">render</span>(<span class="st">&quot;index.Rmd&quot;</span>, <span class="at">output_format =</span> litr<span class="sc">::</span><span class="fu">litr_gitbook</span>())</span></code></pre></div>
-<p>This line is purely for testing (to be deleted later!).</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="index.html#cb2-1" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">&quot;index.Rmd&quot;</span>)<span class="do">##, output_format = litr::litr_gitbook())</span></span></code></pre></div>
 
 </div>
             </section>

@@ -5,10 +5,13 @@
 #' 
 #' @param resp_list1 One list of responsibility matrices.
 #' @param resp_list2 Another list of responsibility matrices.
+#' @param times Optional; if you would like to isolate your attention to some specific times.
 #'
 #' @return A single soft rand index number
 #' @export
-soft_rand <- function(resp_list1, resp_list2){
+soft_rand <- function(resp_list1, resp_list2, times = NULL){
+  if(!is.null(times)) resp_list1 = resp_list1[times]
+  if(!is.null(times)) resp_list2 = resp_list2[times]
   
   soft_rand_onetime <- function(resp1, resp2){
     stopifnot(nrow(resp1) == nrow(resp2))

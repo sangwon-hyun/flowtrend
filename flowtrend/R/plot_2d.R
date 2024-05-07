@@ -42,9 +42,10 @@ plot_2d <- function(ylist, countslist = NULL, obj = NULL, tt,
     y = y %>% add_column(counts = counts)
 
     ## Make a simple scatterplot
-    p = y %>% ggplot() +
-      geom_raster(aes(x = !!sym(varname1), y=!!sym(varname2), fill = counts)) +
-      scale_fill_gradientn(guide="none", colours = colours) 
+    p =
+      y %>% ggplot() +
+      geom_raster(aes(x = !!sym(varname1), y=!!sym(varname2), fill = counts))  +
+      scale_fill_gradientn(guide="none", colours = raster_colours) 
   }
 
   p = p + ggtitle(paste0("Time=", tt))

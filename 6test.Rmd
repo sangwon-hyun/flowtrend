@@ -30,7 +30,6 @@ obj <- flowtrend(ylist = ylist,
                  l_prob = 1,
                  lambda = .1,
                  lambda_prob = .1,
-                 verbose = TRUE,
                  nrestart = 5)
  
 ## Also reorder the cluster labels of the truth, to match the fitted model.
@@ -173,8 +172,7 @@ obj = flowtrend(ylist = binres$ybin_list,
                 lambda = .01,
                 lambda_prob = .005,
                 rho_init = .01,
-                nrestart = 1,
-                verbose = TRUE)
+                nrestart = 1)
 ## obj$objectives %>% plot(type='l')
 
 ## Plot cluster means
@@ -218,7 +216,6 @@ for(ind_rm in ind_rm_list){
                         l_prob = 2,
                         lambda = 0.1,
                         lambda_prob = 0.1, ## 
-                        verbose = TRUE,
                         admm_local_adapt = TRUE,
                         rho_init = 0.01)
   obj$objectives %>% plot(type='o', ylab = "EM objectives")
@@ -227,12 +224,3 @@ for(ind_rm in ind_rm_list){
 ```
 
 
-
-# Documenting the package and building
-
-We finish by running commands that will document, build, and install the
-package.  It may also be a good idea to check the package from within this file.
-
-```{r, results='hide'}
-litr::document() # <-- use instead of devtools::document() 
-```

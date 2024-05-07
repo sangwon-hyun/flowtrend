@@ -63,7 +63,7 @@ objective <- function(mu, prob, prob_link = NULL, sigma,
   } else {
 
     ## Return penalized likelihood
-    mu.splt <- asplit(mu, MARGIN = 3)
+    mu.splt <- asplit(mu, MARGIN = 2) ## This was 3, which I think produces the same result.
     diff_mu <- sum(unlist(lapply(mu.splt, FUN = function(m) sum(abs(Dlp1 %*% m)))))
     diff_prob <- sum(abs(Dlp1_prob %*% prob_link))
     obj =  -1/N * sum(unlist(loglik)) + lambda * diff_mu + lambda_prob * diff_prob

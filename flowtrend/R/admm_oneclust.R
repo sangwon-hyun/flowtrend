@@ -69,11 +69,12 @@ admm_oneclust <- function(iclust = 1, niter, y,
     ##   mu = mu.warm
     ## }
 
-    z <- Z_update(mu - colMeans(mu), Uz = uz, C = maxdev, rho = rho)
+    centered_mu = sweep(mu, 2, colMeans(mu)) 
+    ## stopifnot(all(abs(colMeans(centered_mu))<1E-8))
+    z <- Z_update(centered_mu, Uz = uz, C = maxdev, rho = rho)
 
     if(any(abs(mu)>1E2)){
       stop("mu is blowing up!")
-      browser()
       ## break
     }
     wlist = lapply(1:dimdat, function(j){
@@ -113,7 +114,7 @@ admm_oneclust <- function(iclust = 1, niter, y,
                          obj$dual_err)
 
       if(is.na(obj$converge)){
-        obj$converge <- converge = FALSE
+        obj$converge = converge = FALSE
         warning("Convergence was NA")
       }
       if(obj$converge){

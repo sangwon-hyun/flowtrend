@@ -1,4 +1,4 @@
-# Helpers for simulations in the paper
+# Helpers for simulations
 
 There are two alternatives to consider when estimating mixture models in a
 series of cytograms. 
@@ -55,7 +55,7 @@ underfit_flowmeans <- function(ylist, numclust){
     for(iclust in 1:numclust){
       
       mu[tt,iclust] <- params.tt$mu[iclust]
-      sigma[tt,iclust] <- params.tt$sigma[clust]
+      sigma[tt,iclust] <- params.tt$sigma[iclust]
       prob[tt,iclust] <- params.tt$prob[iclust]
       
       if(is.na(mu[tt,iclust])){
@@ -368,10 +368,13 @@ And when one of the clusterings is absolute, we can still use a 0-1 vector.
 #' 
 #' @param resp_list1 One list of responsibility matrices.
 #' @param resp_list2 Another list of responsibility matrices.
+#' @param times Optional; if you would like to isolate your attention to some specific times.
 #'
 #' @return A single soft rand index number
 #' @export
-soft_rand <- function(resp_list1, resp_list2){
+soft_rand <- function(resp_list1, resp_list2, times = NULL){
+  if(!is.null(times)) resp_list1 = resp_list1[times]
+  if(!is.null(times)) resp_list2 = resp_list2[times]
   
   soft_rand_onetime <- function(resp1, resp2){
     stopifnot(nrow(resp1) == nrow(resp2))
@@ -473,3 +476,178 @@ memlist_to_respmat <- function(memlist){
 }
 ```
 
+
+## Generating "pseudo-real" data 
+
+Two clusters will be taken from an estimated _flowtrend_ model fit on real data,
+downloaded from here: 
+
+https://zenodo.org/records/6471995
+
+to [./data](./data).
+
+```{r}
+## This data is from the results from 
+here::i_am("7simulations.Rmd")
+datadir = file.path(here::here(), "inst", "data")
+res = readRDS(file.path(datadir, "1d-cvres.rds")) %>% .$bestres
+
+## Picoeuk
+iclust = 3
+mn1 = cbind(1, res$X) %*% res$beta[[iclust]] %>% as.numeric()
+
+## Prochlorococcus
+iclust = 4
+mn2 = cbind(1, res$X) %*% res$beta[[iclust]] %>% as.numeric()
+
+## Cluster probabilities
+probs = res$pie[,c(3, 4)]  
+probs = probs / rowSums(probs)
+
+## Save them as separte objects
+mns_orig = cbind(mn1, mn2)
+probs_orig = probs
+```
+
+Let's smooth these using a trend-filter;
+
++ The cluster means will be taken to directly trend filtered at 2. 
++ The log odds will be smoothed. 
+
+Specifically, recall that $p = e^\gamma / (1 + e^\gamma)$.  So, we will take
+$\gamma = \log(p/(1-p)) \propto \log(p)$, smooth it, and recreate $p$.
+
+
+Next, generate new 1d data.
+
+
+```{r generate-data, eval = FALSE, echo = TRUE}
+nt = 1000
+sd1 = res$sigma %>% .[,1,1] %>% .[3] %>% sqrt() 
+sd2 = res$sigma %>% .[,1,1] %>% .[4] %>% sqrt()
+
+## Smooth means
+mn1 = mns_orig[,1]
+mn2 = mns_orig[,2]
+gap = mean(mn1) - mean(mn2)
+mn1 = mn1 - gap
+mn1 = mn1 %>% fit_tf(ord = 2)
+mn2 = mn2 %>% fit_tf(ord = 2)
+
+## Smooth probabilities
+probs = probs_orig
+gamma = log(probs[,1]/probs[,2])
+gamma = gamma %>% fit_tf(ord = 1)
+probs[,1] = gamma %>% exp()
+probs[,1] = probs[,1]/(1 + probs[,1])
+probs[,2] =  1 - probs[,1] 
+
+## Create all the data
+for(isignal in 0:12){
+  print("isignal")
+  print(isignal)
+  parallel::mclapply(1:10, function(isim){
+    printprogress(isim, 10)
+  ## for(isim in 1:10){
+    mns = cbind(mn1 + isignal * 0.05, mn2)
+    set.seed(10000 + isignal * 100 + isim)
+    datobj = pseudoreal_gendat_1d(mns, probs, sd1, sd2, nt = 1000)
+    datobj[["mns"]] = mns
+    datobj[["probs"]] = probs
+    datobj[["sd1"]] = sd1
+    datobj[["sd2"]] = sd2
+    destin = file.path("~/repos/flowtrend/inst/output/1dsim-pseudoreal",
+                       paste0("isignal-", isignal),
+                       paste0("isim-", isim))
+    create_destin(destin)
+    ## if(file.exists(file.path(destin, "datobj.RDS"))) next
+    saveRDS(datobj, file = file.path(destin, "datobj.RDS"))
+  ## }
+  }, mc.cores = 8)
+  cat(fill=TRUE)
+}
+```
+
+## Miscellaneous helpers
+
+Lastly, there are some miscellaneous helpers that are useful when running actual
+jobs on a server.
+
+
+The first one is `create_destin()`, which creates a directory if it doesn't already exist.
+
+```{r}
+#' Creates a directory \code{destin}, if it doesn't already exist.
+#'
+#' @param destin Destination directory.
+#'
+#' @return Nothing.
+#' @export
+create_destin <- function(destin){
+  if(!dir.exists(destin)){
+    dir.create(destin, recursive = TRUE)
+    cat("Creating destin: ", destin, fill=TRUE)
+  } else {
+    cat("All output goes out to destin: ", destin, fill = TRUE)
+  }
+}
+```
+
+
+Another helper `parse_args()` helps R read in trailing arguments from the command line, like this:
+
+`parse_args(args = commandArgs(trailingOnly = TRUE), verbose=TRUE)`
+
+so that one can run jobs using a SLURM command such as:
+
+`sbatch --export=summ=0 --array=1 run-3dreal.slurm`
+
+from which the R script can access the `summ=0` variable.
+
+
+```{r}
+#' Parse command line arguments and assigns the values of them. |args| is meant
+#' to just be additional command line arguments.
+#'
+#' @param args Argument.
+#'
+#' @return Nothing.
+#' @export
+parse_args <- function(args, verbose=FALSE){
+  args = sapply(args, strsplit, "=")
+  print(args)
+  for(arg in args){
+
+    ## Check if the thing is integer
+    all_numbers = str_detect(arg[2], "^[:digit:]+$")
+
+    ## Assign the variable
+    if(all_numbers){
+      assign(arg[1], as.numeric(arg[2]), inherits = TRUE)
+    } else {
+      assign(arg[1], arg[2], inherits = TRUE)
+    }
+
+    if(verbose){
+      cat(arg[1], "takes the value of", arg[2],
+          "from command line input", fill=TRUE)
+    }
+    print("===============================")
+  }
+}
+
+
+```
+
+
+
+
+
+# Documenting the package and building
+
+We finish by running commands that will document, build, and install the
+package.  It may also be a good idea to check the package from within this file.
+
+```{r, results='hide'}
+litr::document() # <-- use instead of devtools::document() 
+```

@@ -20,10 +20,10 @@
   
   
 
-<meta name="author" content="Sangwon Hyun" />
+<meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien" />
 
 
-<meta name="date" content="2024-04-11" />
+<meta name="date" content="2024-05-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -188,6 +188,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="16.1" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#two-alternative-estimators"><i class="fa fa-check"></i><b>16.1</b> Two alternative estimators</a></li>
 <li class="chapter" data-level="16.2" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>16.2</b> Example using <code><a href='helpers-for-simulations-in-the-paper.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations-in-the-paper.html#overfit_flowmeans'>overfit_flowmeans</a>()</code></a></li>
 <li class="chapter" data-level="16.3" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>16.3</b> Evaluating performance: soft RAND index</a></li>
+<li class="chapter" data-level="16.4" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#generating-pseudo-real-data"><i class="fa fa-check"></i><b>16.4</b> Generating “pseudo-real” data</a></li>
 </ul></li>
 </ul>
 
@@ -208,87 +209,87 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="e-step" class="section level1 hasAnchor" number="8">
 <h1><span class="header-section-number">8</span> E step<a href="e-step.html#e-step" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="e-step.html#cb47-1" tabindex="-1"></a><span class="co">#&#39; E step, which updates the &quot;responsibilities&quot;, which are posterior membership probabilities of each particle.</span></span>
-<span id="cb47-2"><a href="e-step.html#cb47-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb47-3"><a href="e-step.html#cb47-3" tabindex="-1"></a><span class="co">#&#39; @param mn</span></span>
-<span id="cb47-4"><a href="e-step.html#cb47-4" tabindex="-1"></a><span class="co">#&#39; @param sigma</span></span>
-<span id="cb47-5"><a href="e-step.html#cb47-5" tabindex="-1"></a><span class="co">#&#39; @param prob</span></span>
-<span id="cb47-6"><a href="e-step.html#cb47-6" tabindex="-1"></a><span class="co">#&#39; @param ylist</span></span>
-<span id="cb47-7"><a href="e-step.html#cb47-7" tabindex="-1"></a><span class="co">#&#39; @param numclust</span></span>
-<span id="cb47-8"><a href="e-step.html#cb47-8" tabindex="-1"></a><span class="co">#&#39; @param denslist_by_clust</span></span>
-<span id="cb47-9"><a href="e-step.html#cb47-9" tabindex="-1"></a><span class="co">#&#39; @param first_iter</span></span>
-<span id="cb47-10"><a href="e-step.html#cb47-10" tabindex="-1"></a><span class="co">#&#39; @param countslist</span></span>
-<span id="cb47-11"><a href="e-step.html#cb47-11" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb47-12"><a href="e-step.html#cb47-12" tabindex="-1"></a><span class="co">#&#39; @return</span></span>
-<span id="cb47-13"><a href="e-step.html#cb47-13" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb47-14"><a href="e-step.html#cb47-14" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb47-15"><a href="e-step.html#cb47-15" tabindex="-1"></a><span id='Estep'>Estep</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mn, sigma, prob, <span class="at">ylist =</span> <span class="cn">NULL</span>, numclust, <span class="at">denslist_by_clust =</span> <span class="cn">NULL</span>,</span>
-<span id="cb47-16"><a href="e-step.html#cb47-16" tabindex="-1"></a>                  <span class="at">first_iter =</span> <span class="cn">FALSE</span>, <span class="at">countslist =</span> <span class="cn">NULL</span>){</span>
-<span id="cb47-17"><a href="e-step.html#cb47-17" tabindex="-1"></a>  <span class="do">## Basic setup</span></span>
-<span id="cb47-18"><a href="e-step.html#cb47-18" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="fu">length</span>(ylist)</span>
-<span id="cb47-19"><a href="e-step.html#cb47-19" tabindex="-1"></a>  ntlist <span class="ot">=</span> <span class="fu">sapply</span>(ylist, nrow)</span>
-<span id="cb47-20"><a href="e-step.html#cb47-20" tabindex="-1"></a>  resp <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb47-21"><a href="e-step.html#cb47-21" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="fu">dim</span>(mn)[<span class="dv">2</span>]</span>
-<span id="cb47-22"><a href="e-step.html#cb47-22" tabindex="-1"></a>  assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">dim</span>(mn)[<span class="dv">1</span>] <span class="sc">==</span> <span class="fu">length</span>(ylist))</span>
-<span id="cb47-23"><a href="e-step.html#cb47-23" tabindex="-1"></a></span>
-<span id="cb47-24"><a href="e-step.html#cb47-24" tabindex="-1"></a>  <span class="do">## Helper to calculate Gaussian density for each \code{N(y_{t,k},mu_{t,k} and</span></span>
-<span id="cb47-25"><a href="e-step.html#cb47-25" tabindex="-1"></a>  <span class="do">## Sigma_k)}.</span></span>
-<span id="cb47-26"><a href="e-step.html#cb47-26" tabindex="-1"></a>  <span id='calculate_dens'>calculate_dens</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(iclust, tt, y, mn, sigma, denslist_by_clust,</span>
-<span id="cb47-27"><a href="e-step.html#cb47-27" tabindex="-1"></a>                             first_iter) {</span>
-<span id="cb47-28"><a href="e-step.html#cb47-28" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> mn[tt, , iclust]</span>
-<span id="cb47-29"><a href="e-step.html#cb47-29" tabindex="-1"></a>    <span class="cf">if</span> (dimdat <span class="sc">==</span> <span class="dv">1</span>) {</span>
-<span id="cb47-30"><a href="e-step.html#cb47-30" tabindex="-1"></a>      dens <span class="ot">=</span> <span class="fu">dnorm</span>(y, mu, <span class="at">sd =</span> <span class="fu">sqrt</span>(sigma[iclust, , ]))</span>
-<span id="cb47-31"><a href="e-step.html#cb47-31" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb47-32"><a href="e-step.html#cb47-32" tabindex="-1"></a>       dens <span class="ot">=</span> <span class="fu">dmvnorm_arma_fast</span>(y, mu, sigma[iclust,,], <span class="cn">FALSE</span>)</span>
-<span id="cb47-33"><a href="e-step.html#cb47-33" tabindex="-1"></a>    }</span>
-<span id="cb47-34"><a href="e-step.html#cb47-34" tabindex="-1"></a>    <span class="fu">return</span>(dens)</span>
-<span id="cb47-35"><a href="e-step.html#cb47-35" tabindex="-1"></a>  }</span>
-<span id="cb47-36"><a href="e-step.html#cb47-36" tabindex="-1"></a></span>
-<span id="cb47-37"><a href="e-step.html#cb47-37" tabindex="-1"></a>  <span class="do">## Calculate posterior probability of membership of $y_{it}$.</span></span>
-<span id="cb47-38"><a href="e-step.html#cb47-38" tabindex="-1"></a>  ncol.prob <span class="ot">=</span> <span class="fu">ncol</span>(prob)</span>
-<span id="cb47-39"><a href="e-step.html#cb47-39" tabindex="-1"></a>  <span class="cf">for</span> (tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT) {</span>
-<span id="cb47-40"><a href="e-step.html#cb47-40" tabindex="-1"></a>    ylist_tt <span class="ot">=</span> ylist[[tt]]</span>
-<span id="cb47-41"><a href="e-step.html#cb47-41" tabindex="-1"></a>    densmat <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, calculate_dens, tt, ylist_tt,</span>
-<span id="cb47-42"><a href="e-step.html#cb47-42" tabindex="-1"></a>                      mn, sigma, denslist_by_clust, first_iter)</span>
-<span id="cb47-43"><a href="e-step.html#cb47-43" tabindex="-1"></a>    wt.densmat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(prob[tt, ], <span class="at">nrow =</span> ntlist[tt],</span>
-<span id="cb47-44"><a href="e-step.html#cb47-44" tabindex="-1"></a>                         <span class="at">ncol =</span> ncol.prob, <span class="at">byrow =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> densmat</span>
-<span id="cb47-45"><a href="e-step.html#cb47-45" tabindex="-1"></a>    wt.densmat <span class="ot">=</span> wt.densmat <span class="sc">+</span> <span class="fl">1e-10</span></span>
-<span id="cb47-46"><a href="e-step.html#cb47-46" tabindex="-1"></a>    wt.densmat <span class="ot">&lt;-</span> wt.densmat<span class="sc">/</span><span class="fu">rowSums</span>(wt.densmat)</span>
-<span id="cb47-47"><a href="e-step.html#cb47-47" tabindex="-1"></a>    resp[[tt]] <span class="ot">&lt;-</span> wt.densmat</span>
-<span id="cb47-48"><a href="e-step.html#cb47-48" tabindex="-1"></a>  }</span>
-<span id="cb47-49"><a href="e-step.html#cb47-49" tabindex="-1"></a></span>
-<span id="cb47-50"><a href="e-step.html#cb47-50" tabindex="-1"></a>  <span class="do">## Weight the responsibilities by $C_{it}$.</span></span>
-<span id="cb47-51"><a href="e-step.html#cb47-51" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(countslist)) {</span>
-<span id="cb47-52"><a href="e-step.html#cb47-52" tabindex="-1"></a>    resp <span class="ot">&lt;-</span> <span class="fu">Map</span>(<span class="cf">function</span>(myresp, mycount) {</span>
-<span id="cb47-53"><a href="e-step.html#cb47-53" tabindex="-1"></a>      myresp <span class="sc">*</span> mycount</span>
-<span id="cb47-54"><a href="e-step.html#cb47-54" tabindex="-1"></a>    }, resp, countslist)</span>
-<span id="cb47-55"><a href="e-step.html#cb47-55" tabindex="-1"></a>  }</span>
-<span id="cb47-56"><a href="e-step.html#cb47-56" tabindex="-1"></a>  <span class="fu">return</span>(resp)</span>
-<span id="cb47-57"><a href="e-step.html#cb47-57" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="e-step.html#cb46-1" tabindex="-1"></a><span class="co">#&#39; E step, which updates the &quot;responsibilities&quot;, which are posterior membership probabilities of each particle.</span></span>
+<span id="cb46-2"><a href="e-step.html#cb46-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb46-3"><a href="e-step.html#cb46-3" tabindex="-1"></a><span class="co">#&#39; @param mn</span></span>
+<span id="cb46-4"><a href="e-step.html#cb46-4" tabindex="-1"></a><span class="co">#&#39; @param sigma</span></span>
+<span id="cb46-5"><a href="e-step.html#cb46-5" tabindex="-1"></a><span class="co">#&#39; @param prob</span></span>
+<span id="cb46-6"><a href="e-step.html#cb46-6" tabindex="-1"></a><span class="co">#&#39; @param ylist</span></span>
+<span id="cb46-7"><a href="e-step.html#cb46-7" tabindex="-1"></a><span class="co">#&#39; @param numclust</span></span>
+<span id="cb46-8"><a href="e-step.html#cb46-8" tabindex="-1"></a><span class="co">#&#39; @param denslist_by_clust</span></span>
+<span id="cb46-9"><a href="e-step.html#cb46-9" tabindex="-1"></a><span class="co">#&#39; @param first_iter</span></span>
+<span id="cb46-10"><a href="e-step.html#cb46-10" tabindex="-1"></a><span class="co">#&#39; @param countslist</span></span>
+<span id="cb46-11"><a href="e-step.html#cb46-11" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb46-12"><a href="e-step.html#cb46-12" tabindex="-1"></a><span class="co">#&#39; @return</span></span>
+<span id="cb46-13"><a href="e-step.html#cb46-13" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb46-14"><a href="e-step.html#cb46-14" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb46-15"><a href="e-step.html#cb46-15" tabindex="-1"></a><span id='Estep'>Estep</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mn, sigma, prob, <span class="at">ylist =</span> <span class="cn">NULL</span>, numclust, <span class="at">denslist_by_clust =</span> <span class="cn">NULL</span>,</span>
+<span id="cb46-16"><a href="e-step.html#cb46-16" tabindex="-1"></a>                  <span class="at">first_iter =</span> <span class="cn">FALSE</span>, <span class="at">countslist =</span> <span class="cn">NULL</span>){</span>
+<span id="cb46-17"><a href="e-step.html#cb46-17" tabindex="-1"></a>  <span class="do">## Basic setup</span></span>
+<span id="cb46-18"><a href="e-step.html#cb46-18" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="fu">length</span>(ylist)</span>
+<span id="cb46-19"><a href="e-step.html#cb46-19" tabindex="-1"></a>  ntlist <span class="ot">=</span> <span class="fu">sapply</span>(ylist, nrow)</span>
+<span id="cb46-20"><a href="e-step.html#cb46-20" tabindex="-1"></a>  resp <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb46-21"><a href="e-step.html#cb46-21" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="fu">dim</span>(mn)[<span class="dv">2</span>]</span>
+<span id="cb46-22"><a href="e-step.html#cb46-22" tabindex="-1"></a>  assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="fu">dim</span>(mn)[<span class="dv">1</span>] <span class="sc">==</span> <span class="fu">length</span>(ylist))</span>
+<span id="cb46-23"><a href="e-step.html#cb46-23" tabindex="-1"></a></span>
+<span id="cb46-24"><a href="e-step.html#cb46-24" tabindex="-1"></a>  <span class="do">## Helper to calculate Gaussian density for each \code{N(y_{t,k},mu_{t,k} and</span></span>
+<span id="cb46-25"><a href="e-step.html#cb46-25" tabindex="-1"></a>  <span class="do">## Sigma_k)}.</span></span>
+<span id="cb46-26"><a href="e-step.html#cb46-26" tabindex="-1"></a>  <span id='calculate_dens'>calculate_dens</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(iclust, tt, y, mn, sigma, denslist_by_clust,</span>
+<span id="cb46-27"><a href="e-step.html#cb46-27" tabindex="-1"></a>                             first_iter) {</span>
+<span id="cb46-28"><a href="e-step.html#cb46-28" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> mn[tt, , iclust]</span>
+<span id="cb46-29"><a href="e-step.html#cb46-29" tabindex="-1"></a>    <span class="cf">if</span> (dimdat <span class="sc">==</span> <span class="dv">1</span>) {</span>
+<span id="cb46-30"><a href="e-step.html#cb46-30" tabindex="-1"></a>      dens <span class="ot">=</span> <span class="fu">dnorm</span>(y, mu, <span class="at">sd =</span> <span class="fu">sqrt</span>(sigma[iclust, , ]))</span>
+<span id="cb46-31"><a href="e-step.html#cb46-31" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb46-32"><a href="e-step.html#cb46-32" tabindex="-1"></a>       dens <span class="ot">=</span> <span class="fu">dmvnorm_arma_fast</span>(y, mu, sigma[iclust,,], <span class="cn">FALSE</span>)</span>
+<span id="cb46-33"><a href="e-step.html#cb46-33" tabindex="-1"></a>    }</span>
+<span id="cb46-34"><a href="e-step.html#cb46-34" tabindex="-1"></a>    <span class="fu">return</span>(dens)</span>
+<span id="cb46-35"><a href="e-step.html#cb46-35" tabindex="-1"></a>  }</span>
+<span id="cb46-36"><a href="e-step.html#cb46-36" tabindex="-1"></a></span>
+<span id="cb46-37"><a href="e-step.html#cb46-37" tabindex="-1"></a>  <span class="do">## Calculate posterior probability of membership of $y_{it}$.</span></span>
+<span id="cb46-38"><a href="e-step.html#cb46-38" tabindex="-1"></a>  ncol.prob <span class="ot">=</span> <span class="fu">ncol</span>(prob)</span>
+<span id="cb46-39"><a href="e-step.html#cb46-39" tabindex="-1"></a>  <span class="cf">for</span> (tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT) {</span>
+<span id="cb46-40"><a href="e-step.html#cb46-40" tabindex="-1"></a>    ylist_tt <span class="ot">=</span> ylist[[tt]]</span>
+<span id="cb46-41"><a href="e-step.html#cb46-41" tabindex="-1"></a>    densmat <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, calculate_dens, tt, ylist_tt,</span>
+<span id="cb46-42"><a href="e-step.html#cb46-42" tabindex="-1"></a>                      mn, sigma, denslist_by_clust, first_iter)</span>
+<span id="cb46-43"><a href="e-step.html#cb46-43" tabindex="-1"></a>    wt.densmat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(prob[tt, ], <span class="at">nrow =</span> ntlist[tt],</span>
+<span id="cb46-44"><a href="e-step.html#cb46-44" tabindex="-1"></a>                         <span class="at">ncol =</span> ncol.prob, <span class="at">byrow =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> densmat</span>
+<span id="cb46-45"><a href="e-step.html#cb46-45" tabindex="-1"></a>    wt.densmat <span class="ot">=</span> wt.densmat <span class="sc">+</span> <span class="fl">1e-10</span></span>
+<span id="cb46-46"><a href="e-step.html#cb46-46" tabindex="-1"></a>    wt.densmat <span class="ot">&lt;-</span> wt.densmat<span class="sc">/</span><span class="fu">rowSums</span>(wt.densmat)</span>
+<span id="cb46-47"><a href="e-step.html#cb46-47" tabindex="-1"></a>    resp[[tt]] <span class="ot">&lt;-</span> wt.densmat</span>
+<span id="cb46-48"><a href="e-step.html#cb46-48" tabindex="-1"></a>  }</span>
+<span id="cb46-49"><a href="e-step.html#cb46-49" tabindex="-1"></a></span>
+<span id="cb46-50"><a href="e-step.html#cb46-50" tabindex="-1"></a>  <span class="do">## Weight the responsibilities by $C_{it}$.</span></span>
+<span id="cb46-51"><a href="e-step.html#cb46-51" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(countslist)) {</span>
+<span id="cb46-52"><a href="e-step.html#cb46-52" tabindex="-1"></a>    resp <span class="ot">&lt;-</span> <span class="fu">Map</span>(<span class="cf">function</span>(myresp, mycount) {</span>
+<span id="cb46-53"><a href="e-step.html#cb46-53" tabindex="-1"></a>      myresp <span class="sc">*</span> mycount</span>
+<span id="cb46-54"><a href="e-step.html#cb46-54" tabindex="-1"></a>    }, resp, countslist)</span>
+<span id="cb46-55"><a href="e-step.html#cb46-55" tabindex="-1"></a>  }</span>
+<span id="cb46-56"><a href="e-step.html#cb46-56" tabindex="-1"></a>  <span class="fu">return</span>(resp)</span>
+<span id="cb46-57"><a href="e-step.html#cb46-57" tabindex="-1"></a>}</span></code></pre></div>
 <p>The E step should return a list of exactly the same size and format as <code>ylist</code>,
 which is a <span class="math inline">\(T\)</span> -length list of matrices of size <span class="math inline">\(n_t \times d\)</span>.</p>
 <p>(This test fails for some reason; will come back to this.)</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="e-step.html#cb48-1" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;E step returns appropriately sized responsibilities.&quot;</span>,{</span>
-<span id="cb48-2"><a href="e-step.html#cb48-2" tabindex="-1"></a>  </span>
-<span id="cb48-3"><a href="e-step.html#cb48-3" tabindex="-1"></a>  <span class="do">## Generate some fake data</span></span>
-<span id="cb48-4"><a href="e-step.html#cb48-4" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="dv">10</span></span>
-<span id="cb48-5"><a href="e-step.html#cb48-5" tabindex="-1"></a>  ylist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){ <span class="fu">runif</span>(<span class="dv">90</span>) <span class="sc">%&gt;%</span> <span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">nrow =</span> <span class="dv">30</span>)})</span>
-<span id="cb48-6"><a href="e-step.html#cb48-6" tabindex="-1"></a>  numclust <span class="ot">=</span> <span class="dv">3</span></span>
-<span id="cb48-7"><a href="e-step.html#cb48-7" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="dv">3</span></span>
-<span id="cb48-8"><a href="e-step.html#cb48-8" tabindex="-1"></a></span>
-<span id="cb48-9"><a href="e-step.html#cb48-9" tabindex="-1"></a>  <span class="do">## Initialize a few parameters, not carefully</span></span>
-<span id="cb48-10"><a href="e-step.html#cb48-10" tabindex="-1"></a>  sigma <span class="ot">=</span> <a href='initial-parameters-for-em-algorithm.html#init_sigma'>init_sigma</a>(ylist, numclust) <span class="do">## (T x numclust x (dimdat x dimdat))</span></span>
-<span id="cb48-11"><a href="e-step.html#cb48-11" tabindex="-1"></a>  mn <span class="ot">=</span> <a href='initial-parameters-for-em-algorithm.html#init_mn'>init_mn</a>(ylist, numclust, TT, dimdat)<span class="do">##, countslist = countslist)</span></span>
-<span id="cb48-12"><a href="e-step.html#cb48-12" tabindex="-1"></a>  prob <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">/</span>numclust, <span class="at">nrow =</span> TT, <span class="at">ncol =</span> numclust) <span class="do">## Initialize to all 1/K.</span></span>
-<span id="cb48-13"><a href="e-step.html#cb48-13" tabindex="-1"></a></span>
-<span id="cb48-14"><a href="e-step.html#cb48-14" tabindex="-1"></a>  <span class="do">## ## Calculate responsibility</span></span>
-<span id="cb48-15"><a href="e-step.html#cb48-15" tabindex="-1"></a>  <span class="do">## resp = <a href='e-step.html#Estep'>Estep</a>(mn = mn, sigma = sigma, prob = prob, ylist = ylist, numclust = numclust)</span></span>
-<span id="cb48-16"><a href="e-step.html#cb48-16" tabindex="-1"></a></span>
-<span id="cb48-17"><a href="e-step.html#cb48-17" tabindex="-1"></a>  <span class="do">## Check these things</span></span>
-<span id="cb48-18"><a href="e-step.html#cb48-18" tabindex="-1"></a>  <span class="do">## testthat::expect_equal(length(resp), length(ylist))</span></span>
-<span id="cb48-19"><a href="e-step.html#cb48-19" tabindex="-1"></a>  <span class="do">## ?testthat::expect_equal</span></span>
-<span id="cb48-20"><a href="e-step.html#cb48-20" tabindex="-1"></a>  <span class="do">## testthat::expect_equal(sapply(resp, dim), sapply(ylist, dim), reporter = &quot;stop&quot;)</span></span>
-<span id="cb48-21"><a href="e-step.html#cb48-21" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="e-step.html#cb47-1" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;E step returns appropriately sized responsibilities.&quot;</span>,{</span>
+<span id="cb47-2"><a href="e-step.html#cb47-2" tabindex="-1"></a>  </span>
+<span id="cb47-3"><a href="e-step.html#cb47-3" tabindex="-1"></a>  <span class="do">## Generate some fake data</span></span>
+<span id="cb47-4"><a href="e-step.html#cb47-4" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb47-5"><a href="e-step.html#cb47-5" tabindex="-1"></a>  ylist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){ <span class="fu">runif</span>(<span class="dv">90</span>) <span class="sc">%&gt;%</span> <span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">nrow =</span> <span class="dv">30</span>)})</span>
+<span id="cb47-6"><a href="e-step.html#cb47-6" tabindex="-1"></a>  numclust <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb47-7"><a href="e-step.html#cb47-7" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb47-8"><a href="e-step.html#cb47-8" tabindex="-1"></a></span>
+<span id="cb47-9"><a href="e-step.html#cb47-9" tabindex="-1"></a>  <span class="do">## Initialize a few parameters, not carefully</span></span>
+<span id="cb47-10"><a href="e-step.html#cb47-10" tabindex="-1"></a>  sigma <span class="ot">=</span> <a href='initial-parameters-for-em-algorithm.html#init_sigma'>init_sigma</a>(ylist, numclust) <span class="do">## (T x numclust x (dimdat x dimdat))</span></span>
+<span id="cb47-11"><a href="e-step.html#cb47-11" tabindex="-1"></a>  mn <span class="ot">=</span> <a href='initial-parameters-for-em-algorithm.html#init_mn'>init_mn</a>(ylist, numclust, TT, dimdat)<span class="do">##, countslist = countslist)</span></span>
+<span id="cb47-12"><a href="e-step.html#cb47-12" tabindex="-1"></a>  prob <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">/</span>numclust, <span class="at">nrow =</span> TT, <span class="at">ncol =</span> numclust) <span class="do">## Initialize to all 1/K.</span></span>
+<span id="cb47-13"><a href="e-step.html#cb47-13" tabindex="-1"></a></span>
+<span id="cb47-14"><a href="e-step.html#cb47-14" tabindex="-1"></a>  <span class="do">## ## Calculate responsibility</span></span>
+<span id="cb47-15"><a href="e-step.html#cb47-15" tabindex="-1"></a>  <span class="do">## resp = <a href='e-step.html#Estep'>Estep</a>(mn = mn, sigma = sigma, prob = prob, ylist = ylist, numclust = numclust)</span></span>
+<span id="cb47-16"><a href="e-step.html#cb47-16" tabindex="-1"></a></span>
+<span id="cb47-17"><a href="e-step.html#cb47-17" tabindex="-1"></a>  <span class="do">## Check these things</span></span>
+<span id="cb47-18"><a href="e-step.html#cb47-18" tabindex="-1"></a>  <span class="do">## testthat::expect_equal(length(resp), length(ylist))</span></span>
+<span id="cb47-19"><a href="e-step.html#cb47-19" tabindex="-1"></a>  <span class="do">## ?testthat::expect_equal</span></span>
+<span id="cb47-20"><a href="e-step.html#cb47-20" tabindex="-1"></a>  <span class="do">## testthat::expect_equal(sapply(resp, dim), sapply(ylist, dim), reporter = &quot;stop&quot;)</span></span>
+<span id="cb47-21"><a href="e-step.html#cb47-21" tabindex="-1"></a>})</span></code></pre></div>
 <pre><code>## -- Skip (???): E step returns appropriately sized responsibilities. ------------
 ## Reason: empty test</code></pre>
 </div>

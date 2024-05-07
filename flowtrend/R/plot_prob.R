@@ -11,8 +11,8 @@ plot_prob <- function(obj, x = NULL){
   if(!is.null(x)){
     times = x
   } else {
-    stop("must provide x")
-    times = 1:length(ylist)
+    ##stop("must provide x")
+    times = 1:(obj$TT)
   }
 
   numclust = obj$numclust

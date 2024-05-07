@@ -1,4 +1,6 @@
-# Trend filtering
+# Building the model/algorithm
+
+## Trend filtering
 
 \def\E{\mathbb{E}}
 \def\R{\mathbb{R}}
@@ -288,7 +290,7 @@ testthat::test_that("Uneven spaced D matrix is formed correctly", {
 ```
 
 
-# Objective (data log-likelihood)
+## Objective (data log-likelihood)
 
 
 The function `loglik_tt()` calculates the log-likelihood of one cytogram, which is:
@@ -439,7 +441,7 @@ testthat::test_that("Test for softmax",{
 ```
 
 
-# Initial parameters for EM algorithm
+## Initial parameters for EM algorithm
 
 The EM algorithm requires some initial values for $\mu$, $\pi$ and $\Sigma$. 
 
@@ -599,7 +601,7 @@ print_progress <- function(isim, nsim,
 }
 ```
 
-# E step
+## E step
 
 ```{r Estep}
 #' E step, which updates the "responsibilities", which are posterior membership probabilities of each particle.
@@ -690,12 +692,12 @@ testthat::test_that("E step returns appropriately sized responsibilities.",{
 })
 ```
 
-# M step 
+## M step 
 
 The M step of the EM algorithm has three steps -- one each for $\mu$, $\pi$, and
 $\Sigma$.
 
-## M step for $\pi$
+### M step for $\pi$
 
 ```{r Mstep_prob}
 #' The M step for the cluster probabilities
@@ -794,7 +796,7 @@ testthat::test_that("Test the M step of \pi against CVXR", {})
 ```
 
 
-## M step for $\Sigma$
+### M step for $\Sigma$
 
 ```{r Mstep_sigma}
 #' M step for cluster covariance (sigma).
@@ -847,10 +849,11 @@ Mstep_sigma <- function(resp, ylist, mn, numclust){
 ```
 
 
-## M step for $\mu$
+### M step for $\mu$
 
-This is a big one. It uses the ADMM algorithm as written in section OO of the
-paper, reproduced briefly here.
+This is a big one. It uses the ADMM algorithm as written in section OO (TODO:
+fill in) of the paper, reproduced briefly here.
+
 
 We need a convergence checker for the outer layer of LA-ADMM, which checks
 whether the objective values have plateaued.
@@ -1401,11 +1404,12 @@ admm_oneclust <- function(iclust = 1, niter, y,
     ##   mu = mu.warm
     ## }
 
-    z <- Z_update(mu - colMeans(mu), Uz = uz, C = maxdev, rho = rho)
+    centered_mu = sweep(mu, 2, colMeans(mu)) 
+    ## stopifnot(all(abs(colMeans(centered_mu))<1E-8))
+    z <- Z_update(centered_mu, Uz = uz, C = maxdev, rho = rho)
 
     if(any(abs(mu)>1E2)){
       stop("mu is blowing up!")
-      browser()
       ## break
     }
     wlist = lapply(1:dimdat, function(j){
@@ -1445,7 +1449,7 @@ admm_oneclust <- function(iclust = 1, niter, y,
                          obj$dual_err)
 
       if(is.na(obj$converge)){
-        obj$converge <- converge = FALSE
+        obj$converge = converge = FALSE
         warning("Convergence was NA")
       }
       if(obj$converge){
@@ -1485,9 +1489,9 @@ admm_oneclust <- function(iclust = 1, niter, y,
 
 
 
-## Helpers for M step ($\mu$)
+### Helpers for M step ($\mu$)
 
-First, let's start with a few R functions.
+First, let's start with a few helper functions.
 
 ```{r}
 #' @param TT Number of time points.
@@ -1667,7 +1671,7 @@ objective_per_cluster <- function(y, TT, d, l, mu, resp, Sigma_inv, Dlp1, Dl,
 }
 ```
 
-## All Rcpp functions
+### All Rcpp functions
 
 The main function we write in Rcpp is the "barebones" Sylvester equation solver
 that takes upper-triangular coefficient matrices.
@@ -2048,7 +2052,7 @@ testthat::test_that("Test the M step of \mu against CVXR", {})
 
 
 
-# flowtrend
+## The main "flowtrend" function
 
 Now we've assembled all ingredients we need, we'll build the main function
 `flowtrend_once()` to estimate a flowtrend model. Here goes:
@@ -2301,8 +2305,3 @@ flowtrend <- function(..., nrestart = 5){
   return(final_model)
 }
 ```
-
-
-
-
-

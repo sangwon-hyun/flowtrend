@@ -1,6 +1,6 @@
-# 1d data
+## 1d data
 
-## Generating 1d data
+### Generating 1d data
 
 This function generates synthetic 1-dimensional data, and returns it in a "long"
 format matrix, with columns `time`, `y`, `mu`, and `cluster`. The latter two are
@@ -141,9 +141,9 @@ print(head(ylist[[1]]))
 Next, we'll make some plotting functions 1d model and data.
 
 
-## Plotting 1d data
+### Plotting 1d data
 
-Given 1d data `ylist` and an estimated model object `obj`, we want to plot both
+Given 1d data `ylist` and an estimated model `flowtrend` object `obj`, we want to visualize these
 in a single plot. `plot_1d()` lets you do this.
 
 ```{r plot_1d}
@@ -304,9 +304,9 @@ We can't test it out now, but we'll use it later in [1d-example](#1d-example).
 
 
 
-# 2d data
+## 2d data
 
-## Generating 2d data
+### Generating 2d data
 
 
 ```{r gendat_2d}
@@ -392,7 +392,7 @@ gendat_2d <- function(TT, ntlist){
 ```
 
 
-## Plotting 2d data
+### Plotting 2d data
 
 Here's a simpler plotting function for 2d data at the particle level.
 
@@ -503,10 +503,14 @@ plot_2d(datobj$ylist, tt=1)
 
 
 
-# 3d data
+## 3d data
+
+
 
 Given 3d data `ylist` and an estimated model object `obj`, we want to plot both
 in three two-dimensional plot. `plot_3d()` lets you do this.
+
+### Plotting 3d data
 
 First, here's a plotting helper.
 
@@ -519,7 +523,6 @@ my_mfrow <- function(glist, ncol = NULL, nrow = NULL){
   do.call(ggpubr::ggarrange, c(glist, ncol=ncol, nrow=nrow))
 }
 ```
-
 
 (TODO: change tt to time (and all the user-facing functions should have the same
 arguments and argument order))
@@ -667,6 +670,9 @@ res$prob = res$pie
 ## Make the plot
 plot_3d(ylist = ybin_list, countslist = biomass_list, obj = res, tt = 280)
 ```
+
+
+### Generating 3d data
 
 ```{r}
 #' Generates some synthetic 3-dimensional data with three clusters. 

@@ -40,7 +40,7 @@ underfit_flowmeans <- function(ylist, numclust){
     for(iclust in 1:numclust){
       
       mu[tt,iclust] <- params.tt$mu[iclust]
-      sigma[tt,iclust] <- params.tt$sigma[clust]
+      sigma[tt,iclust] <- params.tt$sigma[iclust]
       prob[tt,iclust] <- params.tt$prob[iclust]
       
       if(is.na(mu[tt,iclust])){

@@ -4,34 +4,34 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>15 Documenting the package and building | Creating the flowtrend R package</title>
-  <meta name="description" content="15 Documenting the package and building | Creating the flowtrend R package" />
+  <title>8 Documenting the package and building | Creating the flowtrend R package</title>
+  <meta name="description" content="8 Documenting the package and building | Creating the flowtrend R package" />
   <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="15 Documenting the package and building | Creating the flowtrend R package" />
+  <meta property="og:title" content="8 Documenting the package and building | Creating the flowtrend R package" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="15 Documenting the package and building | Creating the flowtrend R package" />
+  <meta name="twitter:title" content="8 Documenting the package and building | Creating the flowtrend R package" />
   
   
   
 
-<meta name="author" content="Sangwon Hyun" />
+<meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien" />
 
 
-<meta name="date" content="2024-04-11" />
+<meta name="date" content="2024-05-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="testing-the-flowtrend-method.html"/>
-<link rel="next" href="helpers-for-simulations-in-the-paper.html"/>
+<link rel="prev" href="helpers-for-simulations.html"/>
+
 <script src="libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
@@ -140,55 +140,68 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
 <li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="package-setup.html"><a href="package-setup.html#plotting-1d-data"><i class="fa fa-check"></i><b>2.1</b> Plotting 1d data</a></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="d-data.html"><a href="d-data.html"><i class="fa fa-check"></i><b>3</b> 2d data</a>
+<li class="chapter" data-level="2.1" data-path="package-setup.html"><a href="package-setup.html#d-data"><i class="fa fa-check"></i><b>2.1</b> 1d data</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="d-data.html"><a href="d-data.html#generating-2d-data"><i class="fa fa-check"></i><b>3.1</b> Generating 2d data</a></li>
-<li class="chapter" data-level="3.2" data-path="d-data.html"><a href="d-data.html#plotting-2d-data"><i class="fa fa-check"></i><b>3.2</b> Plotting 2d data</a></li>
+<li class="chapter" data-level="2.1.1" data-path="package-setup.html"><a href="package-setup.html#generating-1d-data"><i class="fa fa-check"></i><b>2.1.1</b> Generating 1d data</a></li>
+<li class="chapter" data-level="2.1.2" data-path="package-setup.html"><a href="package-setup.html#plotting-1d-data"><i class="fa fa-check"></i><b>2.1.2</b> Plotting 1d data</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="d-data-1.html"><a href="d-data-1.html"><i class="fa fa-check"></i><b>4</b> 3d data</a></li>
-<li class="chapter" data-level="5" data-path="trend-filtering.html"><a href="trend-filtering.html"><i class="fa fa-check"></i><b>5</b> Trend filtering</a></li>
-<li class="chapter" data-level="6" data-path="objective-data-log-likelihood.html"><a href="objective-data-log-likelihood.html"><i class="fa fa-check"></i><b>6</b> Objective (data log-likelihood)</a></li>
-<li class="chapter" data-level="7" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html"><i class="fa fa-check"></i><b>7</b> Initial parameters for EM algorithm</a></li>
-<li class="chapter" data-level="8" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>8</b> E step</a></li>
-<li class="chapter" data-level="9" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>9</b> M step</a>
+<li class="chapter" data-level="2.2" data-path="package-setup.html"><a href="package-setup.html#d-data-1"><i class="fa fa-check"></i><b>2.2</b> 2d data</a>
 <ul>
-<li class="chapter" data-level="9.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>9.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
-<li class="chapter" data-level="9.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>9.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
-<li class="chapter" data-level="9.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>9.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
-<li class="chapter" data-level="9.4" data-path="m-step.html"><a href="m-step.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>9.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
-<li class="chapter" data-level="9.5" data-path="m-step.html"><a href="m-step.html#all-rcpp-functions"><i class="fa fa-check"></i><b>9.5</b> All Rcpp functions</a></li>
+<li class="chapter" data-level="2.2.1" data-path="package-setup.html"><a href="package-setup.html#generating-2d-data"><i class="fa fa-check"></i><b>2.2.1</b> Generating 2d data</a></li>
+<li class="chapter" data-level="2.2.2" data-path="package-setup.html"><a href="package-setup.html#plotting-2d-data"><i class="fa fa-check"></i><b>2.2.2</b> Plotting 2d data</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="flowtrend.html"><a href="flowtrend.html"><i class="fa fa-check"></i><b>10</b> flowtrend</a></li>
-<li class="chapter" data-level="11" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>11</b> Reordering clusters</a></li>
-<li class="chapter" data-level="12" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html"><i class="fa fa-check"></i><b>12</b> Tuning the regularization parameters for <code>flowtrend</code></a>
+<li class="chapter" data-level="2.3" data-path="package-setup.html"><a href="package-setup.html#d-data-2"><i class="fa fa-check"></i><b>2.3</b> 3d data</a>
 <ul>
-<li class="chapter" data-level="12.1" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>12.1</b> Predicting and evaluating on new time points</a></li>
-<li class="chapter" data-level="12.2" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>12.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
-<li class="chapter" data-level="12.3" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#define-cv-data-folds"><i class="fa fa-check"></i><b>12.3</b> Define CV data folds</a></li>
-<li class="chapter" data-level="12.4" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-many-single-jobs"><i class="fa fa-check"></i><b>12.4</b> CV = many single jobs</a></li>
-<li class="chapter" data-level="12.5" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#running-cross-validation"><i class="fa fa-check"></i><b>12.5</b> Running cross-validation</a></li>
-<li class="chapter" data-level="12.6" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#summarizing-the-output"><i class="fa fa-check"></i><b>12.6</b> Summarizing the output</a></li>
-<li class="chapter" data-level="12.7" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>12.7</b> CV on your own computer</a></li>
-<li class="chapter" data-level="12.8" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#plotting"><i class="fa fa-check"></i><b>12.8</b> Plotting</a></li>
+<li class="chapter" data-level="2.3.1" data-path="package-setup.html"><a href="package-setup.html#plotting-3d-data"><i class="fa fa-check"></i><b>2.3.1</b> Plotting 3d data</a></li>
+<li class="chapter" data-level="2.3.2" data-path="package-setup.html"><a href="package-setup.html#generating-3d-data"><i class="fa fa-check"></i><b>2.3.2</b> Generating 3d data</a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="se-rule-for-cross-validation.html"><a href="se-rule-for-cross-validation.html"><i class="fa fa-check"></i><b>13</b> 1SE rule for cross validation</a></li>
-<li class="chapter" data-level="14" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>14</b> Testing the flowtrend method</a>
+</ul></li>
+<li class="chapter" data-level="3" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html"><i class="fa fa-check"></i><b>3</b> Building the model/algorithm</a>
 <ul>
-<li class="chapter" data-level="14.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>14.1</b> 1d example</a></li>
-<li class="chapter" data-level="14.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values"><i class="fa fa-check"></i><b>14.2</b> Testing monotonicity of objective values</a></li>
-<li class="chapter" data-level="14.3" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_2d-example"><i class="fa fa-check"></i><b>14.3</b> 2d example</a></li>
-<li class="chapter" data-level="14.4" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#working-with-binned-dataset"><i class="fa fa-check"></i><b>14.4</b> Working with “binned” dataset</a></li>
-<li class="chapter" data-level="14.5" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#unevenly-spaced-inputs-x"><i class="fa fa-check"></i><b>14.5</b> Unevenly spaced inputs (x)</a></li>
-</ul></li>
-<li class="chapter" data-level="15" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>15</b> Documenting the package and building</a></li>
-<li class="chapter" data-level="16" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html"><i class="fa fa-check"></i><b>16</b> Helpers for simulations in the paper</a>
+<li class="chapter" data-level="3.1" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#trend-filtering"><i class="fa fa-check"></i><b>3.1</b> Trend filtering</a></li>
+<li class="chapter" data-level="3.2" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#objective-data-log-likelihood"><i class="fa fa-check"></i><b>3.2</b> Objective (data log-likelihood)</a></li>
+<li class="chapter" data-level="3.3" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#initial-parameters-for-em-algorithm"><i class="fa fa-check"></i><b>3.3</b> Initial parameters for EM algorithm</a></li>
+<li class="chapter" data-level="3.4" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#e-step"><i class="fa fa-check"></i><b>3.4</b> E step</a></li>
+<li class="chapter" data-level="3.5" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step"><i class="fa fa-check"></i><b>3.5</b> M step</a>
 <ul>
-<li class="chapter" data-level="16.1" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#two-alternative-estimators"><i class="fa fa-check"></i><b>16.1</b> Two alternative estimators</a></li>
-<li class="chapter" data-level="16.2" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>16.2</b> Example using <code><a href='helpers-for-simulations-in-the-paper.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations-in-the-paper.html#overfit_flowmeans'>overfit_flowmeans</a>()</code></a></li>
-<li class="chapter" data-level="16.3" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>16.3</b> Evaluating performance: soft RAND index</a></li>
+<li class="chapter" data-level="3.5.1" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step-for-pi"><i class="fa fa-check"></i><b>3.5.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
+<li class="chapter" data-level="3.5.2" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step-for-sigma"><i class="fa fa-check"></i><b>3.5.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
+<li class="chapter" data-level="3.5.3" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step-for-mu"><i class="fa fa-check"></i><b>3.5.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
+<li class="chapter" data-level="3.5.4" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>3.5.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
+<li class="chapter" data-level="3.5.5" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#all-rcpp-functions"><i class="fa fa-check"></i><b>3.5.5</b> All Rcpp functions</a></li>
 </ul></li>
+<li class="chapter" data-level="3.6" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#the-main-flowtrend-function"><i class="fa fa-check"></i><b>3.6</b> The main “flowtrend” function</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>4</b> Reordering clusters</a></li>
+<li class="chapter" data-level="5" data-path="tuning-lambda.html"><a href="tuning-lambda.html"><i class="fa fa-check"></i><b>5</b> Tuning <span class="math inline">\(\lambda\)</span></a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="tuning-lambda.html"><a href="tuning-lambda.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>5.1</b> Predicting and evaluating on new time points</a></li>
+<li class="chapter" data-level="5.2" data-path="tuning-lambda.html"><a href="tuning-lambda.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>5.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
+<li class="chapter" data-level="5.3" data-path="tuning-lambda.html"><a href="tuning-lambda.html#define-cv-data-folds"><i class="fa fa-check"></i><b>5.3</b> Define CV data folds</a></li>
+<li class="chapter" data-level="5.4" data-path="tuning-lambda.html"><a href="tuning-lambda.html#cv-many-single-jobs"><i class="fa fa-check"></i><b>5.4</b> CV = many single jobs</a></li>
+<li class="chapter" data-level="5.5" data-path="tuning-lambda.html"><a href="tuning-lambda.html#running-cross-validation"><i class="fa fa-check"></i><b>5.5</b> Running cross-validation</a></li>
+<li class="chapter" data-level="5.6" data-path="tuning-lambda.html"><a href="tuning-lambda.html#summarizing-the-output"><i class="fa fa-check"></i><b>5.6</b> Summarizing the output</a></li>
+<li class="chapter" data-level="5.7" data-path="tuning-lambda.html"><a href="tuning-lambda.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>5.7</b> CV on your own computer</a></li>
+<li class="chapter" data-level="5.8" data-path="tuning-lambda.html"><a href="tuning-lambda.html#plotting"><i class="fa fa-check"></i><b>5.8</b> Plotting</a></li>
+<li class="chapter" data-level="5.9" data-path="tuning-lambda.html"><a href="tuning-lambda.html#se-rule-for-cross-validation"><i class="fa fa-check"></i><b>5.9</b> 1SE rule for cross validation</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>6</b> Testing the flowtrend method</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>6.1</b> 1d example</a></li>
+<li class="chapter" data-level="6.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values"><i class="fa fa-check"></i><b>6.2</b> Testing monotonicity of objective values</a></li>
+<li class="chapter" data-level="6.3" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_2d-example"><i class="fa fa-check"></i><b>6.3</b> 2d example</a></li>
+<li class="chapter" data-level="6.4" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#working-with-binned-dataset"><i class="fa fa-check"></i><b>6.4</b> Working with “binned” dataset</a></li>
+<li class="chapter" data-level="6.5" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#unevenly-spaced-inputs-x"><i class="fa fa-check"></i><b>6.5</b> Unevenly spaced inputs (x)</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html"><i class="fa fa-check"></i><b>7</b> Helpers for simulations</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#two-alternative-estimators"><i class="fa fa-check"></i><b>7.1</b> Two alternative estimators</a></li>
+<li class="chapter" data-level="7.2" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>7.2</b> Example using <code><a href='helpers-for-simulations.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations.html#overfit_flowmeans'>overfit_flowmeans</a>()</code></a></li>
+<li class="chapter" data-level="7.3" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>7.3</b> Evaluating performance: soft RAND index</a></li>
+<li class="chapter" data-level="7.4" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#generating-pseudo-real-data"><i class="fa fa-check"></i><b>7.4</b> Generating “pseudo-real” data</a></li>
+<li class="chapter" data-level="7.5" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#miscellaneous-helpers"><i class="fa fa-check"></i><b>7.5</b> Miscellaneous helpers</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>8</b> Documenting the package and building</a></li>
 </ul>
 
       </nav>
@@ -206,36 +219,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="documenting-the-package-and-building" class="section level1 hasAnchor" number="15">
-<h1><span class="header-section-number">15</span> Documenting the package and building<a href="documenting-the-package-and-building.html#documenting-the-package-and-building" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="documenting-the-package-and-building" class="section level1 hasAnchor" number="8">
+<h1><span class="header-section-number">8</span> Documenting the package and building<a href="documenting-the-package-and-building.html#documenting-the-package-and-building" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>We finish by running commands that will document, build, and install the
 package. It may also be a good idea to check the package from within this file.</p>
-<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb147-1"><a href="documenting-the-package-and-building.html#cb147-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
-<span id="cb147-2"><a href="documenting-the-package-and-building.html#cb147-2" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="at">TT=</span><span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="at">times=</span><span class="dv">100</span>))</span>
-<span id="cb147-3"><a href="documenting-the-package-and-building.html#cb147-3" tabindex="-1"></a>dt_model       <span class="ot">&lt;-</span> <a href='package-setup.html#gendat_1d'>gendat_1d</a>(<span class="at">TT=</span><span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="at">times=</span><span class="dv">100</span>), <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb147-4"><a href="documenting-the-package-and-building.html#cb147-4" tabindex="-1"></a>ylist_orig <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='package-setup.html#dt2ylist'>dt2ylist</a>()</span>
-<span id="cb147-5"><a href="documenting-the-package-and-building.html#cb147-5" tabindex="-1"></a></span>
-<span id="cb147-6"><a href="documenting-the-package-and-building.html#cb147-6" tabindex="-1"></a>ind_rm_list <span class="ot">=</span> <span class="fu">list</span>(<span class="fu">seq</span>(<span class="at">from=</span><span class="dv">10</span>, <span class="at">to=</span><span class="dv">100</span>, <span class="at">by=</span><span class="dv">10</span>),</span>
-<span id="cb147-7"><a href="documenting-the-package-and-building.html#cb147-7" tabindex="-1"></a>                   <span class="at">ind_rm =</span> <span class="dv">30</span><span class="sc">:</span><span class="dv">50</span>)</span>
-<span id="cb147-8"><a href="documenting-the-package-and-building.html#cb147-8" tabindex="-1"></a><span class="cf">for</span>(ind_rm <span class="cf">in</span> ind_rm_list){</span>
-<span id="cb147-9"><a href="documenting-the-package-and-building.html#cb147-9" tabindex="-1"></a>  x <span class="ot">=</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>)[<span class="sc">-</span>ind_rm]</span>
-<span id="cb147-10"><a href="documenting-the-package-and-building.html#cb147-10" tabindex="-1"></a>  ylist <span class="ot">=</span> ylist_orig[x]</span>
-<span id="cb147-11"><a href="documenting-the-package-and-building.html#cb147-11" tabindex="-1"></a></span>
-<span id="cb147-12"><a href="documenting-the-package-and-building.html#cb147-12" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
-<span id="cb147-13"><a href="documenting-the-package-and-building.html#cb147-13" tabindex="-1"></a>  obj <span class="ot">&lt;-</span> <a href='flowtrend.html#flowtrend_once'>flowtrend_once</a>(<span class="at">ylist =</span> ylist, </span>
-<span id="cb147-14"><a href="documenting-the-package-and-building.html#cb147-14" tabindex="-1"></a>                        <span class="at">x =</span> x,</span>
-<span id="cb147-15"><a href="documenting-the-package-and-building.html#cb147-15" tabindex="-1"></a>                        <span class="at">maxdev =</span> <span class="dv">100</span>,</span>
-<span id="cb147-16"><a href="documenting-the-package-and-building.html#cb147-16" tabindex="-1"></a>                        <span class="at">numclust =</span> <span class="dv">3</span>,</span>
-<span id="cb147-17"><a href="documenting-the-package-and-building.html#cb147-17" tabindex="-1"></a>                        <span class="at">l =</span> <span class="dv">2</span>,</span>
-<span id="cb147-18"><a href="documenting-the-package-and-building.html#cb147-18" tabindex="-1"></a>                        <span class="at">l_prob =</span> <span class="dv">2</span>,</span>
-<span id="cb147-19"><a href="documenting-the-package-and-building.html#cb147-19" tabindex="-1"></a>                        <span class="at">lambda =</span> <span class="fl">0.1</span>,</span>
-<span id="cb147-20"><a href="documenting-the-package-and-building.html#cb147-20" tabindex="-1"></a>                        <span class="at">lambda_prob =</span> <span class="fl">0.1</span>, <span class="do">## </span></span>
-<span id="cb147-21"><a href="documenting-the-package-and-building.html#cb147-21" tabindex="-1"></a>                        <span class="at">verbose =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb147-22"><a href="documenting-the-package-and-building.html#cb147-22" tabindex="-1"></a>                        <span class="at">admm_local_adapt =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb147-23"><a href="documenting-the-package-and-building.html#cb147-23" tabindex="-1"></a>                        <span class="at">rho_init =</span> <span class="fl">0.01</span>)</span>
-<span id="cb147-24"><a href="documenting-the-package-and-building.html#cb147-24" tabindex="-1"></a>  obj<span class="sc">$</span>objectives <span class="sc">%&gt;%</span> <span class="fu">plot</span>(<span class="at">type=</span><span class="st">&#39;o&#39;</span>, <span class="at">ylab =</span> <span class="st">&quot;EM objectives&quot;</span>)</span>
-<span id="cb147-25"><a href="documenting-the-package-and-building.html#cb147-25" tabindex="-1"></a>  <a href='package-setup.html#plot_1d'>plot_1d</a>(<span class="at">obj =</span> obj, <span class="at">ylist =</span> ylist, <span class="at">x =</span> x)</span>
-<span id="cb147-26"><a href="documenting-the-package-and-building.html#cb147-26" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="documenting-the-package-and-building.html#cb167-1" tabindex="-1"></a><span class="co">#&#39; Parse command line arguments and assigns the values of them. |args| is meant</span></span>
+<span id="cb167-2"><a href="documenting-the-package-and-building.html#cb167-2" tabindex="-1"></a><span class="co">#&#39; to just be additional command line arguments.</span></span>
+<span id="cb167-3"><a href="documenting-the-package-and-building.html#cb167-3" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb167-4"><a href="documenting-the-package-and-building.html#cb167-4" tabindex="-1"></a><span class="co">#&#39; @param args Argument.</span></span>
+<span id="cb167-5"><a href="documenting-the-package-and-building.html#cb167-5" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb167-6"><a href="documenting-the-package-and-building.html#cb167-6" tabindex="-1"></a><span class="co">#&#39; @return Nothing.</span></span>
+<span id="cb167-7"><a href="documenting-the-package-and-building.html#cb167-7" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb167-8"><a href="documenting-the-package-and-building.html#cb167-8" tabindex="-1"></a><span id='parse_args'>parse_args</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(args, <span class="at">verbose=</span><span class="cn">FALSE</span>){</span>
+<span id="cb167-9"><a href="documenting-the-package-and-building.html#cb167-9" tabindex="-1"></a>  args <span class="ot">=</span> <span class="fu">sapply</span>(args, strsplit, <span class="st">&quot;=&quot;</span>)</span>
+<span id="cb167-10"><a href="documenting-the-package-and-building.html#cb167-10" tabindex="-1"></a>  <span class="fu">print</span>(args)</span>
+<span id="cb167-11"><a href="documenting-the-package-and-building.html#cb167-11" tabindex="-1"></a>  <span class="cf">for</span>(arg <span class="cf">in</span> args){</span>
+<span id="cb167-12"><a href="documenting-the-package-and-building.html#cb167-12" tabindex="-1"></a></span>
+<span id="cb167-13"><a href="documenting-the-package-and-building.html#cb167-13" tabindex="-1"></a>    <span class="do">## Check if the thing is integer</span></span>
+<span id="cb167-14"><a href="documenting-the-package-and-building.html#cb167-14" tabindex="-1"></a>    all_numbers <span class="ot">=</span> <span class="fu">str_detect</span>(arg[<span class="dv">2</span>], <span class="st">&quot;^[:digit:]+$&quot;</span>)</span>
+<span id="cb167-15"><a href="documenting-the-package-and-building.html#cb167-15" tabindex="-1"></a></span>
+<span id="cb167-16"><a href="documenting-the-package-and-building.html#cb167-16" tabindex="-1"></a>    <span class="do">## Assign the variable</span></span>
+<span id="cb167-17"><a href="documenting-the-package-and-building.html#cb167-17" tabindex="-1"></a>    <span class="cf">if</span>(all_numbers){</span>
+<span id="cb167-18"><a href="documenting-the-package-and-building.html#cb167-18" tabindex="-1"></a>      <span class="fu">assign</span>(arg[<span class="dv">1</span>], <span class="fu">as.numeric</span>(arg[<span class="dv">2</span>]), <span class="at">inherits =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb167-19"><a href="documenting-the-package-and-building.html#cb167-19" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb167-20"><a href="documenting-the-package-and-building.html#cb167-20" tabindex="-1"></a>      <span class="fu">assign</span>(arg[<span class="dv">1</span>], arg[<span class="dv">2</span>], <span class="at">inherits =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb167-21"><a href="documenting-the-package-and-building.html#cb167-21" tabindex="-1"></a>    }</span>
+<span id="cb167-22"><a href="documenting-the-package-and-building.html#cb167-22" tabindex="-1"></a></span>
+<span id="cb167-23"><a href="documenting-the-package-and-building.html#cb167-23" tabindex="-1"></a>    <span class="cf">if</span>(verbose){</span>
+<span id="cb167-24"><a href="documenting-the-package-and-building.html#cb167-24" tabindex="-1"></a>      <span class="fu">cat</span>(arg[<span class="dv">1</span>], <span class="st">&quot;takes the value of&quot;</span>, arg[<span class="dv">2</span>],</span>
+<span id="cb167-25"><a href="documenting-the-package-and-building.html#cb167-25" tabindex="-1"></a>          <span class="st">&quot;from command line input&quot;</span>, <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
+<span id="cb167-26"><a href="documenting-the-package-and-building.html#cb167-26" tabindex="-1"></a>    }</span>
+<span id="cb167-27"><a href="documenting-the-package-and-building.html#cb167-27" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">&quot;===============================&quot;</span>)</span>
+<span id="cb167-28"><a href="documenting-the-package-and-building.html#cb167-28" tabindex="-1"></a>  }</span>
+<span id="cb167-29"><a href="documenting-the-package-and-building.html#cb167-29" tabindex="-1"></a>}</span>
+<span id="cb167-30"><a href="documenting-the-package-and-building.html#cb167-30" tabindex="-1"></a></span></code></pre></div>
 <pre><code>## ℹ Updating flowtrend documentation
 ## ℹ Loading flowtrend
 ## ℹ Re-compiling flowtrend (debug build)</code></pre>
@@ -276,6 +293,7 @@ package. It may also be a good idea to check the package from within this file.<
 <pre><code>## Warning: [Mstep_mu_cvxr.R:6] @param requires name and description</code></pre>
 <pre><code>## Warning: [Mstep_mu_cvxr.R:7] @param requires name and description</code></pre>
 <pre><code>## Warning: [Mstep_sigma.R:13] @examples requires a value</code></pre>
+<pre><code>## Warning: [flowmeans_each.R:7] @return requires a value</code></pre>
 <pre><code>## Warning: [flowtrend.R:8] @return requires a value</code></pre>
 <pre><code>## Warning: [flowtrend.R:11] @examples requires a value</code></pre>
 <pre><code>## Warning: [flowtrend_once.R:22] @param requires name and description</code></pre>
@@ -296,6 +314,8 @@ package. It may also be a good idea to check the package from within this file.<
 <pre><code>## Warning: [make_cvscore_filename.R:30] @param requires name and description</code></pre>
 <pre><code>## Warning: [make_cvscore_filename.R:31] @param requires name and description</code></pre>
 <pre><code>## Warning: [make_cvscore_filename.R:42] @param requires name and description</code></pre>
+<pre><code>## Warning: [match_clusters.R:7] @return requires a value</code></pre>
+<pre><code>## Warning: [memlist_to_respmat.R:7] @return requires a value</code></pre>
 <pre><code>## Warning: [objective.R:5] @param requires name and description</code></pre>
 <pre><code>## Warning: [objective.R:6] @param requires name and description</code></pre>
 <pre><code>## Warning: [objective.R:7] @param requires name and description</code></pre>
@@ -313,6 +333,7 @@ package. It may also be a good idea to check the package from within this file.<
 <pre><code>## Warning: [objective.R:19] @param requires name and description</code></pre>
 <pre><code>## Warning: [objective.R:22] @return requires a value</code></pre>
 <pre><code>## Warning: [objective.R:25] @examples requires a value</code></pre>
+<pre><code>## Warning: [overfit_flowmeans.R:7] @return requires a value</code></pre>
 <pre><code>## Warning: [plot_3d.R:11] @return requires a value</code></pre>
 <pre><code>## Writing &#39;NAMESPACE&#39;</code></pre>
 <pre><code>## Warning: Skipping &#39;U_update_Z.Rd&#39;
@@ -331,11 +352,13 @@ package. It may also be a good idea to check the package from within this file.<
 ## Writing &#39;Mstep_sigma.Rd&#39;
 ## Writing &#39;matrix_function_solve_triangular_sylvester_barebonesC2.Rd&#39;
 ## Writing &#39;W_update_fused.Rd&#39;
+## Writing &#39;projCmat.Rd&#39;
 ## Writing &#39;admm_oneclust.Rd&#39;
 ## Writing &#39;aug_lagr.Rd&#39;
 ## Writing &#39;calc_max_lambda.Rd&#39;
 ## Writing &#39;check_converge.Rd&#39;
 ## Writing &#39;check_converge_rel.Rd&#39;
+## Writing &#39;create_destin.Rd&#39;
 ## Writing &#39;cv_aggregate.Rd&#39;
 ## Writing &#39;cv_aggregate_res.Rd&#39;
 ## Writing &#39;cv_flowtrend.Rd&#39;
@@ -346,6 +369,7 @@ package. It may also be a good idea to check the package from within this file.<
 ## Writing &#39;keep_only_best_refit.Rd&#39;
 ## Writing &#39;cv_summary.Rd&#39;
 ## Writing &#39;dt2ylist.Rd&#39;
+## Writing &#39;flowmeans_each.Rd&#39;
 ## Writing &#39;flowtrend-package.Rd&#39;
 ## Writing &#39;flowtrend.Rd&#39;
 ## Writing &#39;flowtrend_once.Rd&#39;
@@ -371,14 +395,22 @@ package. It may also be a good idea to check the package from within this file.<
 ## Writing &#39;make_best_cvscore_filename.Rd&#39;
 ## Writing &#39;make_refit_filename.Rd&#39;
 ## Writing &#39;make_best_refit_filename.Rd&#39;
+## Writing &#39;make_iilist.Rd&#39;
 ## Writing &#39;make_iimat.Rd&#39;
 ## Writing &#39;make_iimat_small.Rd&#39;
+## Writing &#39;match_clusters.Rd&#39;
+## Writing &#39;my_symmetric_kl.Rd&#39;
+## Writing &#39;one_symmetric_kl.Rd&#39;
+## Writing &#39;memlist_to_respmat.Rd&#39;
 ## Writing &#39;my_mfrow.Rd&#39;
 ## Writing &#39;objective.Rd&#39;
 ## Writing &#39;objective_per_cluster.Rd&#39;
 ## Writing &#39;one_job.Rd&#39;
 ## Writing &#39;one_job_refit.Rd&#39;
+## Writing &#39;overfit_flowmeans.Rd&#39;
+## Writing &#39;parse_args.Rd&#39;
 ## Writing &#39;plot_1d.Rd&#39;
+## Writing &#39;plot_1d_flowmeans.Rd&#39;
 ## Writing &#39;plot_2d.Rd&#39;
 ## Writing &#39;plot_3d.Rd&#39;
 ## Writing &#39;plot_from_summary.Rd&#39;
@@ -386,9 +418,12 @@ package. It may also be a good idea to check the package from within this file.<
 ## Writing &#39;predict_flowtrend.Rd&#39;
 ## Writing &#39;print_progress.Rd&#39;
 ## Writing &#39;reorder_clust.Rd&#39;
+## Writing &#39;reorder_flowmeans.Rd&#39;
 ## Writing &#39;reorder_kl.Rd&#39;
+## Writing &#39;soft_rand.Rd&#39;
 ## Writing &#39;softmax.Rd&#39;
-## Writing &#39;symmetric_kl.Rd&#39;</code></pre>
+## Writing &#39;symmetric_kl.Rd&#39;
+## Writing &#39;underfit_flowmeans.Rd&#39;</code></pre>
 
 </div>
             </section>
@@ -396,8 +431,8 @@ package. It may also be a good idea to check the package from within this file.<
           </div>
         </div>
       </div>
-<a href="testing-the-flowtrend-method.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="helpers-for-simulations-in-the-paper.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="helpers-for-simulations.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

@@ -4,33 +4,33 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>6 Objective (data log-likelihood) | Creating the flowtrend R package</title>
-  <meta name="description" content="6 Objective (data log-likelihood) | Creating the flowtrend R package" />
+  <title>3 Objective (data log-likelihood) | Creating the flowtrend R package</title>
+  <meta name="description" content="3 Objective (data log-likelihood) | Creating the flowtrend R package" />
   <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="6 Objective (data log-likelihood) | Creating the flowtrend R package" />
+  <meta property="og:title" content="3 Objective (data log-likelihood) | Creating the flowtrend R package" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="6 Objective (data log-likelihood) | Creating the flowtrend R package" />
+  <meta name="twitter:title" content="3 Objective (data log-likelihood) | Creating the flowtrend R package" />
   
   
   
 
-<meta name="author" content="Sangwon Hyun" />
+<meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien" />
 
 
-<meta name="date" content="2024-04-11" />
+<meta name="date" content="2024-05-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="trend-filtering.html"/>
+<link rel="prev" href="package-setup.html"/>
 <link rel="next" href="initial-parameters-for-em-algorithm.html"/>
 <script src="libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -140,54 +140,66 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
 <li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="package-setup.html"><a href="package-setup.html#plotting-1d-data"><i class="fa fa-check"></i><b>2.1</b> Plotting 1d data</a></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="d-data.html"><a href="d-data.html"><i class="fa fa-check"></i><b>3</b> 2d data</a>
+<li class="chapter" data-level="2.1" data-path="package-setup.html"><a href="package-setup.html#d-data"><i class="fa fa-check"></i><b>2.1</b> 1d data</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="d-data.html"><a href="d-data.html#generating-2d-data"><i class="fa fa-check"></i><b>3.1</b> Generating 2d data</a></li>
-<li class="chapter" data-level="3.2" data-path="d-data.html"><a href="d-data.html#plotting-2d-data"><i class="fa fa-check"></i><b>3.2</b> Plotting 2d data</a></li>
+<li class="chapter" data-level="2.1.1" data-path="package-setup.html"><a href="package-setup.html#generating-1d-data"><i class="fa fa-check"></i><b>2.1.1</b> Generating 1d data</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="d-data-1.html"><a href="d-data-1.html"><i class="fa fa-check"></i><b>4</b> 3d data</a></li>
-<li class="chapter" data-level="5" data-path="trend-filtering.html"><a href="trend-filtering.html"><i class="fa fa-check"></i><b>5</b> Trend filtering</a></li>
-<li class="chapter" data-level="6" data-path="objective-data-log-likelihood.html"><a href="objective-data-log-likelihood.html"><i class="fa fa-check"></i><b>6</b> Objective (data log-likelihood)</a></li>
-<li class="chapter" data-level="7" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html"><i class="fa fa-check"></i><b>7</b> Initial parameters for EM algorithm</a></li>
-<li class="chapter" data-level="8" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>8</b> E step</a></li>
-<li class="chapter" data-level="9" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>9</b> M step</a>
+<li class="chapter" data-level="2.2" data-path="package-setup.html"><a href="package-setup.html#plotting-1d-data"><i class="fa fa-check"></i><b>2.2</b> Plotting 1d data</a></li>
+<li class="chapter" data-level="2.3" data-path="package-setup.html"><a href="package-setup.html#d-data-1"><i class="fa fa-check"></i><b>2.3</b> 2d data</a>
 <ul>
-<li class="chapter" data-level="9.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>9.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
-<li class="chapter" data-level="9.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>9.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
-<li class="chapter" data-level="9.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>9.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
-<li class="chapter" data-level="9.4" data-path="m-step.html"><a href="m-step.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>9.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
-<li class="chapter" data-level="9.5" data-path="m-step.html"><a href="m-step.html#all-rcpp-functions"><i class="fa fa-check"></i><b>9.5</b> All Rcpp functions</a></li>
+<li class="chapter" data-level="2.3.1" data-path="package-setup.html"><a href="package-setup.html#generating-2d-data"><i class="fa fa-check"></i><b>2.3.1</b> Generating 2d data</a></li>
+<li class="chapter" data-level="2.3.2" data-path="package-setup.html"><a href="package-setup.html#plotting-2d-data"><i class="fa fa-check"></i><b>2.3.2</b> Plotting 2d data</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="flowtrend.html"><a href="flowtrend.html"><i class="fa fa-check"></i><b>10</b> flowtrend</a></li>
-<li class="chapter" data-level="11" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>11</b> Reordering clusters</a></li>
-<li class="chapter" data-level="12" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html"><i class="fa fa-check"></i><b>12</b> Tuning the regularization parameters for <code>flowtrend</code></a>
+<li class="chapter" data-level="2.4" data-path="package-setup.html"><a href="package-setup.html#d-data-2"><i class="fa fa-check"></i><b>2.4</b> 3d data</a>
 <ul>
-<li class="chapter" data-level="12.1" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>12.1</b> Predicting and evaluating on new time points</a></li>
-<li class="chapter" data-level="12.2" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>12.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
-<li class="chapter" data-level="12.3" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#define-cv-data-folds"><i class="fa fa-check"></i><b>12.3</b> Define CV data folds</a></li>
-<li class="chapter" data-level="12.4" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-many-single-jobs"><i class="fa fa-check"></i><b>12.4</b> CV = many single jobs</a></li>
-<li class="chapter" data-level="12.5" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#running-cross-validation"><i class="fa fa-check"></i><b>12.5</b> Running cross-validation</a></li>
-<li class="chapter" data-level="12.6" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#summarizing-the-output"><i class="fa fa-check"></i><b>12.6</b> Summarizing the output</a></li>
-<li class="chapter" data-level="12.7" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>12.7</b> CV on your own computer</a></li>
-<li class="chapter" data-level="12.8" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#plotting"><i class="fa fa-check"></i><b>12.8</b> Plotting</a></li>
+<li class="chapter" data-level="2.4.1" data-path="package-setup.html"><a href="package-setup.html#plotting-3d-data"><i class="fa fa-check"></i><b>2.4.1</b> Plotting 3d data</a></li>
+<li class="chapter" data-level="2.4.2" data-path="package-setup.html"><a href="package-setup.html#generating-3d-data"><i class="fa fa-check"></i><b>2.4.2</b> Generating 3d data</a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="se-rule-for-cross-validation.html"><a href="se-rule-for-cross-validation.html"><i class="fa fa-check"></i><b>13</b> 1SE rule for cross validation</a></li>
-<li class="chapter" data-level="14" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>14</b> Testing the flowtrend method</a>
-<ul>
-<li class="chapter" data-level="14.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>14.1</b> 1d example</a></li>
-<li class="chapter" data-level="14.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values"><i class="fa fa-check"></i><b>14.2</b> Testing monotonicity of objective values</a></li>
-<li class="chapter" data-level="14.3" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_2d-example"><i class="fa fa-check"></i><b>14.3</b> 2d example</a></li>
-<li class="chapter" data-level="14.4" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#working-with-binned-dataset"><i class="fa fa-check"></i><b>14.4</b> Working with “binned” dataset</a></li>
-<li class="chapter" data-level="14.5" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#unevenly-spaced-inputs-x"><i class="fa fa-check"></i><b>14.5</b> Unevenly spaced inputs (x)</a></li>
+<li class="chapter" data-level="2.5" data-path="package-setup.html"><a href="package-setup.html#trend-filtering"><i class="fa fa-check"></i><b>2.5</b> Trend filtering</a></li>
 </ul></li>
-<li class="chapter" data-level="15" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>15</b> Documenting the package and building</a></li>
-<li class="chapter" data-level="16" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html"><i class="fa fa-check"></i><b>16</b> Helpers for simulations in the paper</a>
+<li class="chapter" data-level="3" data-path="objective-data-log-likelihood.html"><a href="objective-data-log-likelihood.html"><i class="fa fa-check"></i><b>3</b> Objective (data log-likelihood)</a></li>
+<li class="chapter" data-level="4" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html"><i class="fa fa-check"></i><b>4</b> Initial parameters for EM algorithm</a>
 <ul>
-<li class="chapter" data-level="16.1" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#two-alternative-estimators"><i class="fa fa-check"></i><b>16.1</b> Two alternative estimators</a></li>
-<li class="chapter" data-level="16.2" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>16.2</b> Example using <code><a href='helpers-for-simulations-in-the-paper.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations-in-the-paper.html#overfit_flowmeans'>overfit_flowmeans</a>()</code></a></li>
-<li class="chapter" data-level="16.3" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>16.3</b> Evaluating performance: soft RAND index</a></li>
+<li class="chapter" data-level="4.1" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html#e-step"><i class="fa fa-check"></i><b>4.1</b> E step</a></li>
+<li class="chapter" data-level="4.2" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html#m-step"><i class="fa fa-check"></i><b>4.2</b> M step</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html#m-step-for-pi"><i class="fa fa-check"></i><b>4.2.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
+<li class="chapter" data-level="4.2.2" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html#m-step-for-sigma"><i class="fa fa-check"></i><b>4.2.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
+<li class="chapter" data-level="4.2.3" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html#m-step-for-mu"><i class="fa fa-check"></i><b>4.2.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
+<li class="chapter" data-level="4.2.4" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>4.2.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
+<li class="chapter" data-level="4.2.5" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html#all-rcpp-functions"><i class="fa fa-check"></i><b>4.2.5</b> All Rcpp functions</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="the-main-flowtrend-function.html"><a href="the-main-flowtrend-function.html"><i class="fa fa-check"></i><b>5</b> The main “flowtrend” function</a></li>
+<li class="chapter" data-level="6" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>6</b> Reordering clusters</a></li>
+<li class="chapter" data-level="7" data-path="tuning-lambda.html"><a href="tuning-lambda.html"><i class="fa fa-check"></i><b>7</b> Tuning <span class="math inline">\(\lambda\)</span></a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="tuning-lambda.html"><a href="tuning-lambda.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>7.1</b> Predicting and evaluating on new time points</a></li>
+<li class="chapter" data-level="7.2" data-path="tuning-lambda.html"><a href="tuning-lambda.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>7.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
+<li class="chapter" data-level="7.3" data-path="tuning-lambda.html"><a href="tuning-lambda.html#define-cv-data-folds"><i class="fa fa-check"></i><b>7.3</b> Define CV data folds</a></li>
+<li class="chapter" data-level="7.4" data-path="tuning-lambda.html"><a href="tuning-lambda.html#cv-many-single-jobs"><i class="fa fa-check"></i><b>7.4</b> CV = many single jobs</a></li>
+<li class="chapter" data-level="7.5" data-path="tuning-lambda.html"><a href="tuning-lambda.html#running-cross-validation"><i class="fa fa-check"></i><b>7.5</b> Running cross-validation</a></li>
+<li class="chapter" data-level="7.6" data-path="tuning-lambda.html"><a href="tuning-lambda.html#summarizing-the-output"><i class="fa fa-check"></i><b>7.6</b> Summarizing the output</a></li>
+<li class="chapter" data-level="7.7" data-path="tuning-lambda.html"><a href="tuning-lambda.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>7.7</b> CV on your own computer</a></li>
+<li class="chapter" data-level="7.8" data-path="tuning-lambda.html"><a href="tuning-lambda.html#plotting"><i class="fa fa-check"></i><b>7.8</b> Plotting</a></li>
+<li class="chapter" data-level="7.9" data-path="tuning-lambda.html"><a href="tuning-lambda.html#se-rule-for-cross-validation"><i class="fa fa-check"></i><b>7.9</b> 1SE rule for cross validation</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>8</b> Testing the flowtrend method</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>8.1</b> 1d example</a></li>
+<li class="chapter" data-level="8.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values"><i class="fa fa-check"></i><b>8.2</b> Testing monotonicity of objective values</a></li>
+<li class="chapter" data-level="8.3" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_2d-example"><i class="fa fa-check"></i><b>8.3</b> 2d example</a></li>
+<li class="chapter" data-level="8.4" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#working-with-binned-dataset"><i class="fa fa-check"></i><b>8.4</b> Working with “binned” dataset</a></li>
+<li class="chapter" data-level="8.5" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#unevenly-spaced-inputs-x"><i class="fa fa-check"></i><b>8.5</b> Unevenly spaced inputs (x)</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>9</b> Documenting the package and building</a></li>
+<li class="chapter" data-level="10" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html"><i class="fa fa-check"></i><b>10</b> Helpers for simulations</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#two-alternative-estimators"><i class="fa fa-check"></i><b>10.1</b> Two alternative estimators</a></li>
+<li class="chapter" data-level="10.2" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>10.2</b> Example using <code><a href='helpers-for-simulations.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations.html#overfit_flowmeans'>overfit_flowmeans</a>()</code></a></li>
+<li class="chapter" data-level="10.3" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>10.3</b> Evaluating performance: soft RAND index</a></li>
+<li class="chapter" data-level="10.4" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#generating-pseudo-real-data"><i class="fa fa-check"></i><b>10.4</b> Generating “pseudo-real” data</a></li>
+<li class="chapter" data-level="10.5" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#miscellaneous-helpers"><i class="fa fa-check"></i><b>10.5</b> Miscellaneous helpers</a></li>
 </ul></li>
 </ul>
 
@@ -206,133 +218,133 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="objective-data-log-likelihood" class="section level1 hasAnchor" number="6">
-<h1><span class="header-section-number">6</span> Objective (data log-likelihood)<a href="objective-data-log-likelihood.html#objective-data-log-likelihood" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="objective-data-log-likelihood" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">3</span> Objective (data log-likelihood)<a href="objective-data-log-likelihood.html#objective-data-log-likelihood" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>The function <code><a href='objective-data-log-likelihood.html#loglik_tt'>loglik_tt</a>()</code> calculates the log-likelihood of one cytogram, which is:</p>
 <p><span class="math display">\[\sum_{i=1}^{n_t} C_i^{(t)} \log\left( \sum_{k=1}^K \pi_{itk} \phi(y_i^{(t)};
 \mu_{kt}, \Sigma_k) \right). \]</span></p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="objective-data-log-likelihood.html#cb39-1" tabindex="-1"></a><span class="co">#&#39; Log likelihood for a single time point&#39;s data.</span></span>
-<span id="cb39-2"><a href="objective-data-log-likelihood.html#cb39-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb39-3"><a href="objective-data-log-likelihood.html#cb39-3" tabindex="-1"></a><span class="co">#&#39; @param mu Cluster means.</span></span>
-<span id="cb39-4"><a href="objective-data-log-likelihood.html#cb39-4" tabindex="-1"></a><span class="co">#&#39; @param prob Cluster probabilities.</span></span>
-<span id="cb39-5"><a href="objective-data-log-likelihood.html#cb39-5" tabindex="-1"></a><span class="co">#&#39; @param prob Cluster variances.</span></span>
-<span id="cb39-6"><a href="objective-data-log-likelihood.html#cb39-6" tabindex="-1"></a><span class="co">#&#39; @param ylist Data.</span></span>
-<span id="cb39-7"><a href="objective-data-log-likelihood.html#cb39-7" tabindex="-1"></a><span class="co">#&#39; @param tt Time point.</span></span>
-<span id="cb39-8"><a href="objective-data-log-likelihood.html#cb39-8" tabindex="-1"></a><span id='loglik_tt'>loglik_tt</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, tt, mu, sigma, prob, <span class="at">dimdat =</span> <span class="cn">NULL</span>, <span class="at">countslist =</span> <span class="cn">NULL</span>, numclust){</span>
-<span id="cb39-9"><a href="objective-data-log-likelihood.html#cb39-9" tabindex="-1"></a></span>
-<span id="cb39-10"><a href="objective-data-log-likelihood.html#cb39-10" tabindex="-1"></a>  <span class="do">## One particle&#39;s log likelihood (weighted density)</span></span>
-<span id="cb39-11"><a href="objective-data-log-likelihood.html#cb39-11" tabindex="-1"></a>  weighted.densities <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(iclust){</span>
-<span id="cb39-12"><a href="objective-data-log-likelihood.html#cb39-12" tabindex="-1"></a>    <span class="cf">if</span>(dimdat <span class="sc">==</span> <span class="dv">1</span>){</span>
-<span id="cb39-13"><a href="objective-data-log-likelihood.html#cb39-13" tabindex="-1"></a>      <span class="fu">return</span>(prob[tt,iclust] <span class="sc">*</span> <span class="fu">dnorm</span>(ylist[[tt]], mu[tt,,iclust], <span class="fu">sqrt</span>(sigma[iclust,,])))</span>
-<span id="cb39-14"><a href="objective-data-log-likelihood.html#cb39-14" tabindex="-1"></a>    }</span>
-<span id="cb39-15"><a href="objective-data-log-likelihood.html#cb39-15" tabindex="-1"></a>    <span class="cf">if</span>(dimdat <span class="sc">&gt;</span> <span class="dv">1</span>){</span>
-<span id="cb39-16"><a href="objective-data-log-likelihood.html#cb39-16" tabindex="-1"></a>    <span class="fu">return</span>(prob[tt,iclust] <span class="sc">*</span> <span class="fu">dmvnorm_arma_fast</span>(ylist[[tt]], mu[tt,,iclust], <span class="fu">as.matrix</span>(sigma[iclust,,]), <span class="cn">FALSE</span>))</span>
-<span id="cb39-17"><a href="objective-data-log-likelihood.html#cb39-17" tabindex="-1"></a>    }</span>
-<span id="cb39-18"><a href="objective-data-log-likelihood.html#cb39-18" tabindex="-1"></a>  })</span>
-<span id="cb39-19"><a href="objective-data-log-likelihood.html#cb39-19" tabindex="-1"></a>  nt <span class="ot">=</span> <span class="fu">nrow</span>(ylist[[tt]])</span>
-<span id="cb39-20"><a href="objective-data-log-likelihood.html#cb39-20" tabindex="-1"></a>  counts <span class="ot">=</span> (<span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(countslist)) countslist[[tt]] <span class="cf">else</span> <span class="fu">rep</span>(<span class="dv">1</span>, nt))</span>
-<span id="cb39-21"><a href="objective-data-log-likelihood.html#cb39-21" tabindex="-1"></a></span>
-<span id="cb39-22"><a href="objective-data-log-likelihood.html#cb39-22" tabindex="-1"></a>  sum_wt_dens <span class="ot">=</span> <span class="fu">rowSums</span>(weighted.densities)</span>
-<span id="cb39-23"><a href="objective-data-log-likelihood.html#cb39-23" tabindex="-1"></a>  sum_wt_dens <span class="ot">=</span> sum_wt_dens <span class="sc">%&gt;%</span> <span class="fu">pmax</span>(<span class="fl">1E-100</span>)</span>
-<span id="cb39-24"><a href="objective-data-log-likelihood.html#cb39-24" tabindex="-1"></a></span>
-<span id="cb39-25"><a href="objective-data-log-likelihood.html#cb39-25" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">sum</span>(<span class="fu">log</span>(sum_wt_dens) <span class="sc">*</span> counts))</span>
-<span id="cb39-26"><a href="objective-data-log-likelihood.html#cb39-26" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="objective-data-log-likelihood.html#cb38-1" tabindex="-1"></a><span class="co">#&#39; Log likelihood for a single time point&#39;s data.</span></span>
+<span id="cb38-2"><a href="objective-data-log-likelihood.html#cb38-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb38-3"><a href="objective-data-log-likelihood.html#cb38-3" tabindex="-1"></a><span class="co">#&#39; @param mu Cluster means.</span></span>
+<span id="cb38-4"><a href="objective-data-log-likelihood.html#cb38-4" tabindex="-1"></a><span class="co">#&#39; @param prob Cluster probabilities.</span></span>
+<span id="cb38-5"><a href="objective-data-log-likelihood.html#cb38-5" tabindex="-1"></a><span class="co">#&#39; @param prob Cluster variances.</span></span>
+<span id="cb38-6"><a href="objective-data-log-likelihood.html#cb38-6" tabindex="-1"></a><span class="co">#&#39; @param ylist Data.</span></span>
+<span id="cb38-7"><a href="objective-data-log-likelihood.html#cb38-7" tabindex="-1"></a><span class="co">#&#39; @param tt Time point.</span></span>
+<span id="cb38-8"><a href="objective-data-log-likelihood.html#cb38-8" tabindex="-1"></a><span id='loglik_tt'>loglik_tt</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, tt, mu, sigma, prob, <span class="at">dimdat =</span> <span class="cn">NULL</span>, <span class="at">countslist =</span> <span class="cn">NULL</span>, numclust){</span>
+<span id="cb38-9"><a href="objective-data-log-likelihood.html#cb38-9" tabindex="-1"></a></span>
+<span id="cb38-10"><a href="objective-data-log-likelihood.html#cb38-10" tabindex="-1"></a>  <span class="do">## One particle&#39;s log likelihood (weighted density)</span></span>
+<span id="cb38-11"><a href="objective-data-log-likelihood.html#cb38-11" tabindex="-1"></a>  weighted.densities <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(iclust){</span>
+<span id="cb38-12"><a href="objective-data-log-likelihood.html#cb38-12" tabindex="-1"></a>    <span class="cf">if</span>(dimdat <span class="sc">==</span> <span class="dv">1</span>){</span>
+<span id="cb38-13"><a href="objective-data-log-likelihood.html#cb38-13" tabindex="-1"></a>      <span class="fu">return</span>(prob[tt,iclust] <span class="sc">*</span> <span class="fu">dnorm</span>(ylist[[tt]], mu[tt,,iclust], <span class="fu">sqrt</span>(sigma[iclust,,])))</span>
+<span id="cb38-14"><a href="objective-data-log-likelihood.html#cb38-14" tabindex="-1"></a>    }</span>
+<span id="cb38-15"><a href="objective-data-log-likelihood.html#cb38-15" tabindex="-1"></a>    <span class="cf">if</span>(dimdat <span class="sc">&gt;</span> <span class="dv">1</span>){</span>
+<span id="cb38-16"><a href="objective-data-log-likelihood.html#cb38-16" tabindex="-1"></a>    <span class="fu">return</span>(prob[tt,iclust] <span class="sc">*</span> <span class="fu">dmvnorm_arma_fast</span>(ylist[[tt]], mu[tt,,iclust], <span class="fu">as.matrix</span>(sigma[iclust,,]), <span class="cn">FALSE</span>))</span>
+<span id="cb38-17"><a href="objective-data-log-likelihood.html#cb38-17" tabindex="-1"></a>    }</span>
+<span id="cb38-18"><a href="objective-data-log-likelihood.html#cb38-18" tabindex="-1"></a>  })</span>
+<span id="cb38-19"><a href="objective-data-log-likelihood.html#cb38-19" tabindex="-1"></a>  nt <span class="ot">=</span> <span class="fu">nrow</span>(ylist[[tt]])</span>
+<span id="cb38-20"><a href="objective-data-log-likelihood.html#cb38-20" tabindex="-1"></a>  counts <span class="ot">=</span> (<span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(countslist)) countslist[[tt]] <span class="cf">else</span> <span class="fu">rep</span>(<span class="dv">1</span>, nt))</span>
+<span id="cb38-21"><a href="objective-data-log-likelihood.html#cb38-21" tabindex="-1"></a></span>
+<span id="cb38-22"><a href="objective-data-log-likelihood.html#cb38-22" tabindex="-1"></a>  sum_wt_dens <span class="ot">=</span> <span class="fu">rowSums</span>(weighted.densities)</span>
+<span id="cb38-23"><a href="objective-data-log-likelihood.html#cb38-23" tabindex="-1"></a>  sum_wt_dens <span class="ot">=</span> sum_wt_dens <span class="sc">%&gt;%</span> <span class="fu">pmax</span>(<span class="fl">1E-100</span>)</span>
+<span id="cb38-24"><a href="objective-data-log-likelihood.html#cb38-24" tabindex="-1"></a></span>
+<span id="cb38-25"><a href="objective-data-log-likelihood.html#cb38-25" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">sum</span>(<span class="fu">log</span>(sum_wt_dens) <span class="sc">*</span> counts))</span>
+<span id="cb38-26"><a href="objective-data-log-likelihood.html#cb38-26" tabindex="-1"></a>}</span></code></pre></div>
 <p>Next, here is the function that calculates the entire objective from all
 cytograms, given model parameter <code>mu</code>, <code>prob</code>, and <code>sigma</code>.</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="objective-data-log-likelihood.html#cb40-1" tabindex="-1"></a><span class="co">#&#39; Evaluating the penalized data log-likelihood on all data \code{ylist} given parameters \code{mu}, \code{prob}, and \code{sigma}.</span></span>
-<span id="cb40-2"><a href="objective-data-log-likelihood.html#cb40-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb40-3"><a href="objective-data-log-likelihood.html#cb40-3" tabindex="-1"></a><span class="co">#&#39; @param mu</span></span>
-<span id="cb40-4"><a href="objective-data-log-likelihood.html#cb40-4" tabindex="-1"></a><span class="co">#&#39; @param prob</span></span>
-<span id="cb40-5"><a href="objective-data-log-likelihood.html#cb40-5" tabindex="-1"></a><span class="co">#&#39; @param prob_link</span></span>
-<span id="cb40-6"><a href="objective-data-log-likelihood.html#cb40-6" tabindex="-1"></a><span class="co">#&#39; @param sigma</span></span>
-<span id="cb40-7"><a href="objective-data-log-likelihood.html#cb40-7" tabindex="-1"></a><span class="co">#&#39; @param ylist</span></span>
-<span id="cb40-8"><a href="objective-data-log-likelihood.html#cb40-8" tabindex="-1"></a><span class="co">#&#39; @param Dl</span></span>
-<span id="cb40-9"><a href="objective-data-log-likelihood.html#cb40-9" tabindex="-1"></a><span class="co">#&#39; @param l</span></span>
-<span id="cb40-10"><a href="objective-data-log-likelihood.html#cb40-10" tabindex="-1"></a><span class="co">#&#39; @param lambda</span></span>
-<span id="cb40-11"><a href="objective-data-log-likelihood.html#cb40-11" tabindex="-1"></a><span class="co">#&#39; @param l_prob</span></span>
-<span id="cb40-12"><a href="objective-data-log-likelihood.html#cb40-12" tabindex="-1"></a><span class="co">#&#39; @param Dl_prob</span></span>
-<span id="cb40-13"><a href="objective-data-log-likelihood.html#cb40-13" tabindex="-1"></a><span class="co">#&#39; @param lambda_prob</span></span>
-<span id="cb40-14"><a href="objective-data-log-likelihood.html#cb40-14" tabindex="-1"></a><span class="co">#&#39; @param alpha</span></span>
-<span id="cb40-15"><a href="objective-data-log-likelihood.html#cb40-15" tabindex="-1"></a><span class="co">#&#39; @param beta</span></span>
-<span id="cb40-16"><a href="objective-data-log-likelihood.html#cb40-16" tabindex="-1"></a><span class="co">#&#39; @param denslist_by_clust</span></span>
-<span id="cb40-17"><a href="objective-data-log-likelihood.html#cb40-17" tabindex="-1"></a><span class="co">#&#39; @param countslist</span></span>
-<span id="cb40-18"><a href="objective-data-log-likelihood.html#cb40-18" tabindex="-1"></a><span class="co">#&#39; @param unpenalized if TRUE, return the unpenalized out-of-sample fit.</span></span>
-<span id="cb40-19"><a href="objective-data-log-likelihood.html#cb40-19" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb40-20"><a href="objective-data-log-likelihood.html#cb40-20" tabindex="-1"></a><span class="co">#&#39; @return</span></span>
-<span id="cb40-21"><a href="objective-data-log-likelihood.html#cb40-21" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb40-22"><a href="objective-data-log-likelihood.html#cb40-22" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb40-23"><a href="objective-data-log-likelihood.html#cb40-23" tabindex="-1"></a><span class="co">#&#39; @examples</span></span>
-<span id="cb40-24"><a href="objective-data-log-likelihood.html#cb40-24" tabindex="-1"></a><span id='objective'>objective</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, prob, <span class="at">prob_link =</span> <span class="cn">NULL</span>, sigma,</span>
-<span id="cb40-25"><a href="objective-data-log-likelihood.html#cb40-25" tabindex="-1"></a>                      <span class="do">## TT, N, dimdat, numclust,</span></span>
-<span id="cb40-26"><a href="objective-data-log-likelihood.html#cb40-26" tabindex="-1"></a>                      ylist,</span>
-<span id="cb40-27"><a href="objective-data-log-likelihood.html#cb40-27" tabindex="-1"></a>                      Dlp1, <span class="at">l =</span> <span class="cn">NULL</span>,</span>
-<span id="cb40-28"><a href="objective-data-log-likelihood.html#cb40-28" tabindex="-1"></a>                      <span class="at">lambda =</span> <span class="dv">0</span>,</span>
-<span id="cb40-29"><a href="objective-data-log-likelihood.html#cb40-29" tabindex="-1"></a>                      <span class="at">l_prob =</span> <span class="cn">NULL</span>,</span>
-<span id="cb40-30"><a href="objective-data-log-likelihood.html#cb40-30" tabindex="-1"></a>                      <span class="at">Dlp1_prob =</span> <span class="cn">NULL</span>,</span>
-<span id="cb40-31"><a href="objective-data-log-likelihood.html#cb40-31" tabindex="-1"></a>                      <span class="at">lambda_prob =</span> <span class="dv">0</span>,</span>
-<span id="cb40-32"><a href="objective-data-log-likelihood.html#cb40-32" tabindex="-1"></a>                      <span class="at">alpha =</span> <span class="cn">NULL</span>, <span class="at">beta =</span> <span class="cn">NULL</span>,</span>
-<span id="cb40-33"><a href="objective-data-log-likelihood.html#cb40-33" tabindex="-1"></a>                      <span class="at">denslist_by_clust =</span> <span class="cn">NULL</span>,</span>
-<span id="cb40-34"><a href="objective-data-log-likelihood.html#cb40-34" tabindex="-1"></a>                      <span class="at">countslist =</span> <span class="cn">NULL</span>,</span>
-<span id="cb40-35"><a href="objective-data-log-likelihood.html#cb40-35" tabindex="-1"></a>                      <span class="at">unpenalized =</span> <span class="cn">FALSE</span>){</span>
-<span id="cb40-36"><a href="objective-data-log-likelihood.html#cb40-36" tabindex="-1"></a></span>
-<span id="cb40-37"><a href="objective-data-log-likelihood.html#cb40-37" tabindex="-1"></a>  <span class="do">## Set some important variables</span></span>
-<span id="cb40-38"><a href="objective-data-log-likelihood.html#cb40-38" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="fu">dim</span>(mu)[<span class="dv">1</span>]</span>
-<span id="cb40-39"><a href="objective-data-log-likelihood.html#cb40-39" tabindex="-1"></a>  numclust <span class="ot">=</span> <span class="fu">dim</span>(mu)[<span class="dv">3</span>]</span>
-<span id="cb40-40"><a href="objective-data-log-likelihood.html#cb40-40" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(countslist)){</span>
-<span id="cb40-41"><a href="objective-data-log-likelihood.html#cb40-41" tabindex="-1"></a>    ntlist <span class="ot">=</span> <span class="fu">sapply</span>(ylist, nrow)</span>
-<span id="cb40-42"><a href="objective-data-log-likelihood.html#cb40-42" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb40-43"><a href="objective-data-log-likelihood.html#cb40-43" tabindex="-1"></a>    ntlist <span class="ot">=</span> <span class="fu">sapply</span>(countslist, sum)</span>
-<span id="cb40-44"><a href="objective-data-log-likelihood.html#cb40-44" tabindex="-1"></a>  }</span>
-<span id="cb40-45"><a href="objective-data-log-likelihood.html#cb40-45" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">sum</span>(ntlist)</span>
-<span id="cb40-46"><a href="objective-data-log-likelihood.html#cb40-46" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="fu">ncol</span>(ylist[[<span class="dv">1</span>]])</span>
-<span id="cb40-47"><a href="objective-data-log-likelihood.html#cb40-47" tabindex="-1"></a></span>
-<span id="cb40-48"><a href="objective-data-log-likelihood.html#cb40-48" tabindex="-1"></a>  <span class="do">## Calculate the log likelihood</span></span>
-<span id="cb40-49"><a href="objective-data-log-likelihood.html#cb40-49" tabindex="-1"></a>  loglik <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){</span>
-<span id="cb40-50"><a href="objective-data-log-likelihood.html#cb40-50" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">is.null</span>(denslist_by_clust)){</span>
-<span id="cb40-51"><a href="objective-data-log-likelihood.html#cb40-51" tabindex="-1"></a>      <span class="fu">return</span>(<a href='objective-data-log-likelihood.html#loglik_tt'>loglik_tt</a>(ylist, tt, mu, sigma, prob, countslist, <span class="at">numclust =</span> numclust, <span class="at">dimdat =</span> dimdat))</span>
-<span id="cb40-52"><a href="objective-data-log-likelihood.html#cb40-52" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb40-53"><a href="objective-data-log-likelihood.html#cb40-53" tabindex="-1"></a>      <span class="do">## </span><span class="al">TODO</span><span class="do">: This function doesn&#39;t exist yet, but might need to, since.. speed!</span></span>
-<span id="cb40-54"><a href="objective-data-log-likelihood.html#cb40-54" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">loglik_tt_precalculate</span>(ylist, tt, denslist_by_clust, prob, countslist, numclust))</span>
-<span id="cb40-55"><a href="objective-data-log-likelihood.html#cb40-55" tabindex="-1"></a>    }</span>
-<span id="cb40-56"><a href="objective-data-log-likelihood.html#cb40-56" tabindex="-1"></a>  })</span>
-<span id="cb40-57"><a href="objective-data-log-likelihood.html#cb40-57" tabindex="-1"></a></span>
-<span id="cb40-58"><a href="objective-data-log-likelihood.html#cb40-58" tabindex="-1"></a>  <span class="cf">if</span>(unpenalized){</span>
-<span id="cb40-59"><a href="objective-data-log-likelihood.html#cb40-59" tabindex="-1"></a>    obj <span class="ot">=</span>  <span class="sc">-</span><span class="dv">1</span><span class="sc">/</span>N <span class="sc">*</span> <span class="fu">sum</span>(<span class="fu">unlist</span>(loglik)) </span>
-<span id="cb40-60"><a href="objective-data-log-likelihood.html#cb40-60" tabindex="-1"></a>    <span class="fu">return</span>(obj)</span>
-<span id="cb40-61"><a href="objective-data-log-likelihood.html#cb40-61" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb40-62"><a href="objective-data-log-likelihood.html#cb40-62" tabindex="-1"></a></span>
-<span id="cb40-63"><a href="objective-data-log-likelihood.html#cb40-63" tabindex="-1"></a>    <span class="do">## Return penalized likelihood</span></span>
-<span id="cb40-64"><a href="objective-data-log-likelihood.html#cb40-64" tabindex="-1"></a>    mu.splt <span class="ot">&lt;-</span> <span class="fu">asplit</span>(mu, <span class="at">MARGIN =</span> <span class="dv">3</span>)</span>
-<span id="cb40-65"><a href="objective-data-log-likelihood.html#cb40-65" tabindex="-1"></a>    diff_mu <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">unlist</span>(<span class="fu">lapply</span>(mu.splt, <span class="at">FUN =</span> <span class="cf">function</span>(m) <span class="fu">sum</span>(<span class="fu">abs</span>(Dlp1 <span class="sc">%*%</span> m)))))</span>
-<span id="cb40-66"><a href="objective-data-log-likelihood.html#cb40-66" tabindex="-1"></a>    diff_prob <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">abs</span>(Dlp1_prob <span class="sc">%*%</span> prob_link))</span>
-<span id="cb40-67"><a href="objective-data-log-likelihood.html#cb40-67" tabindex="-1"></a>    obj <span class="ot">=</span>  <span class="sc">-</span><span class="dv">1</span><span class="sc">/</span>N <span class="sc">*</span> <span class="fu">sum</span>(<span class="fu">unlist</span>(loglik)) <span class="sc">+</span> lambda <span class="sc">*</span> diff_mu <span class="sc">+</span> lambda_prob <span class="sc">*</span> diff_prob</span>
-<span id="cb40-68"><a href="objective-data-log-likelihood.html#cb40-68" tabindex="-1"></a>    <span class="fu">return</span>(obj)</span>
-<span id="cb40-69"><a href="objective-data-log-likelihood.html#cb40-69" tabindex="-1"></a>  }</span>
-<span id="cb40-70"><a href="objective-data-log-likelihood.html#cb40-70" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="objective-data-log-likelihood.html#cb39-1" tabindex="-1"></a><span class="co">#&#39; Evaluating the penalized data log-likelihood on all data \code{ylist} given parameters \code{mu}, \code{prob}, and \code{sigma}.</span></span>
+<span id="cb39-2"><a href="objective-data-log-likelihood.html#cb39-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb39-3"><a href="objective-data-log-likelihood.html#cb39-3" tabindex="-1"></a><span class="co">#&#39; @param mu</span></span>
+<span id="cb39-4"><a href="objective-data-log-likelihood.html#cb39-4" tabindex="-1"></a><span class="co">#&#39; @param prob</span></span>
+<span id="cb39-5"><a href="objective-data-log-likelihood.html#cb39-5" tabindex="-1"></a><span class="co">#&#39; @param prob_link</span></span>
+<span id="cb39-6"><a href="objective-data-log-likelihood.html#cb39-6" tabindex="-1"></a><span class="co">#&#39; @param sigma</span></span>
+<span id="cb39-7"><a href="objective-data-log-likelihood.html#cb39-7" tabindex="-1"></a><span class="co">#&#39; @param ylist</span></span>
+<span id="cb39-8"><a href="objective-data-log-likelihood.html#cb39-8" tabindex="-1"></a><span class="co">#&#39; @param Dl</span></span>
+<span id="cb39-9"><a href="objective-data-log-likelihood.html#cb39-9" tabindex="-1"></a><span class="co">#&#39; @param l</span></span>
+<span id="cb39-10"><a href="objective-data-log-likelihood.html#cb39-10" tabindex="-1"></a><span class="co">#&#39; @param lambda</span></span>
+<span id="cb39-11"><a href="objective-data-log-likelihood.html#cb39-11" tabindex="-1"></a><span class="co">#&#39; @param l_prob</span></span>
+<span id="cb39-12"><a href="objective-data-log-likelihood.html#cb39-12" tabindex="-1"></a><span class="co">#&#39; @param Dl_prob</span></span>
+<span id="cb39-13"><a href="objective-data-log-likelihood.html#cb39-13" tabindex="-1"></a><span class="co">#&#39; @param lambda_prob</span></span>
+<span id="cb39-14"><a href="objective-data-log-likelihood.html#cb39-14" tabindex="-1"></a><span class="co">#&#39; @param alpha</span></span>
+<span id="cb39-15"><a href="objective-data-log-likelihood.html#cb39-15" tabindex="-1"></a><span class="co">#&#39; @param beta</span></span>
+<span id="cb39-16"><a href="objective-data-log-likelihood.html#cb39-16" tabindex="-1"></a><span class="co">#&#39; @param denslist_by_clust</span></span>
+<span id="cb39-17"><a href="objective-data-log-likelihood.html#cb39-17" tabindex="-1"></a><span class="co">#&#39; @param countslist</span></span>
+<span id="cb39-18"><a href="objective-data-log-likelihood.html#cb39-18" tabindex="-1"></a><span class="co">#&#39; @param unpenalized if TRUE, return the unpenalized out-of-sample fit.</span></span>
+<span id="cb39-19"><a href="objective-data-log-likelihood.html#cb39-19" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb39-20"><a href="objective-data-log-likelihood.html#cb39-20" tabindex="-1"></a><span class="co">#&#39; @return</span></span>
+<span id="cb39-21"><a href="objective-data-log-likelihood.html#cb39-21" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb39-22"><a href="objective-data-log-likelihood.html#cb39-22" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb39-23"><a href="objective-data-log-likelihood.html#cb39-23" tabindex="-1"></a><span class="co">#&#39; @examples</span></span>
+<span id="cb39-24"><a href="objective-data-log-likelihood.html#cb39-24" tabindex="-1"></a><span id='objective'>objective</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, prob, <span class="at">prob_link =</span> <span class="cn">NULL</span>, sigma,</span>
+<span id="cb39-25"><a href="objective-data-log-likelihood.html#cb39-25" tabindex="-1"></a>                      <span class="do">## TT, N, dimdat, numclust,</span></span>
+<span id="cb39-26"><a href="objective-data-log-likelihood.html#cb39-26" tabindex="-1"></a>                      ylist,</span>
+<span id="cb39-27"><a href="objective-data-log-likelihood.html#cb39-27" tabindex="-1"></a>                      Dlp1, <span class="at">l =</span> <span class="cn">NULL</span>,</span>
+<span id="cb39-28"><a href="objective-data-log-likelihood.html#cb39-28" tabindex="-1"></a>                      <span class="at">lambda =</span> <span class="dv">0</span>,</span>
+<span id="cb39-29"><a href="objective-data-log-likelihood.html#cb39-29" tabindex="-1"></a>                      <span class="at">l_prob =</span> <span class="cn">NULL</span>,</span>
+<span id="cb39-30"><a href="objective-data-log-likelihood.html#cb39-30" tabindex="-1"></a>                      <span class="at">Dlp1_prob =</span> <span class="cn">NULL</span>,</span>
+<span id="cb39-31"><a href="objective-data-log-likelihood.html#cb39-31" tabindex="-1"></a>                      <span class="at">lambda_prob =</span> <span class="dv">0</span>,</span>
+<span id="cb39-32"><a href="objective-data-log-likelihood.html#cb39-32" tabindex="-1"></a>                      <span class="at">alpha =</span> <span class="cn">NULL</span>, <span class="at">beta =</span> <span class="cn">NULL</span>,</span>
+<span id="cb39-33"><a href="objective-data-log-likelihood.html#cb39-33" tabindex="-1"></a>                      <span class="at">denslist_by_clust =</span> <span class="cn">NULL</span>,</span>
+<span id="cb39-34"><a href="objective-data-log-likelihood.html#cb39-34" tabindex="-1"></a>                      <span class="at">countslist =</span> <span class="cn">NULL</span>,</span>
+<span id="cb39-35"><a href="objective-data-log-likelihood.html#cb39-35" tabindex="-1"></a>                      <span class="at">unpenalized =</span> <span class="cn">FALSE</span>){</span>
+<span id="cb39-36"><a href="objective-data-log-likelihood.html#cb39-36" tabindex="-1"></a></span>
+<span id="cb39-37"><a href="objective-data-log-likelihood.html#cb39-37" tabindex="-1"></a>  <span class="do">## Set some important variables</span></span>
+<span id="cb39-38"><a href="objective-data-log-likelihood.html#cb39-38" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="fu">dim</span>(mu)[<span class="dv">1</span>]</span>
+<span id="cb39-39"><a href="objective-data-log-likelihood.html#cb39-39" tabindex="-1"></a>  numclust <span class="ot">=</span> <span class="fu">dim</span>(mu)[<span class="dv">3</span>]</span>
+<span id="cb39-40"><a href="objective-data-log-likelihood.html#cb39-40" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(countslist)){</span>
+<span id="cb39-41"><a href="objective-data-log-likelihood.html#cb39-41" tabindex="-1"></a>    ntlist <span class="ot">=</span> <span class="fu">sapply</span>(ylist, nrow)</span>
+<span id="cb39-42"><a href="objective-data-log-likelihood.html#cb39-42" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb39-43"><a href="objective-data-log-likelihood.html#cb39-43" tabindex="-1"></a>    ntlist <span class="ot">=</span> <span class="fu">sapply</span>(countslist, sum)</span>
+<span id="cb39-44"><a href="objective-data-log-likelihood.html#cb39-44" tabindex="-1"></a>  }</span>
+<span id="cb39-45"><a href="objective-data-log-likelihood.html#cb39-45" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">sum</span>(ntlist)</span>
+<span id="cb39-46"><a href="objective-data-log-likelihood.html#cb39-46" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="fu">ncol</span>(ylist[[<span class="dv">1</span>]])</span>
+<span id="cb39-47"><a href="objective-data-log-likelihood.html#cb39-47" tabindex="-1"></a></span>
+<span id="cb39-48"><a href="objective-data-log-likelihood.html#cb39-48" tabindex="-1"></a>  <span class="do">## Calculate the log likelihood</span></span>
+<span id="cb39-49"><a href="objective-data-log-likelihood.html#cb39-49" tabindex="-1"></a>  loglik <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="cf">function</span>(tt){</span>
+<span id="cb39-50"><a href="objective-data-log-likelihood.html#cb39-50" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">is.null</span>(denslist_by_clust)){</span>
+<span id="cb39-51"><a href="objective-data-log-likelihood.html#cb39-51" tabindex="-1"></a>      <span class="fu">return</span>(<a href='objective-data-log-likelihood.html#loglik_tt'>loglik_tt</a>(ylist, tt, mu, sigma, prob, countslist, <span class="at">numclust =</span> numclust, <span class="at">dimdat =</span> dimdat))</span>
+<span id="cb39-52"><a href="objective-data-log-likelihood.html#cb39-52" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb39-53"><a href="objective-data-log-likelihood.html#cb39-53" tabindex="-1"></a>      <span class="do">## </span><span class="al">TODO</span><span class="do">: This function doesn&#39;t exist yet, but might need to, since.. speed!</span></span>
+<span id="cb39-54"><a href="objective-data-log-likelihood.html#cb39-54" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">loglik_tt_precalculate</span>(ylist, tt, denslist_by_clust, prob, countslist, numclust))</span>
+<span id="cb39-55"><a href="objective-data-log-likelihood.html#cb39-55" tabindex="-1"></a>    }</span>
+<span id="cb39-56"><a href="objective-data-log-likelihood.html#cb39-56" tabindex="-1"></a>  })</span>
+<span id="cb39-57"><a href="objective-data-log-likelihood.html#cb39-57" tabindex="-1"></a></span>
+<span id="cb39-58"><a href="objective-data-log-likelihood.html#cb39-58" tabindex="-1"></a>  <span class="cf">if</span>(unpenalized){</span>
+<span id="cb39-59"><a href="objective-data-log-likelihood.html#cb39-59" tabindex="-1"></a>    obj <span class="ot">=</span>  <span class="sc">-</span><span class="dv">1</span><span class="sc">/</span>N <span class="sc">*</span> <span class="fu">sum</span>(<span class="fu">unlist</span>(loglik)) </span>
+<span id="cb39-60"><a href="objective-data-log-likelihood.html#cb39-60" tabindex="-1"></a>    <span class="fu">return</span>(obj)</span>
+<span id="cb39-61"><a href="objective-data-log-likelihood.html#cb39-61" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb39-62"><a href="objective-data-log-likelihood.html#cb39-62" tabindex="-1"></a></span>
+<span id="cb39-63"><a href="objective-data-log-likelihood.html#cb39-63" tabindex="-1"></a>    <span class="do">## Return penalized likelihood</span></span>
+<span id="cb39-64"><a href="objective-data-log-likelihood.html#cb39-64" tabindex="-1"></a>    mu.splt <span class="ot">&lt;-</span> <span class="fu">asplit</span>(mu, <span class="at">MARGIN =</span> <span class="dv">2</span>) <span class="do">## This was 3, which I think produces the same result.</span></span>
+<span id="cb39-65"><a href="objective-data-log-likelihood.html#cb39-65" tabindex="-1"></a>    diff_mu <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">unlist</span>(<span class="fu">lapply</span>(mu.splt, <span class="at">FUN =</span> <span class="cf">function</span>(m) <span class="fu">sum</span>(<span class="fu">abs</span>(Dlp1 <span class="sc">%*%</span> m)))))</span>
+<span id="cb39-66"><a href="objective-data-log-likelihood.html#cb39-66" tabindex="-1"></a>    diff_prob <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">abs</span>(Dlp1_prob <span class="sc">%*%</span> prob_link))</span>
+<span id="cb39-67"><a href="objective-data-log-likelihood.html#cb39-67" tabindex="-1"></a>    obj <span class="ot">=</span>  <span class="sc">-</span><span class="dv">1</span><span class="sc">/</span>N <span class="sc">*</span> <span class="fu">sum</span>(<span class="fu">unlist</span>(loglik)) <span class="sc">+</span> lambda <span class="sc">*</span> diff_mu <span class="sc">+</span> lambda_prob <span class="sc">*</span> diff_prob</span>
+<span id="cb39-68"><a href="objective-data-log-likelihood.html#cb39-68" tabindex="-1"></a>    <span class="fu">return</span>(obj)</span>
+<span id="cb39-69"><a href="objective-data-log-likelihood.html#cb39-69" tabindex="-1"></a>  }</span>
+<span id="cb39-70"><a href="objective-data-log-likelihood.html#cb39-70" tabindex="-1"></a>}</span></code></pre></div>
 <p>Here’s a helper to check numerical convergence of the EM algorithm.</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="objective-data-log-likelihood.html#cb41-1" tabindex="-1"></a><span class="co">#&#39; Checks numerical improvement in objective value. Returns TRUE if |old-new|/|old| is smaller than tol.</span></span>
-<span id="cb41-2"><a href="objective-data-log-likelihood.html#cb41-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb41-3"><a href="objective-data-log-likelihood.html#cb41-3" tabindex="-1"></a><span class="co">#&#39; @param old Objective value from previous iteration.</span></span>
-<span id="cb41-4"><a href="objective-data-log-likelihood.html#cb41-4" tabindex="-1"></a><span class="co">#&#39; @param new Objective value from current iteration.</span></span>
-<span id="cb41-5"><a href="objective-data-log-likelihood.html#cb41-5" tabindex="-1"></a><span class="co">#&#39; @param tol Numerical tolerance.</span></span>
-<span id="cb41-6"><a href="objective-data-log-likelihood.html#cb41-6" tabindex="-1"></a><span id='check_converge_rel'>check_converge_rel</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(old, new, <span class="at">tol=</span><span class="fl">1E-6</span>){</span>
-<span id="cb41-7"><a href="objective-data-log-likelihood.html#cb41-7" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">abs</span>((old<span class="sc">-</span>new)<span class="sc">/</span>old) <span class="sc">&lt;</span> tol )</span>
-<span id="cb41-8"><a href="objective-data-log-likelihood.html#cb41-8" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="objective-data-log-likelihood.html#cb40-1" tabindex="-1"></a><span class="co">#&#39; Checks numerical improvement in objective value. Returns TRUE if |old-new|/|old| is smaller than tol.</span></span>
+<span id="cb40-2"><a href="objective-data-log-likelihood.html#cb40-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb40-3"><a href="objective-data-log-likelihood.html#cb40-3" tabindex="-1"></a><span class="co">#&#39; @param old Objective value from previous iteration.</span></span>
+<span id="cb40-4"><a href="objective-data-log-likelihood.html#cb40-4" tabindex="-1"></a><span class="co">#&#39; @param new Objective value from current iteration.</span></span>
+<span id="cb40-5"><a href="objective-data-log-likelihood.html#cb40-5" tabindex="-1"></a><span class="co">#&#39; @param tol Numerical tolerance.</span></span>
+<span id="cb40-6"><a href="objective-data-log-likelihood.html#cb40-6" tabindex="-1"></a><span id='check_converge_rel'>check_converge_rel</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(old, new, <span class="at">tol=</span><span class="fl">1E-6</span>){</span>
+<span id="cb40-7"><a href="objective-data-log-likelihood.html#cb40-7" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">abs</span>((old<span class="sc">-</span>new)<span class="sc">/</span>old) <span class="sc">&lt;</span> tol )</span>
+<span id="cb40-8"><a href="objective-data-log-likelihood.html#cb40-8" tabindex="-1"></a>}</span></code></pre></div>
 <p>Here’s also a helper function to do the softmax-ing of <span class="math inline">\(\alpha_t \in
 \mathbb{R}^K\)</span>.</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="objective-data-log-likelihood.html#cb42-1" tabindex="-1"></a><span class="co">#&#39;  Softmax function.</span></span>
-<span id="cb42-2"><a href="objective-data-log-likelihood.html#cb42-2" tabindex="-1"></a><span class="co">#&#39; </span></span>
-<span id="cb42-3"><a href="objective-data-log-likelihood.html#cb42-3" tabindex="-1"></a><span class="co">#&#39; @param prob_link alpha, which is a (T x K) matrix.</span></span>
-<span id="cb42-4"><a href="objective-data-log-likelihood.html#cb42-4" tabindex="-1"></a><span class="co">#&#39; </span></span>
-<span id="cb42-5"><a href="objective-data-log-likelihood.html#cb42-5" tabindex="-1"></a><span class="co">#&#39; @return exp(alpha)/rowSum(exp(alpha)). A (T x K) matrix.</span></span>
-<span id="cb42-6"><a href="objective-data-log-likelihood.html#cb42-6" tabindex="-1"></a><span id='softmax'>softmax</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(prob_link){</span>
-<span id="cb42-7"><a href="objective-data-log-likelihood.html#cb42-7" tabindex="-1"></a>  exp_prob_link <span class="ot">=</span> <span class="fu">exp</span>(prob_link)</span>
-<span id="cb42-8"><a href="objective-data-log-likelihood.html#cb42-8" tabindex="-1"></a>  prob <span class="ot">=</span> exp_prob_link <span class="sc">/</span> <span class="fu">rowSums</span>(exp_prob_link)</span>
-<span id="cb42-9"><a href="objective-data-log-likelihood.html#cb42-9" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="objective-data-log-likelihood.html#cb43-1" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;Test for softmax&quot;</span>,{</span>
-<span id="cb43-2"><a href="objective-data-log-likelihood.html#cb43-2" tabindex="-1"></a>  link <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">100</span>, <span class="at">min =</span> <span class="sc">-</span><span class="dv">10</span>, <span class="at">max =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> <span class="dv">10</span>, <span class="at">ncol =</span> <span class="dv">10</span>)</span>
-<span id="cb43-3"><a href="objective-data-log-likelihood.html#cb43-3" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_true</span>(<span class="fu">all</span>(<span class="fu">abs</span>(<span class="fu">rowSums</span>(<a href='objective-data-log-likelihood.html#softmax'>softmax</a>(link)) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">&lt;</span> <span class="fl">1E-13</span>))</span>
-<span id="cb43-4"><a href="objective-data-log-likelihood.html#cb43-4" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="objective-data-log-likelihood.html#cb41-1" tabindex="-1"></a><span class="co">#&#39;  Softmax function.</span></span>
+<span id="cb41-2"><a href="objective-data-log-likelihood.html#cb41-2" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb41-3"><a href="objective-data-log-likelihood.html#cb41-3" tabindex="-1"></a><span class="co">#&#39; @param prob_link alpha, which is a (T x K) matrix.</span></span>
+<span id="cb41-4"><a href="objective-data-log-likelihood.html#cb41-4" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb41-5"><a href="objective-data-log-likelihood.html#cb41-5" tabindex="-1"></a><span class="co">#&#39; @return exp(alpha)/rowSum(exp(alpha)). A (T x K) matrix.</span></span>
+<span id="cb41-6"><a href="objective-data-log-likelihood.html#cb41-6" tabindex="-1"></a><span id='softmax'>softmax</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(prob_link){</span>
+<span id="cb41-7"><a href="objective-data-log-likelihood.html#cb41-7" tabindex="-1"></a>  exp_prob_link <span class="ot">=</span> <span class="fu">exp</span>(prob_link)</span>
+<span id="cb41-8"><a href="objective-data-log-likelihood.html#cb41-8" tabindex="-1"></a>  prob <span class="ot">=</span> exp_prob_link <span class="sc">/</span> <span class="fu">rowSums</span>(exp_prob_link)</span>
+<span id="cb41-9"><a href="objective-data-log-likelihood.html#cb41-9" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="objective-data-log-likelihood.html#cb42-1" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;Test for softmax&quot;</span>,{</span>
+<span id="cb42-2"><a href="objective-data-log-likelihood.html#cb42-2" tabindex="-1"></a>  link <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">100</span>, <span class="at">min =</span> <span class="sc">-</span><span class="dv">10</span>, <span class="at">max =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> <span class="dv">10</span>, <span class="at">ncol =</span> <span class="dv">10</span>)</span>
+<span id="cb42-3"><a href="objective-data-log-likelihood.html#cb42-3" tabindex="-1"></a>  testthat<span class="sc">::</span><span class="fu">expect_true</span>(<span class="fu">all</span>(<span class="fu">abs</span>(<span class="fu">rowSums</span>(<a href='objective-data-log-likelihood.html#softmax'>softmax</a>(link)) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">&lt;</span> <span class="fl">1E-13</span>))</span>
+<span id="cb42-4"><a href="objective-data-log-likelihood.html#cb42-4" tabindex="-1"></a>})</span></code></pre></div>
 <pre><code>## Test passed</code></pre>
 </div>
             </section>
@@ -340,7 +352,7 @@ cytograms, given model parameter <code>mu</code>, <code>prob</code>, and <code>s
           </div>
         </div>
       </div>
-<a href="trend-filtering.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="package-setup.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="initial-parameters-for-em-algorithm.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
