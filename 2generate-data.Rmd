@@ -149,15 +149,17 @@ in a single plot. `plot_1d()` lets you do this.
 ```{r plot_1d}
 #' Makes 1d plot of data and model
 #'
-#' @param ylist Data.
-#' @param obj flowtrend object. Defaults to NULL.
-#' @param x time points. Defaults to NULL.
-#' @param add_point if TRUE, add the means as points.
-#' @param idim if provided, take the idim.
+#' @param ylist Data. A list of (|nt| by |dimdat|) matrices
+#' @param obj A flowtrend (or flowmix) object. Defaults to NULL.
+#' @param x Time points. Defaults to NULL.
+#' @param idim If provided, plots the |idim|'th dimension of the data (only particles).
+#' @param alpha Optional; between 0 and 1, how transparent to plot the data
+#'   points.
+#' @param bin If TRUE, the data is binned.
 #'
 #' @return ggplot object with data, and optionally, a flowtrend model overlaid.
 #' @export
-plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALSE, idim = NULL, alpha = .1){
+plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, idim = NULL, alpha = .1, bin = FALSE){
 
   ## Basic checks
   if(!is.null(x)){
@@ -166,7 +168,6 @@ plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALS
   } else {
     times = 1:length(ylist)
   }
-
 
   ## If more than 2d data is provided, take the idim'th info only.
   dimdat = ncol(ylist[[1]])
@@ -222,11 +223,6 @@ plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALS
     gg = gg + geom_path(aes(x = time, y = mean, linewidth = prob, group = cluster, color = cluster),
                         data = est_long,
                         lineend = "round", linejoin="mitre")
-    if(add_point){
-      gg = gg + geom_line(aes(x = time, y = mean, linewidth = prob, group = cluster),
-                          data = est_long, size = rel(1),
-                          col = 'black')
-    }
   
     ## TODO: make it ignore the missing values at the gaps; currently this is not coded as NAs.
   
@@ -399,8 +395,8 @@ Here's a simpler plotting function for 2d data at the particle level.
 ```{r}
 #' Simple plotter for 2d particle data.
 #' 
-#' @param ylist data
-#' @param countslist data
+#' @param ylist Data. A list of (|nt| by |dimdat|) matrices
+#' @param countslist Count data.
 #' @param obj flowtrend (or flowmix) object.
 #' @param time Out of 1 through \code{lengthy(list)}, which time point to plot.
 #' 
@@ -505,8 +501,6 @@ plot_2d(datobj$ylist, tt=1)
 
 ## 3d data
 
-
-
 Given 3d data `ylist` and an estimated model object `obj`, we want to plot both
 in three two-dimensional plot. `plot_3d()` lets you do this.
 
@@ -529,8 +523,9 @@ arguments and argument order))
 
 ```{r}
 #' Makes three 2-dimensional plots of the 3d data
-#' @param ylist data
-#' @param countslist data
+#' 
+#' @param ylist Data. A list of (|nt| by |dimdat|) matrices
+#' @param countslist Count data.
 #' @param obj flowmix or flowtrend object
 #' @param tt Time point
 #' @param return_list_of_plots If TRUE, return the list of three plots instead

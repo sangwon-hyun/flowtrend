@@ -1,16 +1,20 @@
 # Helpers for simulations
 
-There are two alternatives to consider when estimating mixture models in a
-series of cytograms. 
+There are two alternatives to consider when gating (classifying) points in a
+series of cytograms.
 
-+ The first is to estimate the mixture models to be identical across all time
-  points. This is equivalent to collapsing all cytograms into one and estimating
-  a single Gaussian mixture model on it.
-+ The second alternative is to estimate separate Gaussian mixture models on each
-  cytogram, then connect the cytograms as much as one can, e.g., by finding
-  similar clusters across time points and combining them.
++ The first is to estimate the clusterings to be identical across all time
+  points. This is equivalent to collapsing all cytograms into one and clustering
+  it.
++ The second alternative is to estimate clusters in each cytogram, then connect
+  the cytograms as much as one can, e.g., by finding similar clusters across
+  time points and combining them.
 
-## Two alternative estimators
+We use the flowmeans method
+(https://www.bioconductor.org/packages/release/bioc/html/flowMeans.html) to
+to cluster the cytograms in this section.
+
+## Two alternative clusterings
 
 We will call the two alternatives `underfit_flowmean()` and `overfit_flowmean()`.
 
@@ -285,7 +289,9 @@ one_symmetric_kl <- function(mu1, mu2, sigma1, sigma2){
 ```
 
 
-## Example using `underfit_flowmeans()` and `overfit_flowmeans()`
+## Example using other cluster algorithms
+
+We will see some examples of how to use `underfit_flowmeans()` and `overfit_flowmeans()`.
 
 ```{r, eval = FALSE, fig.width = 8, fig.height = 8}
 ## Generate data
@@ -638,6 +644,7 @@ parse_args <- function(args, verbose=FALSE){
 
 
 ```
+
 
 
 

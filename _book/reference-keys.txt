@@ -31,7 +31,6 @@ running-cross-validation
 summarizing-the-output
 cv-on-your-own-computer
 plotting
-se-rule-for-cross-validation
 testing-the-flowtrend-method
 id_1d-example
 testing-monotonicity-of-objective-values
@@ -39,8 +38,8 @@ id_2d-example
 working-with-binned-dataset
 unevenly-spaced-inputs-x
 helpers-for-simulations
-two-alternative-estimators
-example-using-underfit_flowmeans-and-overfit_flowmeans
+two-alternative-clusterings
+example-using-other-cluster-algorithms
 evaluating-performance-soft-rand-index
 generating-pseudo-real-data
 miscellaneous-helpers

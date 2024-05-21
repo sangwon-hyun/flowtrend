@@ -9,15 +9,16 @@
 plot_from_summary <- function(destin){
   ## Load the results 
   cvres = readRDS(file.path(destin, paste0("summary.RDS")))
-  load(file.path(destin, paste0("meta.Rdata")), verbose=FALSE)
-  datobj = readRDS(file.path(destin, paste0("datobj.RDS")))
+  load(file.path(destin, paste0("meta.Rdata")), verbose=TRUE)
+##  datobj = readRDS(file.path(destin, paste0("datobj.RDS")))
   if(file.exists(file.path(destin, "dt_model.RDS"))){
     dt.model = readRDS(file.path(destin, paste0("dt_model.RDS")))
   } else {
     dt.model = NULL
   }
-  ylist = datobj$ybin_list %>% lapply(cbind)
-  countslist = datobj$counts_list
+
+  ##ylist = datobj$ybin_list %>% lapply(cbind)
+  ##countslist = datobj$counts_list
   
   ## rows are prob, cols are means
   pdf(file.path(destin, "cvscoremat.pdf"), width = 6, height = 6)
@@ -54,6 +55,7 @@ plot_from_summary <- function(destin){
   ## Reorder clusters
   cvres$bestres = reorder_clust(cvres$bestres)
   for(ii in 1:n_lam_prob){
+    print(ii)
     for(jj in 1:n_lam_mean){
       ## Reorder the cluster labels of the fitted ("best") models.
       reordered_obj = reorder_kl(newres = cvres$bestreslist[[paste0(ii, "-", jj)]],
@@ -63,10 +65,17 @@ plot_from_summary <- function(destin){
     }
   }
   
+  ## Dependign on the dimension of the data, make a different plot
+  ## if(obj$dimdat == 1) idim = 1
+  ##  if(obj$dimdat > 1) idim = 1
+  for(idim in 1:3){
+    print(idim)
+
   ## Make plots of the "best" model
   g1 = flowtrend::plot_1d(ylist = ylist,
                           countslist = countslist,
-                          obj=cvres$bestres)
+                          obj=cvres$bestres,
+                          idim = idim)
   if(!is.null(dt.model)){
     g1 = g1 + geom_line(aes(x = time, y = mean, group = cluster),
                         data = dt.model,## %>% subset(time %ni% held_out),
@@ -79,12 +88,16 @@ plot_from_summary <- function(destin){
                         data=dt.model  %>% select(time, cluster, prob) %>% unique())
   }
   do.call(ggpubr::ggarrange, c(list(g1, g2), ncol = 1, nrow = 2)) -> g
-  g %>% ggsave(file = file.path(destin, paste0("mean-and-prob.pdf")), width = 10, height=7)
+  g %>% ggsave(file = file.path(destin, paste0("mean-and-prob-idim-", idim, ".pdf")), width = 10, height=7)
+  }
   
   
   ## Make all model plots
   lambda_means = colnames(cvres$cvscore.mat) %>% as.numeric()
   lambda_probs = rownames(cvres$cvscore.mat) %>% as.numeric()
+
+  for(idim in 1:3){
+    
   kk = 1
   glist = list()
   for(ii in 1:n_lam_prob){
@@ -101,7 +114,7 @@ plot_from_summary <- function(destin){
       })
 
       ## Visualize
-      g = flowtrend::plot_1d(ylist = ylist, countslist = countslist, obj = cvres$bestreslist[[paste0(ii, "-", jj)]])
+      g = flowtrend::plot_1d(ylist = ylist, countslist = countslist, obj = cvres$bestreslist[[paste0(ii, "-", jj)]], idim = idim)
       g = g + ggtitle(paste0("lam=", signif(lambda_means[[jj]],3), ", lam_prob=", signif(lambda_probs[[ii]], 3)))
       g = g + theme(legend.position="none")
 
@@ -122,8 +135,9 @@ plot_from_summary <- function(destin){
   }
   all_bestres = do.call(ggpubr::ggarrange, c(glist, ncol = n_lam_mean, nrow = n_lam_prob))
   all_bestres %>%
-    ggsave(file = file.path(destin, paste0("all_bestres.pdf")),
+    ggsave(file = file.path(destin, paste0("all_bestres-idim-", idim, ".pdf")),
            width = 40, height=30)
+  }
   
   ##  All probabilities
   lambda_means = colnames(cvres$cvscore.mat) %>% as.numeric()

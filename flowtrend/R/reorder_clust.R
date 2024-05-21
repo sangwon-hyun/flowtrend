@@ -26,11 +26,12 @@ reorder_clust <- function(res, ord = NULL){
   res$prob = res$prob[,ord, drop=FALSE]
 
   ## Reorder the responsibilities
-  if('resp' %in% res){
-    resp_temp = list()
-    for(tt in 1:TT){
-      rep_temp[[tt]] = res$resp[[tt]][,ord]
+  ## if('resp' %in% res){
+    resp_temp = res$resp
+    for(tt in 1:res$TT){
+      resp_temp[[tt]] = res$resp[[tt]][,ord]
     }
-  }
+  ## }
+  res$resp = resp_temp
   return(res)
 }

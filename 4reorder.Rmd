@@ -177,12 +177,13 @@ reorder_clust <- function(res, ord = NULL){
   res$prob = res$prob[,ord, drop=FALSE]
 
   ## Reorder the responsibilities
-  if('resp' %in% res){
-    resp_temp = list()
-    for(tt in 1:TT){
-      rep_temp[[tt]] = res$resp[[tt]][,ord]
+  ## if('resp' %in% res){
+    resp_temp = res$resp
+    for(tt in 1:res$TT){
+      resp_temp[[tt]] = res$resp[[tt]][,ord]
     }
-  }
+  ## }
+  res$resp = resp_temp
   return(res)
 }
 ```
@@ -214,7 +215,7 @@ objlist <- lapply(1:2, function(isim){
 newres = objlist[[1]]
 origres = objlist[[2]]
 newres_reordered = reorder_kl(newres, origres, ylist, fac = 100, verbose = FALSE)
-plot_1d(ylist, newres, x = x, add_point = FALSE) + ggtitle("before reordering, model 1")
-plot_1d(ylist, origres, x = x, add_point = FALSE) + ggtitle("model 2")
-plot_1d(ylist, newres_reordered, x = x, add_point = FALSE) + ggtitle("reordered model 1")
+plot_1d(ylist, newres, x = x) + ggtitle("before reordering, model 1")
+plot_1d(ylist, origres, x = x) + ggtitle("model 2")
+plot_1d(ylist, newres_reordered, x = x) + ggtitle("reordered model 1")
 ```

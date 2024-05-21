@@ -7,13 +7,13 @@
 plot_3d(ylist, obj = NULL, tt, countslist = NULL, return_list_of_plots = FALSE)
 }
 \arguments{
-\item{ylist}{data}
+\item{ylist}{Data. A list of (|nt| by |dimdat|) matrices}
 
 \item{obj}{flowmix or flowtrend object}
 
 \item{tt}{Time point}
 
-\item{countslist}{data}
+\item{countslist}{Count data.}
 
 \item{return_list_of_plots}{If TRUE, return the list of three plots instead
 of the combined plot}
