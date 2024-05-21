@@ -2,8 +2,8 @@
 
 #' Simple plotter for 2d particle data.
 #' 
-#' @param ylist data
-#' @param countslist data
+#' @param ylist Data. A list of (|nt| by |dimdat|) matrices
+#' @param countslist Count data.
 #' @param obj flowtrend (or flowmix) object.
 #' @param time Out of 1 through \code{lengthy(list)}, which time point to plot.
 #' 

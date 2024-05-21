@@ -1,8 +1,9 @@
 # Generated from _main.Rmd: do not edit by hand
 
 #' Makes three 2-dimensional plots of the 3d data
-#' @param ylist data
-#' @param countslist data
+#' 
+#' @param ylist Data. A list of (|nt| by |dimdat|) matrices
+#' @param countslist Count data.
 #' @param obj flowmix or flowtrend object
 #' @param tt Time point
 #' @param return_list_of_plots If TRUE, return the list of three plots instead

@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien" />
 
 
-<meta name="date" content="2024-05-07" />
+<meta name="date" content="2024-05-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -183,7 +183,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.6" data-path="tuning-lambda.html"><a href="tuning-lambda.html#summarizing-the-output"><i class="fa fa-check"></i><b>5.6</b> Summarizing the output</a></li>
 <li class="chapter" data-level="5.7" data-path="tuning-lambda.html"><a href="tuning-lambda.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>5.7</b> CV on your own computer</a></li>
 <li class="chapter" data-level="5.8" data-path="tuning-lambda.html"><a href="tuning-lambda.html#plotting"><i class="fa fa-check"></i><b>5.8</b> Plotting</a></li>
-<li class="chapter" data-level="5.9" data-path="tuning-lambda.html"><a href="tuning-lambda.html#se-rule-for-cross-validation"><i class="fa fa-check"></i><b>5.9</b> 1SE rule for cross validation</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>6</b> Testing the flowtrend method</a>
 <ul>
@@ -195,8 +194,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="7" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html"><i class="fa fa-check"></i><b>7</b> Helpers for simulations</a>
 <ul>
-<li class="chapter" data-level="7.1" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#two-alternative-estimators"><i class="fa fa-check"></i><b>7.1</b> Two alternative estimators</a></li>
-<li class="chapter" data-level="7.2" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>7.2</b> Example using <code><a href='helpers-for-simulations.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations.html#overfit_flowmeans'>overfit_flowmeans</a>()</code></a></li>
+<li class="chapter" data-level="7.1" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#two-alternative-clusterings"><i class="fa fa-check"></i><b>7.1</b> Two alternative clusterings</a></li>
+<li class="chapter" data-level="7.2" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#example-using-other-cluster-algorithms"><i class="fa fa-check"></i><b>7.2</b> Example using other cluster algorithms</a></li>
 <li class="chapter" data-level="7.3" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>7.3</b> Evaluating performance: soft RAND index</a></li>
 <li class="chapter" data-level="7.4" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#generating-pseudo-real-data"><i class="fa fa-check"></i><b>7.4</b> Generating “pseudo-real” data</a></li>
 <li class="chapter" data-level="7.5" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#miscellaneous-helpers"><i class="fa fa-check"></i><b>7.5</b> Miscellaneous helpers</a></li>
@@ -252,6 +251,20 @@ the console.</p>
 <span id="cb4-4"><a href="package-setup.html#cb4-4" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">use_package</span>(<span class="st">&quot;ggplot2&quot;</span>)</span>
 <span id="cb4-5"><a href="package-setup.html#cb4-5" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">use_package</span>(<span class="st">&quot;clue&quot;</span>)</span>
 <span id="cb4-6"><a href="package-setup.html#cb4-6" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">use_package</span>(<span class="st">&quot;glmnet&quot;</span>)</span></code></pre></div>
+<!-- library("tmvnsim") ## for tmvnsim -->
+<!-- library("MASS") ## for mvrnorm -->
+<!-- library("scatterplot3d") # for 3d plot  -->
+<!-- library("RColorBrewer") ## distinct colors  -->
+<!-- library("matrixsampling") ## r-inverse Wishart -->
+<!-- library("matrixNormal") ## matrix normal random elements  -->
+<!-- library("pgdraw") ## draw PG r.v.'s  -->
+<!-- library("parallel") ## mc-mapply -->
+<!-- library("svMisc") -->
+<!-- library("mclust") ## for warm start  -->
+<!-- library("plotly") -->
+<!-- library("ggcorrplot") -->
+<!-- library("Rfast") -->
+<!-- library("Rfast2") -->
 
 <div id="d-data" class="section level2 hasAnchor" number="2.1">
 <h2><span class="header-section-number">2.1</span> 1d data<a href="package-setup.html#d-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -374,49 +387,49 @@ list of <span class="math inline">\(n_t \times d\)</span> matrices.</p>
 <pre><code>## # A tibble: 10,000 × 4
 ##     time      Y    mu cluster
 ##    &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;int&gt;
-##  1     1 -1.23  -1.49       1
-##  2     1 -1.39  -1.49       1
-##  3     1 -1.80  -1.49       1
-##  4     1 -1.78  -1.49       1
-##  5     1 -1.24  -1.49       1
-##  6     1 -0.751 -1.49       1
-##  7     1 -0.905 -1.49       1
-##  8     1 -2.50  -1.49       1
-##  9     1 -2.37  -1.49       1
-## 10     1 -1.86  -1.49       1
+##  1     1 -1.36  -1.49       1
+##  2     1 -1.53  -1.49       1
+##  3     1 -1.09  -1.49       1
+##  4     1 -1.33  -1.49       1
+##  5     1 -1.75  -1.49       1
+##  6     1 -1.86  -1.49       1
+##  7     1 -0.595 -1.49       1
+##  8     1 -1.91  -1.49       1
+##  9     1 -1.08  -1.49       1
+## 10     1 -1.33  -1.49       1
 ## # ℹ 9,990 more rows</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="package-setup.html#cb9-1" tabindex="-1"></a>ylist <span class="ot">=</span> <a href='package-setup.html#dt2ylist'>dt2ylist</a>(dt)</span>
 <span id="cb9-2"><a href="package-setup.html#cb9-2" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(<span class="fu">str</span>(ylist[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])))</span></code></pre></div>
 <pre><code>## List of 5
-##  $ : num [1:100, 1] -1.23 -1.39 -1.8 -1.78 -1.24 ...
+##  $ : num [1:100, 1] -1.36 -1.53 -1.09 -1.33 -1.75 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] -1.99 -1.71 -1.17 -1.28 -1.62 ...
+##  $ : num [1:100, 1] -1.557 -1.263 -1.93 -0.966 -1.114 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] -1.55 -2.1 -2.135 -1.636 -0.587 ...
+##  $ : num [1:100, 1] -2.2681 -0.0388 -2.034 -1.1904 -1.9127 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] -1.31 -2.1 -1.81 -1.35 -1.5 ...
+##  $ : num [1:100, 1] -0.866 -1.246 -1.879 -1.588 -1.629 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
-##  $ : num [1:100, 1] -0.736 -1.509 -1.482 -1.113 -1.446 ...
+##  $ : num [1:100, 1] -1.196 -1.383 -1.517 -0.897 -1.76 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : NULL
 ##   .. ..$ : chr &quot;Y&quot;
 ## NULL</code></pre>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="package-setup.html#cb11-1" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(ylist[[<span class="dv">1</span>]]))</span></code></pre></div>
-<pre><code>##               Y
-## [1,] -1.2293041
-## [2,] -1.3943887
-## [3,] -1.8016910
-## [4,] -1.7805470
-## [5,] -1.2449509
-## [6,] -0.7514198</code></pre>
+<pre><code>##              Y
+## [1,] -1.357297
+## [2,] -1.529130
+## [3,] -1.093864
+## [4,] -1.334398
+## [5,] -1.754718
+## [6,] -1.859457</code></pre>
 <p>Next, we’ll make some plotting functions 1d model and data.</p>
 </div>
 <div id="plotting-1d-data" class="section level3 hasAnchor" number="2.1.2">
@@ -425,111 +438,107 @@ list of <span class="math inline">\(n_t \times d\)</span> matrices.</p>
 in a single plot. <code><a href='package-setup.html#plot_1d'>plot_1d</a>()</code> lets you do this.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="package-setup.html#cb13-1" tabindex="-1"></a><span class="co">#&#39; Makes 1d plot of data and model</span></span>
 <span id="cb13-2"><a href="package-setup.html#cb13-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb13-3"><a href="package-setup.html#cb13-3" tabindex="-1"></a><span class="co">#&#39; @param ylist Data.</span></span>
-<span id="cb13-4"><a href="package-setup.html#cb13-4" tabindex="-1"></a><span class="co">#&#39; @param obj flowtrend object. Defaults to NULL.</span></span>
-<span id="cb13-5"><a href="package-setup.html#cb13-5" tabindex="-1"></a><span class="co">#&#39; @param x time points. Defaults to NULL.</span></span>
-<span id="cb13-6"><a href="package-setup.html#cb13-6" tabindex="-1"></a><span class="co">#&#39; @param add_point if TRUE, add the means as points.</span></span>
-<span id="cb13-7"><a href="package-setup.html#cb13-7" tabindex="-1"></a><span class="co">#&#39; @param idim if provided, take the idim.</span></span>
-<span id="cb13-8"><a href="package-setup.html#cb13-8" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb13-9"><a href="package-setup.html#cb13-9" tabindex="-1"></a><span class="co">#&#39; @return ggplot object with data, and optionally, a flowtrend model overlaid.</span></span>
-<span id="cb13-10"><a href="package-setup.html#cb13-10" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb13-11"><a href="package-setup.html#cb13-11" tabindex="-1"></a><span id='plot_1d'>plot_1d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, <span class="at">countslist=</span><span class="cn">NULL</span>, <span class="at">obj=</span><span class="cn">NULL</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">add_point =</span> <span class="cn">FALSE</span>, <span class="at">idim =</span> <span class="cn">NULL</span>, <span class="at">alpha =</span> .<span class="dv">1</span>){</span>
-<span id="cb13-12"><a href="package-setup.html#cb13-12" tabindex="-1"></a></span>
-<span id="cb13-13"><a href="package-setup.html#cb13-13" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
-<span id="cb13-14"><a href="package-setup.html#cb13-14" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x)){</span>
-<span id="cb13-15"><a href="package-setup.html#cb13-15" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">length</span>(x) <span class="sc">==</span> <span class="fu">length</span>(ylist))</span>
-<span id="cb13-16"><a href="package-setup.html#cb13-16" tabindex="-1"></a>    times <span class="ot">=</span> x</span>
-<span id="cb13-17"><a href="package-setup.html#cb13-17" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb13-18"><a href="package-setup.html#cb13-18" tabindex="-1"></a>    times <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist)</span>
-<span id="cb13-19"><a href="package-setup.html#cb13-19" tabindex="-1"></a>  }</span>
-<span id="cb13-20"><a href="package-setup.html#cb13-20" tabindex="-1"></a></span>
-<span id="cb13-21"><a href="package-setup.html#cb13-21" tabindex="-1"></a></span>
-<span id="cb13-22"><a href="package-setup.html#cb13-22" tabindex="-1"></a>  <span class="do">## If more than 2d data is provided, take the idim&#39;th info only.</span></span>
-<span id="cb13-23"><a href="package-setup.html#cb13-23" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="fu">ncol</span>(ylist[[<span class="dv">1</span>]])</span>
-<span id="cb13-24"><a href="package-setup.html#cb13-24" tabindex="-1"></a>  <span class="cf">if</span>(dimdat <span class="sc">&gt;=</span> <span class="dv">2</span>){</span>
-<span id="cb13-25"><a href="package-setup.html#cb13-25" tabindex="-1"></a>    assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="sc">!</span><span class="fu">is.null</span>(idim))</span>
-<span id="cb13-26"><a href="package-setup.html#cb13-26" tabindex="-1"></a>    assertthat<span class="sc">::</span><span class="fu">assert_that</span>(idim <span class="sc">%in%</span> <span class="dv">1</span><span class="sc">:</span>dimdat)</span>
-<span id="cb13-27"><a href="package-setup.html#cb13-27" tabindex="-1"></a></span>
-<span id="cb13-28"><a href="package-setup.html#cb13-28" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(obj)){</span>
-<span id="cb13-29"><a href="package-setup.html#cb13-29" tabindex="-1"></a>      obj<span class="sc">$</span>mn <span class="ot">=</span> obj<span class="sc">$</span>mn <span class="sc">%&gt;%</span> .[,idim,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
-<span id="cb13-30"><a href="package-setup.html#cb13-30" tabindex="-1"></a>      obj<span class="sc">$</span>sigma <span class="ot">=</span> obj<span class="sc">$</span>sigma <span class="sc">%&gt;%</span> .[,idim,idim,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
-<span id="cb13-31"><a href="package-setup.html#cb13-31" tabindex="-1"></a>    }</span>
-<span id="cb13-32"><a href="package-setup.html#cb13-32" tabindex="-1"></a>    ylist <span class="ot">=</span> ylist <span class="sc">%&gt;%</span> <span class="fu">lapply</span>(<span class="cf">function</span>(a) a[,idim, <span class="at">drop=</span><span class="cn">FALSE</span>])</span>
-<span id="cb13-33"><a href="package-setup.html#cb13-33" tabindex="-1"></a>  }</span>
-<span id="cb13-34"><a href="package-setup.html#cb13-34" tabindex="-1"></a></span>
-<span id="cb13-35"><a href="package-setup.html#cb13-35" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(countslist)){</span>
-<span id="cb13-36"><a href="package-setup.html#cb13-36" tabindex="-1"></a>    <span class="do">## make data into long matrix</span></span>
-<span id="cb13-37"><a href="package-setup.html#cb13-37" tabindex="-1"></a>    ymat <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist), <span class="at">FUN =</span> <span class="cf">function</span>(tt){</span>
-<span id="cb13-38"><a href="package-setup.html#cb13-38" tabindex="-1"></a>      <span class="fu">data.frame</span>(<span class="at">time =</span> times[tt], <span class="at">Y =</span> ylist[[tt]])</span>
-<span id="cb13-39"><a href="package-setup.html#cb13-39" tabindex="-1"></a>    }) <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
-<span id="cb13-40"><a href="package-setup.html#cb13-40" tabindex="-1"></a>    <span class="fu">colnames</span>(ymat) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;time&quot;</span>, <span class="st">&quot;Y&quot;</span>, <span class="st">&quot;counts&quot;</span>) <span class="do">## when ylist[[tt]] already has a column name, this is needed.</span></span>
-<span id="cb13-41"><a href="package-setup.html#cb13-41" tabindex="-1"></a></span>
-<span id="cb13-42"><a href="package-setup.html#cb13-42" tabindex="-1"></a>    <span class="do">## plot long matrix</span></span>
-<span id="cb13-43"><a href="package-setup.html#cb13-43" tabindex="-1"></a>    gg <span class="ot">=</span> ymat <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb13-44"><a href="package-setup.html#cb13-44" tabindex="-1"></a>      <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> Y), <span class="at">alpha =</span> alpha) <span class="sc">+</span></span>
-<span id="cb13-45"><a href="package-setup.html#cb13-45" tabindex="-1"></a>      <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">&quot;Data&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&quot;Time&quot;</span>) </span>
-<span id="cb13-46"><a href="package-setup.html#cb13-46" tabindex="-1"></a>      <span class="do">## theme(legend.position = &#39;none&#39;)</span></span>
-<span id="cb13-47"><a href="package-setup.html#cb13-47" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb13-48"><a href="package-setup.html#cb13-48" tabindex="-1"></a>    <span class="do">## make data into long matrix</span></span>
-<span id="cb13-49"><a href="package-setup.html#cb13-49" tabindex="-1"></a>    ymat <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist), <span class="at">FUN =</span> <span class="cf">function</span>(tt){</span>
-<span id="cb13-50"><a href="package-setup.html#cb13-50" tabindex="-1"></a>      <span class="fu">data.frame</span>(<span class="at">time =</span> times[tt], <span class="at">Y =</span> ylist[[tt]], <span class="at">counts =</span> countslist[[tt]])</span>
-<span id="cb13-51"><a href="package-setup.html#cb13-51" tabindex="-1"></a>    }) <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
-<span id="cb13-52"><a href="package-setup.html#cb13-52" tabindex="-1"></a>    <span class="fu">colnames</span>(ymat) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;time&quot;</span>, <span class="st">&quot;Y&quot;</span>, <span class="st">&quot;counts&quot;</span>) <span class="do">## when ylist[[tt]] already has a column name, this is needed.</span></span>
-<span id="cb13-53"><a href="package-setup.html#cb13-53" tabindex="-1"></a></span>
-<span id="cb13-54"><a href="package-setup.html#cb13-54" tabindex="-1"></a>    <span class="do">## plot long matrix</span></span>
-<span id="cb13-55"><a href="package-setup.html#cb13-55" tabindex="-1"></a>    gg <span class="ot">=</span> ymat <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb13-56"><a href="package-setup.html#cb13-56" tabindex="-1"></a>      <span class="fu">geom_raster</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> Y, <span class="at">fill =</span> counts)) <span class="sc">+</span></span>
-<span id="cb13-57"><a href="package-setup.html#cb13-57" tabindex="-1"></a>      <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">&quot;Data&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&quot;Time&quot;</span>)  <span class="sc">+</span></span>
-<span id="cb13-58"><a href="package-setup.html#cb13-58" tabindex="-1"></a>      <span class="fu">scale_fill_gradientn</span>(<span class="at">colours =</span> <span class="fu">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;black&quot;</span>))</span>
-<span id="cb13-59"><a href="package-setup.html#cb13-59" tabindex="-1"></a>      <span class="do">## theme(legend.position = &#39;none&#39;)</span></span>
-<span id="cb13-60"><a href="package-setup.html#cb13-60" tabindex="-1"></a>  }</span>
-<span id="cb13-61"><a href="package-setup.html#cb13-61" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(obj)){</span>
-<span id="cb13-62"><a href="package-setup.html#cb13-62" tabindex="-1"></a>    <span class="fu">return</span>(gg)</span>
-<span id="cb13-63"><a href="package-setup.html#cb13-63" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb13-64"><a href="package-setup.html#cb13-64" tabindex="-1"></a>  </span>
-<span id="cb13-65"><a href="package-setup.html#cb13-65" tabindex="-1"></a>    <span class="do">## Add the model</span></span>
-<span id="cb13-66"><a href="package-setup.html#cb13-66" tabindex="-1"></a>    numclust <span class="ot">=</span> obj<span class="sc">$</span>numclust</span>
-<span id="cb13-67"><a href="package-setup.html#cb13-67" tabindex="-1"></a>    mnmat <span class="ot">=</span> obj<span class="sc">$</span>mn <span class="sc">%&gt;%</span> .[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span>  <span class="st">`</span><span class="at">colnames&lt;-</span><span class="st">`</span>(<span class="dv">1</span><span class="sc">:</span>numclust) <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb13-68"><a href="package-setup.html#cb13-68" tabindex="-1"></a>      <span class="fu">add_column</span>(<span class="at">time =</span> times)</span>
-<span id="cb13-69"><a href="package-setup.html#cb13-69" tabindex="-1"></a>    probmat <span class="ot">=</span> obj<span class="sc">$</span>prob <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">setNames</span>(<span class="dv">1</span><span class="sc">:</span>numclust) <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">time =</span> times)</span>
-<span id="cb13-70"><a href="package-setup.html#cb13-70" tabindex="-1"></a>    mn_long <span class="ot">=</span> mnmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;mean&quot;</span>)</span>
-<span id="cb13-71"><a href="package-setup.html#cb13-71" tabindex="-1"></a>    prob_long <span class="ot">=</span> probmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;prob&quot;</span>)</span>
-<span id="cb13-72"><a href="package-setup.html#cb13-72" tabindex="-1"></a>    est_long <span class="ot">=</span> <span class="fu">full_join</span>(mn_long, prob_long, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;time&quot;</span>,<span class="st">&quot;cluster&quot;</span>))</span>
-<span id="cb13-73"><a href="package-setup.html#cb13-73" tabindex="-1"></a>    gg <span class="ot">=</span> gg <span class="sc">+</span> <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">linewidth =</span> prob, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
-<span id="cb13-74"><a href="package-setup.html#cb13-74" tabindex="-1"></a>                        <span class="at">data =</span> est_long,</span>
-<span id="cb13-75"><a href="package-setup.html#cb13-75" tabindex="-1"></a>                        <span class="at">lineend =</span> <span class="st">&quot;round&quot;</span>, <span class="at">linejoin=</span><span class="st">&quot;mitre&quot;</span>)</span>
-<span id="cb13-76"><a href="package-setup.html#cb13-76" tabindex="-1"></a>    <span class="cf">if</span>(add_point){</span>
-<span id="cb13-77"><a href="package-setup.html#cb13-77" tabindex="-1"></a>      gg <span class="ot">=</span> gg <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">linewidth =</span> prob, <span class="at">group =</span> cluster),</span>
-<span id="cb13-78"><a href="package-setup.html#cb13-78" tabindex="-1"></a>                          <span class="at">data =</span> est_long, <span class="at">size =</span> <span class="fu">rel</span>(<span class="dv">1</span>),</span>
-<span id="cb13-79"><a href="package-setup.html#cb13-79" tabindex="-1"></a>                          <span class="at">col =</span> <span class="st">&#39;black&#39;</span>)</span>
-<span id="cb13-80"><a href="package-setup.html#cb13-80" tabindex="-1"></a>    }</span>
-<span id="cb13-81"><a href="package-setup.html#cb13-81" tabindex="-1"></a>  </span>
-<span id="cb13-82"><a href="package-setup.html#cb13-82" tabindex="-1"></a>    <span class="do">## </span><span class="al">TODO</span><span class="do">: make it ignore the missing values at the gaps; currently this is not coded as NAs.</span></span>
-<span id="cb13-83"><a href="package-setup.html#cb13-83" tabindex="-1"></a>  </span>
-<span id="cb13-84"><a href="package-setup.html#cb13-84" tabindex="-1"></a>    <span class="do">## Add the estimated 95% probability regions for data.</span></span>
-<span id="cb13-85"><a href="package-setup.html#cb13-85" tabindex="-1"></a>    stdev <span class="ot">=</span> obj<span class="sc">$</span>sigma <span class="sc">%&gt;%</span> .[,,<span class="dv">1</span>] <span class="sc">%&gt;%</span> <span class="fu">sqrt</span>()</span>
-<span id="cb13-86"><a href="package-setup.html#cb13-86" tabindex="-1"></a>    <span class="do">## band_long =</span></span>
-<span id="cb13-87"><a href="package-setup.html#cb13-87" tabindex="-1"></a>    <span class="do">##   mn_long %&gt;% mutate(upper = case_when(cluster == &quot;1&quot; ~ mean + 1.96 * stdev[1],</span></span>
-<span id="cb13-88"><a href="package-setup.html#cb13-88" tabindex="-1"></a>    <span class="do">##                                        cluster == &quot;2&quot; ~ mean + 1.96 * stdev[2],</span></span>
-<span id="cb13-89"><a href="package-setup.html#cb13-89" tabindex="-1"></a>    <span class="do">##                                        cluster == &quot;3&quot; ~ mean + 1.96 * stdev[3]),</span></span>
-<span id="cb13-90"><a href="package-setup.html#cb13-90" tabindex="-1"></a>    <span class="do">##                      lower = case_when(cluster == &quot;1&quot; ~ mean - 1.96 * stdev[1],</span></span>
-<span id="cb13-91"><a href="package-setup.html#cb13-91" tabindex="-1"></a>    <span class="do">##                                        cluster == &quot;2&quot; ~ mean - 1.96 * stdev[2],</span></span>
-<span id="cb13-92"><a href="package-setup.html#cb13-92" tabindex="-1"></a>    <span class="do">##                                        cluster == &quot;3&quot; ~ mean - 1.96 * stdev[3]))</span></span>
-<span id="cb13-93"><a href="package-setup.html#cb13-93" tabindex="-1"></a></span>
-<span id="cb13-94"><a href="package-setup.html#cb13-94" tabindex="-1"></a>    mn_long_by_clust <span class="ot">=</span> mn_long <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(cluster) <span class="sc">%&gt;%</span> <span class="fu">group_split</span>()</span>
-<span id="cb13-95"><a href="package-setup.html#cb13-95" tabindex="-1"></a>    band_long_by_clust <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(iclust){</span>
-<span id="cb13-96"><a href="package-setup.html#cb13-96" tabindex="-1"></a>      mn_long_by_clust[[iclust]] <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">upper =</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[iclust]) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">lower =</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[iclust])</span>
-<span id="cb13-97"><a href="package-setup.html#cb13-97" tabindex="-1"></a>    })</span>
-<span id="cb13-98"><a href="package-setup.html#cb13-98" tabindex="-1"></a>    band_long <span class="ot">=</span> band_long_by_clust <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>()</span>
-<span id="cb13-99"><a href="package-setup.html#cb13-99" tabindex="-1"></a></span>
-<span id="cb13-100"><a href="package-setup.html#cb13-100" tabindex="-1"></a></span>
-<span id="cb13-101"><a href="package-setup.html#cb13-101" tabindex="-1"></a>    gg <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> upper, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
-<span id="cb13-102"><a href="package-setup.html#cb13-102" tabindex="-1"></a>                   <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(.<span class="dv">7</span>), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb13-103"><a href="package-setup.html#cb13-103" tabindex="-1"></a>      <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> lower, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
-<span id="cb13-104"><a href="package-setup.html#cb13-104" tabindex="-1"></a>                <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(.<span class="dv">7</span>), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb13-105"><a href="package-setup.html#cb13-105" tabindex="-1"></a>      <span class="fu">guides</span>(<span class="at">size =</span> <span class="st">&quot;none&quot;</span>) <span class="co"># To turn off line size from legend</span></span>
-<span id="cb13-106"><a href="package-setup.html#cb13-106" tabindex="-1"></a>  }</span>
-<span id="cb13-107"><a href="package-setup.html#cb13-107" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb13-3"><a href="package-setup.html#cb13-3" tabindex="-1"></a><span class="co">#&#39; @param ylist Data. A list of (|nt| by |dimdat|) matrices</span></span>
+<span id="cb13-4"><a href="package-setup.html#cb13-4" tabindex="-1"></a><span class="co">#&#39; @param obj A flowtrend (or flowmix) object. Defaults to NULL.</span></span>
+<span id="cb13-5"><a href="package-setup.html#cb13-5" tabindex="-1"></a><span class="co">#&#39; @param x Time points. Defaults to NULL.</span></span>
+<span id="cb13-6"><a href="package-setup.html#cb13-6" tabindex="-1"></a><span class="co">#&#39; @param idim If provided, plots the |idim|&#39;th dimension of the data (only particles).</span></span>
+<span id="cb13-7"><a href="package-setup.html#cb13-7" tabindex="-1"></a><span class="co">#&#39; @param alpha Optional; between 0 and 1, how transparent to plot the data</span></span>
+<span id="cb13-8"><a href="package-setup.html#cb13-8" tabindex="-1"></a><span class="co">#&#39;   points.</span></span>
+<span id="cb13-9"><a href="package-setup.html#cb13-9" tabindex="-1"></a><span class="co">#&#39; @param bin If TRUE, the data is binned.</span></span>
+<span id="cb13-10"><a href="package-setup.html#cb13-10" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb13-11"><a href="package-setup.html#cb13-11" tabindex="-1"></a><span class="co">#&#39; @return ggplot object with data, and optionally, a flowtrend model overlaid.</span></span>
+<span id="cb13-12"><a href="package-setup.html#cb13-12" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb13-13"><a href="package-setup.html#cb13-13" tabindex="-1"></a><span id='plot_1d'>plot_1d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, <span class="at">countslist=</span><span class="cn">NULL</span>, <span class="at">obj=</span><span class="cn">NULL</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">idim =</span> <span class="cn">NULL</span>, <span class="at">alpha =</span> .<span class="dv">1</span>, <span class="at">bin =</span> <span class="cn">FALSE</span>){</span>
+<span id="cb13-14"><a href="package-setup.html#cb13-14" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="package-setup.html#cb13-15" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb13-16"><a href="package-setup.html#cb13-16" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x)){</span>
+<span id="cb13-17"><a href="package-setup.html#cb13-17" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">length</span>(x) <span class="sc">==</span> <span class="fu">length</span>(ylist))</span>
+<span id="cb13-18"><a href="package-setup.html#cb13-18" tabindex="-1"></a>    times <span class="ot">=</span> x</span>
+<span id="cb13-19"><a href="package-setup.html#cb13-19" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb13-20"><a href="package-setup.html#cb13-20" tabindex="-1"></a>    times <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist)</span>
+<span id="cb13-21"><a href="package-setup.html#cb13-21" tabindex="-1"></a>  }</span>
+<span id="cb13-22"><a href="package-setup.html#cb13-22" tabindex="-1"></a></span>
+<span id="cb13-23"><a href="package-setup.html#cb13-23" tabindex="-1"></a>  <span class="do">## If more than 2d data is provided, take the idim&#39;th info only.</span></span>
+<span id="cb13-24"><a href="package-setup.html#cb13-24" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="fu">ncol</span>(ylist[[<span class="dv">1</span>]])</span>
+<span id="cb13-25"><a href="package-setup.html#cb13-25" tabindex="-1"></a>  <span class="cf">if</span>(dimdat <span class="sc">&gt;=</span> <span class="dv">2</span>){</span>
+<span id="cb13-26"><a href="package-setup.html#cb13-26" tabindex="-1"></a>    assertthat<span class="sc">::</span><span class="fu">assert_that</span>(<span class="sc">!</span><span class="fu">is.null</span>(idim))</span>
+<span id="cb13-27"><a href="package-setup.html#cb13-27" tabindex="-1"></a>    assertthat<span class="sc">::</span><span class="fu">assert_that</span>(idim <span class="sc">%in%</span> <span class="dv">1</span><span class="sc">:</span>dimdat)</span>
+<span id="cb13-28"><a href="package-setup.html#cb13-28" tabindex="-1"></a></span>
+<span id="cb13-29"><a href="package-setup.html#cb13-29" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(obj)){</span>
+<span id="cb13-30"><a href="package-setup.html#cb13-30" tabindex="-1"></a>      obj<span class="sc">$</span>mn <span class="ot">=</span> obj<span class="sc">$</span>mn <span class="sc">%&gt;%</span> .[,idim,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb13-31"><a href="package-setup.html#cb13-31" tabindex="-1"></a>      obj<span class="sc">$</span>sigma <span class="ot">=</span> obj<span class="sc">$</span>sigma <span class="sc">%&gt;%</span> .[,idim,idim,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb13-32"><a href="package-setup.html#cb13-32" tabindex="-1"></a>    }</span>
+<span id="cb13-33"><a href="package-setup.html#cb13-33" tabindex="-1"></a>    ylist <span class="ot">=</span> ylist <span class="sc">%&gt;%</span> <span class="fu">lapply</span>(<span class="cf">function</span>(a) a[,idim, <span class="at">drop=</span><span class="cn">FALSE</span>])</span>
+<span id="cb13-34"><a href="package-setup.html#cb13-34" tabindex="-1"></a>  }</span>
+<span id="cb13-35"><a href="package-setup.html#cb13-35" tabindex="-1"></a></span>
+<span id="cb13-36"><a href="package-setup.html#cb13-36" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(countslist)){</span>
+<span id="cb13-37"><a href="package-setup.html#cb13-37" tabindex="-1"></a>    <span class="do">## make data into long matrix</span></span>
+<span id="cb13-38"><a href="package-setup.html#cb13-38" tabindex="-1"></a>    ymat <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist), <span class="at">FUN =</span> <span class="cf">function</span>(tt){</span>
+<span id="cb13-39"><a href="package-setup.html#cb13-39" tabindex="-1"></a>      <span class="fu">data.frame</span>(<span class="at">time =</span> times[tt], <span class="at">Y =</span> ylist[[tt]])</span>
+<span id="cb13-40"><a href="package-setup.html#cb13-40" tabindex="-1"></a>    }) <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
+<span id="cb13-41"><a href="package-setup.html#cb13-41" tabindex="-1"></a>    <span class="fu">colnames</span>(ymat) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;time&quot;</span>, <span class="st">&quot;Y&quot;</span>, <span class="st">&quot;counts&quot;</span>) <span class="do">## when ylist[[tt]] already has a column name, this is needed.</span></span>
+<span id="cb13-42"><a href="package-setup.html#cb13-42" tabindex="-1"></a></span>
+<span id="cb13-43"><a href="package-setup.html#cb13-43" tabindex="-1"></a>    <span class="do">## plot long matrix</span></span>
+<span id="cb13-44"><a href="package-setup.html#cb13-44" tabindex="-1"></a>    gg <span class="ot">=</span> ymat <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb13-45"><a href="package-setup.html#cb13-45" tabindex="-1"></a>      <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> Y), <span class="at">alpha =</span> alpha) <span class="sc">+</span></span>
+<span id="cb13-46"><a href="package-setup.html#cb13-46" tabindex="-1"></a>      <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">&quot;Data&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&quot;Time&quot;</span>) </span>
+<span id="cb13-47"><a href="package-setup.html#cb13-47" tabindex="-1"></a>      <span class="do">## theme(legend.position = &#39;none&#39;)</span></span>
+<span id="cb13-48"><a href="package-setup.html#cb13-48" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb13-49"><a href="package-setup.html#cb13-49" tabindex="-1"></a>    <span class="do">## make data into long matrix</span></span>
+<span id="cb13-50"><a href="package-setup.html#cb13-50" tabindex="-1"></a>    ymat <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist), <span class="at">FUN =</span> <span class="cf">function</span>(tt){</span>
+<span id="cb13-51"><a href="package-setup.html#cb13-51" tabindex="-1"></a>      <span class="fu">data.frame</span>(<span class="at">time =</span> times[tt], <span class="at">Y =</span> ylist[[tt]], <span class="at">counts =</span> countslist[[tt]])</span>
+<span id="cb13-52"><a href="package-setup.html#cb13-52" tabindex="-1"></a>    }) <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
+<span id="cb13-53"><a href="package-setup.html#cb13-53" tabindex="-1"></a>    <span class="fu">colnames</span>(ymat) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;time&quot;</span>, <span class="st">&quot;Y&quot;</span>, <span class="st">&quot;counts&quot;</span>) <span class="do">## when ylist[[tt]] already has a column name, this is needed.</span></span>
+<span id="cb13-54"><a href="package-setup.html#cb13-54" tabindex="-1"></a></span>
+<span id="cb13-55"><a href="package-setup.html#cb13-55" tabindex="-1"></a>    <span class="do">## plot long matrix</span></span>
+<span id="cb13-56"><a href="package-setup.html#cb13-56" tabindex="-1"></a>    gg <span class="ot">=</span> ymat <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb13-57"><a href="package-setup.html#cb13-57" tabindex="-1"></a>      <span class="fu">geom_raster</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> Y, <span class="at">fill =</span> counts)) <span class="sc">+</span></span>
+<span id="cb13-58"><a href="package-setup.html#cb13-58" tabindex="-1"></a>      <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">&quot;Data&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&quot;Time&quot;</span>)  <span class="sc">+</span></span>
+<span id="cb13-59"><a href="package-setup.html#cb13-59" tabindex="-1"></a>      <span class="fu">scale_fill_gradientn</span>(<span class="at">colours =</span> <span class="fu">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;black&quot;</span>))</span>
+<span id="cb13-60"><a href="package-setup.html#cb13-60" tabindex="-1"></a>      <span class="do">## theme(legend.position = &#39;none&#39;)</span></span>
+<span id="cb13-61"><a href="package-setup.html#cb13-61" tabindex="-1"></a>  }</span>
+<span id="cb13-62"><a href="package-setup.html#cb13-62" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(obj)){</span>
+<span id="cb13-63"><a href="package-setup.html#cb13-63" tabindex="-1"></a>    <span class="fu">return</span>(gg)</span>
+<span id="cb13-64"><a href="package-setup.html#cb13-64" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb13-65"><a href="package-setup.html#cb13-65" tabindex="-1"></a>  </span>
+<span id="cb13-66"><a href="package-setup.html#cb13-66" tabindex="-1"></a>    <span class="do">## Add the model</span></span>
+<span id="cb13-67"><a href="package-setup.html#cb13-67" tabindex="-1"></a>    numclust <span class="ot">=</span> obj<span class="sc">$</span>numclust</span>
+<span id="cb13-68"><a href="package-setup.html#cb13-68" tabindex="-1"></a>    mnmat <span class="ot">=</span> obj<span class="sc">$</span>mn <span class="sc">%&gt;%</span> .[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span>  <span class="st">`</span><span class="at">colnames&lt;-</span><span class="st">`</span>(<span class="dv">1</span><span class="sc">:</span>numclust) <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb13-69"><a href="package-setup.html#cb13-69" tabindex="-1"></a>      <span class="fu">add_column</span>(<span class="at">time =</span> times)</span>
+<span id="cb13-70"><a href="package-setup.html#cb13-70" tabindex="-1"></a>    probmat <span class="ot">=</span> obj<span class="sc">$</span>prob <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">setNames</span>(<span class="dv">1</span><span class="sc">:</span>numclust) <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">time =</span> times)</span>
+<span id="cb13-71"><a href="package-setup.html#cb13-71" tabindex="-1"></a>    mn_long <span class="ot">=</span> mnmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;mean&quot;</span>)</span>
+<span id="cb13-72"><a href="package-setup.html#cb13-72" tabindex="-1"></a>    prob_long <span class="ot">=</span> probmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;prob&quot;</span>)</span>
+<span id="cb13-73"><a href="package-setup.html#cb13-73" tabindex="-1"></a>    est_long <span class="ot">=</span> <span class="fu">full_join</span>(mn_long, prob_long, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;time&quot;</span>,<span class="st">&quot;cluster&quot;</span>))</span>
+<span id="cb13-74"><a href="package-setup.html#cb13-74" tabindex="-1"></a>    gg <span class="ot">=</span> gg <span class="sc">+</span> <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">linewidth =</span> prob, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
+<span id="cb13-75"><a href="package-setup.html#cb13-75" tabindex="-1"></a>                        <span class="at">data =</span> est_long,</span>
+<span id="cb13-76"><a href="package-setup.html#cb13-76" tabindex="-1"></a>                        <span class="at">lineend =</span> <span class="st">&quot;round&quot;</span>, <span class="at">linejoin=</span><span class="st">&quot;mitre&quot;</span>)</span>
+<span id="cb13-77"><a href="package-setup.html#cb13-77" tabindex="-1"></a>  </span>
+<span id="cb13-78"><a href="package-setup.html#cb13-78" tabindex="-1"></a>    <span class="do">## </span><span class="al">TODO</span><span class="do">: make it ignore the missing values at the gaps; currently this is not coded as NAs.</span></span>
+<span id="cb13-79"><a href="package-setup.html#cb13-79" tabindex="-1"></a>  </span>
+<span id="cb13-80"><a href="package-setup.html#cb13-80" tabindex="-1"></a>    <span class="do">## Add the estimated 95% probability regions for data.</span></span>
+<span id="cb13-81"><a href="package-setup.html#cb13-81" tabindex="-1"></a>    stdev <span class="ot">=</span> obj<span class="sc">$</span>sigma <span class="sc">%&gt;%</span> .[,,<span class="dv">1</span>] <span class="sc">%&gt;%</span> <span class="fu">sqrt</span>()</span>
+<span id="cb13-82"><a href="package-setup.html#cb13-82" tabindex="-1"></a>    <span class="do">## band_long =</span></span>
+<span id="cb13-83"><a href="package-setup.html#cb13-83" tabindex="-1"></a>    <span class="do">##   mn_long %&gt;% mutate(upper = case_when(cluster == &quot;1&quot; ~ mean + 1.96 * stdev[1],</span></span>
+<span id="cb13-84"><a href="package-setup.html#cb13-84" tabindex="-1"></a>    <span class="do">##                                        cluster == &quot;2&quot; ~ mean + 1.96 * stdev[2],</span></span>
+<span id="cb13-85"><a href="package-setup.html#cb13-85" tabindex="-1"></a>    <span class="do">##                                        cluster == &quot;3&quot; ~ mean + 1.96 * stdev[3]),</span></span>
+<span id="cb13-86"><a href="package-setup.html#cb13-86" tabindex="-1"></a>    <span class="do">##                      lower = case_when(cluster == &quot;1&quot; ~ mean - 1.96 * stdev[1],</span></span>
+<span id="cb13-87"><a href="package-setup.html#cb13-87" tabindex="-1"></a>    <span class="do">##                                        cluster == &quot;2&quot; ~ mean - 1.96 * stdev[2],</span></span>
+<span id="cb13-88"><a href="package-setup.html#cb13-88" tabindex="-1"></a>    <span class="do">##                                        cluster == &quot;3&quot; ~ mean - 1.96 * stdev[3]))</span></span>
+<span id="cb13-89"><a href="package-setup.html#cb13-89" tabindex="-1"></a></span>
+<span id="cb13-90"><a href="package-setup.html#cb13-90" tabindex="-1"></a>    mn_long_by_clust <span class="ot">=</span> mn_long <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(cluster) <span class="sc">%&gt;%</span> <span class="fu">group_split</span>()</span>
+<span id="cb13-91"><a href="package-setup.html#cb13-91" tabindex="-1"></a>    band_long_by_clust <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>numclust, <span class="cf">function</span>(iclust){</span>
+<span id="cb13-92"><a href="package-setup.html#cb13-92" tabindex="-1"></a>      mn_long_by_clust[[iclust]] <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">upper =</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[iclust]) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">lower =</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[iclust])</span>
+<span id="cb13-93"><a href="package-setup.html#cb13-93" tabindex="-1"></a>    })</span>
+<span id="cb13-94"><a href="package-setup.html#cb13-94" tabindex="-1"></a>    band_long <span class="ot">=</span> band_long_by_clust <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>()</span>
+<span id="cb13-95"><a href="package-setup.html#cb13-95" tabindex="-1"></a></span>
+<span id="cb13-96"><a href="package-setup.html#cb13-96" tabindex="-1"></a></span>
+<span id="cb13-97"><a href="package-setup.html#cb13-97" tabindex="-1"></a>    gg <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> upper, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
+<span id="cb13-98"><a href="package-setup.html#cb13-98" tabindex="-1"></a>                   <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(.<span class="dv">7</span>), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb13-99"><a href="package-setup.html#cb13-99" tabindex="-1"></a>      <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> lower, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
+<span id="cb13-100"><a href="package-setup.html#cb13-100" tabindex="-1"></a>                <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(.<span class="dv">7</span>), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb13-101"><a href="package-setup.html#cb13-101" tabindex="-1"></a>      <span class="fu">guides</span>(<span class="at">size =</span> <span class="st">&quot;none&quot;</span>) <span class="co"># To turn off line size from legend</span></span>
+<span id="cb13-102"><a href="package-setup.html#cb13-102" tabindex="-1"></a>  }</span>
+<span id="cb13-103"><a href="package-setup.html#cb13-103" tabindex="-1"></a>}</span></code></pre></div>
 <p>The plotting function <code><a href='package-setup.html#plot_1d'>plot_1d</a>()</code> will be even more useful when we have a model,
 but can also simply plot the data <code>ylist</code>. Let’s try this out.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="package-setup.html#cb14-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
@@ -659,8 +668,8 @@ Voilà!</p>
 <p>Here’s a simpler plotting function for 2d data at the particle level.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="package-setup.html#cb17-1" tabindex="-1"></a><span class="co">#&#39; Simple plotter for 2d particle data.</span></span>
 <span id="cb17-2"><a href="package-setup.html#cb17-2" tabindex="-1"></a><span class="co">#&#39; </span></span>
-<span id="cb17-3"><a href="package-setup.html#cb17-3" tabindex="-1"></a><span class="co">#&#39; @param ylist data</span></span>
-<span id="cb17-4"><a href="package-setup.html#cb17-4" tabindex="-1"></a><span class="co">#&#39; @param countslist data</span></span>
+<span id="cb17-3"><a href="package-setup.html#cb17-3" tabindex="-1"></a><span class="co">#&#39; @param ylist Data. A list of (|nt| by |dimdat|) matrices</span></span>
+<span id="cb17-4"><a href="package-setup.html#cb17-4" tabindex="-1"></a><span class="co">#&#39; @param countslist Count data.</span></span>
 <span id="cb17-5"><a href="package-setup.html#cb17-5" tabindex="-1"></a><span class="co">#&#39; @param obj flowtrend (or flowmix) object.</span></span>
 <span id="cb17-6"><a href="package-setup.html#cb17-6" tabindex="-1"></a><span class="co">#&#39; @param time Out of 1 through \code{lengthy(list)}, which time point to plot.</span></span>
 <span id="cb17-7"><a href="package-setup.html#cb17-7" tabindex="-1"></a><span class="co">#&#39; </span></span>
@@ -774,120 +783,121 @@ in three two-dimensional plot. <code><a href='package-setup.html#plot_3d'>plot_3
 <p>(TODO: change tt to time (and all the user-facing functions should have the same
 arguments and argument order))</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="package-setup.html#cb20-1" tabindex="-1"></a><span class="co">#&#39; Makes three 2-dimensional plots of the 3d data</span></span>
-<span id="cb20-2"><a href="package-setup.html#cb20-2" tabindex="-1"></a><span class="co">#&#39; @param ylist data</span></span>
-<span id="cb20-3"><a href="package-setup.html#cb20-3" tabindex="-1"></a><span class="co">#&#39; @param countslist data</span></span>
-<span id="cb20-4"><a href="package-setup.html#cb20-4" tabindex="-1"></a><span class="co">#&#39; @param obj flowmix or flowtrend object</span></span>
-<span id="cb20-5"><a href="package-setup.html#cb20-5" tabindex="-1"></a><span class="co">#&#39; @param tt Time point</span></span>
-<span id="cb20-6"><a href="package-setup.html#cb20-6" tabindex="-1"></a><span class="co">#&#39; @param return_list_of_plots If TRUE, return the list of three plots instead</span></span>
-<span id="cb20-7"><a href="package-setup.html#cb20-7" tabindex="-1"></a><span class="co">#&#39;   of the combined plot</span></span>
-<span id="cb20-8"><a href="package-setup.html#cb20-8" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb20-9"><a href="package-setup.html#cb20-9" tabindex="-1"></a><span class="co">#&#39; @return</span></span>
-<span id="cb20-10"><a href="package-setup.html#cb20-10" tabindex="-1"></a><span class="co">#&#39; </span></span>
-<span id="cb20-11"><a href="package-setup.html#cb20-11" tabindex="-1"></a><span id='plot_3d'>plot_3d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, <span class="at">obj =</span> <span class="cn">NULL</span>, tt, <span class="at">countslist =</span> <span class="cn">NULL</span>,</span>
-<span id="cb20-12"><a href="package-setup.html#cb20-12" tabindex="-1"></a>                    <span class="at">return_list_of_plots =</span> <span class="cn">FALSE</span>){</span>
-<span id="cb20-13"><a href="package-setup.html#cb20-13" tabindex="-1"></a></span>
-<span id="cb20-14"><a href="package-setup.html#cb20-14" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
-<span id="cb20-15"><a href="package-setup.html#cb20-15" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">ncol</span>(ylist[[<span class="dv">1</span>]]) <span class="sc">==</span> <span class="dv">3</span>)</span>
-<span id="cb20-16"><a href="package-setup.html#cb20-16" tabindex="-1"></a></span>
-<span id="cb20-17"><a href="package-setup.html#cb20-17" tabindex="-1"></a>  <span class="do">## Extract data</span></span>
-<span id="cb20-18"><a href="package-setup.html#cb20-18" tabindex="-1"></a>  <span class="do">## y = ylist[[tt]][,dims]</span></span>
-<span id="cb20-19"><a href="package-setup.html#cb20-19" tabindex="-1"></a>  labs <span class="ot">=</span> <span class="fu">colnames</span>(ylist[[<span class="dv">1</span>]])</span>
-<span id="cb20-20"><a href="package-setup.html#cb20-20" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(labs))  labs <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;dim&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
-<span id="cb20-21"><a href="package-setup.html#cb20-21" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(countslist)){</span>
-<span id="cb20-22"><a href="package-setup.html#cb20-22" tabindex="-1"></a>    counts <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">nrow</span>(ylist[[<span class="dv">1</span>]]))</span>
-<span id="cb20-23"><a href="package-setup.html#cb20-23" tabindex="-1"></a>  }</span>
-<span id="cb20-24"><a href="package-setup.html#cb20-24" tabindex="-1"></a></span>
-<span id="cb20-25"><a href="package-setup.html#cb20-25" tabindex="-1"></a>  <span class="do">## Aggregate counts into the two dimensions</span></span>
-<span id="cb20-26"><a href="package-setup.html#cb20-26" tabindex="-1"></a>  y2d_list <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb20-27"><a href="package-setup.html#cb20-27" tabindex="-1"></a>  counts2d_list <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb20-28"><a href="package-setup.html#cb20-28" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
-<span id="cb20-29"><a href="package-setup.html#cb20-29" tabindex="-1"></a>    dims <span class="ot">=</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>), <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>))[[ii]]</span>
-<span id="cb20-30"><a href="package-setup.html#cb20-30" tabindex="-1"></a>    yy <span class="ot">=</span> flowmix<span class="sc">::</span><span class="fu">collapse_3d_to_2d</span>(ylist[[tt]], countslist[[tt]], dims)</span>
-<span id="cb20-31"><a href="package-setup.html#cb20-31" tabindex="-1"></a>    y2d <span class="ot">=</span> yy[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span>
-<span id="cb20-32"><a href="package-setup.html#cb20-32" tabindex="-1"></a>    <span class="fu">colnames</span>(y2d) <span class="ot">=</span> labs[dims]</span>
-<span id="cb20-33"><a href="package-setup.html#cb20-33" tabindex="-1"></a>    y2d_list[[ii]] <span class="ot">=</span> y2d</span>
-<span id="cb20-34"><a href="package-setup.html#cb20-34" tabindex="-1"></a>    counts2d_list[[ii]] <span class="ot">=</span> yy[,<span class="dv">3</span>]</span>
-<span id="cb20-35"><a href="package-setup.html#cb20-35" tabindex="-1"></a>  }</span>
-<span id="cb20-36"><a href="package-setup.html#cb20-36" tabindex="-1"></a>  total_range <span class="ot">=</span> <span class="fu">sapply</span>(counts2d_list, range) <span class="sc">%&gt;%</span> <span class="fu">range</span>()</span>
-<span id="cb20-37"><a href="package-setup.html#cb20-37" tabindex="-1"></a></span>
-<span id="cb20-38"><a href="package-setup.html#cb20-38" tabindex="-1"></a>  <span class="do">## Create three 2d plots</span></span>
-<span id="cb20-39"><a href="package-setup.html#cb20-39" tabindex="-1"></a>  plotlist <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb20-40"><a href="package-setup.html#cb20-40" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
-<span id="cb20-41"><a href="package-setup.html#cb20-41" tabindex="-1"></a>    dims <span class="ot">=</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>), <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>))[[ii]]</span>
-<span id="cb20-42"><a href="package-setup.html#cb20-42" tabindex="-1"></a></span>
-<span id="cb20-43"><a href="package-setup.html#cb20-43" tabindex="-1"></a>    <span class="do">## Make data plot</span></span>
-<span id="cb20-44"><a href="package-setup.html#cb20-44" tabindex="-1"></a>    one_countslist <span class="ot">=</span> (<span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(countslist)) <span class="fu">list</span>(counts2d_list[[ii]]) <span class="cf">else</span> <span class="cn">NULL</span>)</span>
-<span id="cb20-45"><a href="package-setup.html#cb20-45" tabindex="-1"></a>    p <span class="ot">=</span> flowtrend<span class="sc">::</span><a href='package-setup.html#plot_2d'>plot_2d</a>(<span class="fu">list</span>(y2d_list[[ii]]),</span>
-<span id="cb20-46"><a href="package-setup.html#cb20-46" tabindex="-1"></a>                           one_countslist, <span class="at">obj=</span><span class="cn">NULL</span>, <span class="dv">1</span>) </span>
-<span id="cb20-47"><a href="package-setup.html#cb20-47" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(countslist)){</span>
-<span id="cb20-48"><a href="package-setup.html#cb20-48" tabindex="-1"></a>      p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">scale_fill_gradientn</span>(</span>
-<span id="cb20-49"><a href="package-setup.html#cb20-49" tabindex="-1"></a>                  <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;yellow&quot;</span>), <span class="at">limits =</span> total_range,</span>
-<span id="cb20-50"><a href="package-setup.html#cb20-50" tabindex="-1"></a>                  <span class="at">guide =</span> <span class="st">&quot;none&quot;</span>)</span>
-<span id="cb20-51"><a href="package-setup.html#cb20-51" tabindex="-1"></a>    }</span>
-<span id="cb20-52"><a href="package-setup.html#cb20-52" tabindex="-1"></a></span>
-<span id="cb20-53"><a href="package-setup.html#cb20-53" tabindex="-1"></a>    <span class="do">## Adding visualizations of the model |obj| at time tt</span></span>
-<span id="cb20-54"><a href="package-setup.html#cb20-54" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(obj)){</span>
-<span id="cb20-55"><a href="package-setup.html#cb20-55" tabindex="-1"></a>      </span>
-<span id="cb20-56"><a href="package-setup.html#cb20-56" tabindex="-1"></a>      <span class="do">## Make data matrix</span></span>
-<span id="cb20-57"><a href="package-setup.html#cb20-57" tabindex="-1"></a>      mnlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>obj<span class="sc">$</span>numclust, <span class="cf">function</span>(iclust){</span>
-<span id="cb20-58"><a href="package-setup.html#cb20-58" tabindex="-1"></a>        one_mnmat <span class="ot">=</span> obj<span class="sc">$</span>mn[tt,dims,iclust] <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
-<span id="cb20-59"><a href="package-setup.html#cb20-59" tabindex="-1"></a>        <span class="fu">colnames</span>(one_mnmat) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;dim&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
-<span id="cb20-60"><a href="package-setup.html#cb20-60" tabindex="-1"></a>        one_mnmat <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">cluster =</span> iclust)</span>
-<span id="cb20-61"><a href="package-setup.html#cb20-61" tabindex="-1"></a>      })</span>
-<span id="cb20-62"><a href="package-setup.html#cb20-62" tabindex="-1"></a>      mnmat <span class="ot">=</span> <span class="fu">do.call</span>(rbind, mnlist)</span>
-<span id="cb20-63"><a href="package-setup.html#cb20-63" tabindex="-1"></a>      mn_colours <span class="ot">=</span> <span class="fu">rep</span>(<span class="st">&quot;red&quot;</span>, obj<span class="sc">$</span>numclust)</span>
-<span id="cb20-64"><a href="package-setup.html#cb20-64" tabindex="-1"></a></span>
-<span id="cb20-65"><a href="package-setup.html#cb20-65" tabindex="-1"></a>      <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>obj<span class="sc">$</span>numclust){</span>
-<span id="cb20-66"><a href="package-setup.html#cb20-66" tabindex="-1"></a>        </span>
-<span id="cb20-67"><a href="package-setup.html#cb20-67" tabindex="-1"></a>        <span class="do">## Add ellipse</span></span>
-<span id="cb20-68"><a href="package-setup.html#cb20-68" tabindex="-1"></a>        el <span class="ot">=</span> ellipse<span class="sc">::</span><span class="fu">ellipse</span>(<span class="at">x =</span> obj<span class="sc">$</span>sigma[iclust,dims,dims],</span>
-<span id="cb20-69"><a href="package-setup.html#cb20-69" tabindex="-1"></a>                              <span class="at">centre =</span> obj<span class="sc">$</span>mn[tt,dims,iclust]) <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
-<span id="cb20-70"><a href="package-setup.html#cb20-70" tabindex="-1"></a>        p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">data =</span> el,</span>
-<span id="cb20-71"><a href="package-setup.html#cb20-71" tabindex="-1"></a>                          <span class="at">colour =</span> mn_colours[iclust], <span class="at">lty =</span> <span class="dv">2</span>,</span>
-<span id="cb20-72"><a href="package-setup.html#cb20-72" tabindex="-1"></a>                          <span class="at">linewidth =</span> <span class="fu">pmin</span>(obj<span class="sc">$</span>prob[tt,iclust] <span class="sc">*</span> <span class="dv">8</span>, <span class="fl">0.8</span>))</span>
-<span id="cb20-73"><a href="package-setup.html#cb20-73" tabindex="-1"></a>        </span>
-<span id="cb20-74"><a href="package-setup.html#cb20-74" tabindex="-1"></a>        <span class="do">## Add mean</span></span>
-<span id="cb20-75"><a href="package-setup.html#cb20-75" tabindex="-1"></a>        p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> dim1, <span class="at">y =</span> dim2),</span>
-<span id="cb20-76"><a href="package-setup.html#cb20-76" tabindex="-1"></a>                           <span class="at">data =</span> mnmat <span class="sc">%&gt;%</span> <span class="fu">subset</span>(cluster <span class="sc">==</span> iclust),</span>
-<span id="cb20-77"><a href="package-setup.html#cb20-77" tabindex="-1"></a>                           <span class="at">colour =</span> mn_colours[iclust],</span>
-<span id="cb20-78"><a href="package-setup.html#cb20-78" tabindex="-1"></a>                           <span class="at">size =</span> obj<span class="sc">$</span>prob[tt,iclust] <span class="sc">*</span> <span class="dv">10</span>)</span>
-<span id="cb20-79"><a href="package-setup.html#cb20-79" tabindex="-1"></a></span>
-<span id="cb20-80"><a href="package-setup.html#cb20-80" tabindex="-1"></a>        <span class="do">## Add cluster number as a label</span></span>
-<span id="cb20-81"><a href="package-setup.html#cb20-81" tabindex="-1"></a>        cex <span class="ot">=</span> <span class="fu">rel</span>(<span class="dv">3</span>)</span>
-<span id="cb20-82"><a href="package-setup.html#cb20-82" tabindex="-1"></a>        fac <span class="ot">=</span> <span class="dv">10</span></span>
-<span id="cb20-83"><a href="package-setup.html#cb20-83" tabindex="-1"></a>        labels <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span>(obj<span class="sc">$</span>numclust)</span>
-<span id="cb20-84"><a href="package-setup.html#cb20-84" tabindex="-1"></a>        dt <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">dim1 =</span> mnmat[,<span class="dv">1</span>], <span class="at">dim2 =</span> mnmat[,<span class="dv">2</span>], <span class="at">prob =</span> obj<span class="sc">$</span>prob[tt,] <span class="sc">*</span> fac)</span>
-<span id="cb20-85"><a href="package-setup.html#cb20-85" tabindex="-1"></a>        p <span class="ot">=</span> p <span class="sc">+</span> ggrepel<span class="sc">::</span><span class="fu">geom_text_repel</span>(<span class="fu">aes</span>(<span class="at">x =</span> dim1, <span class="at">y =</span> dim2, <span class="at">label =</span> labels,</span>
-<span id="cb20-86"><a href="package-setup.html#cb20-86" tabindex="-1"></a>                                             <span class="at">point.size =</span> <span class="fu">sqrt</span>(prob)),</span>
-<span id="cb20-87"><a href="package-setup.html#cb20-87" tabindex="-1"></a>                                         <span class="at">col =</span> mn_colours,</span>
-<span id="cb20-88"><a href="package-setup.html#cb20-88" tabindex="-1"></a>                                         <span class="at">cex =</span> cex,</span>
-<span id="cb20-89"><a href="package-setup.html#cb20-89" tabindex="-1"></a>                                         <span class="at">bg.color =</span> <span class="st">&quot;white&quot;</span>,</span>
-<span id="cb20-90"><a href="package-setup.html#cb20-90" tabindex="-1"></a>                                         <span class="at">bg.r =</span> <span class="fl">0.1</span>,</span>
-<span id="cb20-91"><a href="package-setup.html#cb20-91" tabindex="-1"></a>                                         <span class="at">fontface =</span> <span class="st">&quot;bold&quot;</span>,</span>
-<span id="cb20-92"><a href="package-setup.html#cb20-92" tabindex="-1"></a>                                         <span class="at">force_pull   =</span> <span class="dv">5</span>, <span class="co"># do not pull toward data points</span></span>
-<span id="cb20-93"><a href="package-setup.html#cb20-93" tabindex="-1"></a>                                         <span class="do">## data = mnmat,</span></span>
-<span id="cb20-94"><a href="package-setup.html#cb20-94" tabindex="-1"></a>                                         <span class="at">data =</span> dt,</span>
-<span id="cb20-95"><a href="package-setup.html#cb20-95" tabindex="-1"></a>                                         <span class="at">seed =</span> <span class="dv">1</span>)</span>
-<span id="cb20-96"><a href="package-setup.html#cb20-96" tabindex="-1"></a></span>
-<span id="cb20-97"><a href="package-setup.html#cb20-97" tabindex="-1"></a>      }</span>
-<span id="cb20-98"><a href="package-setup.html#cb20-98" tabindex="-1"></a>    }</span>
-<span id="cb20-99"><a href="package-setup.html#cb20-99" tabindex="-1"></a></span>
-<span id="cb20-100"><a href="package-setup.html#cb20-100" tabindex="-1"></a>    <span class="do">## Format a bit more and save</span></span>
-<span id="cb20-101"><a href="package-setup.html#cb20-101" tabindex="-1"></a>    <span class="cf">if</span>(ii <span class="sc">==</span> <span class="dv">1</span>){</span>
-<span id="cb20-102"><a href="package-setup.html#cb20-102" tabindex="-1"></a>      p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">&quot;Time=&quot;</span>, tt))</span>
-<span id="cb20-103"><a href="package-setup.html#cb20-103" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb20-104"><a href="package-setup.html#cb20-104" tabindex="-1"></a>      p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;&quot;</span>)</span>
-<span id="cb20-105"><a href="package-setup.html#cb20-105" tabindex="-1"></a>    }</span>
-<span id="cb20-106"><a href="package-setup.html#cb20-106" tabindex="-1"></a>    p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>) </span>
-<span id="cb20-107"><a href="package-setup.html#cb20-107" tabindex="-1"></a>    plotlist[[ii]] <span class="ot">=</span> p</span>
-<span id="cb20-108"><a href="package-setup.html#cb20-108" tabindex="-1"></a>  }</span>
-<span id="cb20-109"><a href="package-setup.html#cb20-109" tabindex="-1"></a></span>
-<span id="cb20-110"><a href="package-setup.html#cb20-110" tabindex="-1"></a>  p_combined <span class="ot">=</span> <a href='package-setup.html#my_mfrow'>my_mfrow</a>(plotlist)</span>
-<span id="cb20-111"><a href="package-setup.html#cb20-111" tabindex="-1"></a></span>
-<span id="cb20-112"><a href="package-setup.html#cb20-112" tabindex="-1"></a>  <span class="do">## Return the plots</span></span>
-<span id="cb20-113"><a href="package-setup.html#cb20-113" tabindex="-1"></a>  <span class="cf">if</span>(return_list_of_plots) <span class="fu">return</span>(plotlist)</span>
-<span id="cb20-114"><a href="package-setup.html#cb20-114" tabindex="-1"></a>  <span class="fu">return</span>(p_combined)</span>
-<span id="cb20-115"><a href="package-setup.html#cb20-115" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb20-2"><a href="package-setup.html#cb20-2" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb20-3"><a href="package-setup.html#cb20-3" tabindex="-1"></a><span class="co">#&#39; @param ylist Data. A list of (|nt| by |dimdat|) matrices</span></span>
+<span id="cb20-4"><a href="package-setup.html#cb20-4" tabindex="-1"></a><span class="co">#&#39; @param countslist Count data.</span></span>
+<span id="cb20-5"><a href="package-setup.html#cb20-5" tabindex="-1"></a><span class="co">#&#39; @param obj flowmix or flowtrend object</span></span>
+<span id="cb20-6"><a href="package-setup.html#cb20-6" tabindex="-1"></a><span class="co">#&#39; @param tt Time point</span></span>
+<span id="cb20-7"><a href="package-setup.html#cb20-7" tabindex="-1"></a><span class="co">#&#39; @param return_list_of_plots If TRUE, return the list of three plots instead</span></span>
+<span id="cb20-8"><a href="package-setup.html#cb20-8" tabindex="-1"></a><span class="co">#&#39;   of the combined plot</span></span>
+<span id="cb20-9"><a href="package-setup.html#cb20-9" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb20-10"><a href="package-setup.html#cb20-10" tabindex="-1"></a><span class="co">#&#39; @return</span></span>
+<span id="cb20-11"><a href="package-setup.html#cb20-11" tabindex="-1"></a><span class="co">#&#39; </span></span>
+<span id="cb20-12"><a href="package-setup.html#cb20-12" tabindex="-1"></a><span id='plot_3d'>plot_3d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, <span class="at">obj =</span> <span class="cn">NULL</span>, tt, <span class="at">countslist =</span> <span class="cn">NULL</span>,</span>
+<span id="cb20-13"><a href="package-setup.html#cb20-13" tabindex="-1"></a>                    <span class="at">return_list_of_plots =</span> <span class="cn">FALSE</span>){</span>
+<span id="cb20-14"><a href="package-setup.html#cb20-14" tabindex="-1"></a></span>
+<span id="cb20-15"><a href="package-setup.html#cb20-15" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb20-16"><a href="package-setup.html#cb20-16" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">ncol</span>(ylist[[<span class="dv">1</span>]]) <span class="sc">==</span> <span class="dv">3</span>)</span>
+<span id="cb20-17"><a href="package-setup.html#cb20-17" tabindex="-1"></a></span>
+<span id="cb20-18"><a href="package-setup.html#cb20-18" tabindex="-1"></a>  <span class="do">## Extract data</span></span>
+<span id="cb20-19"><a href="package-setup.html#cb20-19" tabindex="-1"></a>  <span class="do">## y = ylist[[tt]][,dims]</span></span>
+<span id="cb20-20"><a href="package-setup.html#cb20-20" tabindex="-1"></a>  labs <span class="ot">=</span> <span class="fu">colnames</span>(ylist[[<span class="dv">1</span>]])</span>
+<span id="cb20-21"><a href="package-setup.html#cb20-21" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(labs))  labs <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;dim&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb20-22"><a href="package-setup.html#cb20-22" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(countslist)){</span>
+<span id="cb20-23"><a href="package-setup.html#cb20-23" tabindex="-1"></a>    counts <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">nrow</span>(ylist[[<span class="dv">1</span>]]))</span>
+<span id="cb20-24"><a href="package-setup.html#cb20-24" tabindex="-1"></a>  }</span>
+<span id="cb20-25"><a href="package-setup.html#cb20-25" tabindex="-1"></a></span>
+<span id="cb20-26"><a href="package-setup.html#cb20-26" tabindex="-1"></a>  <span class="do">## Aggregate counts into the two dimensions</span></span>
+<span id="cb20-27"><a href="package-setup.html#cb20-27" tabindex="-1"></a>  y2d_list <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb20-28"><a href="package-setup.html#cb20-28" tabindex="-1"></a>  counts2d_list <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb20-29"><a href="package-setup.html#cb20-29" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
+<span id="cb20-30"><a href="package-setup.html#cb20-30" tabindex="-1"></a>    dims <span class="ot">=</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>), <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>))[[ii]]</span>
+<span id="cb20-31"><a href="package-setup.html#cb20-31" tabindex="-1"></a>    yy <span class="ot">=</span> flowmix<span class="sc">::</span><span class="fu">collapse_3d_to_2d</span>(ylist[[tt]], countslist[[tt]], dims)</span>
+<span id="cb20-32"><a href="package-setup.html#cb20-32" tabindex="-1"></a>    y2d <span class="ot">=</span> yy[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span>
+<span id="cb20-33"><a href="package-setup.html#cb20-33" tabindex="-1"></a>    <span class="fu">colnames</span>(y2d) <span class="ot">=</span> labs[dims]</span>
+<span id="cb20-34"><a href="package-setup.html#cb20-34" tabindex="-1"></a>    y2d_list[[ii]] <span class="ot">=</span> y2d</span>
+<span id="cb20-35"><a href="package-setup.html#cb20-35" tabindex="-1"></a>    counts2d_list[[ii]] <span class="ot">=</span> yy[,<span class="dv">3</span>]</span>
+<span id="cb20-36"><a href="package-setup.html#cb20-36" tabindex="-1"></a>  }</span>
+<span id="cb20-37"><a href="package-setup.html#cb20-37" tabindex="-1"></a>  total_range <span class="ot">=</span> <span class="fu">sapply</span>(counts2d_list, range) <span class="sc">%&gt;%</span> <span class="fu">range</span>()</span>
+<span id="cb20-38"><a href="package-setup.html#cb20-38" tabindex="-1"></a></span>
+<span id="cb20-39"><a href="package-setup.html#cb20-39" tabindex="-1"></a>  <span class="do">## Create three 2d plots</span></span>
+<span id="cb20-40"><a href="package-setup.html#cb20-40" tabindex="-1"></a>  plotlist <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb20-41"><a href="package-setup.html#cb20-41" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
+<span id="cb20-42"><a href="package-setup.html#cb20-42" tabindex="-1"></a>    dims <span class="ot">=</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>), <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>))[[ii]]</span>
+<span id="cb20-43"><a href="package-setup.html#cb20-43" tabindex="-1"></a></span>
+<span id="cb20-44"><a href="package-setup.html#cb20-44" tabindex="-1"></a>    <span class="do">## Make data plot</span></span>
+<span id="cb20-45"><a href="package-setup.html#cb20-45" tabindex="-1"></a>    one_countslist <span class="ot">=</span> (<span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(countslist)) <span class="fu">list</span>(counts2d_list[[ii]]) <span class="cf">else</span> <span class="cn">NULL</span>)</span>
+<span id="cb20-46"><a href="package-setup.html#cb20-46" tabindex="-1"></a>    p <span class="ot">=</span> flowtrend<span class="sc">::</span><a href='package-setup.html#plot_2d'>plot_2d</a>(<span class="fu">list</span>(y2d_list[[ii]]),</span>
+<span id="cb20-47"><a href="package-setup.html#cb20-47" tabindex="-1"></a>                           one_countslist, <span class="at">obj=</span><span class="cn">NULL</span>, <span class="dv">1</span>) </span>
+<span id="cb20-48"><a href="package-setup.html#cb20-48" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(countslist)){</span>
+<span id="cb20-49"><a href="package-setup.html#cb20-49" tabindex="-1"></a>      p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">scale_fill_gradientn</span>(</span>
+<span id="cb20-50"><a href="package-setup.html#cb20-50" tabindex="-1"></a>                  <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;yellow&quot;</span>), <span class="at">limits =</span> total_range,</span>
+<span id="cb20-51"><a href="package-setup.html#cb20-51" tabindex="-1"></a>                  <span class="at">guide =</span> <span class="st">&quot;none&quot;</span>)</span>
+<span id="cb20-52"><a href="package-setup.html#cb20-52" tabindex="-1"></a>    }</span>
+<span id="cb20-53"><a href="package-setup.html#cb20-53" tabindex="-1"></a></span>
+<span id="cb20-54"><a href="package-setup.html#cb20-54" tabindex="-1"></a>    <span class="do">## Adding visualizations of the model |obj| at time tt</span></span>
+<span id="cb20-55"><a href="package-setup.html#cb20-55" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(obj)){</span>
+<span id="cb20-56"><a href="package-setup.html#cb20-56" tabindex="-1"></a>      </span>
+<span id="cb20-57"><a href="package-setup.html#cb20-57" tabindex="-1"></a>      <span class="do">## Make data matrix</span></span>
+<span id="cb20-58"><a href="package-setup.html#cb20-58" tabindex="-1"></a>      mnlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>obj<span class="sc">$</span>numclust, <span class="cf">function</span>(iclust){</span>
+<span id="cb20-59"><a href="package-setup.html#cb20-59" tabindex="-1"></a>        one_mnmat <span class="ot">=</span> obj<span class="sc">$</span>mn[tt,dims,iclust] <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
+<span id="cb20-60"><a href="package-setup.html#cb20-60" tabindex="-1"></a>        <span class="fu">colnames</span>(one_mnmat) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;dim&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
+<span id="cb20-61"><a href="package-setup.html#cb20-61" tabindex="-1"></a>        one_mnmat <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">cluster =</span> iclust)</span>
+<span id="cb20-62"><a href="package-setup.html#cb20-62" tabindex="-1"></a>      })</span>
+<span id="cb20-63"><a href="package-setup.html#cb20-63" tabindex="-1"></a>      mnmat <span class="ot">=</span> <span class="fu">do.call</span>(rbind, mnlist)</span>
+<span id="cb20-64"><a href="package-setup.html#cb20-64" tabindex="-1"></a>      mn_colours <span class="ot">=</span> <span class="fu">rep</span>(<span class="st">&quot;red&quot;</span>, obj<span class="sc">$</span>numclust)</span>
+<span id="cb20-65"><a href="package-setup.html#cb20-65" tabindex="-1"></a></span>
+<span id="cb20-66"><a href="package-setup.html#cb20-66" tabindex="-1"></a>      <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>obj<span class="sc">$</span>numclust){</span>
+<span id="cb20-67"><a href="package-setup.html#cb20-67" tabindex="-1"></a>        </span>
+<span id="cb20-68"><a href="package-setup.html#cb20-68" tabindex="-1"></a>        <span class="do">## Add ellipse</span></span>
+<span id="cb20-69"><a href="package-setup.html#cb20-69" tabindex="-1"></a>        el <span class="ot">=</span> ellipse<span class="sc">::</span><span class="fu">ellipse</span>(<span class="at">x =</span> obj<span class="sc">$</span>sigma[iclust,dims,dims],</span>
+<span id="cb20-70"><a href="package-setup.html#cb20-70" tabindex="-1"></a>                              <span class="at">centre =</span> obj<span class="sc">$</span>mn[tt,dims,iclust]) <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
+<span id="cb20-71"><a href="package-setup.html#cb20-71" tabindex="-1"></a>        p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">data =</span> el,</span>
+<span id="cb20-72"><a href="package-setup.html#cb20-72" tabindex="-1"></a>                          <span class="at">colour =</span> mn_colours[iclust], <span class="at">lty =</span> <span class="dv">2</span>,</span>
+<span id="cb20-73"><a href="package-setup.html#cb20-73" tabindex="-1"></a>                          <span class="at">linewidth =</span> <span class="fu">pmin</span>(obj<span class="sc">$</span>prob[tt,iclust] <span class="sc">*</span> <span class="dv">8</span>, <span class="fl">0.8</span>))</span>
+<span id="cb20-74"><a href="package-setup.html#cb20-74" tabindex="-1"></a>        </span>
+<span id="cb20-75"><a href="package-setup.html#cb20-75" tabindex="-1"></a>        <span class="do">## Add mean</span></span>
+<span id="cb20-76"><a href="package-setup.html#cb20-76" tabindex="-1"></a>        p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> dim1, <span class="at">y =</span> dim2),</span>
+<span id="cb20-77"><a href="package-setup.html#cb20-77" tabindex="-1"></a>                           <span class="at">data =</span> mnmat <span class="sc">%&gt;%</span> <span class="fu">subset</span>(cluster <span class="sc">==</span> iclust),</span>
+<span id="cb20-78"><a href="package-setup.html#cb20-78" tabindex="-1"></a>                           <span class="at">colour =</span> mn_colours[iclust],</span>
+<span id="cb20-79"><a href="package-setup.html#cb20-79" tabindex="-1"></a>                           <span class="at">size =</span> obj<span class="sc">$</span>prob[tt,iclust] <span class="sc">*</span> <span class="dv">10</span>)</span>
+<span id="cb20-80"><a href="package-setup.html#cb20-80" tabindex="-1"></a></span>
+<span id="cb20-81"><a href="package-setup.html#cb20-81" tabindex="-1"></a>        <span class="do">## Add cluster number as a label</span></span>
+<span id="cb20-82"><a href="package-setup.html#cb20-82" tabindex="-1"></a>        cex <span class="ot">=</span> <span class="fu">rel</span>(<span class="dv">3</span>)</span>
+<span id="cb20-83"><a href="package-setup.html#cb20-83" tabindex="-1"></a>        fac <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb20-84"><a href="package-setup.html#cb20-84" tabindex="-1"></a>        labels <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span>(obj<span class="sc">$</span>numclust)</span>
+<span id="cb20-85"><a href="package-setup.html#cb20-85" tabindex="-1"></a>        dt <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">dim1 =</span> mnmat[,<span class="dv">1</span>], <span class="at">dim2 =</span> mnmat[,<span class="dv">2</span>], <span class="at">prob =</span> obj<span class="sc">$</span>prob[tt,] <span class="sc">*</span> fac)</span>
+<span id="cb20-86"><a href="package-setup.html#cb20-86" tabindex="-1"></a>        p <span class="ot">=</span> p <span class="sc">+</span> ggrepel<span class="sc">::</span><span class="fu">geom_text_repel</span>(<span class="fu">aes</span>(<span class="at">x =</span> dim1, <span class="at">y =</span> dim2, <span class="at">label =</span> labels,</span>
+<span id="cb20-87"><a href="package-setup.html#cb20-87" tabindex="-1"></a>                                             <span class="at">point.size =</span> <span class="fu">sqrt</span>(prob)),</span>
+<span id="cb20-88"><a href="package-setup.html#cb20-88" tabindex="-1"></a>                                         <span class="at">col =</span> mn_colours,</span>
+<span id="cb20-89"><a href="package-setup.html#cb20-89" tabindex="-1"></a>                                         <span class="at">cex =</span> cex,</span>
+<span id="cb20-90"><a href="package-setup.html#cb20-90" tabindex="-1"></a>                                         <span class="at">bg.color =</span> <span class="st">&quot;white&quot;</span>,</span>
+<span id="cb20-91"><a href="package-setup.html#cb20-91" tabindex="-1"></a>                                         <span class="at">bg.r =</span> <span class="fl">0.1</span>,</span>
+<span id="cb20-92"><a href="package-setup.html#cb20-92" tabindex="-1"></a>                                         <span class="at">fontface =</span> <span class="st">&quot;bold&quot;</span>,</span>
+<span id="cb20-93"><a href="package-setup.html#cb20-93" tabindex="-1"></a>                                         <span class="at">force_pull   =</span> <span class="dv">5</span>, <span class="co"># do not pull toward data points</span></span>
+<span id="cb20-94"><a href="package-setup.html#cb20-94" tabindex="-1"></a>                                         <span class="do">## data = mnmat,</span></span>
+<span id="cb20-95"><a href="package-setup.html#cb20-95" tabindex="-1"></a>                                         <span class="at">data =</span> dt,</span>
+<span id="cb20-96"><a href="package-setup.html#cb20-96" tabindex="-1"></a>                                         <span class="at">seed =</span> <span class="dv">1</span>)</span>
+<span id="cb20-97"><a href="package-setup.html#cb20-97" tabindex="-1"></a></span>
+<span id="cb20-98"><a href="package-setup.html#cb20-98" tabindex="-1"></a>      }</span>
+<span id="cb20-99"><a href="package-setup.html#cb20-99" tabindex="-1"></a>    }</span>
+<span id="cb20-100"><a href="package-setup.html#cb20-100" tabindex="-1"></a></span>
+<span id="cb20-101"><a href="package-setup.html#cb20-101" tabindex="-1"></a>    <span class="do">## Format a bit more and save</span></span>
+<span id="cb20-102"><a href="package-setup.html#cb20-102" tabindex="-1"></a>    <span class="cf">if</span>(ii <span class="sc">==</span> <span class="dv">1</span>){</span>
+<span id="cb20-103"><a href="package-setup.html#cb20-103" tabindex="-1"></a>      p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">&quot;Time=&quot;</span>, tt))</span>
+<span id="cb20-104"><a href="package-setup.html#cb20-104" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb20-105"><a href="package-setup.html#cb20-105" tabindex="-1"></a>      p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;&quot;</span>)</span>
+<span id="cb20-106"><a href="package-setup.html#cb20-106" tabindex="-1"></a>    }</span>
+<span id="cb20-107"><a href="package-setup.html#cb20-107" tabindex="-1"></a>    p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>) </span>
+<span id="cb20-108"><a href="package-setup.html#cb20-108" tabindex="-1"></a>    plotlist[[ii]] <span class="ot">=</span> p</span>
+<span id="cb20-109"><a href="package-setup.html#cb20-109" tabindex="-1"></a>  }</span>
+<span id="cb20-110"><a href="package-setup.html#cb20-110" tabindex="-1"></a></span>
+<span id="cb20-111"><a href="package-setup.html#cb20-111" tabindex="-1"></a>  p_combined <span class="ot">=</span> <a href='package-setup.html#my_mfrow'>my_mfrow</a>(plotlist)</span>
+<span id="cb20-112"><a href="package-setup.html#cb20-112" tabindex="-1"></a></span>
+<span id="cb20-113"><a href="package-setup.html#cb20-113" tabindex="-1"></a>  <span class="do">## Return the plots</span></span>
+<span id="cb20-114"><a href="package-setup.html#cb20-114" tabindex="-1"></a>  <span class="cf">if</span>(return_list_of_plots) <span class="fu">return</span>(plotlist)</span>
+<span id="cb20-115"><a href="package-setup.html#cb20-115" tabindex="-1"></a>  <span class="fu">return</span>(p_combined)</span>
+<span id="cb20-116"><a href="package-setup.html#cb20-116" tabindex="-1"></a>}</span></code></pre></div>
 <p>(This is test code.)</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="package-setup.html#cb21-1" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">&quot;~/repos/flowtrend/index.Rmd&quot;</span>)</span>
 <span id="cb21-2"><a href="package-setup.html#cb21-2" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;~/repos/flowmix/paper-data/MGL1704-hourly-only-binned.Rdata&quot;</span>, <span class="at">verbose=</span><span class="cn">TRUE</span>)</span>

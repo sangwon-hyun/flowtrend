@@ -37,7 +37,7 @@ Mstep_prob <- function(resp, H_tf, countslist = NULL,
   ## If glmnet is needed, use it.
   } else {
 
-    lambda_range <- function(lam, nlam = 50, lam.max = 5*lam){
+    lambda_range <- function(lam, nlam = 50, lam.max = max(1, 5*lam)){
       return(exp(seq(log(lam.max), log(lam), length.out = nlam)))
     }
 

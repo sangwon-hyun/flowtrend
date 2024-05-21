@@ -132,7 +132,7 @@ A formal test for unevenly spaced inputs will come soon, once we've defined
 `gen_tf_mat`, next.
 
 We now build a function to build a lasso regressor matrix $H$ that can be used
-to solve an equivalent problem as the trend filtering of the \code{k}'th degree.
+to solve an equivalent problem as the trend filtering of the l'th degree.
 
 (This is stated in Lemma 4, equation (25) from Tibshirani (2014))
 
@@ -298,6 +298,8 @@ The function `loglik_tt()` calculates the log-likelihood of one cytogram, which 
 $$\sum_{i=1}^{n_t} C_i^{(t)} \log\left( \sum_{k=1}^K \pi_{itk} \phi(y_i^{(t)};
 \mu_{kt}, \Sigma_k) \right). $$
 
+This is the portion of the *objective* function of the flowtrend model.
+
 ```{r loglik_tt}
 #' Log likelihood for a single time point's data.
 #'
@@ -328,7 +330,11 @@ loglik_tt <- function(ylist, tt, mu, sigma, prob, dimdat = NULL, countslist = NU
 ```
 
 Next, here is the function that calculates the entire objective from all
-cytograms, given model parameter `mu`, `prob`, and `sigma`.
+cytograms, given model parameter `mu`, `prob`, and `sigma`:
+
+
+$$\sum_{t=1}^T\sum_{i=1}^{n_t} C_i^{(t)} \log\left( \sum_{k=1}^K \pi_{itk} \phi(y_i^{(t)};
+\mu_{kt}, \Sigma_k) \right). $$
 
 ```{r objective}
 #' Evaluating the penalized data log-likelihood on all data \code{ylist} given parameters \code{mu}, \code{prob}, and \code{sigma}.
@@ -355,7 +361,6 @@ cytograms, given model parameter `mu`, `prob`, and `sigma`.
 #'
 #' @examples
 objective <- function(mu, prob, prob_link = NULL, sigma,
-                      ## TT, N, dimdat, numclust,
                       ylist,
                       Dlp1, l = NULL,
                       lambda = 0,
@@ -737,7 +742,7 @@ Mstep_prob <- function(resp, H_tf, countslist = NULL,
   ## If glmnet is needed, use it.
   } else {
 
-    lambda_range <- function(lam, nlam = 50, lam.max = 5*lam){
+    lambda_range <- function(lam, nlam = 50, lam.max = max(1, 5*lam)){
       return(exp(seq(log(lam.max), log(lam), length.out = nlam)))
     }
 
@@ -2044,7 +2049,7 @@ mn[,1,] %>% matlines(lwd = 1, x=x, lty = 3)
 
 TODO: We just need to bundle this into `testthat` style tests, and make sure to test several lambda values.
 
-TODO: maybe do this for unevenly spaced inputs. CVXR needs to take a different D matrix.
+	TODO: maybe do this for unevenly spaced inputs. CVXR needs to take a different D matrix.
 
 ```{r test-correctness-mstep-mu, eval = FALSE}
 testthat::test_that("Test the M step of \mu against CVXR", {})

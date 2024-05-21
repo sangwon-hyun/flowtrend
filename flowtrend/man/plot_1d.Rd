@@ -9,21 +9,24 @@ plot_1d(
   countslist = NULL,
   obj = NULL,
   x = NULL,
-  add_point = FALSE,
   idim = NULL,
-  alpha = 0.1
+  alpha = 0.1,
+  bin = FALSE
 )
 }
 \arguments{
-\item{ylist}{Data.}
+\item{ylist}{Data. A list of (|nt| by |dimdat|) matrices}
 
-\item{obj}{flowtrend object. Defaults to NULL.}
+\item{obj}{A flowtrend (or flowmix) object. Defaults to NULL.}
 
-\item{x}{time points. Defaults to NULL.}
+\item{x}{Time points. Defaults to NULL.}
 
-\item{add_point}{if TRUE, add the means as points.}
+\item{idim}{If provided, plots the |idim|'th dimension of the data (only particles).}
 
-\item{idim}{if provided, take the idim.}
+\item{alpha}{Optional; between 0 and 1, how transparent to plot the data
+points.}
+
+\item{bin}{If TRUE, the data is binned.}
 }
 \value{
 ggplot object with data, and optionally, a flowtrend model overlaid.

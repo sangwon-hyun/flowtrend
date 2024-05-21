@@ -24,7 +24,6 @@
 #'
 #' @examples
 objective <- function(mu, prob, prob_link = NULL, sigma,
-                      ## TT, N, dimdat, numclust,
                       ylist,
                       Dlp1, l = NULL,
                       lambda = 0,

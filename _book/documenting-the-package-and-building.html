@@ -23,7 +23,7 @@
 <meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien" />
 
 
-<meta name="date" content="2024-05-07" />
+<meta name="date" content="2024-05-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -183,7 +183,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.6" data-path="tuning-lambda.html"><a href="tuning-lambda.html#summarizing-the-output"><i class="fa fa-check"></i><b>5.6</b> Summarizing the output</a></li>
 <li class="chapter" data-level="5.7" data-path="tuning-lambda.html"><a href="tuning-lambda.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>5.7</b> CV on your own computer</a></li>
 <li class="chapter" data-level="5.8" data-path="tuning-lambda.html"><a href="tuning-lambda.html#plotting"><i class="fa fa-check"></i><b>5.8</b> Plotting</a></li>
-<li class="chapter" data-level="5.9" data-path="tuning-lambda.html"><a href="tuning-lambda.html#se-rule-for-cross-validation"><i class="fa fa-check"></i><b>5.9</b> 1SE rule for cross validation</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>6</b> Testing the flowtrend method</a>
 <ul>
@@ -195,8 +194,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="7" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html"><i class="fa fa-check"></i><b>7</b> Helpers for simulations</a>
 <ul>
-<li class="chapter" data-level="7.1" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#two-alternative-estimators"><i class="fa fa-check"></i><b>7.1</b> Two alternative estimators</a></li>
-<li class="chapter" data-level="7.2" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>7.2</b> Example using <code><a href='helpers-for-simulations.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations.html#overfit_flowmeans'>overfit_flowmeans</a>()</code></a></li>
+<li class="chapter" data-level="7.1" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#two-alternative-clusterings"><i class="fa fa-check"></i><b>7.1</b> Two alternative clusterings</a></li>
+<li class="chapter" data-level="7.2" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#example-using-other-cluster-algorithms"><i class="fa fa-check"></i><b>7.2</b> Example using other cluster algorithms</a></li>
 <li class="chapter" data-level="7.3" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>7.3</b> Evaluating performance: soft RAND index</a></li>
 <li class="chapter" data-level="7.4" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#generating-pseudo-real-data"><i class="fa fa-check"></i><b>7.4</b> Generating “pseudo-real” data</a></li>
 <li class="chapter" data-level="7.5" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#miscellaneous-helpers"><i class="fa fa-check"></i><b>7.5</b> Miscellaneous helpers</a></li>
@@ -223,36 +222,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">8</span> Documenting the package and building<a href="documenting-the-package-and-building.html#documenting-the-package-and-building" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>We finish by running commands that will document, build, and install the
 package. It may also be a good idea to check the package from within this file.</p>
-<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="documenting-the-package-and-building.html#cb167-1" tabindex="-1"></a><span class="co">#&#39; Parse command line arguments and assigns the values of them. |args| is meant</span></span>
-<span id="cb167-2"><a href="documenting-the-package-and-building.html#cb167-2" tabindex="-1"></a><span class="co">#&#39; to just be additional command line arguments.</span></span>
-<span id="cb167-3"><a href="documenting-the-package-and-building.html#cb167-3" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb167-4"><a href="documenting-the-package-and-building.html#cb167-4" tabindex="-1"></a><span class="co">#&#39; @param args Argument.</span></span>
-<span id="cb167-5"><a href="documenting-the-package-and-building.html#cb167-5" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb167-6"><a href="documenting-the-package-and-building.html#cb167-6" tabindex="-1"></a><span class="co">#&#39; @return Nothing.</span></span>
-<span id="cb167-7"><a href="documenting-the-package-and-building.html#cb167-7" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb167-8"><a href="documenting-the-package-and-building.html#cb167-8" tabindex="-1"></a><span id='parse_args'>parse_args</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(args, <span class="at">verbose=</span><span class="cn">FALSE</span>){</span>
-<span id="cb167-9"><a href="documenting-the-package-and-building.html#cb167-9" tabindex="-1"></a>  args <span class="ot">=</span> <span class="fu">sapply</span>(args, strsplit, <span class="st">&quot;=&quot;</span>)</span>
-<span id="cb167-10"><a href="documenting-the-package-and-building.html#cb167-10" tabindex="-1"></a>  <span class="fu">print</span>(args)</span>
-<span id="cb167-11"><a href="documenting-the-package-and-building.html#cb167-11" tabindex="-1"></a>  <span class="cf">for</span>(arg <span class="cf">in</span> args){</span>
-<span id="cb167-12"><a href="documenting-the-package-and-building.html#cb167-12" tabindex="-1"></a></span>
-<span id="cb167-13"><a href="documenting-the-package-and-building.html#cb167-13" tabindex="-1"></a>    <span class="do">## Check if the thing is integer</span></span>
-<span id="cb167-14"><a href="documenting-the-package-and-building.html#cb167-14" tabindex="-1"></a>    all_numbers <span class="ot">=</span> <span class="fu">str_detect</span>(arg[<span class="dv">2</span>], <span class="st">&quot;^[:digit:]+$&quot;</span>)</span>
-<span id="cb167-15"><a href="documenting-the-package-and-building.html#cb167-15" tabindex="-1"></a></span>
-<span id="cb167-16"><a href="documenting-the-package-and-building.html#cb167-16" tabindex="-1"></a>    <span class="do">## Assign the variable</span></span>
-<span id="cb167-17"><a href="documenting-the-package-and-building.html#cb167-17" tabindex="-1"></a>    <span class="cf">if</span>(all_numbers){</span>
-<span id="cb167-18"><a href="documenting-the-package-and-building.html#cb167-18" tabindex="-1"></a>      <span class="fu">assign</span>(arg[<span class="dv">1</span>], <span class="fu">as.numeric</span>(arg[<span class="dv">2</span>]), <span class="at">inherits =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb167-19"><a href="documenting-the-package-and-building.html#cb167-19" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb167-20"><a href="documenting-the-package-and-building.html#cb167-20" tabindex="-1"></a>      <span class="fu">assign</span>(arg[<span class="dv">1</span>], arg[<span class="dv">2</span>], <span class="at">inherits =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb167-21"><a href="documenting-the-package-and-building.html#cb167-21" tabindex="-1"></a>    }</span>
-<span id="cb167-22"><a href="documenting-the-package-and-building.html#cb167-22" tabindex="-1"></a></span>
-<span id="cb167-23"><a href="documenting-the-package-and-building.html#cb167-23" tabindex="-1"></a>    <span class="cf">if</span>(verbose){</span>
-<span id="cb167-24"><a href="documenting-the-package-and-building.html#cb167-24" tabindex="-1"></a>      <span class="fu">cat</span>(arg[<span class="dv">1</span>], <span class="st">&quot;takes the value of&quot;</span>, arg[<span class="dv">2</span>],</span>
-<span id="cb167-25"><a href="documenting-the-package-and-building.html#cb167-25" tabindex="-1"></a>          <span class="st">&quot;from command line input&quot;</span>, <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
-<span id="cb167-26"><a href="documenting-the-package-and-building.html#cb167-26" tabindex="-1"></a>    }</span>
-<span id="cb167-27"><a href="documenting-the-package-and-building.html#cb167-27" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">&quot;===============================&quot;</span>)</span>
-<span id="cb167-28"><a href="documenting-the-package-and-building.html#cb167-28" tabindex="-1"></a>  }</span>
-<span id="cb167-29"><a href="documenting-the-package-and-building.html#cb167-29" tabindex="-1"></a>}</span>
-<span id="cb167-30"><a href="documenting-the-package-and-building.html#cb167-30" tabindex="-1"></a></span></code></pre></div>
+<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="documenting-the-package-and-building.html#cb168-1" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">document</span>() <span class="co"># &lt;-- use instead of devtools::document() </span></span></code></pre></div>
 <pre><code>## ℹ Updating flowtrend documentation
 ## ℹ Loading flowtrend
 ## ℹ Re-compiling flowtrend (debug build)</code></pre>
@@ -334,7 +304,7 @@ package. It may also be a good idea to check the package from within this file.<
 <pre><code>## Warning: [objective.R:22] @return requires a value</code></pre>
 <pre><code>## Warning: [objective.R:25] @examples requires a value</code></pre>
 <pre><code>## Warning: [overfit_flowmeans.R:7] @return requires a value</code></pre>
-<pre><code>## Warning: [plot_3d.R:11] @return requires a value</code></pre>
+<pre><code>## Warning: [plot_3d.R:12] @return requires a value</code></pre>
 <pre><code>## Writing &#39;NAMESPACE&#39;</code></pre>
 <pre><code>## Warning: Skipping &#39;U_update_Z.Rd&#39;
 ## ℹ File lacks name and/or title</code></pre>

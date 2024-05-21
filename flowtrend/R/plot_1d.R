@@ -2,15 +2,17 @@
 
 #' Makes 1d plot of data and model
 #'
-#' @param ylist Data.
-#' @param obj flowtrend object. Defaults to NULL.
-#' @param x time points. Defaults to NULL.
-#' @param add_point if TRUE, add the means as points.
-#' @param idim if provided, take the idim.
+#' @param ylist Data. A list of (|nt| by |dimdat|) matrices
+#' @param obj A flowtrend (or flowmix) object. Defaults to NULL.
+#' @param x Time points. Defaults to NULL.
+#' @param idim If provided, plots the |idim|'th dimension of the data (only particles).
+#' @param alpha Optional; between 0 and 1, how transparent to plot the data
+#'   points.
+#' @param bin If TRUE, the data is binned.
 #'
 #' @return ggplot object with data, and optionally, a flowtrend model overlaid.
 #' @export
-plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALSE, idim = NULL, alpha = .1){
+plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, idim = NULL, alpha = .1, bin = FALSE){
 
   ## Basic checks
   if(!is.null(x)){
@@ -19,7 +21,6 @@ plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALS
   } else {
     times = 1:length(ylist)
   }
-
 
   ## If more than 2d data is provided, take the idim'th info only.
   dimdat = ncol(ylist[[1]])
@@ -75,11 +76,6 @@ plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, add_point = FALS
     gg = gg + geom_path(aes(x = time, y = mean, linewidth = prob, group = cluster, color = cluster),
                         data = est_long,
                         lineend = "round", linejoin="mitre")
-    if(add_point){
-      gg = gg + geom_line(aes(x = time, y = mean, linewidth = prob, group = cluster),
-                          data = est_long, size = rel(1),
-                          col = 'black')
-    }
   
     ## TODO: make it ignore the missing values at the gaps; currently this is not coded as NAs.
   

@@ -8,7 +8,7 @@ now.
 
 Generate data.
 
-```{r 1d-example, eval = FALSE}
+```{r 1d-example, eval = FALSE, echo = TRUE}
 set.seed(100)
 dt       <- gendat_1d(100, rep(100, 100), offset = 4)
 dt_model <- gendat_1d(100, rep(100, 100), return_model = TRUE, offset=4)
@@ -20,7 +20,7 @@ dt_model %>% select(time, cluster, prob) %>% ggplot() + geom_line(aes(x=time, y=
 
 Next, we fit the model.
 
-```{r 1d-example2, eval = FALSE}
+```{r 1d-example2, eval = FALSE, echo = TRUE}
 set.seed(18)
 obj <- flowtrend(ylist = ylist,
                  x = x,
@@ -45,7 +45,7 @@ The data and estimated model are shown here. The dashed lines are the true means
 
 
 ```{r 1d-example-plot-mean, fig.width = 7, fig.height = 5, eval = FALSE}
-plot_1d(ylist = ylist, obj = obj, x = x, add_point = FALSE) +
+plot_1d(ylist = ylist, obj = obj, x = x) +
   geom_line(aes(x = time, y = mean, group = cluster),
             data = dt_model,## %>% subset(time %ni% held_out),
             linetype = "dashed", size=2, alpha = .7)
@@ -155,7 +155,7 @@ Recall that "binning" means we will use binned frequency histogram estimates of
 the original particle-level dataset; this is useful when there are many
 particles. 
 
-```{r binned, fig.width = 7, fig.height=5}
+```{r binned, fig.width = 7, fig.height=7}
 ## library(flowmix)
 set.seed(10232)
 TT = 100
@@ -173,11 +173,10 @@ obj = flowtrend(ylist = binres$ybin_list,
                 lambda_prob = .005,
                 rho_init = .01,
                 nrestart = 1)
-## obj$objectives %>% plot(type='l')
 
 ## Plot cluster means
-g1 = plot_1d(ylist = dt$ylist, obj = obj, idim = 2) + ylim(c(-7, 4))
-g2 = plot_1d(ylist = dt$ylist, obj = obj, idim = 1) + ylim(c(-7, 4))
+g1 = plot_1d(ylist = dt$ylist, obj = obj, idim = 2) + ylim(c(-7, 4)) + ggtitle("Estimated data and model, 2nd dimension")
+g2 = plot_1d(ylist = dt$ylist, obj = obj, idim = 1) + ylim(c(-7, 4)) + ggtitle("Estimated data and model, 1st dimension")
 do.call(ggpubr::ggarrange, c(list(g1, g2), ncol=1, nrow=2))
 ```
 
@@ -195,15 +194,20 @@ plot_prob(obj)
 
 Let's try the EM algorithm out with unevenly spaced inputs.
 
-```{r uneven-test, fig.width = 6, fig.height = 6}
+```{r uneven-test, fig.width = 6, fig.height = 6, eval = FALSE}
 set.seed(100)
 dt       <- gendat_1d(TT=100, rep(100, times=100))
 dt_model       <- gendat_1d(TT=100, rep(100, times=100), return_model = TRUE)
 ylist_orig = dt %>% dt2ylist()
 
+## Two ways of removing some time points
 ind_rm_list = list(seq(from=10, to=100, by=10),
                    ind_rm = 30:50)
-for(ind_rm in ind_rm_list){
+
+## Try both ways, and see that the objective values
+objlist = list()
+for(ii in 1:2){
+  ind_rm = ind_rm_list[[ii]]
   x = (1:100)[-ind_rm]
   ylist = ylist_orig[x]
 
@@ -218,9 +222,19 @@ for(ind_rm in ind_rm_list){
                         lambda_prob = 0.1, ## 
                         admm_local_adapt = TRUE,
                         rho_init = 0.01)
-  obj$objectives %>% plot(type='o', ylab = "EM objectives")
-  plot_1d(obj = obj, ylist = ylist, x = x)
+  objlist[[ii]] = obj
 }
+
+## Plot both results (and objectives)
+ii = 1
+ind_rm = ind_rm_list[[ii]]
+x = (1:100)[-ind_rm]
+plot_1d(obj = objlist[[1]], ylist = ylist_orig[x], x = x)
+objlist[[1]]$objectives %>% plot(type='o', ylab = "EM objectives")
+
+ii=2
+ind_rm = ind_rm_list[[ii]]
+x = (1:100)[-ind_rm]
+plot_1d(obj = objlist[[2]], ylist = ylist_orig[x], x = x)
+objlist[[2]]$objectives %>% plot(type='o', ylab = "EM objectives")
 ```
-
-

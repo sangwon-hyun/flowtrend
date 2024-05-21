@@ -14,9 +14,9 @@ plot_2d(
 )
 }
 \arguments{
-\item{ylist}{data}
+\item{ylist}{Data. A list of (|nt| by |dimdat|) matrices}
 
-\item{countslist}{data}
+\item{countslist}{Count data.}
 
 \item{obj}{flowtrend (or flowmix) object.}
 
