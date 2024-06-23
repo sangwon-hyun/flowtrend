@@ -35,7 +35,6 @@ Estep <- function(mn, sigma, prob, ylist = NULL, numclust, denslist_by_clust = N
     }
     return(dens)
   }
-
   ## Calculate posterior probability of membership of $y_{it}$.
   ncol.prob = ncol(prob)
   for (tt in 1:TT) {
@@ -44,7 +43,7 @@ Estep <- function(mn, sigma, prob, ylist = NULL, numclust, denslist_by_clust = N
                       mn, sigma, denslist_by_clust, first_iter)
     wt.densmat <- matrix(prob[tt, ], nrow = ntlist[tt],
                          ncol = ncol.prob, byrow = TRUE) * densmat
-    wt.densmat = wt.densmat + 1e-10
+    wt.densmat = wt.densmat + 1e-20
     wt.densmat <- wt.densmat/rowSums(wt.densmat)
     resp[[tt]] <- wt.densmat
   }

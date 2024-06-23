@@ -9,9 +9,9 @@ plot_1d(
   countslist = NULL,
   obj = NULL,
   x = NULL,
-  idim = NULL,
   alpha = 0.1,
-  bin = FALSE
+  bin = FALSE,
+  plot_band = TRUE
 )
 }
 \arguments{
@@ -21,10 +21,8 @@ plot_1d(
 
 \item{x}{Time points. Defaults to NULL.}
 
-\item{idim}{If provided, plots the |idim|'th dimension of the data (only particles).}
-
-\item{alpha}{Optional; between 0 and 1, how transparent to plot the data
-points.}
+\item{alpha}{Between 0 and 1, how transparent to plot the data
+points. Defaults to 0.1.}
 
 \item{bin}{If TRUE, the data is binned.}
 }

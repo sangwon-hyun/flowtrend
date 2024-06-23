@@ -1,61 +1,33 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
 <head>
-
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>8 E step | Creating the flowtrend R package</title>
-  <meta name="description" content="8 E step | Creating the flowtrend R package" />
-  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
-
-  <meta property="og:title" content="8 E step | Creating the flowtrend R package" />
-  <meta property="og:type" content="book" />
-  
-  
-  
-
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="8 E step | Creating the flowtrend R package" />
-  
-  
-  
-
-<meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien" />
-
-
-<meta name="date" content="2024-05-07" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  
-  
-<link rel="prev" href="initial-parameters-for-em-algorithm.html"/>
-<link rel="next" href="m-step.html"/>
-<script src="libs/header-attrs-2.25/header-attrs.js"></script>
-<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
-<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
-
-
-
-
-
-
-
-
-<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
-<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
-
-
-<style type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>8 E step | Creating the flowtrend R package</title>
+<meta name="description" content="8 E step | Creating the flowtrend R package">
+<meta name="generator" content="bookdown 0.35 and GitBook 2.6.7">
+<meta property="og:title" content="8 E step | Creating the flowtrend R package">
+<meta property="og:type" content="book">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="8 E step | Creating the flowtrend R package">
+<meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien">
+<meta name="date" content="2024-05-07">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="prev" href="initial-parameters-for-em-algorithm.html">
+<link rel="next" href="m-step.html">
+<script src="libs/header-attrs-2.25/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script><link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet">
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet">
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet">
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script><style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -119,14 +91,20 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
-
 <style type="text/css">
   
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 </style>
-
+<style type="text/css">fieldset.chunkfield {border:1px dotted black;padding-bottom: 0px;padding-top: 0px;margin:0 2px;padding:.35em .625em .75em}
+    legend.chunklegend {padding:0;width:auto;border:0; border-bottom: none; margin-bottom:0}
+    </style>
+<style type="text/css">fieldset.chunkfield {border:1px dotted black;padding-bottom: 0px;padding-top: 0px;margin:0 2px;padding:.35em .625em .75em}
+    legend.chunklegend {padding:0;width:auto;border:0; border-bottom: none; margin-bottom:0}
+    </style>
+<style type="text/css">fieldset.chunkfield {border:1px dotted black;padding-bottom: 0px;padding-top: 0px;margin:0 2px;padding:.35em .625em .75em}
+    legend.chunklegend {padding:0;width:auto;border:0; border-bottom: none; margin-bottom:0}
+    </style>
 </head>
-
 <body>
 
 
@@ -134,35 +112,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
 
     <div class="book-summary">
-      <nav role="navigation">
-
-<ul class="summary">
+      <nav role="navigation"><ul class="summary">
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a>
+<li class="chapter" data-level="2" data-path="package-setup.html">
+<a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a>
 <ul>
 <li class="chapter" data-level="2.1" data-path="package-setup.html"><a href="package-setup.html#plotting-1d-data"><i class="fa fa-check"></i><b>2.1</b> Plotting 1d data</a></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="d-data.html"><a href="d-data.html"><i class="fa fa-check"></i><b>3</b> 2d data</a>
+</ul>
+</li>
+<li class="chapter" data-level="3" data-path="d-data.html">
+<a href="d-data.html"><i class="fa fa-check"></i><b>3</b> 2d data</a>
 <ul>
 <li class="chapter" data-level="3.1" data-path="d-data.html"><a href="d-data.html#generating-2d-data"><i class="fa fa-check"></i><b>3.1</b> Generating 2d data</a></li>
 <li class="chapter" data-level="3.2" data-path="d-data.html"><a href="d-data.html#plotting-2d-data"><i class="fa fa-check"></i><b>3.2</b> Plotting 2d data</a></li>
-</ul></li>
+</ul>
+</li>
 <li class="chapter" data-level="4" data-path="d-data-1.html"><a href="d-data-1.html"><i class="fa fa-check"></i><b>4</b> 3d data</a></li>
 <li class="chapter" data-level="5" data-path="trend-filtering.html"><a href="trend-filtering.html"><i class="fa fa-check"></i><b>5</b> Trend filtering</a></li>
 <li class="chapter" data-level="6" data-path="objective-data-log-likelihood.html"><a href="objective-data-log-likelihood.html"><i class="fa fa-check"></i><b>6</b> Objective (data log-likelihood)</a></li>
 <li class="chapter" data-level="7" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html"><i class="fa fa-check"></i><b>7</b> Initial parameters for EM algorithm</a></li>
 <li class="chapter" data-level="8" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>8</b> E step</a></li>
-<li class="chapter" data-level="9" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>9</b> M step</a>
+<li class="chapter" data-level="9" data-path="m-step.html">
+<a href="m-step.html"><i class="fa fa-check"></i><b>9</b> M step</a>
 <ul>
 <li class="chapter" data-level="9.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>9.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
 <li class="chapter" data-level="9.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>9.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
 <li class="chapter" data-level="9.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>9.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
 <li class="chapter" data-level="9.4" data-path="m-step.html"><a href="m-step.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>9.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
 <li class="chapter" data-level="9.5" data-path="m-step.html"><a href="m-step.html#all-rcpp-functions"><i class="fa fa-check"></i><b>9.5</b> All Rcpp functions</a></li>
-</ul></li>
+</ul>
+</li>
 <li class="chapter" data-level="10" data-path="flowtrend.html"><a href="flowtrend.html"><i class="fa fa-check"></i><b>10</b> flowtrend</a></li>
 <li class="chapter" data-level="11" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>11</b> Reordering clusters</a></li>
-<li class="chapter" data-level="12" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html"><i class="fa fa-check"></i><b>12</b> Tuning the regularization parameters for <code>flowtrend</code></a>
+<li class="chapter" data-level="12" data-path="tuning-the-regularization-parameters-for-flowtrend.html">
+<a href="tuning-the-regularization-parameters-for-flowtrend.html"><i class="fa fa-check"></i><b>12</b> Tuning the regularization parameters for <code>flowtrend</code></a>
 <ul>
 <li class="chapter" data-level="12.1" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>12.1</b> Predicting and evaluating on new time points</a></li>
 <li class="chapter" data-level="12.2" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>12.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
@@ -172,28 +155,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.6" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#summarizing-the-output"><i class="fa fa-check"></i><b>12.6</b> Summarizing the output</a></li>
 <li class="chapter" data-level="12.7" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>12.7</b> CV on your own computer</a></li>
 <li class="chapter" data-level="12.8" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#plotting"><i class="fa fa-check"></i><b>12.8</b> Plotting</a></li>
-</ul></li>
+</ul>
+</li>
 <li class="chapter" data-level="13" data-path="se-rule-for-cross-validation.html"><a href="se-rule-for-cross-validation.html"><i class="fa fa-check"></i><b>13</b> 1SE rule for cross validation</a></li>
-<li class="chapter" data-level="14" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>14</b> Testing the flowtrend method</a>
+<li class="chapter" data-level="14" data-path="testing-the-flowtrend-method.html">
+<a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>14</b> Testing the flowtrend method</a>
 <ul>
 <li class="chapter" data-level="14.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>14.1</b> 1d example</a></li>
 <li class="chapter" data-level="14.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values"><i class="fa fa-check"></i><b>14.2</b> Testing monotonicity of objective values</a></li>
 <li class="chapter" data-level="14.3" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_2d-example"><i class="fa fa-check"></i><b>14.3</b> 2d example</a></li>
 <li class="chapter" data-level="14.4" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#working-with-binned-dataset"><i class="fa fa-check"></i><b>14.4</b> Working with “binned” dataset</a></li>
 <li class="chapter" data-level="14.5" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#unevenly-spaced-inputs-x"><i class="fa fa-check"></i><b>14.5</b> Unevenly spaced inputs (x)</a></li>
-</ul></li>
+</ul>
+</li>
 <li class="chapter" data-level="15" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>15</b> Documenting the package and building</a></li>
-<li class="chapter" data-level="16" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html"><i class="fa fa-check"></i><b>16</b> Helpers for simulations in the paper</a>
+<li class="chapter" data-level="16" data-path="helpers-for-simulations-in-the-paper.html">
+<a href="helpers-for-simulations-in-the-paper.html"><i class="fa fa-check"></i><b>16</b> Helpers for simulations in the paper</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#two-alternative-estimators"><i class="fa fa-check"></i><b>16.1</b> Two alternative estimators</a></li>
-<li class="chapter" data-level="16.2" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>16.2</b> Example using <code><a href='helpers-for-simulations-in-the-paper.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations-in-the-paper.html#overfit_flowmeans'>overfit_flowmeans</a>()</code></a></li>
+<li class="chapter" data-level="16.2" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>16.2</b> Example using <code><a href="helpers-for-simulations-in-the-paper.html#underfit_flowmeans">underfit_flowmeans</a>()</code> and <code><a href="helpers-for-simulations-in-the-paper.html#overfit_flowmeans">overfit_flowmeans</a>()</code></a></li>
 <li class="chapter" data-level="16.3" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>16.3</b> Evaluating performance: soft RAND index</a></li>
 <li class="chapter" data-level="16.4" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#generating-pseudo-real-data"><i class="fa fa-check"></i><b>16.4</b> Generating “pseudo-real” data</a></li>
-</ul></li>
 </ul>
-
-      </nav>
-    </div>
+</li>
+</ul></nav>
+</div>
 
     <div class="book-body">
       <div class="body-inner">
@@ -206,24 +192,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <div class="page-wrapper" tabindex="-1" role="main">
           <div class="page-inner">
 
-            <section class="normal" id="section-">
-<div id="e-step" class="section level1 hasAnchor" number="8">
-<h1><span class="header-section-number">8</span> E step<a href="e-step.html#e-step" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="e-step.html#cb46-1" tabindex="-1"></a><span class="co">#&#39; E step, which updates the &quot;responsibilities&quot;, which are posterior membership probabilities of each particle.</span></span>
-<span id="cb46-2"><a href="e-step.html#cb46-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb46-3"><a href="e-step.html#cb46-3" tabindex="-1"></a><span class="co">#&#39; @param mn</span></span>
-<span id="cb46-4"><a href="e-step.html#cb46-4" tabindex="-1"></a><span class="co">#&#39; @param sigma</span></span>
-<span id="cb46-5"><a href="e-step.html#cb46-5" tabindex="-1"></a><span class="co">#&#39; @param prob</span></span>
-<span id="cb46-6"><a href="e-step.html#cb46-6" tabindex="-1"></a><span class="co">#&#39; @param ylist</span></span>
-<span id="cb46-7"><a href="e-step.html#cb46-7" tabindex="-1"></a><span class="co">#&#39; @param numclust</span></span>
-<span id="cb46-8"><a href="e-step.html#cb46-8" tabindex="-1"></a><span class="co">#&#39; @param denslist_by_clust</span></span>
-<span id="cb46-9"><a href="e-step.html#cb46-9" tabindex="-1"></a><span class="co">#&#39; @param first_iter</span></span>
-<span id="cb46-10"><a href="e-step.html#cb46-10" tabindex="-1"></a><span class="co">#&#39; @param countslist</span></span>
-<span id="cb46-11"><a href="e-step.html#cb46-11" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb46-12"><a href="e-step.html#cb46-12" tabindex="-1"></a><span class="co">#&#39; @return</span></span>
-<span id="cb46-13"><a href="e-step.html#cb46-13" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb46-14"><a href="e-step.html#cb46-14" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb46-15"><a href="e-step.html#cb46-15" tabindex="-1"></a><span id='Estep'>Estep</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mn, sigma, prob, <span class="at">ylist =</span> <span class="cn">NULL</span>, numclust, <span class="at">denslist_by_clust =</span> <span class="cn">NULL</span>,</span>
+            <section class="normal" id="section-"><div id="e-step" class="section level1 hasAnchor" number="8">
+<h1>
+<span class="header-section-number">8</span> E step<a href="e-step.html#e-step" class="anchor-section" aria-label="Anchor link to header"></a>
+</h1>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="e-step.html#cb46-1" tabindex="-1"></a><span class="co">#' E step, which updates the "responsibilities", which are posterior membership probabilities of each particle.</span></span>
+<span id="cb46-2"><a href="e-step.html#cb46-2" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb46-3"><a href="e-step.html#cb46-3" tabindex="-1"></a><span class="co">#' @param mn</span></span>
+<span id="cb46-4"><a href="e-step.html#cb46-4" tabindex="-1"></a><span class="co">#' @param sigma</span></span>
+<span id="cb46-5"><a href="e-step.html#cb46-5" tabindex="-1"></a><span class="co">#' @param prob</span></span>
+<span id="cb46-6"><a href="e-step.html#cb46-6" tabindex="-1"></a><span class="co">#' @param ylist</span></span>
+<span id="cb46-7"><a href="e-step.html#cb46-7" tabindex="-1"></a><span class="co">#' @param numclust</span></span>
+<span id="cb46-8"><a href="e-step.html#cb46-8" tabindex="-1"></a><span class="co">#' @param denslist_by_clust</span></span>
+<span id="cb46-9"><a href="e-step.html#cb46-9" tabindex="-1"></a><span class="co">#' @param first_iter</span></span>
+<span id="cb46-10"><a href="e-step.html#cb46-10" tabindex="-1"></a><span class="co">#' @param countslist</span></span>
+<span id="cb46-11"><a href="e-step.html#cb46-11" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb46-12"><a href="e-step.html#cb46-12" tabindex="-1"></a><span class="co">#' @return</span></span>
+<span id="cb46-13"><a href="e-step.html#cb46-13" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb46-14"><a href="e-step.html#cb46-14" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb46-15"><a href="e-step.html#cb46-15" tabindex="-1"></a><span id="Estep">Estep</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mn, sigma, prob, <span class="at">ylist =</span> <span class="cn">NULL</span>, numclust, <span class="at">denslist_by_clust =</span> <span class="cn">NULL</span>,</span>
 <span id="cb46-16"><a href="e-step.html#cb46-16" tabindex="-1"></a>                  <span class="at">first_iter =</span> <span class="cn">FALSE</span>, <span class="at">countslist =</span> <span class="cn">NULL</span>){</span>
 <span id="cb46-17"><a href="e-step.html#cb46-17" tabindex="-1"></a>  <span class="do">## Basic setup</span></span>
 <span id="cb46-18"><a href="e-step.html#cb46-18" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="fu">length</span>(ylist)</span>
@@ -234,7 +221,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb46-23"><a href="e-step.html#cb46-23" tabindex="-1"></a></span>
 <span id="cb46-24"><a href="e-step.html#cb46-24" tabindex="-1"></a>  <span class="do">## Helper to calculate Gaussian density for each \code{N(y_{t,k},mu_{t,k} and</span></span>
 <span id="cb46-25"><a href="e-step.html#cb46-25" tabindex="-1"></a>  <span class="do">## Sigma_k)}.</span></span>
-<span id="cb46-26"><a href="e-step.html#cb46-26" tabindex="-1"></a>  <span id='calculate_dens'>calculate_dens</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(iclust, tt, y, mn, sigma, denslist_by_clust,</span>
+<span id="cb46-26"><a href="e-step.html#cb46-26" tabindex="-1"></a>  <span id="calculate_dens">calculate_dens</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(iclust, tt, y, mn, sigma, denslist_by_clust,</span>
 <span id="cb46-27"><a href="e-step.html#cb46-27" tabindex="-1"></a>                             first_iter) {</span>
 <span id="cb46-28"><a href="e-step.html#cb46-28" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> mn[tt, , iclust]</span>
 <span id="cb46-29"><a href="e-step.html#cb46-29" tabindex="-1"></a>    <span class="cf">if</span> (dimdat <span class="sc">==</span> <span class="dv">1</span>) {</span>
@@ -269,7 +256,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The E step should return a list of exactly the same size and format as <code>ylist</code>,
 which is a <span class="math inline">\(T\)</span> -length list of matrices of size <span class="math inline">\(n_t \times d\)</span>.</p>
 <p>(This test fails for some reason; will come back to this.)</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="e-step.html#cb47-1" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">&quot;E step returns appropriately sized responsibilities.&quot;</span>,{</span>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="e-step.html#cb47-1" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">"E step returns appropriately sized responsibilities."</span>,{</span>
 <span id="cb47-2"><a href="e-step.html#cb47-2" tabindex="-1"></a>  </span>
 <span id="cb47-3"><a href="e-step.html#cb47-3" tabindex="-1"></a>  <span class="do">## Generate some fake data</span></span>
 <span id="cb47-4"><a href="e-step.html#cb47-4" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="dv">10</span></span>
@@ -278,39 +265,30 @@ which is a <span class="math inline">\(T\)</span> -length list of matrices of si
 <span id="cb47-7"><a href="e-step.html#cb47-7" tabindex="-1"></a>  dimdat <span class="ot">=</span> <span class="dv">3</span></span>
 <span id="cb47-8"><a href="e-step.html#cb47-8" tabindex="-1"></a></span>
 <span id="cb47-9"><a href="e-step.html#cb47-9" tabindex="-1"></a>  <span class="do">## Initialize a few parameters, not carefully</span></span>
-<span id="cb47-10"><a href="e-step.html#cb47-10" tabindex="-1"></a>  sigma <span class="ot">=</span> <a href='initial-parameters-for-em-algorithm.html#init_sigma'>init_sigma</a>(ylist, numclust) <span class="do">## (T x numclust x (dimdat x dimdat))</span></span>
-<span id="cb47-11"><a href="e-step.html#cb47-11" tabindex="-1"></a>  mn <span class="ot">=</span> <a href='initial-parameters-for-em-algorithm.html#init_mn'>init_mn</a>(ylist, numclust, TT, dimdat)<span class="do">##, countslist = countslist)</span></span>
+<span id="cb47-10"><a href="e-step.html#cb47-10" tabindex="-1"></a>  sigma <span class="ot">=</span> <a href="initial-parameters-for-em-algorithm.html#init_sigma">init_sigma</a>(ylist, numclust) <span class="do">## (T x numclust x (dimdat x dimdat))</span></span>
+<span id="cb47-11"><a href="e-step.html#cb47-11" tabindex="-1"></a>  mn <span class="ot">=</span> <a href="initial-parameters-for-em-algorithm.html#init_mn">init_mn</a>(ylist, numclust, TT, dimdat)<span class="do">##, countslist = countslist)</span></span>
 <span id="cb47-12"><a href="e-step.html#cb47-12" tabindex="-1"></a>  prob <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">/</span>numclust, <span class="at">nrow =</span> TT, <span class="at">ncol =</span> numclust) <span class="do">## Initialize to all 1/K.</span></span>
 <span id="cb47-13"><a href="e-step.html#cb47-13" tabindex="-1"></a></span>
 <span id="cb47-14"><a href="e-step.html#cb47-14" tabindex="-1"></a>  <span class="do">## ## Calculate responsibility</span></span>
-<span id="cb47-15"><a href="e-step.html#cb47-15" tabindex="-1"></a>  <span class="do">## resp = <a href='e-step.html#Estep'>Estep</a>(mn = mn, sigma = sigma, prob = prob, ylist = ylist, numclust = numclust)</span></span>
+<span id="cb47-15"><a href="e-step.html#cb47-15" tabindex="-1"></a>  <span class="do">## resp = <a href="e-step.html#Estep">Estep</a>(mn = mn, sigma = sigma, prob = prob, ylist = ylist, numclust = numclust)</span></span>
 <span id="cb47-16"><a href="e-step.html#cb47-16" tabindex="-1"></a></span>
 <span id="cb47-17"><a href="e-step.html#cb47-17" tabindex="-1"></a>  <span class="do">## Check these things</span></span>
 <span id="cb47-18"><a href="e-step.html#cb47-18" tabindex="-1"></a>  <span class="do">## testthat::expect_equal(length(resp), length(ylist))</span></span>
 <span id="cb47-19"><a href="e-step.html#cb47-19" tabindex="-1"></a>  <span class="do">## ?testthat::expect_equal</span></span>
-<span id="cb47-20"><a href="e-step.html#cb47-20" tabindex="-1"></a>  <span class="do">## testthat::expect_equal(sapply(resp, dim), sapply(ylist, dim), reporter = &quot;stop&quot;)</span></span>
+<span id="cb47-20"><a href="e-step.html#cb47-20" tabindex="-1"></a>  <span class="do">## testthat::expect_equal(sapply(resp, dim), sapply(ylist, dim), reporter = "stop")</span></span>
 <span id="cb47-21"><a href="e-step.html#cb47-21" tabindex="-1"></a>})</span></code></pre></div>
 <pre><code>## -- Skip (???): E step returns appropriately sized responsibilities. ------------
 ## Reason: empty test</code></pre>
 </div>
             </section>
-
-          </div>
+</div>
         </div>
       </div>
 <a href="initial-parameters-for-em-algorithm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="m-step.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
-<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
-<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
-<script>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script><script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script><script src="libs/gitbook-2.6.7/js/plugin-search.js"></script><script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script><script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script><script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script><script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script><script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script><script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
@@ -351,10 +329,7 @@ gitbook.start({
 }
 });
 });
-</script>
-
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
+</script><!-- dynamically load mathjax for compatibility with self-contained --><script>
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
@@ -368,5 +343,4 @@ gitbook.start({
   })();
 </script>
 </body>
-
 </html>

@@ -4,7 +4,16 @@
 \alias{plot_3d}
 \title{Makes three 2-dimensional plots of the 3d data}
 \usage{
-plot_3d(ylist, obj = NULL, tt, countslist = NULL, return_list_of_plots = FALSE)
+plot_3d(
+  ylist,
+  obj = NULL,
+  tt,
+  countslist = NULL,
+  labels = NULL,
+  bin = TRUE,
+  plot_title = NULL,
+  return_list_of_plots = FALSE
+)
 }
 \arguments{
 \item{ylist}{Data. A list of (|nt| by |dimdat|) matrices}

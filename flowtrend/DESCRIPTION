@@ -14,6 +14,7 @@ Imports:
     clue,
     ggplot2,
     glmnet,
+    magrittr,
     Rcpp
 Suggests: 
     testthat (>= 3.0.0)
@@ -22,5 +23,5 @@ LinkingTo:
     Rcpp,
     RcppArmadillo,
     RcppEigen
-LitrVersionUsed: 0.9.0
-LitrId: 04b6ad4a083d3cb4a9603c89d4e160c3
+LitrVersionUsed: 0.9.2
+LitrId: 50dcbd0bdbd9d8ceb5f2976a8c5ccb01

@@ -9,6 +9,7 @@ plot_2d(
   countslist = NULL,
   obj = NULL,
   tt,
+  bin = TRUE,
   point_color = "blue",
   raster_colours = c("white", "blue")
 )

@@ -1,61 +1,33 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
 <head>
-
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>4 3d data | Creating the flowtrend R package</title>
-  <meta name="description" content="4 3d data | Creating the flowtrend R package" />
-  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
-
-  <meta property="og:title" content="4 3d data | Creating the flowtrend R package" />
-  <meta property="og:type" content="book" />
-  
-  
-  
-
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="4 3d data | Creating the flowtrend R package" />
-  
-  
-  
-
-<meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien" />
-
-
-<meta name="date" content="2024-05-07" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  
-  
-<link rel="prev" href="d-data.html"/>
-<link rel="next" href="trend-filtering.html"/>
-<script src="libs/header-attrs-2.25/header-attrs.js"></script>
-<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
-<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
-
-
-
-
-
-
-
-
-<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
-<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
-
-
-<style type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>4 3d data | Creating the flowtrend R package</title>
+<meta name="description" content="4 3d data | Creating the flowtrend R package">
+<meta name="generator" content="bookdown 0.35 and GitBook 2.6.7">
+<meta property="og:title" content="4 3d data | Creating the flowtrend R package">
+<meta property="og:type" content="book">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="4 3d data | Creating the flowtrend R package">
+<meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien">
+<meta name="date" content="2024-05-07">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="prev" href="d-data.html">
+<link rel="next" href="trend-filtering.html">
+<script src="libs/header-attrs-2.25/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script><link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet">
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet">
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet">
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script><style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -119,14 +91,20 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
-
 <style type="text/css">
   
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 </style>
-
+<style type="text/css">fieldset.chunkfield {border:1px dotted black;padding-bottom: 0px;padding-top: 0px;margin:0 2px;padding:.35em .625em .75em}
+    legend.chunklegend {padding:0;width:auto;border:0; border-bottom: none; margin-bottom:0}
+    </style>
+<style type="text/css">fieldset.chunkfield {border:1px dotted black;padding-bottom: 0px;padding-top: 0px;margin:0 2px;padding:.35em .625em .75em}
+    legend.chunklegend {padding:0;width:auto;border:0; border-bottom: none; margin-bottom:0}
+    </style>
+<style type="text/css">fieldset.chunkfield {border:1px dotted black;padding-bottom: 0px;padding-top: 0px;margin:0 2px;padding:.35em .625em .75em}
+    legend.chunklegend {padding:0;width:auto;border:0; border-bottom: none; margin-bottom:0}
+    </style>
 </head>
-
 <body>
 
 
@@ -134,35 +112,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
 
     <div class="book-summary">
-      <nav role="navigation">
-
-<ul class="summary">
+      <nav role="navigation"><ul class="summary">
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a>
+<li class="chapter" data-level="2" data-path="package-setup.html">
+<a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a>
 <ul>
 <li class="chapter" data-level="2.1" data-path="package-setup.html"><a href="package-setup.html#plotting-1d-data"><i class="fa fa-check"></i><b>2.1</b> Plotting 1d data</a></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="d-data.html"><a href="d-data.html"><i class="fa fa-check"></i><b>3</b> 2d data</a>
+</ul>
+</li>
+<li class="chapter" data-level="3" data-path="d-data.html">
+<a href="d-data.html"><i class="fa fa-check"></i><b>3</b> 2d data</a>
 <ul>
 <li class="chapter" data-level="3.1" data-path="d-data.html"><a href="d-data.html#generating-2d-data"><i class="fa fa-check"></i><b>3.1</b> Generating 2d data</a></li>
 <li class="chapter" data-level="3.2" data-path="d-data.html"><a href="d-data.html#plotting-2d-data"><i class="fa fa-check"></i><b>3.2</b> Plotting 2d data</a></li>
-</ul></li>
+</ul>
+</li>
 <li class="chapter" data-level="4" data-path="d-data-1.html"><a href="d-data-1.html"><i class="fa fa-check"></i><b>4</b> 3d data</a></li>
 <li class="chapter" data-level="5" data-path="trend-filtering.html"><a href="trend-filtering.html"><i class="fa fa-check"></i><b>5</b> Trend filtering</a></li>
 <li class="chapter" data-level="6" data-path="objective-data-log-likelihood.html"><a href="objective-data-log-likelihood.html"><i class="fa fa-check"></i><b>6</b> Objective (data log-likelihood)</a></li>
 <li class="chapter" data-level="7" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html"><i class="fa fa-check"></i><b>7</b> Initial parameters for EM algorithm</a></li>
 <li class="chapter" data-level="8" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>8</b> E step</a></li>
-<li class="chapter" data-level="9" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>9</b> M step</a>
+<li class="chapter" data-level="9" data-path="m-step.html">
+<a href="m-step.html"><i class="fa fa-check"></i><b>9</b> M step</a>
 <ul>
 <li class="chapter" data-level="9.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>9.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
 <li class="chapter" data-level="9.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>9.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
 <li class="chapter" data-level="9.3" data-path="m-step.html"><a href="m-step.html#m-step-for-mu"><i class="fa fa-check"></i><b>9.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
 <li class="chapter" data-level="9.4" data-path="m-step.html"><a href="m-step.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>9.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
 <li class="chapter" data-level="9.5" data-path="m-step.html"><a href="m-step.html#all-rcpp-functions"><i class="fa fa-check"></i><b>9.5</b> All Rcpp functions</a></li>
-</ul></li>
+</ul>
+</li>
 <li class="chapter" data-level="10" data-path="flowtrend.html"><a href="flowtrend.html"><i class="fa fa-check"></i><b>10</b> flowtrend</a></li>
 <li class="chapter" data-level="11" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>11</b> Reordering clusters</a></li>
-<li class="chapter" data-level="12" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html"><i class="fa fa-check"></i><b>12</b> Tuning the regularization parameters for <code>flowtrend</code></a>
+<li class="chapter" data-level="12" data-path="tuning-the-regularization-parameters-for-flowtrend.html">
+<a href="tuning-the-regularization-parameters-for-flowtrend.html"><i class="fa fa-check"></i><b>12</b> Tuning the regularization parameters for <code>flowtrend</code></a>
 <ul>
 <li class="chapter" data-level="12.1" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>12.1</b> Predicting and evaluating on new time points</a></li>
 <li class="chapter" data-level="12.2" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>12.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
@@ -172,28 +155,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.6" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#summarizing-the-output"><i class="fa fa-check"></i><b>12.6</b> Summarizing the output</a></li>
 <li class="chapter" data-level="12.7" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>12.7</b> CV on your own computer</a></li>
 <li class="chapter" data-level="12.8" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#plotting"><i class="fa fa-check"></i><b>12.8</b> Plotting</a></li>
-</ul></li>
+</ul>
+</li>
 <li class="chapter" data-level="13" data-path="se-rule-for-cross-validation.html"><a href="se-rule-for-cross-validation.html"><i class="fa fa-check"></i><b>13</b> 1SE rule for cross validation</a></li>
-<li class="chapter" data-level="14" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>14</b> Testing the flowtrend method</a>
+<li class="chapter" data-level="14" data-path="testing-the-flowtrend-method.html">
+<a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>14</b> Testing the flowtrend method</a>
 <ul>
 <li class="chapter" data-level="14.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>14.1</b> 1d example</a></li>
 <li class="chapter" data-level="14.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values"><i class="fa fa-check"></i><b>14.2</b> Testing monotonicity of objective values</a></li>
 <li class="chapter" data-level="14.3" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_2d-example"><i class="fa fa-check"></i><b>14.3</b> 2d example</a></li>
 <li class="chapter" data-level="14.4" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#working-with-binned-dataset"><i class="fa fa-check"></i><b>14.4</b> Working with “binned” dataset</a></li>
 <li class="chapter" data-level="14.5" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#unevenly-spaced-inputs-x"><i class="fa fa-check"></i><b>14.5</b> Unevenly spaced inputs (x)</a></li>
-</ul></li>
+</ul>
+</li>
 <li class="chapter" data-level="15" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>15</b> Documenting the package and building</a></li>
-<li class="chapter" data-level="16" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html"><i class="fa fa-check"></i><b>16</b> Helpers for simulations in the paper</a>
+<li class="chapter" data-level="16" data-path="helpers-for-simulations-in-the-paper.html">
+<a href="helpers-for-simulations-in-the-paper.html"><i class="fa fa-check"></i><b>16</b> Helpers for simulations in the paper</a>
 <ul>
 <li class="chapter" data-level="16.1" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#two-alternative-estimators"><i class="fa fa-check"></i><b>16.1</b> Two alternative estimators</a></li>
-<li class="chapter" data-level="16.2" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>16.2</b> Example using <code><a href='helpers-for-simulations-in-the-paper.html#underfit_flowmeans'>underfit_flowmeans</a>()</code> and <code><a href='helpers-for-simulations-in-the-paper.html#overfit_flowmeans'>overfit_flowmeans</a>()</code></a></li>
+<li class="chapter" data-level="16.2" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#example-using-underfit_flowmeans-and-overfit_flowmeans"><i class="fa fa-check"></i><b>16.2</b> Example using <code><a href="helpers-for-simulations-in-the-paper.html#underfit_flowmeans">underfit_flowmeans</a>()</code> and <code><a href="helpers-for-simulations-in-the-paper.html#overfit_flowmeans">overfit_flowmeans</a>()</code></a></li>
 <li class="chapter" data-level="16.3" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>16.3</b> Evaluating performance: soft RAND index</a></li>
 <li class="chapter" data-level="16.4" data-path="helpers-for-simulations-in-the-paper.html"><a href="helpers-for-simulations-in-the-paper.html#generating-pseudo-real-data"><i class="fa fa-check"></i><b>16.4</b> Generating “pseudo-real” data</a></li>
-</ul></li>
 </ul>
-
-      </nav>
-    </div>
+</li>
+</ul></nav>
+</div>
 
     <div class="book-body">
       <div class="body-inner">
@@ -206,32 +192,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <div class="page-wrapper" tabindex="-1" role="main">
           <div class="page-inner">
 
-            <section class="normal" id="section-">
-<div id="d-data-1" class="section level1 hasAnchor" number="4">
-<h1><span class="header-section-number">4</span> 3d data<a href="d-data-1.html#d-data-1" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+            <section class="normal" id="section-"><div id="d-data-1" class="section level1 hasAnchor" number="4">
+<h1>
+<span class="header-section-number">4</span> 3d data<a href="d-data-1.html#d-data-1" class="anchor-section" aria-label="Anchor link to header"></a>
+</h1>
 <p>Given 3d data <code>ylist</code> and an estimated model object <code>obj</code>, we want to plot both
-in three two-dimensional plot. <code><a href='d-data-1.html#plot_3d'>plot_3d</a>()</code> lets you do this.</p>
+in three two-dimensional plot. <code><a href="d-data-1.html#plot_3d">plot_3d</a>()</code> lets you do this.</p>
 <p>First, here’s a plotting helper.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="d-data-1.html#cb19-1" tabindex="-1"></a><span class="co">#&#39; Combine list of ggplots</span></span>
-<span id="cb19-2"><a href="d-data-1.html#cb19-2" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb19-3"><a href="d-data-1.html#cb19-3" tabindex="-1"></a><span id='my_mfrow'>my_mfrow</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(glist, <span class="at">ncol =</span> <span class="cn">NULL</span>, <span class="at">nrow =</span> <span class="cn">NULL</span>){</span>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="d-data-1.html#cb19-1" tabindex="-1"></a><span class="co">#' Combine list of ggplots</span></span>
+<span id="cb19-2"><a href="d-data-1.html#cb19-2" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb19-3"><a href="d-data-1.html#cb19-3" tabindex="-1"></a><span id="my_mfrow">my_mfrow</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(glist, <span class="at">ncol =</span> <span class="cn">NULL</span>, <span class="at">nrow =</span> <span class="cn">NULL</span>){</span>
 <span id="cb19-4"><a href="d-data-1.html#cb19-4" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(ncol)) ncol <span class="ot">=</span> <span class="dv">1</span></span>
 <span id="cb19-5"><a href="d-data-1.html#cb19-5" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(nrow)) ncol <span class="ot">=</span> <span class="dv">3</span></span>
 <span id="cb19-6"><a href="d-data-1.html#cb19-6" tabindex="-1"></a>  <span class="fu">do.call</span>(ggpubr<span class="sc">::</span>ggarrange, <span class="fu">c</span>(glist, <span class="at">ncol=</span>ncol, <span class="at">nrow=</span>nrow))</span>
 <span id="cb19-7"><a href="d-data-1.html#cb19-7" tabindex="-1"></a>}</span></code></pre></div>
 <p>(TODO: change tt to time (and all the user-facing functions should have the same
 arguments and argument order))</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="d-data-1.html#cb20-1" tabindex="-1"></a><span class="co">#&#39; Makes three 2-dimensional plots of the 3d data</span></span>
-<span id="cb20-2"><a href="d-data-1.html#cb20-2" tabindex="-1"></a><span class="co">#&#39; @param ylist data</span></span>
-<span id="cb20-3"><a href="d-data-1.html#cb20-3" tabindex="-1"></a><span class="co">#&#39; @param countslist data</span></span>
-<span id="cb20-4"><a href="d-data-1.html#cb20-4" tabindex="-1"></a><span class="co">#&#39; @param obj flowmix or flowtrend object</span></span>
-<span id="cb20-5"><a href="d-data-1.html#cb20-5" tabindex="-1"></a><span class="co">#&#39; @param tt Time point</span></span>
-<span id="cb20-6"><a href="d-data-1.html#cb20-6" tabindex="-1"></a><span class="co">#&#39; @param return_list_of_plots If TRUE, return the list of three plots instead</span></span>
-<span id="cb20-7"><a href="d-data-1.html#cb20-7" tabindex="-1"></a><span class="co">#&#39;   of the combined plot</span></span>
-<span id="cb20-8"><a href="d-data-1.html#cb20-8" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb20-9"><a href="d-data-1.html#cb20-9" tabindex="-1"></a><span class="co">#&#39; @return</span></span>
-<span id="cb20-10"><a href="d-data-1.html#cb20-10" tabindex="-1"></a><span class="co">#&#39; </span></span>
-<span id="cb20-11"><a href="d-data-1.html#cb20-11" tabindex="-1"></a><span id='plot_3d'>plot_3d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, <span class="at">obj =</span> <span class="cn">NULL</span>, tt, <span class="at">countslist =</span> <span class="cn">NULL</span>,</span>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="d-data-1.html#cb20-1" tabindex="-1"></a><span class="co">#' Makes three 2-dimensional plots of the 3d data</span></span>
+<span id="cb20-2"><a href="d-data-1.html#cb20-2" tabindex="-1"></a><span class="co">#' @param ylist data</span></span>
+<span id="cb20-3"><a href="d-data-1.html#cb20-3" tabindex="-1"></a><span class="co">#' @param countslist data</span></span>
+<span id="cb20-4"><a href="d-data-1.html#cb20-4" tabindex="-1"></a><span class="co">#' @param obj flowmix or flowtrend object</span></span>
+<span id="cb20-5"><a href="d-data-1.html#cb20-5" tabindex="-1"></a><span class="co">#' @param tt Time point</span></span>
+<span id="cb20-6"><a href="d-data-1.html#cb20-6" tabindex="-1"></a><span class="co">#' @param return_list_of_plots If TRUE, return the list of three plots instead</span></span>
+<span id="cb20-7"><a href="d-data-1.html#cb20-7" tabindex="-1"></a><span class="co">#'   of the combined plot</span></span>
+<span id="cb20-8"><a href="d-data-1.html#cb20-8" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb20-9"><a href="d-data-1.html#cb20-9" tabindex="-1"></a><span class="co">#' @return</span></span>
+<span id="cb20-10"><a href="d-data-1.html#cb20-10" tabindex="-1"></a><span class="co">#' </span></span>
+<span id="cb20-11"><a href="d-data-1.html#cb20-11" tabindex="-1"></a><span id="plot_3d">plot_3d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, <span class="at">obj =</span> <span class="cn">NULL</span>, tt, <span class="at">countslist =</span> <span class="cn">NULL</span>,</span>
 <span id="cb20-12"><a href="d-data-1.html#cb20-12" tabindex="-1"></a>                    <span class="at">return_list_of_plots =</span> <span class="cn">FALSE</span>){</span>
 <span id="cb20-13"><a href="d-data-1.html#cb20-13" tabindex="-1"></a></span>
 <span id="cb20-14"><a href="d-data-1.html#cb20-14" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
@@ -240,7 +227,7 @@ arguments and argument order))</p>
 <span id="cb20-17"><a href="d-data-1.html#cb20-17" tabindex="-1"></a>  <span class="do">## Extract data</span></span>
 <span id="cb20-18"><a href="d-data-1.html#cb20-18" tabindex="-1"></a>  <span class="do">## y = ylist[[tt]][,dims]</span></span>
 <span id="cb20-19"><a href="d-data-1.html#cb20-19" tabindex="-1"></a>  labs <span class="ot">=</span> <span class="fu">colnames</span>(ylist[[<span class="dv">1</span>]])</span>
-<span id="cb20-20"><a href="d-data-1.html#cb20-20" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(labs))  labs <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;dim&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb20-20"><a href="d-data-1.html#cb20-20" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(labs))  labs <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"dim"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
 <span id="cb20-21"><a href="d-data-1.html#cb20-21" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(countslist)){</span>
 <span id="cb20-22"><a href="d-data-1.html#cb20-22" tabindex="-1"></a>    counts <span class="ot">=</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">nrow</span>(ylist[[<span class="dv">1</span>]]))</span>
 <span id="cb20-23"><a href="d-data-1.html#cb20-23" tabindex="-1"></a>  }</span>
@@ -265,12 +252,12 @@ arguments and argument order))</p>
 <span id="cb20-42"><a href="d-data-1.html#cb20-42" tabindex="-1"></a></span>
 <span id="cb20-43"><a href="d-data-1.html#cb20-43" tabindex="-1"></a>    <span class="do">## Make data plot</span></span>
 <span id="cb20-44"><a href="d-data-1.html#cb20-44" tabindex="-1"></a>    one_countslist <span class="ot">=</span> (<span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(countslist)) <span class="fu">list</span>(counts2d_list[[ii]]) <span class="cf">else</span> <span class="cn">NULL</span>)</span>
-<span id="cb20-45"><a href="d-data-1.html#cb20-45" tabindex="-1"></a>    p <span class="ot">=</span> flowtrend<span class="sc">::</span><a href='d-data.html#plot_2d'>plot_2d</a>(<span class="fu">list</span>(y2d_list[[ii]]),</span>
+<span id="cb20-45"><a href="d-data-1.html#cb20-45" tabindex="-1"></a>    p <span class="ot">=</span> flowtrend<span class="sc">::</span><a href="d-data.html#plot_2d">plot_2d</a>(<span class="fu">list</span>(y2d_list[[ii]]),</span>
 <span id="cb20-46"><a href="d-data-1.html#cb20-46" tabindex="-1"></a>                           one_countslist, <span class="at">obj=</span><span class="cn">NULL</span>, <span class="dv">1</span>) </span>
 <span id="cb20-47"><a href="d-data-1.html#cb20-47" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(countslist)){</span>
 <span id="cb20-48"><a href="d-data-1.html#cb20-48" tabindex="-1"></a>      p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">scale_fill_gradientn</span>(</span>
-<span id="cb20-49"><a href="d-data-1.html#cb20-49" tabindex="-1"></a>                  <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;yellow&quot;</span>), <span class="at">limits =</span> total_range,</span>
-<span id="cb20-50"><a href="d-data-1.html#cb20-50" tabindex="-1"></a>                  <span class="at">guide =</span> <span class="st">&quot;none&quot;</span>)</span>
+<span id="cb20-49"><a href="d-data-1.html#cb20-49" tabindex="-1"></a>                  <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">"white"</span>, <span class="st">"blue"</span>, <span class="st">"yellow"</span>), <span class="at">limits =</span> total_range,</span>
+<span id="cb20-50"><a href="d-data-1.html#cb20-50" tabindex="-1"></a>                  <span class="at">guide =</span> <span class="st">"none"</span>)</span>
 <span id="cb20-51"><a href="d-data-1.html#cb20-51" tabindex="-1"></a>    }</span>
 <span id="cb20-52"><a href="d-data-1.html#cb20-52" tabindex="-1"></a></span>
 <span id="cb20-53"><a href="d-data-1.html#cb20-53" tabindex="-1"></a>    <span class="do">## Adding visualizations of the model |obj| at time tt</span></span>
@@ -279,11 +266,11 @@ arguments and argument order))</p>
 <span id="cb20-56"><a href="d-data-1.html#cb20-56" tabindex="-1"></a>      <span class="do">## Make data matrix</span></span>
 <span id="cb20-57"><a href="d-data-1.html#cb20-57" tabindex="-1"></a>      mnlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>obj<span class="sc">$</span>numclust, <span class="cf">function</span>(iclust){</span>
 <span id="cb20-58"><a href="d-data-1.html#cb20-58" tabindex="-1"></a>        one_mnmat <span class="ot">=</span> obj<span class="sc">$</span>mn[tt,dims,iclust] <span class="sc">%&gt;%</span> <span class="fu">t</span>()</span>
-<span id="cb20-59"><a href="d-data-1.html#cb20-59" tabindex="-1"></a>        <span class="fu">colnames</span>(one_mnmat) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;dim&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
+<span id="cb20-59"><a href="d-data-1.html#cb20-59" tabindex="-1"></a>        <span class="fu">colnames</span>(one_mnmat) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"dim"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
 <span id="cb20-60"><a href="d-data-1.html#cb20-60" tabindex="-1"></a>        one_mnmat <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">cluster =</span> iclust)</span>
 <span id="cb20-61"><a href="d-data-1.html#cb20-61" tabindex="-1"></a>      })</span>
 <span id="cb20-62"><a href="d-data-1.html#cb20-62" tabindex="-1"></a>      mnmat <span class="ot">=</span> <span class="fu">do.call</span>(rbind, mnlist)</span>
-<span id="cb20-63"><a href="d-data-1.html#cb20-63" tabindex="-1"></a>      mn_colours <span class="ot">=</span> <span class="fu">rep</span>(<span class="st">&quot;red&quot;</span>, obj<span class="sc">$</span>numclust)</span>
+<span id="cb20-63"><a href="d-data-1.html#cb20-63" tabindex="-1"></a>      mn_colours <span class="ot">=</span> <span class="fu">rep</span>(<span class="st">"red"</span>, obj<span class="sc">$</span>numclust)</span>
 <span id="cb20-64"><a href="d-data-1.html#cb20-64" tabindex="-1"></a></span>
 <span id="cb20-65"><a href="d-data-1.html#cb20-65" tabindex="-1"></a>      <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>obj<span class="sc">$</span>numclust){</span>
 <span id="cb20-66"><a href="d-data-1.html#cb20-66" tabindex="-1"></a>        </span>
@@ -309,9 +296,9 @@ arguments and argument order))</p>
 <span id="cb20-86"><a href="d-data-1.html#cb20-86" tabindex="-1"></a>                                             <span class="at">point.size =</span> <span class="fu">sqrt</span>(prob)),</span>
 <span id="cb20-87"><a href="d-data-1.html#cb20-87" tabindex="-1"></a>                                         <span class="at">col =</span> mn_colours,</span>
 <span id="cb20-88"><a href="d-data-1.html#cb20-88" tabindex="-1"></a>                                         <span class="at">cex =</span> cex,</span>
-<span id="cb20-89"><a href="d-data-1.html#cb20-89" tabindex="-1"></a>                                         <span class="at">bg.color =</span> <span class="st">&quot;white&quot;</span>,</span>
+<span id="cb20-89"><a href="d-data-1.html#cb20-89" tabindex="-1"></a>                                         <span class="at">bg.color =</span> <span class="st">"white"</span>,</span>
 <span id="cb20-90"><a href="d-data-1.html#cb20-90" tabindex="-1"></a>                                         <span class="at">bg.r =</span> <span class="fl">0.1</span>,</span>
-<span id="cb20-91"><a href="d-data-1.html#cb20-91" tabindex="-1"></a>                                         <span class="at">fontface =</span> <span class="st">&quot;bold&quot;</span>,</span>
+<span id="cb20-91"><a href="d-data-1.html#cb20-91" tabindex="-1"></a>                                         <span class="at">fontface =</span> <span class="st">"bold"</span>,</span>
 <span id="cb20-92"><a href="d-data-1.html#cb20-92" tabindex="-1"></a>                                         <span class="at">force_pull   =</span> <span class="dv">5</span>, <span class="co"># do not pull toward data points</span></span>
 <span id="cb20-93"><a href="d-data-1.html#cb20-93" tabindex="-1"></a>                                         <span class="do">## data = mnmat,</span></span>
 <span id="cb20-94"><a href="d-data-1.html#cb20-94" tabindex="-1"></a>                                         <span class="at">data =</span> dt,</span>
@@ -322,24 +309,24 @@ arguments and argument order))</p>
 <span id="cb20-99"><a href="d-data-1.html#cb20-99" tabindex="-1"></a></span>
 <span id="cb20-100"><a href="d-data-1.html#cb20-100" tabindex="-1"></a>    <span class="do">## Format a bit more and save</span></span>
 <span id="cb20-101"><a href="d-data-1.html#cb20-101" tabindex="-1"></a>    <span class="cf">if</span>(ii <span class="sc">==</span> <span class="dv">1</span>){</span>
-<span id="cb20-102"><a href="d-data-1.html#cb20-102" tabindex="-1"></a>      p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">&quot;Time=&quot;</span>, tt))</span>
+<span id="cb20-102"><a href="d-data-1.html#cb20-102" tabindex="-1"></a>      p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">"Time="</span>, tt))</span>
 <span id="cb20-103"><a href="d-data-1.html#cb20-103" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb20-104"><a href="d-data-1.html#cb20-104" tabindex="-1"></a>      p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">&quot;&quot;</span>)</span>
+<span id="cb20-104"><a href="d-data-1.html#cb20-104" tabindex="-1"></a>      p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">""</span>)</span>
 <span id="cb20-105"><a href="d-data-1.html#cb20-105" tabindex="-1"></a>    }</span>
-<span id="cb20-106"><a href="d-data-1.html#cb20-106" tabindex="-1"></a>    p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>) </span>
+<span id="cb20-106"><a href="d-data-1.html#cb20-106" tabindex="-1"></a>    p <span class="ot">=</span> p <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) </span>
 <span id="cb20-107"><a href="d-data-1.html#cb20-107" tabindex="-1"></a>    plotlist[[ii]] <span class="ot">=</span> p</span>
 <span id="cb20-108"><a href="d-data-1.html#cb20-108" tabindex="-1"></a>  }</span>
 <span id="cb20-109"><a href="d-data-1.html#cb20-109" tabindex="-1"></a></span>
-<span id="cb20-110"><a href="d-data-1.html#cb20-110" tabindex="-1"></a>  p_combined <span class="ot">=</span> <a href='d-data-1.html#my_mfrow'>my_mfrow</a>(plotlist)</span>
+<span id="cb20-110"><a href="d-data-1.html#cb20-110" tabindex="-1"></a>  p_combined <span class="ot">=</span> <a href="d-data-1.html#my_mfrow">my_mfrow</a>(plotlist)</span>
 <span id="cb20-111"><a href="d-data-1.html#cb20-111" tabindex="-1"></a></span>
 <span id="cb20-112"><a href="d-data-1.html#cb20-112" tabindex="-1"></a>  <span class="do">## Return the plots</span></span>
 <span id="cb20-113"><a href="d-data-1.html#cb20-113" tabindex="-1"></a>  <span class="cf">if</span>(return_list_of_plots) <span class="fu">return</span>(plotlist)</span>
 <span id="cb20-114"><a href="d-data-1.html#cb20-114" tabindex="-1"></a>  <span class="fu">return</span>(p_combined)</span>
 <span id="cb20-115"><a href="d-data-1.html#cb20-115" tabindex="-1"></a>}</span></code></pre></div>
 <p>(This is test code.)</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="d-data-1.html#cb21-1" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">&quot;~/repos/flowtrend/index.Rmd&quot;</span>)</span>
-<span id="cb21-2"><a href="d-data-1.html#cb21-2" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;~/repos/flowmix/paper-data/MGL1704-hourly-only-binned.Rdata&quot;</span>, <span class="at">verbose=</span><span class="cn">TRUE</span>)</span>
-<span id="cb21-3"><a href="d-data-1.html#cb21-3" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;~/repos/flowmix/paper-data/cvres-2-64-10.Rdata&quot;</span>, <span class="at">verbose=</span><span class="cn">TRUE</span>)</span>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="d-data-1.html#cb21-1" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">load_all</span>(<span class="st">"~/repos/flowtrend/index.Rmd"</span>)</span>
+<span id="cb21-2"><a href="d-data-1.html#cb21-2" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"~/repos/flowmix/paper-data/MGL1704-hourly-only-binned.Rdata"</span>, <span class="at">verbose=</span><span class="cn">TRUE</span>)</span>
+<span id="cb21-3"><a href="d-data-1.html#cb21-3" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"~/repos/flowmix/paper-data/cvres-2-64-10.Rdata"</span>, <span class="at">verbose=</span><span class="cn">TRUE</span>)</span>
 <span id="cb21-4"><a href="d-data-1.html#cb21-4" tabindex="-1"></a></span>
 <span id="cb21-5"><a href="d-data-1.html#cb21-5" tabindex="-1"></a><span class="do">## Shift/scale data to make it equivalent to what the model used for fitting.</span></span>
 <span id="cb21-6"><a href="d-data-1.html#cb21-6" tabindex="-1"></a>range.diam <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.6706111</span>,  <span class="fl">1.3070264</span>)</span>
@@ -357,15 +344,15 @@ arguments and argument order))</p>
 <span id="cb21-18"><a href="d-data-1.html#cb21-18" tabindex="-1"></a>res<span class="sc">$</span>prob <span class="ot">=</span> res<span class="sc">$</span>pie</span>
 <span id="cb21-19"><a href="d-data-1.html#cb21-19" tabindex="-1"></a></span>
 <span id="cb21-20"><a href="d-data-1.html#cb21-20" tabindex="-1"></a><span class="do">## Make the plot</span></span>
-<span id="cb21-21"><a href="d-data-1.html#cb21-21" tabindex="-1"></a><a href='d-data-1.html#plot_3d'>plot_3d</a>(<span class="at">ylist =</span> ybin_list, <span class="at">countslist =</span> biomass_list, <span class="at">obj =</span> res, <span class="at">tt =</span> <span class="dv">280</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="d-data-1.html#cb22-1" tabindex="-1"></a><span class="co">#&#39; Generates some synthetic 3-dimensional data with three clusters. </span></span>
-<span id="cb22-2"><a href="d-data-1.html#cb22-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb22-3"><a href="d-data-1.html#cb22-3" tabindex="-1"></a><span class="co">#&#39; @param TT Number of time points.</span></span>
-<span id="cb22-4"><a href="d-data-1.html#cb22-4" tabindex="-1"></a><span class="co">#&#39; @param nt Number of particles at each time.</span></span>
-<span id="cb22-5"><a href="d-data-1.html#cb22-5" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb22-6"><a href="d-data-1.html#cb22-6" tabindex="-1"></a><span class="co">#&#39; @return List containing (1) ylist, (2) mnlist, (3) clusterlist.</span></span>
-<span id="cb22-7"><a href="d-data-1.html#cb22-7" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb22-8"><a href="d-data-1.html#cb22-8" tabindex="-1"></a><span id='gendat_3d'>gendat_3d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(TT, ntlist){</span>
+<span id="cb21-21"><a href="d-data-1.html#cb21-21" tabindex="-1"></a><a href="d-data-1.html#plot_3d">plot_3d</a>(<span class="at">ylist =</span> ybin_list, <span class="at">countslist =</span> biomass_list, <span class="at">obj =</span> res, <span class="at">tt =</span> <span class="dv">280</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="d-data-1.html#cb22-1" tabindex="-1"></a><span class="co">#' Generates some synthetic 3-dimensional data with three clusters. </span></span>
+<span id="cb22-2"><a href="d-data-1.html#cb22-2" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb22-3"><a href="d-data-1.html#cb22-3" tabindex="-1"></a><span class="co">#' @param TT Number of time points.</span></span>
+<span id="cb22-4"><a href="d-data-1.html#cb22-4" tabindex="-1"></a><span class="co">#' @param nt Number of particles at each time.</span></span>
+<span id="cb22-5"><a href="d-data-1.html#cb22-5" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb22-6"><a href="d-data-1.html#cb22-6" tabindex="-1"></a><span class="co">#' @return List containing (1) ylist, (2) mnlist, (3) clusterlist.</span></span>
+<span id="cb22-7"><a href="d-data-1.html#cb22-7" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb22-8"><a href="d-data-1.html#cb22-8" tabindex="-1"></a><span id="gendat_3d">gendat_3d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(TT, ntlist){</span>
 <span id="cb22-9"><a href="d-data-1.html#cb22-9" tabindex="-1"></a></span>
 <span id="cb22-10"><a href="d-data-1.html#cb22-10" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
 <span id="cb22-11"><a href="d-data-1.html#cb22-11" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">length</span>(ntlist) <span class="sc">==</span> TT)</span>
@@ -379,7 +366,7 @@ arguments and argument order))</p>
 <span id="cb22-19"><a href="d-data-1.html#cb22-19" tabindex="-1"></a>  <span class="fu">colnames</span>(probs) <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span></span>
 <span id="cb22-20"><a href="d-data-1.html#cb22-20" tabindex="-1"></a>  probs_long <span class="ot">=</span> <span class="fu">as_tibble</span>(probs) <span class="sc">%&gt;%</span></span>
 <span id="cb22-21"><a href="d-data-1.html#cb22-21" tabindex="-1"></a>    <span class="fu">add_column</span>(<span class="at">time =</span> <span class="dv">1</span><span class="sc">:</span>TT) <span class="sc">%&gt;%</span></span>
-<span id="cb22-22"><a href="d-data-1.html#cb22-22" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="st">&quot;time&quot;</span>, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;prob&quot;</span>)</span>
+<span id="cb22-22"><a href="d-data-1.html#cb22-22" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="st">"time"</span>, <span class="at">names_to =</span> <span class="st">"cluster"</span>, <span class="at">values_to =</span> <span class="st">"prob"</span>)</span>
 <span id="cb22-23"><a href="d-data-1.html#cb22-23" tabindex="-1"></a>  probs_long <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>time,<span class="at">y=</span>prob, <span class="at">group=</span>cluster, <span class="at">col=</span>cluster)) <span class="sc">+</span> <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span>
 <span id="cb22-24"><a href="d-data-1.html#cb22-24" tabindex="-1"></a></span>
 <span id="cb22-25"><a href="d-data-1.html#cb22-25" tabindex="-1"></a>  <span class="do">## Make cluster means, by time</span></span>
@@ -406,15 +393,15 @@ arguments and argument order))</p>
 <span id="cb22-46"><a href="d-data-1.html#cb22-46" tabindex="-1"></a>  <span class="fu">dimnames</span>(means)[[<span class="dv">2</span>]]  <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
 <span id="cb22-47"><a href="d-data-1.html#cb22-47" tabindex="-1"></a>  means_long <span class="ot">=</span> <span class="fu">as_tibble</span>(means) <span class="sc">%&gt;%</span></span>
 <span id="cb22-48"><a href="d-data-1.html#cb22-48" tabindex="-1"></a>    <span class="fu">add_column</span>(<span class="at">time =</span> <span class="dv">1</span><span class="sc">:</span>TT) <span class="sc">%&gt;%</span></span>
-<span id="cb22-49"><a href="d-data-1.html#cb22-49" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="st">&quot;time&quot;</span>, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;mean&quot;</span>)</span>
-<span id="cb22-50"><a href="d-data-1.html#cb22-50" tabindex="-1"></a>  model <span class="ot">=</span> <span class="fu">full_join</span>(means_long, probs_long, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;time&quot;</span>, <span class="st">&quot;cluster&quot;</span>))</span>
+<span id="cb22-49"><a href="d-data-1.html#cb22-49" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="st">"time"</span>, <span class="at">names_to =</span> <span class="st">"cluster"</span>, <span class="at">values_to =</span> <span class="st">"mean"</span>)</span>
+<span id="cb22-50"><a href="d-data-1.html#cb22-50" tabindex="-1"></a>  model <span class="ot">=</span> <span class="fu">full_join</span>(means_long, probs_long, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"time"</span>, <span class="st">"cluster"</span>))</span>
 <span id="cb22-51"><a href="d-data-1.html#cb22-51" tabindex="-1"></a></span>
 <span id="cb22-52"><a href="d-data-1.html#cb22-52" tabindex="-1"></a>  ylist <span class="ot">=</span> <span class="fu">list</span>()</span>
 <span id="cb22-53"><a href="d-data-1.html#cb22-53" tabindex="-1"></a>  mulist <span class="ot">=</span> <span class="fu">list</span>()</span>
 <span id="cb22-54"><a href="d-data-1.html#cb22-54" tabindex="-1"></a>  clusterlist <span class="ot">=</span> <span class="fu">list</span>()</span>
 <span id="cb22-55"><a href="d-data-1.html#cb22-55" tabindex="-1"></a>  <span class="cf">for</span>(tt <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>TT){</span>
-<span id="cb22-56"><a href="d-data-1.html#cb22-56" tabindex="-1"></a>    Y <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">&quot;list&quot;</span>, <span class="at">length =</span> numclust)</span>
-<span id="cb22-57"><a href="d-data-1.html#cb22-57" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">&quot;list&quot;</span>, <span class="at">length =</span> numclust)</span>
+<span id="cb22-56"><a href="d-data-1.html#cb22-56" tabindex="-1"></a>    Y <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"list"</span>, <span class="at">length =</span> numclust)</span>
+<span id="cb22-57"><a href="d-data-1.html#cb22-57" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"list"</span>, <span class="at">length =</span> numclust)</span>
 <span id="cb22-58"><a href="d-data-1.html#cb22-58" tabindex="-1"></a>    clusters_count <span class="ot">&lt;-</span> <span class="fu">rmultinom</span>(<span class="at">n =</span> <span class="dv">1</span>, <span class="at">size =</span> ntlist[tt], <span class="at">prob =</span> probs[tt,])</span>
 <span id="cb22-59"><a href="d-data-1.html#cb22-59" tabindex="-1"></a></span>
 <span id="cb22-60"><a href="d-data-1.html#cb22-60" tabindex="-1"></a>    <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
@@ -441,7 +428,7 @@ arguments and argument order))</p>
 <span id="cb22-81"><a href="d-data-1.html#cb22-81" tabindex="-1"></a>    Y <span class="ot">&lt;-</span> Y <span class="sc">%&gt;%</span> purrr<span class="sc">::</span><span class="fu">compact</span>() <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind, .)</span>
 <span id="cb22-82"><a href="d-data-1.html#cb22-82" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> mu <span class="sc">%&gt;%</span> purrr<span class="sc">::</span><span class="fu">compact</span>() <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(rbind, .)</span>
 <span id="cb22-83"><a href="d-data-1.html#cb22-83" tabindex="-1"></a>    cluster <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">times =</span> clusters_count)</span>
-<span id="cb22-84"><a href="d-data-1.html#cb22-84" tabindex="-1"></a>    <span class="fu">colnames</span>(Y) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;dim&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb22-84"><a href="d-data-1.html#cb22-84" tabindex="-1"></a>    <span class="fu">colnames</span>(Y) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"dim"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
 <span id="cb22-85"><a href="d-data-1.html#cb22-85" tabindex="-1"></a>    ylist[[tt]] <span class="ot">=</span> Y</span>
 <span id="cb22-86"><a href="d-data-1.html#cb22-86" tabindex="-1"></a>    mulist[[tt]] <span class="ot">=</span> mu</span>
 <span id="cb22-87"><a href="d-data-1.html#cb22-87" tabindex="-1"></a>    clusterlist[[tt]] <span class="ot">=</span> cluster</span>
@@ -451,37 +438,28 @@ arguments and argument order))</p>
 <span id="cb22-91"><a href="d-data-1.html#cb22-91" tabindex="-1"></a>              <span class="at">probs =</span> probs, <span class="at">means =</span> means))</span>
 <span id="cb22-92"><a href="d-data-1.html#cb22-92" tabindex="-1"></a>}</span></code></pre></div>
 <p>Now, trying this out on some synthetic data and estimated model.</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="d-data-1.html#cb23-1" tabindex="-1"></a>datobj <span class="ot">=</span> <a href='d-data-1.html#gendat_3d'>gendat_3d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>,<span class="dv">100</span>))</span>
-<span id="cb23-2"><a href="d-data-1.html#cb23-2" tabindex="-1"></a><a href='d-data-1.html#plot_3d'>plot_3d</a>(<span class="at">ylist =</span> datobj<span class="sc">$</span>ylist, <span class="at">tt =</span> <span class="dv">1</span>)</span>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="d-data-1.html#cb23-1" tabindex="-1"></a>datobj <span class="ot">=</span> <a href="d-data-1.html#gendat_3d">gendat_3d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>,<span class="dv">100</span>))</span>
+<span id="cb23-2"><a href="d-data-1.html#cb23-2" tabindex="-1"></a><a href="d-data-1.html#plot_3d">plot_3d</a>(<span class="at">ylist =</span> datobj<span class="sc">$</span>ylist, <span class="at">tt =</span> <span class="dv">1</span>)</span>
 <span id="cb23-3"><a href="d-data-1.html#cb23-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2321</span>)</span>
-<span id="cb23-4"><a href="d-data-1.html#cb23-4" tabindex="-1"></a>obj <span class="ot">=</span> <a href='flowtrend.html#flowtrend'>flowtrend</a>(<span class="at">ylist =</span> datobj<span class="sc">$</span>ylist,</span>
+<span id="cb23-4"><a href="d-data-1.html#cb23-4" tabindex="-1"></a>obj <span class="ot">=</span> <a href="flowtrend.html#flowtrend">flowtrend</a>(<span class="at">ylist =</span> datobj<span class="sc">$</span>ylist,</span>
 <span id="cb23-5"><a href="d-data-1.html#cb23-5" tabindex="-1"></a>                <span class="at">l =</span> <span class="dv">2</span>, <span class="at">l_prob =</span> <span class="dv">1</span>,</span>
 <span id="cb23-6"><a href="d-data-1.html#cb23-6" tabindex="-1"></a>                <span class="at">lambda =</span> .<span class="dv">01</span>, <span class="at">lambda_prob =</span> .<span class="dv">01</span>,</span>
 <span id="cb23-7"><a href="d-data-1.html#cb23-7" tabindex="-1"></a>                <span class="at">numclust =</span> <span class="dv">3</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb23-8"><a href="d-data-1.html#cb23-8" tabindex="-1"></a>                <span class="at">maxdev =</span> <span class="dv">3</span>,</span>
 <span id="cb23-9"><a href="d-data-1.html#cb23-9" tabindex="-1"></a>                <span class="at">niter =</span> <span class="dv">50</span>,</span>
 <span id="cb23-10"><a href="d-data-1.html#cb23-10" tabindex="-1"></a>                <span class="at">nrestart =</span> <span class="dv">3</span>)</span>
-<span id="cb23-11"><a href="d-data-1.html#cb23-11" tabindex="-1"></a><a href='d-data-1.html#plot_3d'>plot_3d</a>(<span class="at">ylist =</span> datobj<span class="sc">$</span>ylist, <span class="at">tt =</span> tt, <span class="at">obj =</span> obj)</span></code></pre></div>
+<span id="cb23-11"><a href="d-data-1.html#cb23-11" tabindex="-1"></a><a href="d-data-1.html#plot_3d">plot_3d</a>(<span class="at">ylist =</span> datobj<span class="sc">$</span>ylist, <span class="at">tt =</span> tt, <span class="at">obj =</span> obj)</span></code></pre></div>
 
 </div>
             </section>
-
-          </div>
+</div>
         </div>
       </div>
 <a href="d-data.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="trend-filtering.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
-<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
-<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
-<script>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script><script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script><script src="libs/gitbook-2.6.7/js/plugin-search.js"></script><script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script><script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script><script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script><script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script><script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script><script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
@@ -522,10 +500,7 @@ gitbook.start({
 }
 });
 });
-</script>
-
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
+</script><!-- dynamically load mathjax for compatibility with self-contained --><script>
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
@@ -539,5 +514,4 @@ gitbook.start({
   })();
 </script>
 </body>
-
 </html>

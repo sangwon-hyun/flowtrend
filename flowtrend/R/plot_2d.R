@@ -9,18 +9,28 @@
 #' 
 #' @export
 #' @return ggplot object.
-plot_2d <- function(ylist, countslist = NULL, obj = NULL, tt,
+plot_2d <- function(ylist, countslist = NULL, obj = NULL, tt, bin = TRUE,
                     point_color = "blue", raster_colours = c("white", "blue")){
 
   ## Basic checks
   stopifnot(ncol(ylist[[1]]) == 2)
   if(!is.null(obj)) stopifnot(obj$dimdat == 2)
-
+##  if(!bin) stop("2d plotting for particle level data isn't supported.")
+  
 
   ## Take data from one time point
   y = ylist %>% .[[tt]]
   if(is.null(colnames(y))){ colnames(y) = paste0("dim", c(1,2)) }
   y = y %>% as_tibble()
+
+
+  ## Handle counts
+  if(is.null(countslist)){
+    counts = rep(1, nrow(ylist[[1]]))
+  }
+  if(!is.null(countslist)){
+    counts = countslist[[tt]]
+  }
 
   ## Get variable names
   ## colnames(ylist[[1]]) = c("","","")
@@ -28,20 +38,19 @@ plot_2d <- function(ylist, countslist = NULL, obj = NULL, tt,
   varname1 = varnames[1]
   varname2 = varnames[2]
 
-  if(is.null(countslist)){
+  ## Get data from one timepoint
+  y = y %>% add_column(counts = counts)
 
-    ## Make a simple scatterplot
+  if(!bin){
     p = y %>% ggplot() +
-      geom_point(aes(x = !!sym(varname1), y=!!sym(varname2)), alpha = .2, col = "blue") +
+      geom_point(aes(x = !!sym(varname1), y=!!sym(varname2)), size = rel(counts),
+                 alpha = .2, col = "blue") +
       theme_minimal() +
-      theme(legend.position = "none") 
+      theme(legend.position = "none")  + 
+      scale_size()
 
-  } else {
-    ## Get data from one timepoint
-    counts = countslist[[tt]]
-    y = y %>% add_column(counts = counts)
-
-    ## Make a simple scatterplot
+  }
+  if(bin){
     p =
       y %>% ggplot() +
       geom_raster(aes(x = !!sym(varname1), y=!!sym(varname2), fill = counts))  +

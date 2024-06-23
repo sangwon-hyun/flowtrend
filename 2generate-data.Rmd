@@ -152,14 +152,14 @@ in a single plot. `plot_1d()` lets you do this.
 #' @param ylist Data. A list of (|nt| by |dimdat|) matrices
 #' @param obj A flowtrend (or flowmix) object. Defaults to NULL.
 #' @param x Time points. Defaults to NULL.
-#' @param idim If provided, plots the |idim|'th dimension of the data (only particles).
-#' @param alpha Optional; between 0 and 1, how transparent to plot the data
-#'   points.
+#' @param alpha Between 0 and 1, how transparent to plot the data
+#'   points. Defaults to 0.1.
 #' @param bin If TRUE, the data is binned.
 #'
 #' @return ggplot object with data, and optionally, a flowtrend model overlaid.
 #' @export
-plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, idim = NULL, alpha = .1, bin = FALSE){
+plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, alpha = .1, bin = FALSE,
+                    plot_band = TRUE){
 
   ## Basic checks
   if(!is.null(x)){
@@ -168,46 +168,32 @@ plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, idim = NULL, alp
   } else {
     times = 1:length(ylist)
   }
-
-  ## If more than 2d data is provided, take the idim'th info only.
   dimdat = ncol(ylist[[1]])
-  if(dimdat >= 2){
-    assertthat::assert_that(!is.null(idim))
-    assertthat::assert_that(idim %in% 1:dimdat)
+  assertthat::assert_that(dimdat == 1)
 
-    if(!is.null(obj)){
-      obj$mn = obj$mn %>% .[,idim,,drop=FALSE]
-      obj$sigma = obj$sigma %>% .[,idim,idim,drop=FALSE]
-    }
-    ylist = ylist %>% lapply(function(a) a[,idim, drop=FALSE])
-  }
+  ## If countslist is not provided, make a dummy
+  if(is.null(countslist)) countslist = lapply(ylist, function(y) rep(1, nrow(y)))
 
-  if(is.null(countslist)){
-    ## make data into long matrix
-    ymat <- lapply(1:length(ylist), FUN = function(tt){
-      data.frame(time = times[tt], Y = ylist[[tt]])
-    }) %>% bind_rows() %>% as_tibble()
-    colnames(ymat) = c("time", "Y", "counts") ## when ylist[[tt]] already has a column name, this is needed.
 
-    ## plot long matrix
-    gg = ymat %>% ggplot() +
-      geom_point(aes(x = time, y = Y), alpha = alpha) +
-      theme_bw() + ylab("Data") + xlab("Time") 
-      ## theme(legend.position = 'none')
-  } else {
-    ## make data into long matrix
-    ymat <- lapply(1:length(ylist), FUN = function(tt){
-      data.frame(time = times[tt], Y = ylist[[tt]], counts = countslist[[tt]])
-    }) %>% bind_rows() %>% as_tibble()
-    colnames(ymat) = c("time", "Y", "counts") ## when ylist[[tt]] already has a column name, this is needed.
-
-    ## plot long matrix
+  ## Make data into long matrix
+  ymat <- lapply(1:length(ylist), FUN = function(tt){
+    data.frame(time = times[tt], Y = ylist[[tt]], counts = countslist[[tt]])
+  }) %>% bind_rows() %>% as_tibble()
+  colnames(ymat) = c("time", "Y", "counts") ## when ylist[[tt]] already has a column name, this is needed.
+  
+  if(bin){
     gg = ymat %>% ggplot() +
       geom_raster(aes(x = time, y = Y, fill = counts)) +
       theme_bw() + ylab("Data") + xlab("Time")  +
       scale_fill_gradientn(colours = c("white", "black"))
-      ## theme(legend.position = 'none')
   }
+  if(!bin){
+    gg = ymat %>% ggplot() +
+      geom_point(aes(x = time, y = Y), alpha = alpha) +
+      theme_bw() + ylab("Data") + xlab("Time") 
+  }
+
+  ## If there is a flowtrend object to plot, do it.
   if(is.null(obj)){
     return(gg)
   } else {
@@ -223,31 +209,23 @@ plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, idim = NULL, alp
     gg = gg + geom_path(aes(x = time, y = mean, linewidth = prob, group = cluster, color = cluster),
                         data = est_long,
                         lineend = "round", linejoin="mitre")
-  
     ## TODO: make it ignore the missing values at the gaps; currently this is not coded as NAs.
-  
-    ## Add the estimated 95% probability regions for data.
-    stdev = obj$sigma %>% .[,,1] %>% sqrt()
-    ## band_long =
-    ##   mn_long %>% mutate(upper = case_when(cluster == "1" ~ mean + 1.96 * stdev[1],
-    ##                                        cluster == "2" ~ mean + 1.96 * stdev[2],
-    ##                                        cluster == "3" ~ mean + 1.96 * stdev[3]),
-    ##                      lower = case_when(cluster == "1" ~ mean - 1.96 * stdev[1],
-    ##                                        cluster == "2" ~ mean - 1.96 * stdev[2],
-    ##                                        cluster == "3" ~ mean - 1.96 * stdev[3]))
 
-    mn_long_by_clust = mn_long %>% group_by(cluster) %>% group_split()
-    band_long_by_clust = lapply(1:numclust, function(iclust){
-      mn_long_by_clust[[iclust]] %>% mutate(upper = mean + 1.96 * stdev[iclust]) %>% mutate(lower = mean - 1.96 * stdev[iclust])
-    })
-    band_long = band_long_by_clust %>% bind_rows()
-
-
-    gg + geom_line(aes(x = time, y = upper, group = cluster, color = cluster),
-                   data = band_long, size = rel(.7), alpha = .5) +
-      geom_line(aes(x = time, y = lower, group = cluster, color = cluster),
-                data = band_long, size = rel(.7), alpha = .5) +
+    if(plot_band){
+      ## Add the estimated 95% probability regions for data.
+      stdev = obj$sigma %>% .[,,1] %>% sqrt()
+      mn_long_by_clust = mn_long %>% group_by(cluster) %>% group_split()
+      band_long_by_clust = lapply(1:numclust, function(iclust){
+        mn_long_by_clust[[iclust]] %>% mutate(upper = mean + 1.96 * stdev[iclust]) %>% mutate(lower = mean - 1.96 * stdev[iclust])
+      })
+      band_long = band_long_by_clust %>% bind_rows()
+      gg + geom_line(aes(x = time, y = upper, group = cluster, color = cluster),
+                     data = band_long, size = rel(.7), alpha = .5) +
+        geom_line(aes(x = time, y = lower, group = cluster, color = cluster),
+                  data = band_long, size = rel(.7), alpha = .5) +
       guides(size = "none") # To turn off line size from legend
+    }
+    return(gg)
   }
 }
 ```
@@ -268,6 +246,61 @@ plot_1d(ylist, NULL, x = x) +
             linetype = "dashed", size=2, alpha = .7)
 ```
 Voilà!
+
+
+When we have a model fit on 3d data but want to visualize
+
+`plot_1d(ylist, countslist) + plot_1d_add_model(obj = obj, dim = 1)
+
+```{r}
+#' Add a model.
+#' 
+#' @param obj Model
+#' @param gg0 esult of plot_1d
+#' @param idim dimension
+#' @param plot_band If TRUE, plot a +1.96 standard deviation band.
+#'
+#' @return ggplot object
+#'
+#' @export
+plot_1d_add_model <- function(gg0, obj, idim, plot_band = TRUE){
+  times = obj$x ## 1:(obj$TT) ## resolve this!
+  numclust = obj$numclust
+  mnmat = obj$mn %>% .[,idim,] %>%  `colnames<-`(1:numclust) %>% as_tibble() %>% 
+    add_column(time = times)
+  probmat = obj$prob %>% as_tibble() %>% setNames(1:numclust) %>% add_column(time = times)
+  mn_long = mnmat %>% pivot_longer(-time, names_to = "cluster", values_to = "mean") %>%
+    mutate(cluster = factor(cluster, levels=sapply(1:10, toString)))
+  prob_long = probmat %>% pivot_longer(-time, names_to = "cluster", values_to = "prob") %>% 
+    mutate(cluster = factor(cluster, levels=sapply(1:10, toString)))
+  est_long = full_join(mn_long, prob_long, by = c("time","cluster"))
+  ## est_long = est_long %>% mutate(cluster = factor(cluster, levels=sapply(1:10, toString)))
+  gg = gg0 + geom_path(aes(x = time, y = mean, linewidth = prob, group = cluster, color = cluster),
+                       data = est_long,
+                       lineend = "round", linejoin="mitre")
+
+  ## Add the estimated 95% probability regions for data.
+  if(add_band){
+    stdev = obj$sigma %>% .[,idim,idim] %>% sqrt()
+    names(stdev) = sapply(1:numclust, toString)
+    mn_long_by_clust = mn_long %>% group_by(cluster) %>% group_split()
+    band_long_by_clust = lapply(1:numclust, function(iclust){
+      mn_long_by_clust[[iclust]] %>%
+        mutate(upper = mean + 1.96 * stdev[iclust]) %>%
+        mutate(lower = mean - 1.96 * stdev[iclust])
+    })
+    band_long = band_long_by_clust %>% bind_rows()
+    gg = gg + geom_line(aes(x = time, y = upper, group = cluster, color = cluster),
+                        data = band_long, size = rel(.7), alpha = .5) +
+      geom_line(aes(x = time, y = lower, group = cluster, color = cluster),
+                data = band_long, size = rel(.7), alpha = .5) +
+      guides(size = "none") # To turn off line size from legend
+  }
+  return(gg)
+}
+```
+
+
 
 Also, we will want to plot the estimated cluster probabilities of a model `obj`.
 
@@ -298,6 +331,50 @@ plot_prob <- function(obj, x = NULL){
 
 We can't test it out now, but we'll use it later in [1d-example](#1d-example).
 
+
+Here is a 1d plotting function if you have cluster memberships `memlist`.
+
+```{r,}
+#' Makes 1d plot of data when
+#'
+#' @param ylist Particlel-level data. A list of (|nt| by |dimdat|) matrices.
+#' @param memlist List of memberships for the particles.
+#' @param x Time points. Defaults to NULL.
+#' @param alpha Between 0 and 1, how transparent to plot the data
+#'   points. Defaults to 0.1.
+#'
+#' @return ggplot object with data, and optionally, a flowtrend model overlaid.
+#' @export
+plot_1d_with_membership <- function(ylist, memlist, countslist = NULL, x = NULL, alpha = .1){
+
+  ## Basic checks
+  if(!is.null(x)){
+    stopifnot(length(x) == length(ylist))
+    times = x
+  } else {
+    times = 1:length(ylist)
+  }
+  dimdat = ncol(ylist[[1]])
+
+  ## If countslist is not provided, make a dummy
+  if(is.null(countslist)) countslist = lapply(ylist, function(y) rep(1, nrow(y)))
+
+  ## Make data into long matrix
+  ymat <- lapply(1:length(ylist), FUN = function(tt){
+    data.frame(time = times[tt], Y = ylist[[tt]],
+               counts = countslist[[tt]], cluster = memlist[[tt]])
+  }) %>% bind_rows() %>% as_tibble()
+  ymat = ymat %>% mutate(cluster = as.factor(cluster))
+  colnames(ymat) = c("time", "Y", "counts", "cluster") ## when ylist[[tt]] already has a column name, this is needed.
+
+  gg =
+    ymat %>% ggplot() +
+    geom_point(aes(x = time, y = Y, col = cluster),##, shape = cluster),
+               alpha = .01) + ##facet_wrap(~cluster)  +
+    theme_bw() + ylab("Data") + xlab("Time") 
+  return(gg)
+}
+```
 
 
 ## 2d data
@@ -402,18 +479,28 @@ Here's a simpler plotting function for 2d data at the particle level.
 #' 
 #' @export
 #' @return ggplot object.
-plot_2d <- function(ylist, countslist = NULL, obj = NULL, tt,
+plot_2d <- function(ylist, countslist = NULL, obj = NULL, tt, bin = TRUE,
                     point_color = "blue", raster_colours = c("white", "blue")){
 
   ## Basic checks
   stopifnot(ncol(ylist[[1]]) == 2)
   if(!is.null(obj)) stopifnot(obj$dimdat == 2)
-
+##  if(!bin) stop("2d plotting for particle level data isn't supported.")
+  
 
   ## Take data from one time point
   y = ylist %>% .[[tt]]
   if(is.null(colnames(y))){ colnames(y) = paste0("dim", c(1,2)) }
   y = y %>% as_tibble()
+
+
+  ## Handle counts
+  if(is.null(countslist)){
+    counts = rep(1, nrow(ylist[[1]]))
+  }
+  if(!is.null(countslist)){
+    counts = countslist[[tt]]
+  }
 
   ## Get variable names
   ## colnames(ylist[[1]]) = c("","","")
@@ -421,20 +508,19 @@ plot_2d <- function(ylist, countslist = NULL, obj = NULL, tt,
   varname1 = varnames[1]
   varname2 = varnames[2]
 
-  if(is.null(countslist)){
+  ## Get data from one timepoint
+  y = y %>% add_column(counts = counts)
 
-    ## Make a simple scatterplot
+  if(!bin){
     p = y %>% ggplot() +
-      geom_point(aes(x = !!sym(varname1), y=!!sym(varname2)), alpha = .2, col = "blue") +
+      geom_point(aes(x = !!sym(varname1), y=!!sym(varname2)), size = rel(counts),
+                 alpha = .2, col = "blue") +
       theme_minimal() +
-      theme(legend.position = "none") 
+      theme(legend.position = "none")  + 
+      scale_size()
 
-  } else {
-    ## Get data from one timepoint
-    counts = countslist[[tt]]
-    y = y %>% add_column(counts = counts)
-
-    ## Make a simple scatterplot
+  }
+  if(bin){
     p =
       y %>% ggplot() +
       geom_raster(aes(x = !!sym(varname1), y=!!sym(varname2), fill = counts))  +
@@ -491,9 +577,9 @@ if(FALSE){
 
 Let's try it out.
 
-```{r, fig.width = 5, fig.height = 5}
+```{r plot-2d-example, fig.width = 5, fig.height = 5}
 datobj = gendat_2d(2, c(1000,1000))
-plot_2d(datobj$ylist, tt=1)
+plot_2d(datobj$ylist, tt=1, bin = FALSE)
 ```
 
 
@@ -532,12 +618,17 @@ arguments and argument order))
 #'   of the combined plot
 #' @export
 #' @return
-#' 
+#'   
 plot_3d <- function(ylist, obj = NULL, tt, countslist = NULL,
+                    labels = NULL,
+                    bin = TRUE,
+                    plot_title = NULL,
                     return_list_of_plots = FALSE){
 
   ## Basic checks
   stopifnot(ncol(ylist[[1]]) == 3)
+  if(!is.null(labels)) assertthat::assert_that(length(labels) == obj$numclust)
+##  if(!bin) stop("This function is only for binned 3d data!")
 
   ## Extract data
   ## y = ylist[[tt]][,dims]
@@ -546,17 +637,27 @@ plot_3d <- function(ylist, obj = NULL, tt, countslist = NULL,
   if(is.null(countslist)){
     counts = rep(1, nrow(ylist[[1]]))
   }
+  if(!is.null(countslist)){
+    counts = countslist[[tt]]
+  }
 
   ## Aggregate counts into the two dimensions
   y2d_list = list()
   counts2d_list = list()
   for(ii in 1:3){
     dims = list(c(1:2), c(2:3), c(3,1))[[ii]]
-    yy = flowmix::collapse_3d_to_2d(ylist[[tt]], countslist[[tt]], dims)
-    y2d = yy[,1:2]
-    colnames(y2d) = labs[dims]
+    if(bin){
+      yy = flowmix::collapse_3d_to_2d(ylist[[tt]], counts, dims)
+      y2d = yy[,1:2]
+      colnames(y2d) = labs[dims]
+      one_counts = yy[,3]
+    } else {
+      y2d = ylist[[tt]][,dims]
+      colnames(y2d) = labs[dims]
+      one_counts = counts
+    }
     y2d_list[[ii]] = y2d
-    counts2d_list[[ii]] = yy[,3]
+    counts2d_list[[ii]] = one_counts
   }
   total_range = sapply(counts2d_list, range) %>% range()
 
@@ -566,10 +667,11 @@ plot_3d <- function(ylist, obj = NULL, tt, countslist = NULL,
     dims = list(c(1:2), c(2:3), c(3,1))[[ii]]
 
     ## Make data plot
-    one_countslist = (if(!is.null(countslist)) list(counts2d_list[[ii]]) else NULL)
+    ##one_countslist = (if(!is.null(countslist)) list(counts2d_list[[ii]]) else NULL)
     p = flowtrend::plot_2d(list(y2d_list[[ii]]),
-                           one_countslist, obj=NULL, 1) 
-    if(!is.null(countslist)){
+                           list(counts2d_list[[ii]]), obj = NULL, tt = 1, bin = bin) 
+    if(bin){
+      p$scales$scales <- list()
       p = p + scale_fill_gradientn(
                   colors = c("white", "blue", "yellow"), limits = total_range,
                   guide = "none")
@@ -605,7 +707,9 @@ plot_3d <- function(ylist, obj = NULL, tt, countslist = NULL,
         ## Add cluster number as a label
         cex = rel(3)
         fac = 10
-        labels = 1:(obj$numclust)
+        if(is.null(labels)){
+          labels = 1:(obj$numclust)
+        }
         dt = data.frame(dim1 = mnmat[,1], dim2 = mnmat[,2], prob = obj$prob[tt,] * fac)
         p = p + ggrepel::geom_text_repel(aes(x = dim1, y = dim2, label = labels,
                                              point.size = sqrt(prob)),
@@ -624,7 +728,8 @@ plot_3d <- function(ylist, obj = NULL, tt, countslist = NULL,
 
     ## Format a bit more and save
     if(ii == 1){
-      p = p + ggtitle(paste0("Time=", tt))
+      if(is.null(plot_title)) plot_title = paste0("Time=", tt)
+      p = p + ggtitle(plot_title)
     } else {
       p = p + ggtitle("")
     }

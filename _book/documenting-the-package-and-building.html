@@ -1,61 +1,32 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
 <head>
-
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>8 Documenting the package and building | Creating the flowtrend R package</title>
-  <meta name="description" content="8 Documenting the package and building | Creating the flowtrend R package" />
-  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
-
-  <meta property="og:title" content="8 Documenting the package and building | Creating the flowtrend R package" />
-  <meta property="og:type" content="book" />
-  
-  
-  
-
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="8 Documenting the package and building | Creating the flowtrend R package" />
-  
-  
-  
-
-<meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien" />
-
-
-<meta name="date" content="2024-05-20" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  
-  
-<link rel="prev" href="helpers-for-simulations.html"/>
-
-<script src="libs/header-attrs-2.25/header-attrs.js"></script>
-<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
-<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
-
-
-
-
-
-
-
-
-<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
-<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
-
-
-<style type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>8 Documenting the package and building | Creating the flowtrend R package</title>
+<meta name="description" content="8 Documenting the package and building | Creating the flowtrend R package">
+<meta name="generator" content="bookdown 0.35 and GitBook 2.6.7">
+<meta property="og:title" content="8 Documenting the package and building | Creating the flowtrend R package">
+<meta property="og:type" content="book">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="8 Documenting the package and building | Creating the flowtrend R package">
+<meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien">
+<meta name="date" content="2024-06-22">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="prev" href="helpers-for-simulations.html">
+<script src="libs/header-attrs-2.25/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script><link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet">
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet">
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet">
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script><style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -119,14 +90,14 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
-
 <style type="text/css">
   
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 </style>
-
+<style type="text/css">fieldset.chunkfield {border:1px dotted black;padding-bottom: 0px;padding-top: 0px;margin:0 2px;padding:.35em .625em .75em}
+    legend.chunklegend {padding:0;width:auto;border:0; border-bottom: none; margin-bottom:0}
+    </style>
 </head>
-
 <body>
 
 
@@ -134,46 +105,57 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
 
     <div class="book-summary">
-      <nav role="navigation">
-
-<ul class="summary">
+      <nav role="navigation"><ul class="summary">
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a>
+<li class="chapter" data-level="2" data-path="package-setup.html">
+<a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="package-setup.html"><a href="package-setup.html#d-data"><i class="fa fa-check"></i><b>2.1</b> 1d data</a>
+<li class="chapter" data-level="2.1" data-path="package-setup.html">
+<a href="package-setup.html#d-data"><i class="fa fa-check"></i><b>2.1</b> 1d data</a>
 <ul>
 <li class="chapter" data-level="2.1.1" data-path="package-setup.html"><a href="package-setup.html#generating-1d-data"><i class="fa fa-check"></i><b>2.1.1</b> Generating 1d data</a></li>
 <li class="chapter" data-level="2.1.2" data-path="package-setup.html"><a href="package-setup.html#plotting-1d-data"><i class="fa fa-check"></i><b>2.1.2</b> Plotting 1d data</a></li>
-</ul></li>
-<li class="chapter" data-level="2.2" data-path="package-setup.html"><a href="package-setup.html#d-data-1"><i class="fa fa-check"></i><b>2.2</b> 2d data</a>
+</ul>
+</li>
+<li class="chapter" data-level="2.2" data-path="package-setup.html">
+<a href="package-setup.html#d-data-1"><i class="fa fa-check"></i><b>2.2</b> 2d data</a>
 <ul>
 <li class="chapter" data-level="2.2.1" data-path="package-setup.html"><a href="package-setup.html#generating-2d-data"><i class="fa fa-check"></i><b>2.2.1</b> Generating 2d data</a></li>
 <li class="chapter" data-level="2.2.2" data-path="package-setup.html"><a href="package-setup.html#plotting-2d-data"><i class="fa fa-check"></i><b>2.2.2</b> Plotting 2d data</a></li>
-</ul></li>
-<li class="chapter" data-level="2.3" data-path="package-setup.html"><a href="package-setup.html#d-data-2"><i class="fa fa-check"></i><b>2.3</b> 3d data</a>
+</ul>
+</li>
+<li class="chapter" data-level="2.3" data-path="package-setup.html">
+<a href="package-setup.html#d-data-2"><i class="fa fa-check"></i><b>2.3</b> 3d data</a>
 <ul>
 <li class="chapter" data-level="2.3.1" data-path="package-setup.html"><a href="package-setup.html#plotting-3d-data"><i class="fa fa-check"></i><b>2.3.1</b> Plotting 3d data</a></li>
 <li class="chapter" data-level="2.3.2" data-path="package-setup.html"><a href="package-setup.html#generating-3d-data"><i class="fa fa-check"></i><b>2.3.2</b> Generating 3d data</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html"><i class="fa fa-check"></i><b>3</b> Building the model/algorithm</a>
+</ul>
+</li>
+</ul>
+</li>
+<li class="chapter" data-level="3" data-path="building-the-modelalgorithm.html">
+<a href="building-the-modelalgorithm.html"><i class="fa fa-check"></i><b>3</b> Building the model/algorithm</a>
 <ul>
 <li class="chapter" data-level="3.1" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#trend-filtering"><i class="fa fa-check"></i><b>3.1</b> Trend filtering</a></li>
 <li class="chapter" data-level="3.2" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#objective-data-log-likelihood"><i class="fa fa-check"></i><b>3.2</b> Objective (data log-likelihood)</a></li>
 <li class="chapter" data-level="3.3" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#initial-parameters-for-em-algorithm"><i class="fa fa-check"></i><b>3.3</b> Initial parameters for EM algorithm</a></li>
 <li class="chapter" data-level="3.4" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#e-step"><i class="fa fa-check"></i><b>3.4</b> E step</a></li>
-<li class="chapter" data-level="3.5" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step"><i class="fa fa-check"></i><b>3.5</b> M step</a>
+<li class="chapter" data-level="3.5" data-path="building-the-modelalgorithm.html">
+<a href="building-the-modelalgorithm.html#m-step"><i class="fa fa-check"></i><b>3.5</b> M step</a>
 <ul>
 <li class="chapter" data-level="3.5.1" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step-for-pi"><i class="fa fa-check"></i><b>3.5.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
 <li class="chapter" data-level="3.5.2" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step-for-sigma"><i class="fa fa-check"></i><b>3.5.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
 <li class="chapter" data-level="3.5.3" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#m-step-for-mu"><i class="fa fa-check"></i><b>3.5.3</b> M step for <span class="math inline">\(\mu\)</span></a></li>
 <li class="chapter" data-level="3.5.4" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>3.5.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
 <li class="chapter" data-level="3.5.5" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#all-rcpp-functions"><i class="fa fa-check"></i><b>3.5.5</b> All Rcpp functions</a></li>
-</ul></li>
+</ul>
+</li>
 <li class="chapter" data-level="3.6" data-path="building-the-modelalgorithm.html"><a href="building-the-modelalgorithm.html#the-main-flowtrend-function"><i class="fa fa-check"></i><b>3.6</b> The main “flowtrend” function</a></li>
-</ul></li>
+</ul>
+</li>
 <li class="chapter" data-level="4" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>4</b> Reordering clusters</a></li>
-<li class="chapter" data-level="5" data-path="tuning-lambda.html"><a href="tuning-lambda.html"><i class="fa fa-check"></i><b>5</b> Tuning <span class="math inline">\(\lambda\)</span></a>
+<li class="chapter" data-level="5" data-path="tuning-lambda.html">
+<a href="tuning-lambda.html"><i class="fa fa-check"></i><b>5</b> Tuning <span class="math inline">\(\lambda\)</span></a>
 <ul>
 <li class="chapter" data-level="5.1" data-path="tuning-lambda.html"><a href="tuning-lambda.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>5.1</b> Predicting and evaluating on new time points</a></li>
 <li class="chapter" data-level="5.2" data-path="tuning-lambda.html"><a href="tuning-lambda.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>5.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
@@ -183,28 +165,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.6" data-path="tuning-lambda.html"><a href="tuning-lambda.html#summarizing-the-output"><i class="fa fa-check"></i><b>5.6</b> Summarizing the output</a></li>
 <li class="chapter" data-level="5.7" data-path="tuning-lambda.html"><a href="tuning-lambda.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>5.7</b> CV on your own computer</a></li>
 <li class="chapter" data-level="5.8" data-path="tuning-lambda.html"><a href="tuning-lambda.html#plotting"><i class="fa fa-check"></i><b>5.8</b> Plotting</a></li>
-</ul></li>
-<li class="chapter" data-level="6" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>6</b> Testing the flowtrend method</a>
+</ul>
+</li>
+<li class="chapter" data-level="6" data-path="testing-the-flowtrend-method.html">
+<a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>6</b> Testing the flowtrend method</a>
 <ul>
 <li class="chapter" data-level="6.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>6.1</b> 1d example</a></li>
 <li class="chapter" data-level="6.2" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#testing-monotonicity-of-objective-values"><i class="fa fa-check"></i><b>6.2</b> Testing monotonicity of objective values</a></li>
 <li class="chapter" data-level="6.3" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_2d-example"><i class="fa fa-check"></i><b>6.3</b> 2d example</a></li>
 <li class="chapter" data-level="6.4" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#working-with-binned-dataset"><i class="fa fa-check"></i><b>6.4</b> Working with “binned” dataset</a></li>
 <li class="chapter" data-level="6.5" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#unevenly-spaced-inputs-x"><i class="fa fa-check"></i><b>6.5</b> Unevenly spaced inputs (x)</a></li>
-</ul></li>
-<li class="chapter" data-level="7" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html"><i class="fa fa-check"></i><b>7</b> Helpers for simulations</a>
+</ul>
+</li>
+<li class="chapter" data-level="7" data-path="helpers-for-simulations.html">
+<a href="helpers-for-simulations.html"><i class="fa fa-check"></i><b>7</b> Helpers for simulations</a>
 <ul>
 <li class="chapter" data-level="7.1" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#two-alternative-clusterings"><i class="fa fa-check"></i><b>7.1</b> Two alternative clusterings</a></li>
 <li class="chapter" data-level="7.2" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#example-using-other-cluster-algorithms"><i class="fa fa-check"></i><b>7.2</b> Example using other cluster algorithms</a></li>
 <li class="chapter" data-level="7.3" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>7.3</b> Evaluating performance: soft RAND index</a></li>
 <li class="chapter" data-level="7.4" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#generating-pseudo-real-data"><i class="fa fa-check"></i><b>7.4</b> Generating “pseudo-real” data</a></li>
 <li class="chapter" data-level="7.5" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#miscellaneous-helpers"><i class="fa fa-check"></i><b>7.5</b> Miscellaneous helpers</a></li>
-</ul></li>
-<li class="chapter" data-level="8" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>8</b> Documenting the package and building</a></li>
 </ul>
-
-      </nav>
-    </div>
+</li>
+<li class="chapter" data-level="8" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>8</b> Documenting the package and building</a></li>
+</ul></nav>
+</div>
 
     <div class="book-body">
       <div class="body-inner">
@@ -217,12 +202,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <div class="page-wrapper" tabindex="-1" role="main">
           <div class="page-inner">
 
-            <section class="normal" id="section-">
-<div id="documenting-the-package-and-building" class="section level1 hasAnchor" number="8">
-<h1><span class="header-section-number">8</span> Documenting the package and building<a href="documenting-the-package-and-building.html#documenting-the-package-and-building" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+            <section class="normal" id="section-"><div id="documenting-the-package-and-building" class="section level1 hasAnchor" number="8">
+<h1>
+<span class="header-section-number">8</span> Documenting the package and building<a href="documenting-the-package-and-building.html#documenting-the-package-and-building" class="anchor-section" aria-label="Anchor link to header"></a>
+</h1>
 <p>We finish by running commands that will document, build, and install the
 package. It may also be a good idea to check the package from within this file.</p>
-<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="documenting-the-package-and-building.html#cb168-1" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">document</span>() <span class="co"># &lt;-- use instead of devtools::document() </span></span></code></pre></div>
+<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="documenting-the-package-and-building.html#cb130-1" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">document</span>() <span class="co"># &lt;-- use instead of devtools::document() </span></span></code></pre></div>
 <pre><code>## ℹ Updating flowtrend documentation
 ## ℹ Loading flowtrend
 ## ℹ Re-compiling flowtrend (debug build)</code></pre>
@@ -305,115 +291,109 @@ package. It may also be a good idea to check the package from within this file.<
 <pre><code>## Warning: [objective.R:25] @examples requires a value</code></pre>
 <pre><code>## Warning: [overfit_flowmeans.R:7] @return requires a value</code></pre>
 <pre><code>## Warning: [plot_3d.R:12] @return requires a value</code></pre>
-<pre><code>## Writing &#39;NAMESPACE&#39;</code></pre>
-<pre><code>## Warning: Skipping &#39;U_update_Z.Rd&#39;
+<pre><code>## Writing 'NAMESPACE'</code></pre>
+<pre><code>## Warning: Skipping 'U_update_Z.Rd'
 ## ℹ File lacks name and/or title</code></pre>
-<pre><code>## Warning: Skipping &#39;U_update_W.Rd&#39;
+<pre><code>## Warning: Skipping 'U_update_W.Rd'
 ## ℹ File lacks name and/or title</code></pre>
-<pre><code>## Warning: Skipping &#39;etilde_mat.Rd&#39;
+<pre><code>## Warning: Skipping 'etilde_mat.Rd'
 ## ℹ File lacks name and/or title</code></pre>
-<pre><code>## Warning: Skipping &#39;myschur.Rd&#39;
+<pre><code>## Warning: Skipping 'myschur.Rd'
 ## ℹ File lacks name and/or title</code></pre>
-<pre><code>## Writing &#39;NAMESPACE&#39;
-## Writing &#39;Estep.Rd&#39;
-## Writing &#39;Mstep_mu.Rd&#39;
-## Writing &#39;Mstep_mu_cvxr.Rd&#39;
-## Writing &#39;Mstep_prob.Rd&#39;
-## Writing &#39;Mstep_sigma.Rd&#39;
-## Writing &#39;matrix_function_solve_triangular_sylvester_barebonesC2.Rd&#39;
-## Writing &#39;W_update_fused.Rd&#39;
-## Writing &#39;projCmat.Rd&#39;
-## Writing &#39;admm_oneclust.Rd&#39;
-## Writing &#39;aug_lagr.Rd&#39;
-## Writing &#39;calc_max_lambda.Rd&#39;
-## Writing &#39;check_converge.Rd&#39;
-## Writing &#39;check_converge_rel.Rd&#39;
-## Writing &#39;create_destin.Rd&#39;
-## Writing &#39;cv_aggregate.Rd&#39;
-## Writing &#39;cv_aggregate_res.Rd&#39;
-## Writing &#39;cv_flowtrend.Rd&#39;
-## Writing &#39;cv_makebest.Rd&#39;
-## Writing &#39;load_all_objectives.Rd&#39;
-## Writing &#39;load_all_refit_objectives.Rd&#39;
-## Writing &#39;keep_only_best.Rd&#39;
-## Writing &#39;keep_only_best_refit.Rd&#39;
-## Writing &#39;cv_summary.Rd&#39;
-## Writing &#39;dt2ylist.Rd&#39;
-## Writing &#39;flowmeans_each.Rd&#39;
-## Writing &#39;flowtrend-package.Rd&#39;
-## Writing &#39;flowtrend.Rd&#39;
-## Writing &#39;flowtrend_once.Rd&#39;
-## Writing &#39;form_symmetric_kl_distmat.Rd&#39;
-## Writing &#39;gen_diff_mat.Rd&#39;
-## Writing &#39;gen_tf_mat.Rd&#39;
-## Writing &#39;gen_tf_mat_equalspace.Rd&#39;
-## Writing &#39;gendat_1d.Rd&#39;
-## Writing &#39;gendat_2d.Rd&#39;
-## Writing &#39;gendat_3d.Rd&#39;
-## Writing &#39;get_best_match_from_kl.Rd&#39;
-## Writing &#39;get_max_lambda.Rd&#39;
-## Writing &#39;init_mn.Rd&#39;
-## Writing &#39;init_sigma.Rd&#39;
-## Writing &#39;interpolate_mn.Rd&#39;
-## Writing &#39;interpolate_prob.Rd&#39;
-## Writing &#39;la_admm_oneclust.Rd&#39;
-## Writing &#39;loglik_tt.Rd&#39;
-## Writing &#39;logspace.Rd&#39;
-## Writing &#39;make_cv_folds.Rd&#39;
-## Writing &#39;make_cv_folds_in_blocks.Rd&#39;
-## Writing &#39;make_cvscore_filename.Rd&#39;
-## Writing &#39;make_best_cvscore_filename.Rd&#39;
-## Writing &#39;make_refit_filename.Rd&#39;
-## Writing &#39;make_best_refit_filename.Rd&#39;
-## Writing &#39;make_iilist.Rd&#39;
-## Writing &#39;make_iimat.Rd&#39;
-## Writing &#39;make_iimat_small.Rd&#39;
-## Writing &#39;match_clusters.Rd&#39;
-## Writing &#39;my_symmetric_kl.Rd&#39;
-## Writing &#39;one_symmetric_kl.Rd&#39;
-## Writing &#39;memlist_to_respmat.Rd&#39;
-## Writing &#39;my_mfrow.Rd&#39;
-## Writing &#39;objective.Rd&#39;
-## Writing &#39;objective_per_cluster.Rd&#39;
-## Writing &#39;one_job.Rd&#39;
-## Writing &#39;one_job_refit.Rd&#39;
-## Writing &#39;overfit_flowmeans.Rd&#39;
-## Writing &#39;parse_args.Rd&#39;
-## Writing &#39;plot_1d.Rd&#39;
-## Writing &#39;plot_1d_flowmeans.Rd&#39;
-## Writing &#39;plot_2d.Rd&#39;
-## Writing &#39;plot_3d.Rd&#39;
-## Writing &#39;plot_from_summary.Rd&#39;
-## Writing &#39;plot_prob.Rd&#39;
-## Writing &#39;predict_flowtrend.Rd&#39;
-## Writing &#39;print_progress.Rd&#39;
-## Writing &#39;reorder_clust.Rd&#39;
-## Writing &#39;reorder_flowmeans.Rd&#39;
-## Writing &#39;reorder_kl.Rd&#39;
-## Writing &#39;soft_rand.Rd&#39;
-## Writing &#39;softmax.Rd&#39;
-## Writing &#39;symmetric_kl.Rd&#39;
-## Writing &#39;underfit_flowmeans.Rd&#39;</code></pre>
+<pre><code>## Writing 'NAMESPACE'
+## Writing 'Estep.Rd'
+## Writing 'Mstep_mu.Rd'
+## Writing 'Mstep_mu_cvxr.Rd'
+## Writing 'Mstep_prob.Rd'
+## Writing 'Mstep_sigma.Rd'
+## Writing 'matrix_function_solve_triangular_sylvester_barebonesC2.Rd'
+## Writing 'W_update_fused.Rd'
+## Writing 'projCmat.Rd'
+## Writing 'admm_oneclust.Rd'
+## Writing 'aug_lagr.Rd'
+## Writing 'calc_max_lambda.Rd'
+## Writing 'check_converge.Rd'
+## Writing 'check_converge_rel.Rd'
+## Writing 'create_destin.Rd'
+## Writing 'cv_aggregate.Rd'
+## Writing 'cv_aggregate_res.Rd'
+## Writing 'cv_flowtrend.Rd'
+## Writing 'cv_makebest.Rd'
+## Writing 'load_all_objectives.Rd'
+## Writing 'load_all_refit_objectives.Rd'
+## Writing 'keep_only_best.Rd'
+## Writing 'keep_only_best_refit.Rd'
+## Writing 'cv_summary.Rd'
+## Writing 'dt2ylist.Rd'
+## Writing 'flowmeans_each.Rd'
+## Writing 'flowtrend-package.Rd'
+## Writing 'flowtrend.Rd'
+## Writing 'flowtrend_once.Rd'
+## Writing 'form_symmetric_kl_distmat.Rd'
+## Writing 'gen_diff_mat.Rd'
+## Writing 'gen_tf_mat.Rd'
+## Writing 'gen_tf_mat_equalspace.Rd'
+## Writing 'gendat_1d.Rd'
+## Writing 'gendat_2d.Rd'
+## Writing 'gendat_3d.Rd'
+## Writing 'get_best_match_from_kl.Rd'
+## Writing 'get_max_lambda.Rd'
+## Writing 'init_mn.Rd'
+## Writing 'init_sigma.Rd'
+## Writing 'interpolate_mn.Rd'
+## Writing 'interpolate_prob.Rd'
+## Writing 'la_admm_oneclust.Rd'
+## Writing 'loglik_tt.Rd'
+## Writing 'logspace.Rd'
+## Writing 'make_cv_folds.Rd'
+## Writing 'make_cv_folds_in_blocks.Rd'
+## Writing 'make_cvscore_filename.Rd'
+## Writing 'make_best_cvscore_filename.Rd'
+## Writing 'make_refit_filename.Rd'
+## Writing 'make_best_refit_filename.Rd'
+## Writing 'make_iilist.Rd'
+## Writing 'make_iimat.Rd'
+## Writing 'make_iimat_small.Rd'
+## Writing 'match_clusters.Rd'
+## Writing 'my_symmetric_kl.Rd'
+## Writing 'one_symmetric_kl.Rd'
+## Writing 'memlist_to_respmat.Rd'
+## Writing 'my_mfrow.Rd'
+## Writing 'objective.Rd'
+## Writing 'objective_per_cluster.Rd'
+## Writing 'one_job.Rd'
+## Writing 'one_job_refit.Rd'
+## Writing 'overfit_flowmeans.Rd'
+## Writing 'parse_args.Rd'
+## Writing 'plot_1d.Rd'
+## Writing 'plot_1d_add_model.Rd'
+## Writing 'plot_1d_flowmeans.Rd'
+## Writing 'plot_1d_with_membership.Rd'
+## Writing 'plot_2d.Rd'
+## Writing 'plot_3d.Rd'
+## Writing 'plot_from_summary.Rd'
+## Writing 'plot_prob.Rd'
+## Writing 'predict_flowtrend.Rd'
+## Writing 'print_progress.Rd'
+## Writing 'reorder_clust.Rd'
+## Writing 'reorder_flowmeans.Rd'
+## Writing 'reorder_kl.Rd'
+## Writing 'soft_rand.Rd'
+## Writing 'softmax.Rd'
+## Writing 'symmetric_kl.Rd'
+## Writing 'underfit_flowmeans.Rd'
+## Writing 'pipe.Rd'</code></pre>
 
 </div>
             </section>
-
-          </div>
+</div>
         </div>
       </div>
 <a href="helpers-for-simulations.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
     </div>
   </div>
-<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
-<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
-<script>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script><script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script><script src="libs/gitbook-2.6.7/js/plugin-search.js"></script><script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script><script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script><script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script><script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script><script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script><script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
@@ -454,10 +434,7 @@ gitbook.start({
 }
 });
 });
-</script>
-
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
+</script><!-- dynamically load mathjax for compatibility with self-contained --><script>
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
@@ -471,5 +448,4 @@ gitbook.start({
   })();
 </script>
 </body>
-
 </html>

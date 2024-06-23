@@ -1,61 +1,33 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
 <head>
-
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>4 Plotting 1d data | Creating the flowtrend R package</title>
-  <meta name="description" content="4 Plotting 1d data | Creating the flowtrend R package" />
-  <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
-
-  <meta property="og:title" content="4 Plotting 1d data | Creating the flowtrend R package" />
-  <meta property="og:type" content="book" />
-  
-  
-  
-
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="4 Plotting 1d data | Creating the flowtrend R package" />
-  
-  
-  
-
-<meta name="author" content="Sangwon Hyun" />
-
-
-<meta name="date" content="2023-04-18" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  
-  
-<link rel="prev" href="generating-1d-data.html"/>
-<link rel="next" href="generating-2d-data.html"/>
-<script src="libs/header-attrs-2.21/header-attrs.js"></script>
-<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
-<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
-
-
-
-
-
-
-
-
-<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
-<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
-
-
-<style type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>4 Plotting 1d data | Creating the flowtrend R package</title>
+<meta name="description" content="4 Plotting 1d data | Creating the flowtrend R package">
+<meta name="generator" content="bookdown 0.33 and GitBook 2.6.7">
+<meta property="og:title" content="4 Plotting 1d data | Creating the flowtrend R package">
+<meta property="og:type" content="book">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="4 Plotting 1d data | Creating the flowtrend R package">
+<meta name="author" content="Sangwon Hyun">
+<meta name="date" content="2023-04-18">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="prev" href="generating-1d-data.html">
+<link rel="next" href="generating-2d-data.html">
+<script src="libs/header-attrs-2.21/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script><link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet">
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet">
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet">
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet">
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script><style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -119,10 +91,16 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
-
-
+<style type="text/css">fieldset.chunkfield {border:1px dotted black;padding-bottom: 0px;padding-top: 0px;margin:0 2px;padding:.35em .625em .75em}
+    legend.chunklegend {padding:0;width:auto;border:0; border-bottom: none; margin-bottom:0}
+    </style>
+<style type="text/css">fieldset.chunkfield {border:1px dotted black;padding-bottom: 0px;padding-top: 0px;margin:0 2px;padding:.35em .625em .75em}
+    legend.chunklegend {padding:0;width:auto;border:0; border-bottom: none; margin-bottom:0}
+    </style>
+<style type="text/css">fieldset.chunkfield {border:1px dotted black;padding-bottom: 0px;padding-top: 0px;margin:0 2px;padding:.35em .625em .75em}
+    legend.chunklegend {padding:0;width:auto;border:0; border-bottom: none; margin-bottom:0}
+    </style>
 </head>
-
 <body>
 
 
@@ -130,9 +108,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
 
     <div class="book-summary">
-      <nav role="navigation">
-
-<ul class="summary">
+      <nav role="navigation"><ul class="summary">
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
 <li class="chapter" data-level="2" data-path="package-setup.html"><a href="package-setup.html"><i class="fa fa-check"></i><b>2</b> Package setup</a></li>
 <li class="chapter" data-level="3" data-path="generating-1d-data.html"><a href="generating-1d-data.html"><i class="fa fa-check"></i><b>3</b> Generating 1d data</a></li>
@@ -142,7 +118,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7" data-path="objective-data-log-likelihood.html"><a href="objective-data-log-likelihood.html"><i class="fa fa-check"></i><b>7</b> Objective (data log-likelihood)</a></li>
 <li class="chapter" data-level="8" data-path="initial-parameters-for-em-algorithm.html"><a href="initial-parameters-for-em-algorithm.html"><i class="fa fa-check"></i><b>8</b> Initial parameters for EM algorithm</a></li>
 <li class="chapter" data-level="9" data-path="e-step.html"><a href="e-step.html"><i class="fa fa-check"></i><b>9</b> E step</a></li>
-<li class="chapter" data-level="10" data-path="m-step.html"><a href="m-step.html"><i class="fa fa-check"></i><b>10</b> M step</a>
+<li class="chapter" data-level="10" data-path="m-step.html">
+<a href="m-step.html"><i class="fa fa-check"></i><b>10</b> M step</a>
 <ul>
 <li class="chapter" data-level="10.1" data-path="m-step.html"><a href="m-step.html#m-step-for-pi"><i class="fa fa-check"></i><b>10.1</b> M step for <span class="math inline">\(\pi\)</span></a></li>
 <li class="chapter" data-level="10.2" data-path="m-step.html"><a href="m-step.html#m-step-for-sigma"><i class="fa fa-check"></i><b>10.2</b> M step for <span class="math inline">\(\Sigma\)</span></a></li>
@@ -150,10 +127,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.4" data-path="m-step.html"><a href="m-step.html#helpers-for-m-step-mu"><i class="fa fa-check"></i><b>10.4</b> Helpers for M step (<span class="math inline">\(\mu\)</span>)</a></li>
 <li class="chapter" data-level="10.5" data-path="m-step.html"><a href="m-step.html#all-rcpp-functions"><i class="fa fa-check"></i><b>10.5</b> All Rcpp functions</a></li>
 <li class="chapter" data-level="10.6" data-path="m-step.html"><a href="m-step.html#ported-over-from-flowmix"><i class="fa fa-check"></i><b>10.6</b> Ported over from flowmix</a></li>
-</ul></li>
+</ul>
+</li>
 <li class="chapter" data-level="11" data-path="flowtrend.html"><a href="flowtrend.html"><i class="fa fa-check"></i><b>11</b> flowtrend</a></li>
 <li class="chapter" data-level="12" data-path="reordering-clusters.html"><a href="reordering-clusters.html"><i class="fa fa-check"></i><b>12</b> Reordering clusters</a></li>
-<li class="chapter" data-level="13" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html"><i class="fa fa-check"></i><b>13</b> Tuning the regularization parameters for <code>flowtrend</code></a>
+<li class="chapter" data-level="13" data-path="tuning-the-regularization-parameters-for-flowtrend.html">
+<a href="tuning-the-regularization-parameters-for-flowtrend.html"><i class="fa fa-check"></i><b>13</b> Tuning the regularization parameters for <code>flowtrend</code></a>
 <ul>
 <li class="chapter" data-level="13.1" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#predicting-and-evaluating-on-new-time-points"><i class="fa fa-check"></i><b>13.1</b> Predicting and evaluating on new time points</a></li>
 <li class="chapter" data-level="13.2" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#maximum-lambda_mu-lambda_pi-values-to-test"><i class="fa fa-check"></i><b>13.2</b> Maximum <span class="math inline">\((\lambda_\mu, \lambda_\pi)\)</span> values to test</a></li>
@@ -163,19 +142,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="13.6" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#summarizing-the-output"><i class="fa fa-check"></i><b>13.6</b> Summarizing the output</a></li>
 <li class="chapter" data-level="13.7" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#cv-on-your-own-computer"><i class="fa fa-check"></i><b>13.7</b> CV on your own computer</a></li>
 <li class="chapter" data-level="13.8" data-path="tuning-the-regularization-parameters-for-flowtrend.html"><a href="tuning-the-regularization-parameters-for-flowtrend.html#next-up"><i class="fa fa-check"></i><b>13.8</b> Next up</a></li>
-</ul></li>
-<li class="chapter" data-level="14" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>14</b> Testing the flowtrend method</a>
+</ul>
+</li>
+<li class="chapter" data-level="14" data-path="testing-the-flowtrend-method.html">
+<a href="testing-the-flowtrend-method.html"><i class="fa fa-check"></i><b>14</b> Testing the flowtrend method</a>
 <ul>
 <li class="chapter" data-level="14.1" data-path="testing-the-flowtrend-method.html"><a href="testing-the-flowtrend-method.html#id_1d-example"><i class="fa fa-check"></i><b>14.1</b> 1d example</a></li>
-</ul></li>
-<li class="chapter" data-level="15" data-path="d-to-1d.html"><a href="d-to-1d.html"><i class="fa fa-check"></i><b>15</b> 2d to 1d</a>
+</ul>
+</li>
+<li class="chapter" data-level="15" data-path="d-to-1d.html">
+<a href="d-to-1d.html"><i class="fa fa-check"></i><b>15</b> 2d to 1d</a>
 <ul>
 <li class="chapter" data-level="15.1" data-path="d-to-1d.html"><a href="d-to-1d.html#documenting-the-package-and-building"><i class="fa fa-check"></i><b>15.1</b> Documenting the package and building</a></li>
-</ul></li>
 </ul>
-
-      </nav>
-    </div>
+</li>
+</ul></nav>
+</div>
 
     <div class="book-body">
       <div class="body-inner">
@@ -188,20 +170,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <div class="page-wrapper" tabindex="-1" role="main">
           <div class="page-inner">
 
-            <section class="normal" id="section-">
-<div id="plotting-1d-data" class="section level1 hasAnchor" number="4">
-<h1><span class="header-section-number">4</span> Plotting 1d data<a href="plotting-1d-data.html#plotting-1d-data" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+            <section class="normal" id="section-"><div id="plotting-1d-data" class="section level1 hasAnchor" number="4">
+<h1>
+<span class="header-section-number">4</span> Plotting 1d data<a href="plotting-1d-data.html#plotting-1d-data" class="anchor-section" aria-label="Anchor link to header"></a>
+</h1>
 <p>Given 1d data <code>ylist</code> and an estimated model object <code>obj</code>, we want to plot both
-in a single plot. <code><a href='plotting-1d-data.html#plot_1d'>plot_1d</a>()</code> lets you do this.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="plotting-1d-data.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Makes 1d plot of data and model</span></span>
-<span id="cb13-2"><a href="plotting-1d-data.html#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb13-3"><a href="plotting-1d-data.html#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param ylist Data.</span></span>
-<span id="cb13-4"><a href="plotting-1d-data.html#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param obj flowtrend object. Defaults to NULL.</span></span>
-<span id="cb13-5"><a href="plotting-1d-data.html#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param x time points. Defaults to NULL.</span></span>
-<span id="cb13-6"><a href="plotting-1d-data.html#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb13-7"><a href="plotting-1d-data.html#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return ggplot object with data, and optionally, a flowtrend model overlaid.</span></span>
-<span id="cb13-8"><a href="plotting-1d-data.html#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb13-9"><a href="plotting-1d-data.html#cb13-9" aria-hidden="true" tabindex="-1"></a><span id='plot_1d'>plot_1d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, <span class="at">obj=</span><span class="cn">NULL</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">add_point =</span> <span class="cn">TRUE</span>){</span>
+in a single plot. <code><a href="plotting-1d-data.html#plot_1d">plot_1d</a>()</code> lets you do this.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="plotting-1d-data.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#' Makes 1d plot of data and model</span></span>
+<span id="cb13-2"><a href="plotting-1d-data.html#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb13-3"><a href="plotting-1d-data.html#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param ylist Data.</span></span>
+<span id="cb13-4"><a href="plotting-1d-data.html#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param obj flowtrend object. Defaults to NULL.</span></span>
+<span id="cb13-5"><a href="plotting-1d-data.html#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param x time points. Defaults to NULL.</span></span>
+<span id="cb13-6"><a href="plotting-1d-data.html#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb13-7"><a href="plotting-1d-data.html#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return ggplot object with data, and optionally, a flowtrend model overlaid.</span></span>
+<span id="cb13-8"><a href="plotting-1d-data.html#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb13-9"><a href="plotting-1d-data.html#cb13-9" aria-hidden="true" tabindex="-1"></a><span id="plot_1d">plot_1d</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, <span class="at">obj=</span><span class="cn">NULL</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">add_point =</span> <span class="cn">TRUE</span>){</span>
 <span id="cb13-10"><a href="plotting-1d-data.html#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-11"><a href="plotting-1d-data.html#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
 <span id="cb13-12"><a href="plotting-1d-data.html#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x)){</span>
@@ -219,24 +202,24 @@ in a single plot. <code><a href='plotting-1d-data.html#plot_1d'>plot_1d</a>()</c
 <span id="cb13-24"><a href="plotting-1d-data.html#cb13-24" aria-hidden="true" tabindex="-1"></a>  <span class="do">## plot long matrix</span></span>
 <span id="cb13-25"><a href="plotting-1d-data.html#cb13-25" aria-hidden="true" tabindex="-1"></a>  gg <span class="ot">=</span> ymat <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
 <span id="cb13-26"><a href="plotting-1d-data.html#cb13-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> Y), <span class="at">alpha =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb13-27"><a href="plotting-1d-data.html#cb13-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">&quot;Data&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&quot;Time&quot;</span>) </span>
-<span id="cb13-28"><a href="plotting-1d-data.html#cb13-28" aria-hidden="true" tabindex="-1"></a>    <span class="do">## theme(legend.position = &#39;none&#39;)</span></span>
+<span id="cb13-27"><a href="plotting-1d-data.html#cb13-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Data"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Time"</span>) </span>
+<span id="cb13-28"><a href="plotting-1d-data.html#cb13-28" aria-hidden="true" tabindex="-1"></a>    <span class="do">## theme(legend.position = 'none')</span></span>
 <span id="cb13-29"><a href="plotting-1d-data.html#cb13-29" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(obj)) <span class="fu">return</span>(gg)</span>
 <span id="cb13-30"><a href="plotting-1d-data.html#cb13-30" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-31"><a href="plotting-1d-data.html#cb13-31" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Add the model</span></span>
 <span id="cb13-32"><a href="plotting-1d-data.html#cb13-32" aria-hidden="true" tabindex="-1"></a>  numclust <span class="ot">=</span> obj<span class="sc">$</span>numclust</span>
 <span id="cb13-33"><a href="plotting-1d-data.html#cb13-33" aria-hidden="true" tabindex="-1"></a>  mnmat <span class="ot">=</span> obj<span class="sc">$</span>mn <span class="sc">%&gt;%</span> .[,<span class="dv">1</span>,] <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">setNames</span>(<span class="dv">1</span><span class="sc">:</span>numclust) <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">time =</span> times)</span>
 <span id="cb13-34"><a href="plotting-1d-data.html#cb13-34" aria-hidden="true" tabindex="-1"></a>  probmat <span class="ot">=</span> obj<span class="sc">$</span>prob <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">setNames</span>(<span class="dv">1</span><span class="sc">:</span>numclust) <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">time =</span> times)</span>
-<span id="cb13-35"><a href="plotting-1d-data.html#cb13-35" aria-hidden="true" tabindex="-1"></a>  mn_long <span class="ot">=</span> mnmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;mean&quot;</span>)</span>
-<span id="cb13-36"><a href="plotting-1d-data.html#cb13-36" aria-hidden="true" tabindex="-1"></a>  prob_long <span class="ot">=</span> probmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;prob&quot;</span>)</span>
+<span id="cb13-35"><a href="plotting-1d-data.html#cb13-35" aria-hidden="true" tabindex="-1"></a>  mn_long <span class="ot">=</span> mnmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">"cluster"</span>, <span class="at">values_to =</span> <span class="st">"mean"</span>)</span>
+<span id="cb13-36"><a href="plotting-1d-data.html#cb13-36" aria-hidden="true" tabindex="-1"></a>  prob_long <span class="ot">=</span> probmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">"cluster"</span>, <span class="at">values_to =</span> <span class="st">"prob"</span>)</span>
 <span id="cb13-37"><a href="plotting-1d-data.html#cb13-37" aria-hidden="true" tabindex="-1"></a>  est_long <span class="ot">=</span> <span class="fu">full_join</span>(mn_long, prob_long)</span>
 <span id="cb13-38"><a href="plotting-1d-data.html#cb13-38" aria-hidden="true" tabindex="-1"></a>  gg <span class="ot">=</span> gg <span class="sc">+</span> <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">size =</span> prob, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
 <span id="cb13-39"><a href="plotting-1d-data.html#cb13-39" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> est_long,</span>
-<span id="cb13-40"><a href="plotting-1d-data.html#cb13-40" aria-hidden="true" tabindex="-1"></a>                      <span class="at">lineend =</span> <span class="st">&quot;round&quot;</span>, <span class="at">linejoin=</span><span class="st">&quot;mitre&quot;</span>)</span>
+<span id="cb13-40"><a href="plotting-1d-data.html#cb13-40" aria-hidden="true" tabindex="-1"></a>                      <span class="at">lineend =</span> <span class="st">"round"</span>, <span class="at">linejoin=</span><span class="st">"mitre"</span>)</span>
 <span id="cb13-41"><a href="plotting-1d-data.html#cb13-41" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(add_point){</span>
 <span id="cb13-42"><a href="plotting-1d-data.html#cb13-42" aria-hidden="true" tabindex="-1"></a>    gg <span class="ot">=</span> gg <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">size =</span> prob, <span class="at">group =</span> cluster),</span>
 <span id="cb13-43"><a href="plotting-1d-data.html#cb13-43" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> est_long, <span class="at">size =</span> <span class="fu">rel</span>(<span class="dv">1</span>), <span class="at">shape =</span> <span class="dv">17</span>,</span>
-<span id="cb13-44"><a href="plotting-1d-data.html#cb13-44" aria-hidden="true" tabindex="-1"></a>                        <span class="at">col =</span> <span class="st">&#39;black&#39;</span>)</span>
+<span id="cb13-44"><a href="plotting-1d-data.html#cb13-44" aria-hidden="true" tabindex="-1"></a>                        <span class="at">col =</span> <span class="st">'black'</span>)</span>
 <span id="cb13-45"><a href="plotting-1d-data.html#cb13-45" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb13-46"><a href="plotting-1d-data.html#cb13-46" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-47"><a href="plotting-1d-data.html#cb13-47" aria-hidden="true" tabindex="-1"></a>  <span class="do">## </span><span class="al">TODO</span><span class="do">: make it ignore the missing values at the gaps; currently this is not coded as NAs.</span></span>
@@ -244,38 +227,38 @@ in a single plot. <code><a href='plotting-1d-data.html#plot_1d'>plot_1d</a>()</c
 <span id="cb13-49"><a href="plotting-1d-data.html#cb13-49" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Add the estimated 95% probability regions for data.</span></span>
 <span id="cb13-50"><a href="plotting-1d-data.html#cb13-50" aria-hidden="true" tabindex="-1"></a>  stdev <span class="ot">=</span> obj<span class="sc">$</span>sigma <span class="sc">%&gt;%</span> .[,,<span class="dv">1</span>] <span class="sc">%&gt;%</span> <span class="fu">sqrt</span>()</span>
 <span id="cb13-51"><a href="plotting-1d-data.html#cb13-51" aria-hidden="true" tabindex="-1"></a>  band_long <span class="ot">=</span></span>
-<span id="cb13-52"><a href="plotting-1d-data.html#cb13-52" aria-hidden="true" tabindex="-1"></a>    mn_long <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">upper =</span> <span class="fu">case_when</span>(cluster <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">1</span>],</span>
-<span id="cb13-53"><a href="plotting-1d-data.html#cb13-53" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">&quot;2&quot;</span> <span class="sc">~</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">2</span>],</span>
-<span id="cb13-54"><a href="plotting-1d-data.html#cb13-54" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">&quot;3&quot;</span> <span class="sc">~</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">3</span>]),</span>
-<span id="cb13-55"><a href="plotting-1d-data.html#cb13-55" aria-hidden="true" tabindex="-1"></a>                       <span class="at">lower =</span> <span class="fu">case_when</span>(cluster <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">~</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">1</span>],</span>
-<span id="cb13-56"><a href="plotting-1d-data.html#cb13-56" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">&quot;2&quot;</span> <span class="sc">~</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">2</span>],</span>
-<span id="cb13-57"><a href="plotting-1d-data.html#cb13-57" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">&quot;3&quot;</span> <span class="sc">~</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">3</span>]))</span>
+<span id="cb13-52"><a href="plotting-1d-data.html#cb13-52" aria-hidden="true" tabindex="-1"></a>    mn_long <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">upper =</span> <span class="fu">case_when</span>(cluster <span class="sc">==</span> <span class="st">"1"</span> <span class="sc">~</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">1</span>],</span>
+<span id="cb13-53"><a href="plotting-1d-data.html#cb13-53" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">"2"</span> <span class="sc">~</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">2</span>],</span>
+<span id="cb13-54"><a href="plotting-1d-data.html#cb13-54" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">"3"</span> <span class="sc">~</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">3</span>]),</span>
+<span id="cb13-55"><a href="plotting-1d-data.html#cb13-55" aria-hidden="true" tabindex="-1"></a>                       <span class="at">lower =</span> <span class="fu">case_when</span>(cluster <span class="sc">==</span> <span class="st">"1"</span> <span class="sc">~</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">1</span>],</span>
+<span id="cb13-56"><a href="plotting-1d-data.html#cb13-56" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">"2"</span> <span class="sc">~</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">2</span>],</span>
+<span id="cb13-57"><a href="plotting-1d-data.html#cb13-57" aria-hidden="true" tabindex="-1"></a>                                         cluster <span class="sc">==</span> <span class="st">"3"</span> <span class="sc">~</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[<span class="dv">3</span>]))</span>
 <span id="cb13-58"><a href="plotting-1d-data.html#cb13-58" aria-hidden="true" tabindex="-1"></a>  gg <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> upper, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
 <span id="cb13-59"><a href="plotting-1d-data.html#cb13-59" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(<span class="dv">1</span>), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
 <span id="cb13-60"><a href="plotting-1d-data.html#cb13-60" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> lower, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
 <span id="cb13-61"><a href="plotting-1d-data.html#cb13-61" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(<span class="dv">1</span>), <span class="at">alpha =</span> .<span class="dv">5</span>)</span>
 <span id="cb13-62"><a href="plotting-1d-data.html#cb13-62" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<p>The plotting function <code><a href='plotting-1d-data.html#plot_1d'>plot_1d</a>()</code> will be even more useful when we have a model,
+<p>The plotting function <code><a href="plotting-1d-data.html#plot_1d">plot_1d</a>()</code> will be even more useful when we have a model,
 but can also simply plot the data <code>ylist</code>. Let’s try this out.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="plotting-1d-data.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
-<span id="cb14-2"><a href="plotting-1d-data.html#cb14-2" aria-hidden="true" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>)</span>
-<span id="cb14-3"><a href="plotting-1d-data.html#cb14-3" aria-hidden="true" tabindex="-1"></a>dt_model <span class="ot">&lt;-</span> <a href='generating-1d-data.html#gendat_1d'>gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>, <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb14-4"><a href="plotting-1d-data.html#cb14-4" aria-hidden="true" tabindex="-1"></a>ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href='generating-1d-data.html#dt2ylist'>dt2ylist</a>()</span>
+<span id="cb14-2"><a href="plotting-1d-data.html#cb14-2" aria-hidden="true" tabindex="-1"></a>dt       <span class="ot">&lt;-</span> <a href="generating-1d-data.html#gendat_1d">gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>)</span>
+<span id="cb14-3"><a href="plotting-1d-data.html#cb14-3" aria-hidden="true" tabindex="-1"></a>dt_model <span class="ot">&lt;-</span> <a href="generating-1d-data.html#gendat_1d">gendat_1d</a>(<span class="dv">100</span>, <span class="fu">rep</span>(<span class="dv">100</span>, <span class="dv">100</span>), <span class="at">die_off_time =</span> <span class="fl">0.45</span>, <span class="at">return_model =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-4"><a href="plotting-1d-data.html#cb14-4" aria-hidden="true" tabindex="-1"></a>ylist <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <a href="generating-1d-data.html#dt2ylist">dt2ylist</a>()</span>
 <span id="cb14-5"><a href="plotting-1d-data.html#cb14-5" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> dt <span class="sc">%&gt;%</span> <span class="fu">pull</span>(time) <span class="sc">%&gt;%</span> <span class="fu">unique</span>()</span>
 <span id="cb14-6"><a href="plotting-1d-data.html#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-7"><a href="plotting-1d-data.html#cb14-7" aria-hidden="true" tabindex="-1"></a><a href='plotting-1d-data.html#plot_1d'>plot_1d</a>(ylist, <span class="cn">NULL</span>, <span class="at">x =</span> x) <span class="sc">+</span></span>
+<span id="cb14-7"><a href="plotting-1d-data.html#cb14-7" aria-hidden="true" tabindex="-1"></a><a href="plotting-1d-data.html#plot_1d">plot_1d</a>(ylist, <span class="cn">NULL</span>, <span class="at">x =</span> x) <span class="sc">+</span></span>
 <span id="cb14-8"><a href="plotting-1d-data.html#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">group =</span> cluster),</span>
 <span id="cb14-9"><a href="plotting-1d-data.html#cb14-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> dt_model,</span>
-<span id="cb14-10"><a href="plotting-1d-data.html#cb14-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">size=</span><span class="dv">2</span>, <span class="at">alpha =</span> .<span class="dv">7</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/test-gendat-1.png" width="672" />
+<span id="cb14-10"><a href="plotting-1d-data.html#cb14-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">size=</span><span class="dv">2</span>, <span class="at">alpha =</span> .<span class="dv">7</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/test-gendat-1.png" width="672">
 Voilà!</p>
 <p>Also, we will want to plot the estimated cluster probabilities of a model <code>obj</code>.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="plotting-1d-data.html#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Makes cluster probability plot (lines over time).</span></span>
-<span id="cb15-2"><a href="plotting-1d-data.html#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb15-3"><a href="plotting-1d-data.html#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param obj Estimated model (from e.g. \code{<a href='flowtrend.html#flowtrend'>flowtrend</a>()})</span></span>
-<span id="cb15-4"><a href="plotting-1d-data.html#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb15-5"><a href="plotting-1d-data.html#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb15-6"><a href="plotting-1d-data.html#cb15-6" aria-hidden="true" tabindex="-1"></a><span id='plot_prob'>plot_prob</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(obj, <span class="at">x =</span> <span class="cn">NULL</span>){</span>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="plotting-1d-data.html#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#' Makes cluster probability plot (lines over time).</span></span>
+<span id="cb15-2"><a href="plotting-1d-data.html#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb15-3"><a href="plotting-1d-data.html#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param obj Estimated model (from e.g. \code{<a href="flowtrend.html#flowtrend">flowtrend</a>()})</span></span>
+<span id="cb15-4"><a href="plotting-1d-data.html#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb15-5"><a href="plotting-1d-data.html#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb15-6"><a href="plotting-1d-data.html#cb15-6" aria-hidden="true" tabindex="-1"></a><span id="plot_prob">plot_prob</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(obj, <span class="at">x =</span> <span class="cn">NULL</span>){</span>
 <span id="cb15-7"><a href="plotting-1d-data.html#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-8"><a href="plotting-1d-data.html#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
 <span id="cb15-9"><a href="plotting-1d-data.html#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x)){</span>
@@ -287,31 +270,22 @@ Voilà!</p>
 <span id="cb15-15"><a href="plotting-1d-data.html#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-16"><a href="plotting-1d-data.html#cb15-16" aria-hidden="true" tabindex="-1"></a>  numclust <span class="ot">=</span> obj<span class="sc">$</span>numclust</span>
 <span id="cb15-17"><a href="plotting-1d-data.html#cb15-17" aria-hidden="true" tabindex="-1"></a>  probmat <span class="ot">=</span> obj<span class="sc">$</span>prob <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="fu">setNames</span>(<span class="dv">1</span><span class="sc">:</span>numclust) <span class="sc">%&gt;%</span> <span class="fu">add_column</span>(<span class="at">time =</span> times)</span>
-<span id="cb15-18"><a href="plotting-1d-data.html#cb15-18" aria-hidden="true" tabindex="-1"></a>  prob_long <span class="ot">=</span> probmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">&quot;cluster&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;prob&quot;</span>)</span>
+<span id="cb15-18"><a href="plotting-1d-data.html#cb15-18" aria-hidden="true" tabindex="-1"></a>  prob_long <span class="ot">=</span> probmat <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="sc">-</span>time, <span class="at">names_to =</span> <span class="st">"cluster"</span>, <span class="at">values_to =</span> <span class="st">"prob"</span>)</span>
 <span id="cb15-19"><a href="plotting-1d-data.html#cb15-19" aria-hidden="true" tabindex="-1"></a>  prob_long <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
 <span id="cb15-20"><a href="plotting-1d-data.html#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y =</span> prob, <span class="at">group =</span> cluster, <span class="at">col =</span> cluster), <span class="at">size =</span> <span class="fu">rel</span>(<span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb15-21"><a href="plotting-1d-data.html#cb15-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">&quot;Estimated cluster probability&quot;</span>)</span>
+<span id="cb15-21"><a href="plotting-1d-data.html#cb15-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"Estimated cluster probability"</span>)</span>
 <span id="cb15-22"><a href="plotting-1d-data.html#cb15-22" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>We can’t test it out now, but we’ll use it later in <a href="testing-the-flowtrend-method.html#id_1d-example">1d-example</a>.</p>
 </div>
             </section>
-
-          </div>
+</div>
         </div>
       </div>
 <a href="generating-1d-data.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="generating-2d-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
-<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
-<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
-<script>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script><script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script><script src="libs/gitbook-2.6.7/js/plugin-search.js"></script><script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script><script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script><script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script><script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script><script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script><script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
@@ -352,10 +326,7 @@ gitbook.start({
 }
 });
 });
-</script>
-
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
+</script><!-- dynamically load mathjax for compatibility with self-contained --><script>
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
@@ -369,5 +340,4 @@ gitbook.start({
   })();
 </script>
 </body>
-
 </html>

@@ -18,7 +18,7 @@ mixture models across time. The documentation and package are both created using
 one simple command:
 
 ```{r render, eval = FALSE}
-litr::render("index.Rmd", output_format = litr::litr_gitbook())
+litr::render("index.Rmd", output_format = litr::litr_gitbook(minimal_eval = TRUE))
 ```
 
 

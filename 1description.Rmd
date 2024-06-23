@@ -40,7 +40,8 @@ library(tidyverse)
 library(ggplot2)
 usethis::use_package("tidyverse", type = "depends") 
 usethis::use_package("ggplot2")
-usethis::use_package("clue")
+usethis::use_pipe()
 usethis::use_package("glmnet")
+usethis::use_package("clue")
 ```
 
