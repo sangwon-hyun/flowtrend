@@ -4,16 +4,16 @@
 \alias{one_symmetric_kl}
 \title{Symmetric KL divergence between two Gaussian distributions.}
 \usage{
-one_symmetric_kl(mu1, mu2, sigma1, sigma2)
+one_symmetric_kl(mu1, mu2, sd1, sd2)
 }
 \arguments{
 \item{mu1}{Mean for distribution 1.}
 
 \item{mu2}{Mean for distribution 2.}
 
-\item{sigma1}{Standard deviation for distribution 1.}
+\item{sd1}{Standard deviation for distribution 1.}
 
-\item{sigma2}{Standard deviation for distribution 2.}
+\item{sd2}{Standard deviation for distribution 2.}
 }
 \description{
 Symmetric KL divergence between two Gaussian distributions.

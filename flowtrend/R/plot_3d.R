@@ -12,6 +12,7 @@
 #' @return
 #'   
 plot_3d <- function(ylist, obj = NULL, tt, countslist = NULL,
+                    mn_colours = NULL,
                     labels = NULL,
                     bin = TRUE,
                     plot_title = NULL,
@@ -27,11 +28,12 @@ plot_3d <- function(ylist, obj = NULL, tt, countslist = NULL,
   labs = colnames(ylist[[1]])
   if(is.null(labs))  labs = paste0("dim", 1:3)
   if(is.null(countslist)){
-    counts = rep(1, nrow(ylist[[1]]))
+    counts = rep(1, nrow(ylist[[tt]]))
   }
   if(!is.null(countslist)){
     counts = countslist[[tt]]
   }
+
 
   ## Aggregate counts into the two dimensions
   y2d_list = list()
@@ -71,6 +73,9 @@ plot_3d <- function(ylist, obj = NULL, tt, countslist = NULL,
 
     ## Adding visualizations of the model |obj| at time tt
     if(!is.null(obj)){
+      if(is.null(mn_colours)){
+        mn_colours = rep("red", obj$numclust)
+      }
       
       ## Make data matrix
       mnlist = lapply(1:obj$numclust, function(iclust){
@@ -79,7 +84,6 @@ plot_3d <- function(ylist, obj = NULL, tt, countslist = NULL,
         one_mnmat %>% as_tibble() %>% add_column(cluster = iclust)
       })
       mnmat = do.call(rbind, mnlist)
-      mn_colours = rep("red", obj$numclust)
 
       for(iclust in 1:obj$numclust){
         

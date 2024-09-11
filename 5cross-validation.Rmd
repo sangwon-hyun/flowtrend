@@ -1,9 +1,9 @@
 # Tuning $\lambda$
 
 
-We're going to take a (huge) leap, and assume the `flowtrend()` function has been
-built. We need to build up quite a few functions before we're able to do
-cross-validation. These include:
+Now that the `flowtrend()` function has been built (we will test it in the next
+section, i.e., `6test.Rmd`), we need to build up quite a few functions before
+we're able to cross-validate. These include:
 
 - Predicting out-of-sample, using `predict_flowtrend()`.
 - Evaluating data fit (by likelihood) in an out-of-sample measurement, using
@@ -110,7 +110,7 @@ predict_flowtrend <- function(obj, newtimes = NULL){
   newx <- newtimes
   if(is.null(newtimes)){ newx = obj$x }
 
-  ## Check if the new times are within the time range of the original data 
+  ## Check if the new times are within the time range of the original data
   stopifnot(all(sapply(newx, FUN = function(t) t >= min(obj$x) & t <= max(obj$x))))
 
   ## Setup some things
@@ -368,7 +368,7 @@ points, overlaid with data.
 better! Red is worse than black, naturally.)
 
 ```{r fit, fig.width = 7, fig.height = 5})
-g = plot_1d(ylist = dt %>% subset(time %in% held_out) %>% dt2ylist(), x= held_out) + xlim(c(0,100))
+g = plot_1d(ylist = dt %>% subset(time %in% held_out) %>% dt2ylist(), x = held_out) + xlim(c(0,100))
 g + geom_line(aes(x=time, y = value, group = name), data = data.frame(truemn[,1,]) %>% add_column(time = held_out) %>% pivot_longer(-time)) +
   geom_line(aes(x=time, y = value, group = name), data = data.frame(predobj$mn[,1,]) %>% add_column(time = held_out) %>% pivot_longer(-time), col = 'red') +
 ggtitle(paste0(round(obj_pred,3), " (red, predicted)   vs.   ", round(obj_better, 3), "(black, truth)"))
@@ -582,13 +582,12 @@ calc_max_lambda <- function(ylist, countslist = NULL, numclust,
 #' @return List of fold indices.
 #' @export
 #'
-make_cv_folds <- function(ylist=NULL, nfold, TT=NULL, blocksize = 1){
-
+make_cv_folds <- function(ylist = NULL, nfold, TT = NULL, blocksize = 1){
 
   if(blocksize > 1){
-    return(make_cv_folds_in_blocks(ylist=ylist,
+    return(make_cv_folds_in_blocks(ylist = ylist,
                                    nfold,
-                                   TT=TT,
+                                   TT = TT,
                                    blocksize = blocksize))
   }
 
@@ -708,21 +707,26 @@ Here is `one_job()`.
 #'
 #' @export
 one_job <- function(iprob, imu, ifold, irestart, folds, destin,
-                       lambda_means, lambda_probs,
-                       seedtab = NULL,
-                       ## The rest that is needed explicitly for flowtrend()
-                       ylist, countslist,
-                       l, l_prob,
-                       ...){
+                    lambda_means, lambda_probs,
+                    seedtab = NULL,
+                    x = NULL,
+                    ## The rest that is needed explicitly for flowtrend()
+                    ylist, countslist,
+                    l, l_prob,
+                    ...){
 
   ## Get the train/test data
   TT <- length(ylist)
+  if(is.null(x)) x = 1:TT
   test.inds = unlist(folds[ifold]) %>% sort()
   test.dat = ylist[test.inds]
   test.count = countslist[test.inds]
   train.inds = c(1, unlist(folds[-ifold]), TT) %>% sort()
   train.dat = ylist[train.inds]
   train.count = countslist[train.inds]
+
+  ## NEW: fit the model on the *time points* in training indices, and
+  ## NEW: test the model on *time points* in the test indices.
 
   ## Check whether this job has been done already.
   filename = make_cvscore_filename(iprob, imu, ifold, irestart)
@@ -746,7 +750,6 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
     seed = NULL
   }
 
-
   lambda_prob = lambda_probs[iprob]
   lambda_mean = lambda_means[imu]
 
@@ -754,7 +757,7 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
   args = list(...)
   args$ylist = train.dat
   args$countslist = train.count
-  args$x = train.inds
+  args$x = x[train.inds] ## NEW
   args$lambda = lambda_mean
   args$lambda_prob = lambda_prob
   args$l = l
@@ -773,11 +776,8 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
     res.train = eval(call, args)
 
     ## Assign mn and prob
-    pred = predict_flowtrend(res.train, newtimes = test.inds)
+    pred = predict_flowtrend(res.train, newtimes = x[test.inds]) ## the x is NEW.
     stopifnot(all(pred$prob >= 0))
-
-    ## Build Dl
-    ##
 
     ## Evaluate on test data, by calculating objective (penalized likelihood with penalty parameters set to 0)
     cvscore = objective(mu = pred$mn,
@@ -786,11 +786,6 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
                         ylist = test.dat,
                         countslist = test.count,
                         unpenalized = TRUE)
-                        ## Dl = diag(rep(1, length(test.count))), ## TODO: what is wrong here?
-                        ## lambda_prob = 0,
-                        ## lambda = 0)
-                        ## prob = res.train$prob,
-                        ## beta = res.train$beta)
 
     ## Store (temporarily) the run times
     time_per_iter = res.train$time_per_iter
@@ -849,7 +844,7 @@ one_job_refit <- function(iprob, imu, destin,
                           l, l_prob,
                           seedtab = NULL,
                           ## The rest that is needed explicitly for flowtrend_once()
-                          ylist, countslist,
+                          ylist, countslist, x,
                           ...){
 
   args = list(...)
@@ -883,12 +878,16 @@ one_job_refit <- function(iprob, imu, destin,
       args = list(...)
       args$ylist = ylist
       args$countslist = countslist
+      args$x = x
       args$lambda_prob = lambda_probs[iprob]
       args$lambda = lambda_means[imu]
       args$l = l
       args$l_prob = l_prob
       args$seed = seed
-      if("nrestart" %in% names(args)) args = args[-which(names(args) %in% "nrestart")] ## remove |nrestart| prior to feeding
+      if("nrestart" %in% names(args)){
+        ## remove |nrestart| prior to feeding it into flowtrend_once
+        args = args[-which(names(args) %in% "nrestart")] 
+      }
 
       ## Call the function.
       argn <- lapply(names(args), as.name)
@@ -1106,30 +1105,31 @@ Putting the helpers all together, you get the main user-facing function
 #'
 #' @export
 cv_flowtrend <- function(## Data
-                          ylist,
-                          countslist,
-                          ## Define the locations to save the CV.
-                          destin = ".",
-                          ## Regularization parameter values
-                          lambda_means,
-                          lambda_probs,
-                          l,
-                          l_prob,
-                          iimat = NULL,
-                          ## Other settings
-                          maxdev,
-                          numclust,
+                         ylist,
+                         countslist,
+                         x = NULL, ## THIS IS NEW
+                         ## Define the locations to save the CV.
+                         destin = ".",
+                         ## Regularization parameter values
+                         lambda_means,
+                         lambda_probs,
+                         l,
+                         l_prob,
+                         iimat = NULL,
+                         ## Other settings
+                         maxdev,
+                         numclust,
                          nfold,
                          blocksize,
-                          nrestart,
-                          verbose = FALSE,
-                          refit = FALSE,
-                          save_meta = FALSE,
-                          mc.cores = 1,
-                          folds = NULL,
+                         nrestart,
+                         verbose = FALSE,
+                         refit = FALSE,
+                         save_meta = FALSE,
+                         mc.cores = 1,
+                         folds = NULL,
                          seedtab = NULL,
                          niter = 1000,
-                          ...){
+                         ...){
 
   ## Basic checks
   stopifnot(length(lambda_probs) == length(lambda_means))
@@ -1156,8 +1156,8 @@ cv_flowtrend <- function(## Data
       if(file.exists(file = file.path(destin, 'meta.Rdata'))){
 
         ## Put aside the current guys
-        cat(fill=TRUE)
-        print("Meta data already exists!")
+        cat(fill = TRUE)
+        cat("Meta data already exists!")
         folds_current = folds
         nfold_current = nfold
         nrestart_current = nrestart
@@ -1165,6 +1165,7 @@ cv_flowtrend <- function(## Data
         lambda_means_current = lambda_means
         lambda_probs_current = lambda_probs
         ylist_current = ylist
+        x_current = x
         countslist_current = countslist
 
         ## Load the saved metadata and check if they are all the same as the current guys
@@ -1176,6 +1177,7 @@ cv_flowtrend <- function(## Data
         stopifnot(all(lambda_means == lambda_means_current))
         stopifnot(all(lambda_probs == lambda_probs_current))
         stopifnot(identical(ylist, ylist_current))
+        stopifnot(identical(x, x_current))
         stopifnot(identical(countslist, countslist_current))
         cat(fill=TRUE)
         cat("Successfully checked that the saved metadata is identical to the current one.", fill = TRUE)
@@ -1187,6 +1189,7 @@ cv_flowtrend <- function(## Data
              lambda_means,
              lambda_probs,
              ylist, countslist,
+             x,
              ## Save the file
              file = file.path(destin, 'meta.Rdata'))
         print(paste0("wrote meta data to ", file.path(destin, 'meta.Rdata')))
@@ -1223,7 +1226,8 @@ cv_flowtrend <- function(## Data
               lambda_means = lambda_means,
               lambda_probs = lambda_probs,
               ## Arguments for flowtrend()
-              ylist = ylist, countslist = countslist, 
+              ylist = ylist, countslist = countslist,
+              x = x,
               ## Additional arguments for flowtrend().
               numclust = numclust,
               maxdev = maxdev,
@@ -1239,7 +1243,8 @@ cv_flowtrend <- function(## Data
                     lambda_means = lambda_means,
                     lambda_probs = lambda_probs,
                     ## Arguments to flowtrend()
-                    ylist = ylist, countslist = countslist, 
+                    ylist = ylist, countslist = countslist,
+                    x = x,
                     ## Additional arguments for flowtrend().
                     numclust = numclust,
                     maxdev = maxdev,
@@ -1496,7 +1501,7 @@ keep_only_best_refit <- function(destin, iprob, imu, nrestart, best_irestart){
 #' @param destin Directory with cross-validation output.
 #'
 #' @export
-cv_aggregate <- function(destin){ 
+cv_aggregate <- function(destin){  
  
   ## ## Read the meta data (for |nfold|, |cv_gridsize|, |nrestart|, |lambda_means|,
   ## ## |lambda_probs|)
@@ -1578,7 +1583,7 @@ cv_aggregate <- function(destin){
   ## possible_inds[my_ord, ] %>% apply(2, which.max)
   ## Or even just stick with the ones on the diagonal direction.
   myrows = which(possible_inds[,2] == possible_inds[,1])
-  possible_inds = possible_inds[myrows, ] 
+  possible_inds = possible_inds[myrows, ,drop=FALSE] 
   min.inds.1se = possible_inds[which.max(possible_inds[,1]),]
   
   ## Return the results
@@ -1726,9 +1731,60 @@ for(refit in c(FALSE, TRUE)){
 ```
 
 
+Next, we test whether `cv_flowtrend` works for unevenly spaced points. 
+
+```{r, eval = FALSE}
+## Setup
+l = 1
+l_prob = 1
+destin = "~/repos/flowtrend/inst/output/test2"
+
+## Generate data
+set.seed(332)
+TT = 50
+nt = 100
+ylist = gendat_1d(TT, ntlist = rep(nt, TT)) %>% dt2ylist()
+x = sample(1:TT, size=TT/2, replace = FALSE) %>% sort()
+ylist = ylist[x]
+
+## Save the data
+datobj = list(ylist = ylist, x = x, countslist = NULL)
+saveRDS(datobj, file = file.path(destin, "datobj.RDS"))
+
+folds = make_cv_folds(ylist, nfold = nfold, TT = length(ylist)) ## What is this doing? FISHY
+lambda_means =  lambda_probs = logspace(min = 1E-5, max = 1, length = 5)
+for(refit in c(FALSE, TRUE)){
+  cv_flowtrend(ylist = ylist, countslist = NULL,
+               x = x,
+               destin = destin,
+               lambda_means = lambda_means,
+               lambda_probs = lambda_probs,
+               l = l, l_prob = l_prob,
+               maxdev = 1, numclust = 3, nfold = 3, nrestart = 3,
+               niter = 100,
+               folds = folds,
+               verbose = TRUE, refit = refit, save_meta = TRUE, mc.cores = 4)
+}
+cvres = cv_summary(destin = destin, save=TRUE)
+my_load()
+plot_1d(ylist = ylist, x=x)  %>%
+  plot_1d_add_model(obj = cvres$bestres, idim=1, plot_band = TRUE)
+
+## Plot it!
+plot_1d(ylist = ylist, x=x)  %>% plot_1d_add_model(obj = cvres$bestres, idim=1, plot_band = TRUE) +
+  geom_line(aes(x=time, y=mean, group = cluster),
+            data = gendat_1d(TT, ntlist = rep(nt, TT), return_model = TRUE) )
+```
+
+
+
+
 
 
 ## Plotting
+
+This function `plot_from_summary()` creates summary plots from the results of
+the cross-validation.
 
 ```{r plot_from_summary}
 #' Makes a series of plots.
@@ -1907,4 +1963,6 @@ plot_from_summary <- function(destin){
   return(list_of_plots)
 }
 ```
+
+
 

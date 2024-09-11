@@ -22,7 +22,9 @@ loglik_tt(
 
 \item{mu}{Cluster means.}
 
-\item{prob}{Cluster variances.}
+\item{sigma}{Cluster variances.}
+
+\item{prob}{Cluster probabilities.}
 }
 \description{
 Log likelihood for a single time point's data.

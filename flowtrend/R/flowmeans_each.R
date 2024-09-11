@@ -1,6 +1,6 @@
 # Generated from _main.Rmd: do not edit by hand
 
-#' Apply flowmeans in each.
+#' Apply flowmeans in each cytogram.
 #' 
 #' @param ylist Data.
 #' @param numclust Number of clusters.

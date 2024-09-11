@@ -83,6 +83,98 @@ underfit_flowmeans <- function(ylist, numclust){
 }
 ```
 
+
+
+```{r}
+#' Pool the entire series of cytograms, fit a GMM model, and re-aggregate parameters.
+#' 
+#' @param ylist Data.
+#' @param numclust Number of clusters.
+#' @return 
+#' @export
+underfit_gmm <- function(ylist, numclust){
+
+  ## ## Tempoerary
+  ## isignal = 0
+  ## isim = 1
+  ## destin = file.path("~/repos/flowtrend/inst/output/1dsim-even/data")
+  ## datobj = readRDS(file = file.path(destin, paste0("isignal-", isignal,"-isim-", isim, "-", "datobj.RDS")) )
+  ## datobj_new = readRDS(file = file.path(destin, paste0("isignal-", isignal,"-isim-", isim, "-", "datobj-new.RDS")) )
+  ## ylist = datobj$ylist_unsorted
+  ## numclust = 2
+  ## ## end of temporary
+  
+  ## Pool all data
+  TT <- length(ylist)
+  nt <- sapply(ylist, nrow)
+  ylist_pooled <- do.call(rbind, ylist) %>% as_tibble()
+  colnames(ylist_pooled) = "y"
+
+  ## Fit the GMM model
+  gmm_pooled <- mclust::Mclust(data = ylist_pooled, G = numclust,
+                                modelNames = "V", verbose = FALSE)
+
+  ## Memberships (soft- and hard-clustered)
+  hard_mem = gmm_pooled$z  %>% apply(1, which.max)
+  soft_mem = gmm_pooled$z  %>%
+    apply(1, function(myrow){
+      sample(1:2, size = 1, replace = FALSE, prob=myrow)
+    })
+
+  ## Put together in a table
+  tab <- tibble(y = ylist_pooled$y,
+                soft_cluster = factor(soft_mem, levels = c(2,1)),
+                hard_cluster = factor(hard_mem, levels = c(2,1)),
+                time = rep(1:TT, times = nt)) 
+  tab_long = tab %>%  pivot_longer(-c("time", "y"), values_to = "cluster",
+                                   names_to = "type")
+  ## ## Optional plotting code
+  ## ggplot(tab_long) +
+  ##   geom_point(aes(x=time, y=y, col = cluster), alpha = .5) +
+  ##   facet_grid(cluster~type)
+
+  ## ## We need this to return the same mu, prob, and sigma as before
+  ## mu = obj_flowtrend$mn
+  ## prob = obj_flowtrend$prob
+  ## sigma = obj_flowtrend$sigma
+
+  ## That's it! Return the results
+  ## param_mat = matrix(NA, nrow = TT, ncol = 6)
+  ## colnames(param_mat) = c("time", "mn1", "mn2", "prob1", "prob2", "sd1", "sd2")
+  ## param_mat$time = 1:TT
+  param_mat = tibble(time=1:TT,
+                     mn1 = gmm_pooled$parameters$mean[1],
+         mn2 = gmm_pooled$parameters$mean[2],
+         sd1 = gmm_pooled$parameters$variance$sigmasq[1],
+         sd2 = gmm_pooled$parameters$variance$sigmasq[2],
+         prob1 = gmm_pooled$parameters$pro[1],
+         prob2 = gmm_pooled$parameters$pro[2])
+  mu = param_mat[,c("mn1", "mn2")] %>% as.matrix()
+  prob = param_mat[,c("prob1", "prob2")] %>% as.matrix()
+  sigma = param_mat[,c("sd1", "sd2")] %>% as.matrix()
+  
+  ## Soft membership
+  memlist = tab_long %>% subset(type == "soft_cluster") %>% group_by(time) %>% 
+    group_split() %>% lapply(function(a)pull(a, cluster))
+
+  ## Responsibilities
+  soft_mem = gmm_pooled$z %>% as_tibble()
+  colnames(soft_mem) = c("clust1", "clust2")
+  resp_list = soft_mem %>% add_column( time = rep(1:TT, times = nt))  %>% group_by(time) %>% group_split() %>%
+    lapply(select, c("clust1", "clust2")) %>% lapply(as.matrix)
+  return(list(tab_long = tab_long,
+              param_mat = param_mat,
+              mu = mu,
+              prob = prob,
+              sigma = sigma,
+              memlist = memlist,
+              resp_list = resp_list,
+              numclust = numclust))
+}
+```
+
+
+
 Here is a plotter function.
 
 ```{r}
@@ -90,12 +182,13 @@ Here is a plotter function.
 #' @param ylist Data
 #' @param countslist Optional: counts for each ylist
 #' @param obj Output from \code{underfit_flowmeans()}
+#' @param bin Whether data is binned.
 #' @return ggplot object
 #' @export
-plot_1d_flowmeans <- function(obj, ylist, countslist=NULL){
-  ## Make plot of only data
+plot_1d_flowmeans <- function(obj, ylist, countslist=NULL, bin = FALSE){
 
-  gg = plot_1d(ylist=ylist, countslist=countslist)
+  ## Make plot of only data
+  gg = plot_1d(ylist = ylist, countslist = countslist, bin = bin)
 
   my_wrangle <- function(a, values_to){
     a %>% as_tibble() %>% setNames(c("1", "2", "3")) %>%
@@ -110,17 +203,20 @@ plot_1d_flowmeans <- function(obj, ylist, countslist=NULL){
   est_long = full_join(mn_long, prob_long, by = c("time","cluster"))
   gg = gg + geom_path(aes(x = time, y = mean, linewidth = prob, group = cluster, color = cluster),
                         data = est_long,
-                        lineend = "round", linejoin="mitre")
+                        lineend = "round", linejoin="mitre")+
+    scale_linewidth(range = c(0,3), limits = c(0,1))
   
   ## Add the estimated 95% probability regions for data.
   ## stdev = obj$sigma %>% .[,,1] %>% sqrt()
-  sigma_long = obj$sigma %>% sqrt() %>% my_wrangle("stdev")
-  band_long = full_join(mn_long, sigma_long, by = c("time", "cluster")) %>%
-  mutate(upper = mean + 1.96 * stdev)  %>% 
-  mutate(lower = mean - 1.96 * stdev)
-
-  gg = gg + geom_line(aes(x = time, y = upper, group = cluster, color = cluster),
-                 data = band_long, size = rel(.7), alpha = .5) +
+  stdev_long =
+    obj$sigma %>% sqrt() %>% my_wrangle("stdev")
+  band_long =
+    full_join(mn_long, stdev_long, by = c("time", "cluster"))  %>%
+    mutate(upper = mean + 1.96 * stdev)  %>% 
+    mutate(lower = mean - 1.96 * stdev)
+  gg = gg +
+    geom_line(aes(x = time, y = upper, group = cluster, color = cluster),
+              data = band_long, size = rel(.7), alpha = .5) +
     geom_line(aes(x = time, y = lower, group = cluster, color = cluster),
               data = band_long, size = rel(.7), alpha = .5) +
     guides(size = "none") # To turn off line size from legend
@@ -134,20 +230,27 @@ Here's a helper to reorder the clusters of the output created using
 ```{r}
 #' Reordering function
 reorder_flowmeans <- function(obj, new_order){
+
+  ## Setup
   numclust = max(new_order)
+
+  ## Reorder everything
   obj$prob = obj$prob[,new_order]
   obj$mu = obj$mu[,new_order]
   obj$sigma = obj$sigma[,new_order]
   obj$memlist =  lapply(obj$memlist, function(a){
     a_copy = a
     for(iclust in 1:numclust){
-      a_copy[which(a==iclust)] = new_order[iclust]
+      a_copy[which(a == iclust)] = new_order[iclust]
     }
-      ## a[a==1] = new_order[1]
-      ## a[a==2] = new_order[2] ## 3
-      ## a[a==3] = new_order[3] ## 2
     return(a_copy)
   })
+
+  ## Reorder the responsibilities
+  obj$resp_list =  lapply(obj$resp_list, function(oneresp){
+    return(oneresp[,new_order])
+  })
+
   return(obj)
 }
 ```
@@ -166,14 +269,239 @@ overfit_flowmeans <- function(ylist, numclust, verbose = FALSE){
   
   fmns_obj <- lapply(ylist, FUN = flowmeans_each, numclust = numclust)
   hybrid_out <- match_clusters(fmns_obj)
-  return(hybrid_out)
+  return(hybrid_out) 
 }
 ```
 
-The `many_mixtures()` function uses a few helpers:
+```{r,}
+#' Pool the entire series of cytograms, fit a GMM model, and re-aggregate parameters.
+#' 
+#' @param ylist Data.
+#' @param numclust Number of clusters (only works for 2).
+#' @return 
+#' @export
+overfit_gmm <- function(ylist, numclust = 2, reorder = TRUE){ 
 
-```{r}
-#' Apply flowmeans in each.
+  ## Basic checks
+  stopifnot(numclust == 2)
+
+  ## Estimate individual GMM models
+  gmm_list <- lapply(ylist, gmm_each, numclust = numclust)
+
+  ## Reorder the cluster memberships sequentially
+  if(reorder){
+    gmm_list = match_clusters_gmm(gmm_list, numclust = 2)
+  }
+
+  ## Obtain the resulting data in long format
+  tab_list <- lapply(gmm_list, function(a) a$tab)
+  TT = length(ylist)
+  names(tab_list) = 1:TT
+  tab_long = tab_list %>% bind_rows(.id = "time") %>%
+    pivot_longer(-c("time", "y"), values_to = "cluster",
+                                   names_to = "type")
+  memlist = tab_long %>% subset(type == "soft_cluster") %>% group_by(time) %>%
+    group_split() %>% lapply(function(a)pull(a, cluster))
+
+  ## ## temporary: make a plot
+  ## ggplot(tab_long) +
+  ##   geom_point(aes(x=time, y=y, col = cluster), alpha = .5) +
+  ##   facet_grid(cluster~type)
+
+  ## Get the Gaussian distribution parameters
+  param_list <- lapply(gmm_list, function(a) a$param)
+  param_mat = param_list %>% bind_rows(.id = "time")
+  mu = param_mat[,c("mn1", "mn2")] %>% as.matrix()
+  prob = param_mat[,c("prob1", "prob2")] %>% as.matrix()
+  sigma = param_mat[,c("sd1", "sd2")] %>% .^2 %>% as.matrix()
+
+  ## Responsibilities
+  resp_list = gmm_list %>% lapply(function(a) a$resp)
+
+  return(list(tab_long = tab_long,
+              param_mat = param_mat,
+              mu = mu,
+              prob = prob,
+              sigma = sigma,
+              resp_list = resp_list,
+              numclust = numclust))
+}
+
+##' Sequentially permute a time series of GMMs.
+##'
+##' @param gmm_list Output of an lapply of gmm_each over ylist.
+##' @param numclust Number of clusters.
+##'
+##' @return Same format as |gmm_list|
+match_clusters_gmm <- function(gmm_list, numclust = 2){
+
+  ## Initialize some objects
+  TT <- length(gmm_list)
+  
+  ## Helper to permute one GMM
+  my_reorder <- function(one_gmm, new_order){
+    one_gmm_reordered = one_gmm
+    one_gmm_reordered$tab = one_gmm_reordered$tab %>%
+      mutate(hard_cluster = hard_cluster %>%
+               plyr::revalue(replace=c("1"=new_order[1],"2"=new_order[2]))) %>%
+      mutate(soft_cluster = soft_cluster %>%
+               plyr::revalue(replace=c("1"=new_order[1],"2"=new_order[2])))
+
+    ## reorder the parameters
+    param = one_gmm$param
+    new_mns = param[,c("mn1", "mn2")][new_order] %>% as.numeric()
+    new_sds = param[,c("sd1", "sd2")][new_order] %>% as.numeric()
+    new_probs = param[,c("prob1", "prob2")][new_order] %>% as.numeric()
+    one_gmm_reordered$param <- data.frame(mn1 = new_mns[1], mn2 = new_mns[2],
+                                          sd1 = new_sds[1], sd2 = new_sds[2],
+                                          prob1 = new_probs[1], prob2 = new_probs[2])
+    ## if(all(new_order == 2:1)) browser()
+
+    ## reorder the responsibilities
+    one_gmm_reordered$resp = one_gmm$resp[,new_order]
+    return(one_gmm_reordered)
+  }
+  
+  ## Fill in the rest of the rows by sequentially matching clusters from t-1 to
+  ## t, using the Hungarian Algorithm
+  new_orders = matrix(NA, ncol = 2, nrow = TT)
+  new_orders[1,] = c(1, 2)
+  gmm_list_copy = gmm_list
+  for(tt in 2:TT){
+
+    ## Find order
+    param1 = gmm_list_copy[[tt-1]] %>% .$param
+    param2 = gmm_list[[tt]] %>% .$param
+    klmat <- symmetric_kl_between_gaussians(param1 = param1, param2 = param2)
+    new_order <- RcppHungarian::HungarianSolver(klmat) %>%
+      .$pairs %>% data.frame() %>% arrange(.[,2]) %>% .[,1]
+    new_orders[tt,] = new_order
+
+    ## Perform the reordering
+    gmm_list_copy[[tt]] <- my_reorder(gmm_list[[tt]], new_order)
+  }
+  return(gmm_list_copy)
+}
+
+##' Between two sets of Gaussian mean/sd parameters, what is the symmetric KL
+##' distance.
+##' @param param1 list of mn1, mn2, sd1, sd2
+##' @param param2 another such list.
+##'
+##' @return (numclust x numclust) distance matrix.
+symmetric_kl_between_gaussians <- function(param1, param2, numclust = 2){
+
+  ## First model's parameters
+  mn_model1 = c(param1$mn1, param1$mn2)
+  sd_model1 = c(param1$sd1, param1$sd2)
+
+  ## Second model's parameters
+  mn_model2 = c(param2$mn1, param2$mn2)
+  sd_model2 = c(param2$sd1, param2$sd2)
+
+  ## Fill out distance matrix
+  dist_cs <- matrix(0, ncol = numclust, nrow = numclust)
+  for(iclust_1 in 1:numclust){
+    for(iclust_2 in 1:numclust){
+      dist_cs[iclust_2, iclust_1] <-
+        one_symmetric_kl(mu1 = mn_model1[iclust_1], mu2 = mn_model2[iclust_2],
+                         sd1 = sd_model1[iclust_1], sd2 = sd_model2[iclust_2])
+    }
+  }
+  rownames(dist_cs) <- rep("C1", numclust)
+  colnames(dist_cs) <- rep("C2", numclust)
+  return(dist_cs)
+}
+
+
+#' Apply a gmm in each 1-dimensional cytogram.
+#' 
+#' @param one_y One-column matrix.
+#' @param numclust Number of clusters.
+#' @return 
+#' @export
+gmm_each <- function(one_y, numclust){
+  
+  ## Basic check
+  stopifnot(ncol(one_y) == 1)
+
+  ## Do Gaussian Mixture model
+  ## obj <- mclust::Mclust(data = one_y, G = numclust,
+##                             modelNames = "V", verbose = FALSE)
+  obj <- my_mclust(one_y, numclust, FALSE)
+
+  ## Memberships (soft- and hard-clustered)
+  hard_mem = obj$z  %>% apply(1, which.max)
+  soft_mem = obj$z  %>%
+    apply(1, function(myrow){
+      sample(1:2, size = 1, replace = FALSE, prob=myrow)
+    })
+  tab <- tibble(y = as.numeric(one_y),
+                soft_cluster = factor(soft_mem, levels = c(1,2)),
+                hard_cluster = factor(hard_mem, levels = c(1,2)))
+
+  ## parameter table
+  mn1 = obj$parameters$mean[[1]]
+  mn2 = obj$parameters$mean[[2]]
+  sds = obj %>% .$parameters %>% .$variance %>% .$sigmasq %>% sqrt()
+  sd1 = sds[1]
+  sd2 = sds[2]
+  prob1 = obj$parameters$pro[1]
+  prob2 = obj$parameters$pro[2]
+
+  ## ggplot(data.frame(x=as.numeric(one_y))) +
+  ## geom_histogram(aes(x=x)) +
+  ## geom_vline(xintercept = mn1, col = 'blue') +
+  ## geom_vline(xintercept = mn1 + 2*sd1, col = 'skyblue') +
+  ## geom_vline(xintercept = mn1 - 2*sd1, col = 'skyblue') +
+  ## geom_vline(xintercept = mn2, col = 'red') +
+  ## geom_vline(xintercept = mn2 - 2*sd2, col = 'orange') +
+  ## geom_vline(xintercept = mn2 + 2*sd2, col = 'orange')
+  param = tibble(mn1 = mn1,
+                 mn2 = mn2,
+                 sd1 = sd1,
+                 sd2 = sd2,
+                 prob1 = prob1,
+                 prob2 = prob2)
+  resp = obj$z
+
+  return(list(tab = tab, param = param, resp = resp))
+}
+```
+
+
+Here's a function for soft-gating given a 2-column responsibility matrix.
+
+```{r,}
+#' Soft-gates a responsibility matrix by a bernoulli (or multinoulli) draw.
+#' 
+#' @param oneresp A 2-column responsibility matrix
+#' 
+#' @return 
+soft_gate_one_responsibility_matrix <- function(oneresp){
+
+  ## Setup
+  numclust = ncol(oneresp)
+  vec = rep(0,numclust)
+
+  ## Draw the 0-1 memberships
+  zero_one_mat = apply(oneresp, 1, function(myrow){
+    draw = sample(1:numclust, size=1, prob=myrow)
+    vec[draw]= 1
+    vec
+  }) %>% t()
+
+  ## Check dimensions and return
+  stopifnot(all(dim(zero_one_mat) == dim(oneresp)))
+  return(zero_one_mat)
+}
+
+```
+
+The `many_mixtures()` function uses a few helpers: 
+
+```{r} 
+#' Apply flowmeans in each cytogram.
 #' 
 #' @param ylist Data.
 #' @param numclust Number of clusters.
@@ -224,7 +552,7 @@ match_clusters <- function(fmns_obj){
   ## t, using the Hungarian Algorithm
   for(tt in 2:TT){
     dt_to_tp1 <- my_symmetric_kl(c1 = fmns_obj[[tt-1]]$cluster_params,
-                              c2 = fmns_obj[[tt]]$cluster_params)
+                                 c2 = fmns_obj[[tt]]$cluster_params)
     hng_tt <- RcppHungarian::HungarianSolver(dt_to_tp1)
     hng_order <- hng_tt$pairs %>% data.frame() %>% arrange(.[,2]) %>% .[,1]
 
@@ -264,8 +592,8 @@ my_symmetric_kl <- function(c1, c2){
       dist_cs[iclust_2, iclust_1] <-
         one_symmetric_kl(mu1 = c1$mu[iclust_1],
                          mu2 = c2$mu[iclust_2], 
-                         sigma1 = sqrt(c1$sigma[iclust_1]),
-                         sigma2 = sqrt(c2$sigma[iclust_2]))
+                         sd1 = sqrt(c1$sigma[iclust_1]),
+                         sd2 = sqrt(c2$sigma[iclust_2]))
     }
   }
   rownames(dist_cs) <- rep("C1", numclust)
@@ -276,13 +604,13 @@ my_symmetric_kl <- function(c1, c2){
 #' Symmetric KL divergence between two Gaussian distributions.
 #' @param mu1 Mean for distribution 1.
 #' @param mu2 Mean for distribution 2.
-#' @param sigma1 Standard deviation for distribution 1.
-#' @param sigma2 Standard deviation for distribution 2.
-one_symmetric_kl <- function(mu1, mu2, sigma1, sigma2){
+#' @param sd1 Standard deviation for distribution 1.
+#' @param sd2 Standard deviation for distribution 2.
+one_symmetric_kl <- function(mu1, mu2, sd1, sd2){
   stopifnot(length(mu1)==1 & length(mu2) == 1 &
-            length(sigma1) == 1 & length(sigma2) == 1)
-  kl12 <- log(sigma2/sigma1) + (sigma1^2 + (mu1 - mu2)^2)/(2*sigma2^2) - 1/2
-  kl21 <- log(sigma1/sigma2) + (sigma2^2 + (mu2 - mu1)^2)/(2*sigma1^2) - 1/2
+            length(sd1) == 1 & length(sd2) == 1)
+  kl12 <- log(sd2/sd1) + (sd1^2 + (mu1 - mu2)^2)/(2*sd2^2) - 1/2
+  kl21 <- log(sd1/sd2) + (sd2^2 + (mu2 - mu1)^2)/(2*sd1^2) - 1/2
   kl_sym <- 0.5*(kl12 + kl21)
   return(kl_sym)
 }
@@ -337,6 +665,37 @@ do.call(ggpubr::ggarrange, c(list(g1, g2), ncol=1, nrow=2))
 ```
 
 
+## Oracle
+
+A flowtrend-like object that contains "oracle" information of the model that
+generates the simulated pseudo-real data.
+
+```{r}
+
+#' Reformatting |datobj| to create a flowtrend-like object that contains "oracle" information of the model that
+#' generates the simulated pseudo-real data.
+#' 
+#' @param datobj A data object.
+#'
+#' @return A flowtrend-like object containing mn, sigma, and prob.
+#'
+#' @export
+create_oracle <- function(datobj){
+  TT = nrow(datobj$mns)
+  dimdat = 1
+  numclust = ncol(datobj$mns)
+  fake_obj = list()
+
+  fake_obj$mn = array(NA, dim = c(TT,dimdat,numclust))
+  fake_obj$mn[,1,] = datobj$mns
+  fake_obj$prob = datobj$prob
+  fake_obj$sigma = array(NA, dim = c(numclust, dimdat, dimdat))
+  fake_obj$sigma[1,1,1] = datobj$sd1^2
+  fake_obj$sigma[2,1,1] = datobj$sd2^2
+  fake_obj$numclust = numclust
+  return(fake_obj)
+}
+```
 
 
 ## Evaluating performance: soft RAND index
@@ -378,11 +737,11 @@ And when one of the clusterings is absolute, we can still use a 0-1 vector.
 #'
 #' @return A single soft rand index number
 #' @export
-soft_rand <- function(resp_list1, resp_list2, times = NULL){
+rand <- function(resp_list1, resp_list2, times = NULL){
   if(!is.null(times)) resp_list1 = resp_list1[times]
   if(!is.null(times)) resp_list2 = resp_list2[times]
   
-  soft_rand_onetime <- function(resp1, resp2){
+  rand_onetime <- function(resp1, resp2){
     stopifnot(nrow(resp1) == nrow(resp2))
     stopifnot(ncol(resp1) == ncol(resp2))
     nt = nrow(resp1)
@@ -390,20 +749,90 @@ soft_rand <- function(resp_list1, resp_list2, times = NULL){
     ## Form the score
     mat11 = resp1 %*% t(resp1)
     mat22 = resp2 %*% t(resp2)
+    mat11not = (1-mat11)
+    mat22not = (1-mat22)
+
+    ## Make the diagonals not matter anywhere
+    diag(mat11) = 0
+    diag(mat22) = 0
+    diag(mat11not) = 0
+    diag(mat22not) = 0
 
     a = mat11 * mat22
-    b = (1-mat11) * (1-mat22)
-    c = mat11 * (1-mat22)
-    d = (1-mat11) * mat22
+    b = mat11not * mat22not
+    c = mat11 * mat22not
+    d = mat11not * mat22
+
     return(c(a = sum(a), b = sum(b), c = sum(c), d = sum(d)))
   }
-  abcd_over_time = mapply(soft_rand_onetime, resp_list1, resp_list2)
+  abcd_over_time = mapply(rand_onetime, resp_list1, resp_list2)
   abcdmat = abcd_over_time %>% t()
   abcd = abcdmat %>% colSums()
   score = (abcd["a"] + abcd["b"])/  (sum(abcd))
   return(score)
 }
 ```
+
+```{r soft-adjusted-rand}
+#' A "soft" *and adjusted* version of a rand index between two lists of responsibility
+#' (membership probability) matrices. Measures the /disagreement/ between the two clusterings.
+#' 
+#' @param resp_list1 One list of responsibility matrices.
+#' @param resp_list2 Another list of responsibility matrices.
+#' @param times Optional; if you would like to isolate your attention to some
+#'   specific times.
+#'
+#' @return A single soft rand index for all particles across all times.
+#' @export
+adjusted_rand <- function(resp_list1, resp_list2, times = NULL){ 
+
+  ## Basic checks
+  if(!is.null(times)) resp_list1 = resp_list1[times]
+  if(!is.null(times)) resp_list2 = resp_list2[times]
+  
+  all_mat_over_time = mapply(adjusted_rand_onetime, resp_list1, resp_list2,
+                             SIMPLIFY = FALSE)
+  mat = Reduce('+', all_mat_over_time)
+
+  n = sum(mat)
+  sum_a = sum(sapply(rowSums(mat), choose, 2))
+  sum_b = sum(sapply(colSums(mat), choose, 2))
+  numer = sum(sapply(mat, function(a) choose(a,2))) -
+    sum_a * sum_b / choose(n, 2)
+  denom = (sum_a + sum_b)/2 - (sum_a * sum_b)/choose(n,2) 
+  ari = numer/denom
+  return(ari)
+}
+
+
+#' A "soft" *and adjusted* version of a rand index between two responsibility
+#' (membership probability) matrices. Measures the /disagreement/ between the
+#' two clusterings.
+#' 
+#' @param resp1 One responsibility matrices.
+#' @param resp2 Another responsibility matrices.
+#'
+#' @return A single soft rand index for all particles.
+#' @export
+adjusted_rand_onetime <- function(resp1, resp2){
+
+  ## Basic checks
+  stopifnot(nrow(resp1) == nrow(resp2))
+  stopifnot(ncol(resp1) == ncol(resp2))
+  nt = nrow(resp1)
+  
+  ## Next, build contingency table
+  mem1 = resp1 %>% apply(1, function(a){(1:2)[which(a==0)]}) ## why is this a==0?? TODO address this.
+  mem2 = resp2 %>% apply(1, function(a){(1:2)[which(a==0)]})
+  mat = matrix(NA, nrow=2, ncol=2)
+  mat[1,1] = sum(mem1==1 & mem2 == 1) 
+  mat[2,2] = sum(mem1==2 & mem2 == 2) 
+  mat[1,2] = sum(mem1==1 & mem2 == 2) 
+  mat[2,1] = sum(mem1==2 & mem2 == 1) 
+  return(mat)
+}
+```
+
 
 ```{r try-soft-rand, eval = FALSE}
 numclust = 3
@@ -419,9 +848,9 @@ res2 = flowtrend(ylist=ylist, numclust=3, l=2, l_prob=1, lambda = 1,
                  lambda_prob=1, verbose=TRUE, nrestart=1)
 
 ## Calculate the soft rand index of two different models
-soft_rand(res$resp, res2$resp)
-soft_rand(res$resp, res$resp)
-soft_rand(res2$resp, res2$resp)
+rand(res$resp, res2$resp)
+rand(res$resp, res$resp)
+rand(res2$resp, res2$resp)
 
 g1 = plot_1d(ylist=ylist, obj=res2)
 g2 = plot_1d(ylist=ylist, obj=res)
@@ -434,8 +863,8 @@ do.call(ggpubr::ggarrange, c(list(g1, g2), ncol=1, nrow=2))
 ## Case 3: one is a hard clustering. 
 plot(ylist[[1]], col = obj$memlist[[1]])
 obj$resp = get_resp_from_labels(obj$memlist)
-soft_rand(res$resp, res2$resp)
-soft_rand(res$resp, res$resp)
+rand(res$resp, res2$resp)
+rand(res$resp, res$resp)
 
 ## Next, code up the truth
 a = dt %>% group_by(time ) %>% group_split() %>%

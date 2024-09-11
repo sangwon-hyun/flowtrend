@@ -5,7 +5,7 @@
 #' @param destin Directory with cross-validation output.
 #'
 #' @export
-cv_aggregate <- function(destin){ 
+cv_aggregate <- function(destin){  
  
   ## ## Read the meta data (for |nfold|, |cv_gridsize|, |nrestart|, |lambda_means|,
   ## ## |lambda_probs|)
@@ -87,7 +87,7 @@ cv_aggregate <- function(destin){
   ## possible_inds[my_ord, ] %>% apply(2, which.max)
   ## Or even just stick with the ones on the diagonal direction.
   myrows = which(possible_inds[,2] == possible_inds[,1])
-  possible_inds = possible_inds[myrows, ] 
+  possible_inds = possible_inds[myrows, ,drop=FALSE] 
   min.inds.1se = possible_inds[which.max(possible_inds[,1]),]
   
   ## Return the results

@@ -11,13 +11,12 @@
 #' @return List of fold indices.
 #' @export
 #'
-make_cv_folds <- function(ylist=NULL, nfold, TT=NULL, blocksize = 1){
-
+make_cv_folds <- function(ylist = NULL, nfold, TT = NULL, blocksize = 1){
 
   if(blocksize > 1){
-    return(make_cv_folds_in_blocks(ylist=ylist,
+    return(make_cv_folds_in_blocks(ylist = ylist,
                                    nfold,
-                                   TT=TT,
+                                   TT = TT,
                                    blocksize = blocksize))
   }
 

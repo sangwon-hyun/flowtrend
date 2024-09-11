@@ -3,7 +3,7 @@
 #' E step, which updates the "responsibilities", which are posterior membership probabilities of each particle.
 #'
 #' @param mn
-#' @param sigma
+#' @param sigma covariance
 #' @param prob
 #' @param ylist
 #' @param numclust

@@ -16,7 +16,7 @@ predict_flowtrend <- function(obj, newtimes = NULL){
   newx <- newtimes
   if(is.null(newtimes)){ newx = obj$x }
 
-  ## Check if the new times are within the time range of the original data 
+  ## Check if the new times are within the time range of the original data
   stopifnot(all(sapply(newx, FUN = function(t) t >= min(obj$x) & t <= max(obj$x))))
 
   ## Setup some things

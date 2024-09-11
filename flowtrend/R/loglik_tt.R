@@ -4,7 +4,7 @@
 #'
 #' @param mu Cluster means.
 #' @param prob Cluster probabilities.
-#' @param prob Cluster variances.
+#' @param sigma Cluster variances.
 #' @param ylist Data.
 #' @param tt Time point.
 loglik_tt <- function(ylist, tt, mu, sigma, prob, dimdat = NULL, countslist = NULL, numclust){

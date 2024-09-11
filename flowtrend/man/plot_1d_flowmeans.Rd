@@ -4,7 +4,7 @@
 \alias{plot_1d_flowmeans}
 \title{Plotter for underfit and overfit flowmeans.}
 \usage{
-plot_1d_flowmeans(obj, ylist, countslist = NULL)
+plot_1d_flowmeans(obj, ylist, countslist = NULL, bin = FALSE)
 }
 \arguments{
 \item{obj}{Output from \code{underfit_flowmeans()}}
@@ -12,6 +12,8 @@ plot_1d_flowmeans(obj, ylist, countslist = NULL)
 \item{ylist}{Data}
 
 \item{countslist}{Optional: counts for each ylist}
+
+\item{bin}{Whether data is binned.}
 }
 \value{
 ggplot object

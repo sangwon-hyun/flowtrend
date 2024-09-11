@@ -1,6 +1,6 @@
 # Generated from _main.Rmd: do not edit by hand
 
-#' Evaluating the penalized data log-likelihood on all data \code{ylist} given parameters \code{mu}, \code{prob}, and \code{sigma}.
+#' Evaluating the penalized negative log-likelihood on all data \code{ylist} given parameters \code{mu}, \code{prob}, and \code{sigma}.
 #'
 #' @param mu
 #' @param prob
@@ -25,7 +25,7 @@
 #' @examples
 objective <- function(mu, prob, prob_link = NULL, sigma,
                       ylist,
-                      Dlp1, l = NULL,
+                      Dlp1 = NULL, l = NULL,
                       lambda = 0,
                       l_prob = NULL,
                       Dlp1_prob = NULL,

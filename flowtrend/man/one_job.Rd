@@ -14,6 +14,7 @@ one_job(
   lambda_means,
   lambda_probs,
   seedtab = NULL,
+  x = NULL,
   ylist,
   countslist,
   l,

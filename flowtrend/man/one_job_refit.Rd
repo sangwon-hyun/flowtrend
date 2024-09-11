@@ -17,6 +17,7 @@ one_job_refit(
   seedtab = NULL,
   ylist,
   countslist,
+  x,
   ...
 )
 }

@@ -180,7 +180,6 @@ flowtrend_once <- function(ylist,
                         sigma = sigma,
                         objectives = objectives[2:iter],
                         final.iter = iter,
-                        resp = resp,
                         ## Above is output, below are data/algorithm settings.
                         dimdat = dimdat,
                         TT = TT,

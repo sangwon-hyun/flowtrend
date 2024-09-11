@@ -22,30 +22,31 @@
 #'
 #' @export
 cv_flowtrend <- function(## Data
-                          ylist,
-                          countslist,
-                          ## Define the locations to save the CV.
-                          destin = ".",
-                          ## Regularization parameter values
-                          lambda_means,
-                          lambda_probs,
-                          l,
-                          l_prob,
-                          iimat = NULL,
-                          ## Other settings
-                          maxdev,
-                          numclust,
+                         ylist,
+                         countslist,
+                         x = NULL, ## THIS IS NEW
+                         ## Define the locations to save the CV.
+                         destin = ".",
+                         ## Regularization parameter values
+                         lambda_means,
+                         lambda_probs,
+                         l,
+                         l_prob,
+                         iimat = NULL,
+                         ## Other settings
+                         maxdev,
+                         numclust,
                          nfold,
                          blocksize,
-                          nrestart,
-                          verbose = FALSE,
-                          refit = FALSE,
-                          save_meta = FALSE,
-                          mc.cores = 1,
-                          folds = NULL,
+                         nrestart,
+                         verbose = FALSE,
+                         refit = FALSE,
+                         save_meta = FALSE,
+                         mc.cores = 1,
+                         folds = NULL,
                          seedtab = NULL,
                          niter = 1000,
-                          ...){
+                         ...){
 
   ## Basic checks
   stopifnot(length(lambda_probs) == length(lambda_means))
@@ -72,8 +73,8 @@ cv_flowtrend <- function(## Data
       if(file.exists(file = file.path(destin, 'meta.Rdata'))){
 
         ## Put aside the current guys
-        cat(fill=TRUE)
-        print("Meta data already exists!")
+        cat(fill = TRUE)
+        cat("Meta data already exists!")
         folds_current = folds
         nfold_current = nfold
         nrestart_current = nrestart
@@ -81,6 +82,7 @@ cv_flowtrend <- function(## Data
         lambda_means_current = lambda_means
         lambda_probs_current = lambda_probs
         ylist_current = ylist
+        x_current = x
         countslist_current = countslist
 
         ## Load the saved metadata and check if they are all the same as the current guys
@@ -92,6 +94,7 @@ cv_flowtrend <- function(## Data
         stopifnot(all(lambda_means == lambda_means_current))
         stopifnot(all(lambda_probs == lambda_probs_current))
         stopifnot(identical(ylist, ylist_current))
+        stopifnot(identical(x, x_current))
         stopifnot(identical(countslist, countslist_current))
         cat(fill=TRUE)
         cat("Successfully checked that the saved metadata is identical to the current one.", fill = TRUE)
@@ -103,6 +106,7 @@ cv_flowtrend <- function(## Data
              lambda_means,
              lambda_probs,
              ylist, countslist,
+             x,
              ## Save the file
              file = file.path(destin, 'meta.Rdata'))
         print(paste0("wrote meta data to ", file.path(destin, 'meta.Rdata')))
@@ -139,7 +143,8 @@ cv_flowtrend <- function(## Data
               lambda_means = lambda_means,
               lambda_probs = lambda_probs,
               ## Arguments for flowtrend()
-              ylist = ylist, countslist = countslist, 
+              ylist = ylist, countslist = countslist,
+              x = x,
               ## Additional arguments for flowtrend().
               numclust = numclust,
               maxdev = maxdev,
@@ -155,7 +160,8 @@ cv_flowtrend <- function(## Data
                     lambda_means = lambda_means,
                     lambda_probs = lambda_probs,
                     ## Arguments to flowtrend()
-                    ylist = ylist, countslist = countslist, 
+                    ylist = ylist, countslist = countslist,
+                    x = x,
                     ## Additional arguments for flowtrend().
                     numclust = numclust,
                     maxdev = maxdev,

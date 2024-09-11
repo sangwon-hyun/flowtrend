@@ -305,7 +305,7 @@ This is the portion of the *objective* function of the flowtrend model.
 #'
 #' @param mu Cluster means.
 #' @param prob Cluster probabilities.
-#' @param prob Cluster variances.
+#' @param sigma Cluster variances.
 #' @param ylist Data.
 #' @param tt Time point.
 loglik_tt <- function(ylist, tt, mu, sigma, prob, dimdat = NULL, countslist = NULL, numclust){
@@ -337,7 +337,7 @@ $$\sum_{t=1}^T\sum_{i=1}^{n_t} C_i^{(t)} \log\left( \sum_{k=1}^K \pi_{itk} \phi(
 \mu_{kt}, \Sigma_k) \right). $$
 
 ```{r objective}
-#' Evaluating the penalized data log-likelihood on all data \code{ylist} given parameters \code{mu}, \code{prob}, and \code{sigma}.
+#' Evaluating the penalized negative log-likelihood on all data \code{ylist} given parameters \code{mu}, \code{prob}, and \code{sigma}.
 #'
 #' @param mu
 #' @param prob
@@ -362,7 +362,7 @@ $$\sum_{t=1}^T\sum_{i=1}^{n_t} C_i^{(t)} \log\left( \sum_{k=1}^K \pi_{itk} \phi(
 #' @examples
 objective <- function(mu, prob, prob_link = NULL, sigma,
                       ylist,
-                      Dlp1, l = NULL,
+                      Dlp1 = NULL, l = NULL,
                       lambda = 0,
                       l_prob = NULL,
                       Dlp1_prob = NULL,
@@ -612,7 +612,7 @@ print_progress <- function(isim, nsim,
 #' E step, which updates the "responsibilities", which are posterior membership probabilities of each particle.
 #'
 #' @param mn
-#' @param sigma
+#' @param sigma covariance
 #' @param prob
 #' @param ylist
 #' @param numclust
@@ -2242,7 +2242,6 @@ flowtrend_once <- function(ylist,
                         sigma = sigma,
                         objectives = objectives[2:iter],
                         final.iter = iter,
-                        resp = resp,
                         ## Above is output, below are data/algorithm settings.
                         dimdat = dimdat,
                         TT = TT,

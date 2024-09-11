@@ -12,7 +12,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="5 Tuning \(\lambda\) | Creating the flowtrend R package">
 <meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien">
-<meta name="date" content="2024-06-22">
+<meta name="date" content="2024-09-11">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -183,9 +183,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="7.1" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#two-alternative-clusterings"><i class="fa fa-check"></i><b>7.1</b> Two alternative clusterings</a></li>
 <li class="chapter" data-level="7.2" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#example-using-other-cluster-algorithms"><i class="fa fa-check"></i><b>7.2</b> Example using other cluster algorithms</a></li>
-<li class="chapter" data-level="7.3" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>7.3</b> Evaluating performance: soft RAND index</a></li>
-<li class="chapter" data-level="7.4" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#generating-pseudo-real-data"><i class="fa fa-check"></i><b>7.4</b> Generating “pseudo-real” data</a></li>
-<li class="chapter" data-level="7.5" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#miscellaneous-helpers"><i class="fa fa-check"></i><b>7.5</b> Miscellaneous helpers</a></li>
+<li class="chapter" data-level="7.3" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#oracle"><i class="fa fa-check"></i><b>7.3</b> Oracle</a></li>
+<li class="chapter" data-level="7.4" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>7.4</b> Evaluating performance: soft RAND index</a></li>
+<li class="chapter" data-level="7.5" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#generating-pseudo-real-data"><i class="fa fa-check"></i><b>7.5</b> Generating “pseudo-real” data</a></li>
+<li class="chapter" data-level="7.6" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#miscellaneous-helpers"><i class="fa fa-check"></i><b>7.6</b> Miscellaneous helpers</a></li>
 </ul>
 </li>
 <li class="chapter" data-level="8" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>8</b> Documenting the package and building</a></li>
@@ -207,9 +208,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1>
 <span class="header-section-number">5</span> Tuning <span class="math inline">\(\lambda\)</span><a href="tuning-lambda.html#tuning-lambda" class="anchor-section" aria-label="Anchor link to header"></a>
 </h1>
-<p>We’re going to take a (huge) leap, and assume the <code><a href="building-the-modelalgorithm.html#flowtrend">flowtrend</a>()</code> function has been
-built. We need to build up quite a few functions before we’re able to do
-cross-validation. These include:</p>
+<p>Now that the <code><a href="building-the-modelalgorithm.html#flowtrend">flowtrend</a>()</code> function has been built (we will test it in the next
+section, i.e., <code>6test.Rmd</code>), we need to build up quite a few functions before
+we’re able to cross-validate. These include:</p>
 <ul>
 <li>Predicting out-of-sample, using <code><a href="tuning-lambda.html#predict_flowtrend">predict_flowtrend</a>()</code>.</li>
 <li>Evaluating data fit (by likelihood) in an out-of-sample measurement, using
@@ -308,7 +309,7 @@ model object <code>obj</code>, and the new time points <code>newtimes</code>, an
 <span id="cb74-14"><a href="tuning-lambda.html#cb74-14" tabindex="-1"></a>  newx <span class="ot">&lt;-</span> newtimes</span>
 <span id="cb74-15"><a href="tuning-lambda.html#cb74-15" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(newtimes)){ newx <span class="ot">=</span> obj<span class="sc">$</span>x }</span>
 <span id="cb74-16"><a href="tuning-lambda.html#cb74-16" tabindex="-1"></a></span>
-<span id="cb74-17"><a href="tuning-lambda.html#cb74-17" tabindex="-1"></a>  <span class="do">## Check if the new times are within the time range of the original data </span></span>
+<span id="cb74-17"><a href="tuning-lambda.html#cb74-17" tabindex="-1"></a>  <span class="do">## Check if the new times are within the time range of the original data</span></span>
 <span id="cb74-18"><a href="tuning-lambda.html#cb74-18" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">all</span>(<span class="fu">sapply</span>(newx, <span class="at">FUN =</span> <span class="cf">function</span>(t) t <span class="sc">&gt;=</span> <span class="fu">min</span>(obj<span class="sc">$</span>x) <span class="sc">&amp;</span> t <span class="sc">&lt;=</span> <span class="fu">max</span>(obj<span class="sc">$</span>x))))</span>
 <span id="cb74-19"><a href="tuning-lambda.html#cb74-19" tabindex="-1"></a></span>
 <span id="cb74-20"><a href="tuning-lambda.html#cb74-20" tabindex="-1"></a>  <span class="do">## Setup some things</span></span>
@@ -527,7 +528,7 @@ estimated model. Below, we’re showing just the predicted means at the held-out
 points, overlaid with data.</p>
 <p>(This is measured by the objective (= negative log likelihood), so lower is
 better! Red is worse than black, naturally.)</p>
-<p><code>{r fit, fig.width = 7, fig.height = 5}) g = <a href="package-setup.html#plot_1d">plot_1d</a>(ylist = dt %&gt;% subset(time %in% held_out) %&gt;% <a href="package-setup.html#dt2ylist">dt2ylist</a>(), x= held_out) + xlim(c(0,100)) g + geom_line(aes(x=time, y = value, group = name), data = data.frame(truemn[,1,]) %&gt;% add_column(time = held_out) %&gt;% pivot_longer(-time)) +   geom_line(aes(x=time, y = value, group = name), data = data.frame(predobj$mn[,1,]) %&gt;% add_column(time = held_out) %&gt;% pivot_longer(-time), col = 'red') + ggtitle(paste0(round(obj_pred,3), " (red, predicted)   vs.   ", round(obj_better, 3), "(black, truth)"))</code></p>
+<p><code>{r fit, fig.width = 7, fig.height = 5}) g = <a href="package-setup.html#plot_1d">plot_1d</a>(ylist = dt %&gt;% subset(time %in% held_out) %&gt;% <a href="package-setup.html#dt2ylist">dt2ylist</a>(), x = held_out) + xlim(c(0,100)) g + geom_line(aes(x=time, y = value, group = name), data = data.frame(truemn[,1,]) %&gt;% add_column(time = held_out) %&gt;% pivot_longer(-time)) +   geom_line(aes(x=time, y = value, group = name), data = data.frame(predobj$mn[,1,]) %&gt;% add_column(time = held_out) %&gt;% pivot_longer(-time), col = 'red') + ggtitle(paste0(round(obj_pred,3), " (red, predicted)   vs.   ", round(obj_better, 3), "(black, truth)"))</code></p>
 </div>
 <div id="maximum-lambda_mu-lambda_pi-values-to-test" class="section level2 hasAnchor" number="5.2">
 <h2>
@@ -725,24 +726,23 @@ obtains the value <em>and</em> saves it to a <code>maxres_file</code> (which def
 <span id="cb85-9"><a href="tuning-lambda.html#cb85-9" tabindex="-1"></a><span class="co">#' @return List of fold indices.</span></span>
 <span id="cb85-10"><a href="tuning-lambda.html#cb85-10" tabindex="-1"></a><span class="co">#' @export</span></span>
 <span id="cb85-11"><a href="tuning-lambda.html#cb85-11" tabindex="-1"></a><span class="co">#'</span></span>
-<span id="cb85-12"><a href="tuning-lambda.html#cb85-12" tabindex="-1"></a><span id="make_cv_folds">make_cv_folds</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">ylist=</span><span class="cn">NULL</span>, nfold, <span class="at">TT=</span><span class="cn">NULL</span>, <span class="at">blocksize =</span> <span class="dv">1</span>){</span>
+<span id="cb85-12"><a href="tuning-lambda.html#cb85-12" tabindex="-1"></a><span id="make_cv_folds">make_cv_folds</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">ylist =</span> <span class="cn">NULL</span>, nfold, <span class="at">TT =</span> <span class="cn">NULL</span>, <span class="at">blocksize =</span> <span class="dv">1</span>){</span>
 <span id="cb85-13"><a href="tuning-lambda.html#cb85-13" tabindex="-1"></a></span>
-<span id="cb85-14"><a href="tuning-lambda.html#cb85-14" tabindex="-1"></a></span>
-<span id="cb85-15"><a href="tuning-lambda.html#cb85-15" tabindex="-1"></a>  <span class="cf">if</span>(blocksize <span class="sc">&gt;</span> <span class="dv">1</span>){</span>
-<span id="cb85-16"><a href="tuning-lambda.html#cb85-16" tabindex="-1"></a>    <span class="fu">return</span>(<a href="tuning-lambda.html#make_cv_folds_in_blocks">make_cv_folds_in_blocks</a>(<span class="at">ylist=</span>ylist,</span>
-<span id="cb85-17"><a href="tuning-lambda.html#cb85-17" tabindex="-1"></a>                                   nfold,</span>
-<span id="cb85-18"><a href="tuning-lambda.html#cb85-18" tabindex="-1"></a>                                   <span class="at">TT=</span>TT,</span>
-<span id="cb85-19"><a href="tuning-lambda.html#cb85-19" tabindex="-1"></a>                                   <span class="at">blocksize =</span> blocksize))</span>
-<span id="cb85-20"><a href="tuning-lambda.html#cb85-20" tabindex="-1"></a>  }</span>
-<span id="cb85-21"><a href="tuning-lambda.html#cb85-21" tabindex="-1"></a></span>
-<span id="cb85-22"><a href="tuning-lambda.html#cb85-22" tabindex="-1"></a>  <span class="do">## Make hour-long index list</span></span>
-<span id="cb85-23"><a href="tuning-lambda.html#cb85-23" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(TT)) TT <span class="ot">=</span> <span class="fu">length</span>(ylist)</span>
-<span id="cb85-24"><a href="tuning-lambda.html#cb85-24" tabindex="-1"></a>  folds <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>nfold, <span class="fu">ceiling</span>( (TT<span class="dv">-2</span>)<span class="sc">/</span>nfold))[<span class="dv">1</span><span class="sc">:</span>(TT<span class="dv">-2</span>)]</span>
-<span id="cb85-25"><a href="tuning-lambda.html#cb85-25" tabindex="-1"></a>  inds <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>nfold, <span class="at">FUN =</span> <span class="cf">function</span>(k) (<span class="dv">2</span><span class="sc">:</span>(TT<span class="dv">-1</span>))[folds <span class="sc">==</span> k])</span>
-<span id="cb85-26"><a href="tuning-lambda.html#cb85-26" tabindex="-1"></a>  <span class="fu">names</span>(inds) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"Fold"</span>, <span class="dv">1</span><span class="sc">:</span>nfold)</span>
-<span id="cb85-27"><a href="tuning-lambda.html#cb85-27" tabindex="-1"></a></span>
-<span id="cb85-28"><a href="tuning-lambda.html#cb85-28" tabindex="-1"></a>  <span class="fu">return</span>(inds)</span>
-<span id="cb85-29"><a href="tuning-lambda.html#cb85-29" tabindex="-1"></a>} </span></code></pre></div>
+<span id="cb85-14"><a href="tuning-lambda.html#cb85-14" tabindex="-1"></a>  <span class="cf">if</span>(blocksize <span class="sc">&gt;</span> <span class="dv">1</span>){</span>
+<span id="cb85-15"><a href="tuning-lambda.html#cb85-15" tabindex="-1"></a>    <span class="fu">return</span>(<a href="tuning-lambda.html#make_cv_folds_in_blocks">make_cv_folds_in_blocks</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb85-16"><a href="tuning-lambda.html#cb85-16" tabindex="-1"></a>                                   nfold,</span>
+<span id="cb85-17"><a href="tuning-lambda.html#cb85-17" tabindex="-1"></a>                                   <span class="at">TT =</span> TT,</span>
+<span id="cb85-18"><a href="tuning-lambda.html#cb85-18" tabindex="-1"></a>                                   <span class="at">blocksize =</span> blocksize))</span>
+<span id="cb85-19"><a href="tuning-lambda.html#cb85-19" tabindex="-1"></a>  }</span>
+<span id="cb85-20"><a href="tuning-lambda.html#cb85-20" tabindex="-1"></a></span>
+<span id="cb85-21"><a href="tuning-lambda.html#cb85-21" tabindex="-1"></a>  <span class="do">## Make hour-long index list</span></span>
+<span id="cb85-22"><a href="tuning-lambda.html#cb85-22" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(TT)) TT <span class="ot">=</span> <span class="fu">length</span>(ylist)</span>
+<span id="cb85-23"><a href="tuning-lambda.html#cb85-23" tabindex="-1"></a>  folds <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>nfold, <span class="fu">ceiling</span>( (TT<span class="dv">-2</span>)<span class="sc">/</span>nfold))[<span class="dv">1</span><span class="sc">:</span>(TT<span class="dv">-2</span>)]</span>
+<span id="cb85-24"><a href="tuning-lambda.html#cb85-24" tabindex="-1"></a>  inds <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>nfold, <span class="at">FUN =</span> <span class="cf">function</span>(k) (<span class="dv">2</span><span class="sc">:</span>(TT<span class="dv">-1</span>))[folds <span class="sc">==</span> k])</span>
+<span id="cb85-25"><a href="tuning-lambda.html#cb85-25" tabindex="-1"></a>  <span class="fu">names</span>(inds) <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"Fold"</span>, <span class="dv">1</span><span class="sc">:</span>nfold)</span>
+<span id="cb85-26"><a href="tuning-lambda.html#cb85-26" tabindex="-1"></a></span>
+<span id="cb85-27"><a href="tuning-lambda.html#cb85-27" tabindex="-1"></a>  <span class="fu">return</span>(inds)</span>
+<span id="cb85-28"><a href="tuning-lambda.html#cb85-28" tabindex="-1"></a>} </span></code></pre></div>
 <p>We can visualize how the data is to be split. In the following plot, vertical
 lines mark data indices in each fold, using different colors . For <code>nfold = 5</code>,
 the first fold is every 5th point starting at 2, <span class="math inline">\(\{2,7,\dots\}\)</span>, and the second
@@ -839,128 +839,124 @@ other is when <em>re-estimating</em> models on the full data.</p>
 <span id="cb88-17"><a href="tuning-lambda.html#cb88-17" tabindex="-1"></a><span class="co">#'</span></span>
 <span id="cb88-18"><a href="tuning-lambda.html#cb88-18" tabindex="-1"></a><span class="co">#' @export</span></span>
 <span id="cb88-19"><a href="tuning-lambda.html#cb88-19" tabindex="-1"></a><span id="one_job">one_job</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(iprob, imu, ifold, irestart, folds, destin,</span>
-<span id="cb88-20"><a href="tuning-lambda.html#cb88-20" tabindex="-1"></a>                       lambda_means, lambda_probs,</span>
-<span id="cb88-21"><a href="tuning-lambda.html#cb88-21" tabindex="-1"></a>                       <span class="at">seedtab =</span> <span class="cn">NULL</span>,</span>
-<span id="cb88-22"><a href="tuning-lambda.html#cb88-22" tabindex="-1"></a>                       <span class="do">## The rest that is needed explicitly for <a href="building-the-modelalgorithm.html#flowtrend">flowtrend</a>()</span></span>
-<span id="cb88-23"><a href="tuning-lambda.html#cb88-23" tabindex="-1"></a>                       ylist, countslist,</span>
-<span id="cb88-24"><a href="tuning-lambda.html#cb88-24" tabindex="-1"></a>                       l, l_prob,</span>
-<span id="cb88-25"><a href="tuning-lambda.html#cb88-25" tabindex="-1"></a>                       ...){</span>
-<span id="cb88-26"><a href="tuning-lambda.html#cb88-26" tabindex="-1"></a></span>
-<span id="cb88-27"><a href="tuning-lambda.html#cb88-27" tabindex="-1"></a>  <span class="do">## Get the train/test data</span></span>
-<span id="cb88-28"><a href="tuning-lambda.html#cb88-28" tabindex="-1"></a>  TT <span class="ot">&lt;-</span> <span class="fu">length</span>(ylist)</span>
-<span id="cb88-29"><a href="tuning-lambda.html#cb88-29" tabindex="-1"></a>  test.inds <span class="ot">=</span> <span class="fu">unlist</span>(folds[ifold]) <span class="sc">%&gt;%</span> <span class="fu">sort</span>()</span>
-<span id="cb88-30"><a href="tuning-lambda.html#cb88-30" tabindex="-1"></a>  test.dat <span class="ot">=</span> ylist[test.inds]</span>
-<span id="cb88-31"><a href="tuning-lambda.html#cb88-31" tabindex="-1"></a>  test.count <span class="ot">=</span> countslist[test.inds]</span>
-<span id="cb88-32"><a href="tuning-lambda.html#cb88-32" tabindex="-1"></a>  train.inds <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">unlist</span>(folds[<span class="sc">-</span>ifold]), TT) <span class="sc">%&gt;%</span> <span class="fu">sort</span>()</span>
-<span id="cb88-33"><a href="tuning-lambda.html#cb88-33" tabindex="-1"></a>  train.dat <span class="ot">=</span> ylist[train.inds]</span>
-<span id="cb88-34"><a href="tuning-lambda.html#cb88-34" tabindex="-1"></a>  train.count <span class="ot">=</span> countslist[train.inds]</span>
-<span id="cb88-35"><a href="tuning-lambda.html#cb88-35" tabindex="-1"></a></span>
-<span id="cb88-36"><a href="tuning-lambda.html#cb88-36" tabindex="-1"></a>  <span class="do">## Check whether this job has been done already.</span></span>
-<span id="cb88-37"><a href="tuning-lambda.html#cb88-37" tabindex="-1"></a>  filename <span class="ot">=</span> <a href="tuning-lambda.html#make_cvscore_filename">make_cvscore_filename</a>(iprob, imu, ifold, irestart)</span>
-<span id="cb88-38"><a href="tuning-lambda.html#cb88-38" tabindex="-1"></a>  best_filename <span class="ot">=</span> <a href="tuning-lambda.html#make_best_cvscore_filename">make_best_cvscore_filename</a>(iprob, imu, ifold)</span>
-<span id="cb88-39"><a href="tuning-lambda.html#cb88-39" tabindex="-1"></a>  <span class="do">## if(file.exists(file.path(destin, filename)) ){</span></span>
-<span id="cb88-40"><a href="tuning-lambda.html#cb88-40" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">file.exists</span>(<span class="fu">file.path</span>(destin, filename)) <span class="sc">|</span> <span class="fu">file.exists</span>(<span class="fu">file.path</span>(destin, best_filename)) ){</span>
-<span id="cb88-41"><a href="tuning-lambda.html#cb88-41" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="at">fill=</span><span class="cn">TRUE</span>)</span>
-<span id="cb88-42"><a href="tuning-lambda.html#cb88-42" tabindex="-1"></a>    <span class="fu">cat</span>(filename, <span class="st">"already done."</span>, <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
-<span id="cb88-43"><a href="tuning-lambda.html#cb88-43" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
-<span id="cb88-44"><a href="tuning-lambda.html#cb88-44" tabindex="-1"></a>  }</span>
-<span id="cb88-45"><a href="tuning-lambda.html#cb88-45" tabindex="-1"></a></span>
-<span id="cb88-46"><a href="tuning-lambda.html#cb88-46" tabindex="-1"></a>  <span class="do">## Get the seed ready</span></span>
-<span id="cb88-47"><a href="tuning-lambda.html#cb88-47" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(seedtab)){</span>
-<span id="cb88-48"><a href="tuning-lambda.html#cb88-48" tabindex="-1"></a>    seed <span class="ot">=</span> seedtab <span class="sc">%&gt;%</span></span>
-<span id="cb88-49"><a href="tuning-lambda.html#cb88-49" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(iprob <span class="sc">==</span> <span class="sc">!!</span>iprob <span class="sc">&amp;</span> </span>
-<span id="cb88-50"><a href="tuning-lambda.html#cb88-50" tabindex="-1"></a>                    imu <span class="sc">==</span> <span class="sc">!!</span>imu <span class="sc">&amp;</span></span>
-<span id="cb88-51"><a href="tuning-lambda.html#cb88-51" tabindex="-1"></a>                    ifold <span class="sc">==</span> <span class="sc">!!</span>ifold <span class="sc">&amp;</span></span>
-<span id="cb88-52"><a href="tuning-lambda.html#cb88-52" tabindex="-1"></a>                    irestart <span class="sc">==</span> <span class="sc">!!</span>irestart) <span class="sc">%&gt;%</span></span>
-<span id="cb88-53"><a href="tuning-lambda.html#cb88-53" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(seed1, seed2, seed3, seed4, seed5, seed6, seed7) <span class="sc">%&gt;%</span> <span class="fu">unlist</span>() <span class="sc">%&gt;%</span> <span class="fu">as.integer</span>()</span>
-<span id="cb88-54"><a href="tuning-lambda.html#cb88-54" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb88-55"><a href="tuning-lambda.html#cb88-55" tabindex="-1"></a>    seed <span class="ot">=</span> <span class="cn">NULL</span></span>
-<span id="cb88-56"><a href="tuning-lambda.html#cb88-56" tabindex="-1"></a>  }</span>
-<span id="cb88-57"><a href="tuning-lambda.html#cb88-57" tabindex="-1"></a></span>
-<span id="cb88-58"><a href="tuning-lambda.html#cb88-58" tabindex="-1"></a></span>
-<span id="cb88-59"><a href="tuning-lambda.html#cb88-59" tabindex="-1"></a>  lambda_prob <span class="ot">=</span> lambda_probs[iprob]</span>
-<span id="cb88-60"><a href="tuning-lambda.html#cb88-60" tabindex="-1"></a>  lambda_mean <span class="ot">=</span> lambda_means[imu]</span>
-<span id="cb88-61"><a href="tuning-lambda.html#cb88-61" tabindex="-1"></a></span>
-<span id="cb88-62"><a href="tuning-lambda.html#cb88-62" tabindex="-1"></a>  <span class="do">## Run the algorithm (all this trouble because of |nrestart|)</span></span>
-<span id="cb88-63"><a href="tuning-lambda.html#cb88-63" tabindex="-1"></a>  args <span class="ot">=</span> <span class="fu">list</span>(...)</span>
-<span id="cb88-64"><a href="tuning-lambda.html#cb88-64" tabindex="-1"></a>  args<span class="sc">$</span>ylist <span class="ot">=</span> train.dat</span>
-<span id="cb88-65"><a href="tuning-lambda.html#cb88-65" tabindex="-1"></a>  args<span class="sc">$</span>countslist <span class="ot">=</span> train.count</span>
-<span id="cb88-66"><a href="tuning-lambda.html#cb88-66" tabindex="-1"></a>  args<span class="sc">$</span>x <span class="ot">=</span> train.inds</span>
-<span id="cb88-67"><a href="tuning-lambda.html#cb88-67" tabindex="-1"></a>  args<span class="sc">$</span>lambda <span class="ot">=</span> lambda_mean</span>
-<span id="cb88-68"><a href="tuning-lambda.html#cb88-68" tabindex="-1"></a>  args<span class="sc">$</span>lambda_prob <span class="ot">=</span> lambda_prob</span>
-<span id="cb88-69"><a href="tuning-lambda.html#cb88-69" tabindex="-1"></a>  args<span class="sc">$</span>l <span class="ot">=</span> l</span>
-<span id="cb88-70"><a href="tuning-lambda.html#cb88-70" tabindex="-1"></a>  args<span class="sc">$</span>l_prob <span class="ot">=</span> l_prob</span>
-<span id="cb88-71"><a href="tuning-lambda.html#cb88-71" tabindex="-1"></a>  args<span class="sc">$</span>seed <span class="ot">=</span> seed</span>
-<span id="cb88-72"><a href="tuning-lambda.html#cb88-72" tabindex="-1"></a>  <span class="cf">if</span>(<span class="st">"nrestart"</span> <span class="sc">%in%</span> <span class="fu">names</span>(args)){</span>
-<span id="cb88-73"><a href="tuning-lambda.html#cb88-73" tabindex="-1"></a>    args <span class="ot">=</span> args[<span class="sc">-</span><span class="fu">which</span>(<span class="fu">names</span>(args) <span class="sc">%in%</span> <span class="st">"nrestart"</span>)] <span class="do">## remove |nrestart| prior to feeding to <a href="building-the-modelalgorithm.html#flowtrend_once">flowtrend_once</a>().</span></span>
-<span id="cb88-74"><a href="tuning-lambda.html#cb88-74" tabindex="-1"></a>  }</span>
-<span id="cb88-75"><a href="tuning-lambda.html#cb88-75" tabindex="-1"></a></span>
-<span id="cb88-76"><a href="tuning-lambda.html#cb88-76" tabindex="-1"></a>  <span class="fu">tryCatch</span>({</span>
-<span id="cb88-77"><a href="tuning-lambda.html#cb88-77" tabindex="-1"></a></span>
-<span id="cb88-78"><a href="tuning-lambda.html#cb88-78" tabindex="-1"></a>    <span class="do">## Estimate model</span></span>
-<span id="cb88-79"><a href="tuning-lambda.html#cb88-79" tabindex="-1"></a>    argn <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">names</span>(args), as.name)</span>
-<span id="cb88-80"><a href="tuning-lambda.html#cb88-80" tabindex="-1"></a>    <span class="fu">names</span>(argn) <span class="ot">&lt;-</span> <span class="fu">names</span>(args)</span>
-<span id="cb88-81"><a href="tuning-lambda.html#cb88-81" tabindex="-1"></a>    call <span class="ot">&lt;-</span> <span class="fu">as.call</span>(<span class="fu">c</span>(<span class="fu">list</span>(<span class="fu">as.name</span>(<span class="st">"flowtrend_once"</span>)), argn))</span>
-<span id="cb88-82"><a href="tuning-lambda.html#cb88-82" tabindex="-1"></a>    res.train <span class="ot">=</span> <span class="fu">eval</span>(call, args)</span>
-<span id="cb88-83"><a href="tuning-lambda.html#cb88-83" tabindex="-1"></a></span>
-<span id="cb88-84"><a href="tuning-lambda.html#cb88-84" tabindex="-1"></a>    <span class="do">## Assign mn and prob</span></span>
-<span id="cb88-85"><a href="tuning-lambda.html#cb88-85" tabindex="-1"></a>    pred <span class="ot">=</span> <a href="tuning-lambda.html#predict_flowtrend">predict_flowtrend</a>(res.train, <span class="at">newtimes =</span> test.inds)</span>
-<span id="cb88-86"><a href="tuning-lambda.html#cb88-86" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">all</span>(pred<span class="sc">$</span>prob <span class="sc">&gt;=</span> <span class="dv">0</span>))</span>
+<span id="cb88-20"><a href="tuning-lambda.html#cb88-20" tabindex="-1"></a>                    lambda_means, lambda_probs,</span>
+<span id="cb88-21"><a href="tuning-lambda.html#cb88-21" tabindex="-1"></a>                    <span class="at">seedtab =</span> <span class="cn">NULL</span>,</span>
+<span id="cb88-22"><a href="tuning-lambda.html#cb88-22" tabindex="-1"></a>                    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb88-23"><a href="tuning-lambda.html#cb88-23" tabindex="-1"></a>                    <span class="do">## The rest that is needed explicitly for <a href="building-the-modelalgorithm.html#flowtrend">flowtrend</a>()</span></span>
+<span id="cb88-24"><a href="tuning-lambda.html#cb88-24" tabindex="-1"></a>                    ylist, countslist,</span>
+<span id="cb88-25"><a href="tuning-lambda.html#cb88-25" tabindex="-1"></a>                    l, l_prob,</span>
+<span id="cb88-26"><a href="tuning-lambda.html#cb88-26" tabindex="-1"></a>                    ...){</span>
+<span id="cb88-27"><a href="tuning-lambda.html#cb88-27" tabindex="-1"></a></span>
+<span id="cb88-28"><a href="tuning-lambda.html#cb88-28" tabindex="-1"></a>  <span class="do">## Get the train/test data</span></span>
+<span id="cb88-29"><a href="tuning-lambda.html#cb88-29" tabindex="-1"></a>  TT <span class="ot">&lt;-</span> <span class="fu">length</span>(ylist)</span>
+<span id="cb88-30"><a href="tuning-lambda.html#cb88-30" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(x)) x <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span>TT</span>
+<span id="cb88-31"><a href="tuning-lambda.html#cb88-31" tabindex="-1"></a>  test.inds <span class="ot">=</span> <span class="fu">unlist</span>(folds[ifold]) <span class="sc">%&gt;%</span> <span class="fu">sort</span>()</span>
+<span id="cb88-32"><a href="tuning-lambda.html#cb88-32" tabindex="-1"></a>  test.dat <span class="ot">=</span> ylist[test.inds]</span>
+<span id="cb88-33"><a href="tuning-lambda.html#cb88-33" tabindex="-1"></a>  test.count <span class="ot">=</span> countslist[test.inds]</span>
+<span id="cb88-34"><a href="tuning-lambda.html#cb88-34" tabindex="-1"></a>  train.inds <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">unlist</span>(folds[<span class="sc">-</span>ifold]), TT) <span class="sc">%&gt;%</span> <span class="fu">sort</span>()</span>
+<span id="cb88-35"><a href="tuning-lambda.html#cb88-35" tabindex="-1"></a>  train.dat <span class="ot">=</span> ylist[train.inds]</span>
+<span id="cb88-36"><a href="tuning-lambda.html#cb88-36" tabindex="-1"></a>  train.count <span class="ot">=</span> countslist[train.inds]</span>
+<span id="cb88-37"><a href="tuning-lambda.html#cb88-37" tabindex="-1"></a></span>
+<span id="cb88-38"><a href="tuning-lambda.html#cb88-38" tabindex="-1"></a>  <span class="do">## NEW: fit the model on the *time points* in training indices, and</span></span>
+<span id="cb88-39"><a href="tuning-lambda.html#cb88-39" tabindex="-1"></a>  <span class="do">## NEW: test the model on *time points* in the test indices.</span></span>
+<span id="cb88-40"><a href="tuning-lambda.html#cb88-40" tabindex="-1"></a></span>
+<span id="cb88-41"><a href="tuning-lambda.html#cb88-41" tabindex="-1"></a>  <span class="do">## Check whether this job has been done already.</span></span>
+<span id="cb88-42"><a href="tuning-lambda.html#cb88-42" tabindex="-1"></a>  filename <span class="ot">=</span> <a href="tuning-lambda.html#make_cvscore_filename">make_cvscore_filename</a>(iprob, imu, ifold, irestart)</span>
+<span id="cb88-43"><a href="tuning-lambda.html#cb88-43" tabindex="-1"></a>  best_filename <span class="ot">=</span> <a href="tuning-lambda.html#make_best_cvscore_filename">make_best_cvscore_filename</a>(iprob, imu, ifold)</span>
+<span id="cb88-44"><a href="tuning-lambda.html#cb88-44" tabindex="-1"></a>  <span class="do">## if(file.exists(file.path(destin, filename)) ){</span></span>
+<span id="cb88-45"><a href="tuning-lambda.html#cb88-45" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">file.exists</span>(<span class="fu">file.path</span>(destin, filename)) <span class="sc">|</span> <span class="fu">file.exists</span>(<span class="fu">file.path</span>(destin, best_filename)) ){</span>
+<span id="cb88-46"><a href="tuning-lambda.html#cb88-46" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="at">fill=</span><span class="cn">TRUE</span>)</span>
+<span id="cb88-47"><a href="tuning-lambda.html#cb88-47" tabindex="-1"></a>    <span class="fu">cat</span>(filename, <span class="st">"already done."</span>, <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
+<span id="cb88-48"><a href="tuning-lambda.html#cb88-48" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb88-49"><a href="tuning-lambda.html#cb88-49" tabindex="-1"></a>  }</span>
+<span id="cb88-50"><a href="tuning-lambda.html#cb88-50" tabindex="-1"></a></span>
+<span id="cb88-51"><a href="tuning-lambda.html#cb88-51" tabindex="-1"></a>  <span class="do">## Get the seed ready</span></span>
+<span id="cb88-52"><a href="tuning-lambda.html#cb88-52" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(seedtab)){</span>
+<span id="cb88-53"><a href="tuning-lambda.html#cb88-53" tabindex="-1"></a>    seed <span class="ot">=</span> seedtab <span class="sc">%&gt;%</span></span>
+<span id="cb88-54"><a href="tuning-lambda.html#cb88-54" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(iprob <span class="sc">==</span> <span class="sc">!!</span>iprob <span class="sc">&amp;</span> </span>
+<span id="cb88-55"><a href="tuning-lambda.html#cb88-55" tabindex="-1"></a>                    imu <span class="sc">==</span> <span class="sc">!!</span>imu <span class="sc">&amp;</span></span>
+<span id="cb88-56"><a href="tuning-lambda.html#cb88-56" tabindex="-1"></a>                    ifold <span class="sc">==</span> <span class="sc">!!</span>ifold <span class="sc">&amp;</span></span>
+<span id="cb88-57"><a href="tuning-lambda.html#cb88-57" tabindex="-1"></a>                    irestart <span class="sc">==</span> <span class="sc">!!</span>irestart) <span class="sc">%&gt;%</span></span>
+<span id="cb88-58"><a href="tuning-lambda.html#cb88-58" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(seed1, seed2, seed3, seed4, seed5, seed6, seed7) <span class="sc">%&gt;%</span> <span class="fu">unlist</span>() <span class="sc">%&gt;%</span> <span class="fu">as.integer</span>()</span>
+<span id="cb88-59"><a href="tuning-lambda.html#cb88-59" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb88-60"><a href="tuning-lambda.html#cb88-60" tabindex="-1"></a>    seed <span class="ot">=</span> <span class="cn">NULL</span></span>
+<span id="cb88-61"><a href="tuning-lambda.html#cb88-61" tabindex="-1"></a>  }</span>
+<span id="cb88-62"><a href="tuning-lambda.html#cb88-62" tabindex="-1"></a></span>
+<span id="cb88-63"><a href="tuning-lambda.html#cb88-63" tabindex="-1"></a>  lambda_prob <span class="ot">=</span> lambda_probs[iprob]</span>
+<span id="cb88-64"><a href="tuning-lambda.html#cb88-64" tabindex="-1"></a>  lambda_mean <span class="ot">=</span> lambda_means[imu]</span>
+<span id="cb88-65"><a href="tuning-lambda.html#cb88-65" tabindex="-1"></a></span>
+<span id="cb88-66"><a href="tuning-lambda.html#cb88-66" tabindex="-1"></a>  <span class="do">## Run the algorithm (all this trouble because of |nrestart|)</span></span>
+<span id="cb88-67"><a href="tuning-lambda.html#cb88-67" tabindex="-1"></a>  args <span class="ot">=</span> <span class="fu">list</span>(...)</span>
+<span id="cb88-68"><a href="tuning-lambda.html#cb88-68" tabindex="-1"></a>  args<span class="sc">$</span>ylist <span class="ot">=</span> train.dat</span>
+<span id="cb88-69"><a href="tuning-lambda.html#cb88-69" tabindex="-1"></a>  args<span class="sc">$</span>countslist <span class="ot">=</span> train.count</span>
+<span id="cb88-70"><a href="tuning-lambda.html#cb88-70" tabindex="-1"></a>  args<span class="sc">$</span>x <span class="ot">=</span> x[train.inds] <span class="do">## NEW</span></span>
+<span id="cb88-71"><a href="tuning-lambda.html#cb88-71" tabindex="-1"></a>  args<span class="sc">$</span>lambda <span class="ot">=</span> lambda_mean</span>
+<span id="cb88-72"><a href="tuning-lambda.html#cb88-72" tabindex="-1"></a>  args<span class="sc">$</span>lambda_prob <span class="ot">=</span> lambda_prob</span>
+<span id="cb88-73"><a href="tuning-lambda.html#cb88-73" tabindex="-1"></a>  args<span class="sc">$</span>l <span class="ot">=</span> l</span>
+<span id="cb88-74"><a href="tuning-lambda.html#cb88-74" tabindex="-1"></a>  args<span class="sc">$</span>l_prob <span class="ot">=</span> l_prob</span>
+<span id="cb88-75"><a href="tuning-lambda.html#cb88-75" tabindex="-1"></a>  args<span class="sc">$</span>seed <span class="ot">=</span> seed</span>
+<span id="cb88-76"><a href="tuning-lambda.html#cb88-76" tabindex="-1"></a>  <span class="cf">if</span>(<span class="st">"nrestart"</span> <span class="sc">%in%</span> <span class="fu">names</span>(args)){</span>
+<span id="cb88-77"><a href="tuning-lambda.html#cb88-77" tabindex="-1"></a>    args <span class="ot">=</span> args[<span class="sc">-</span><span class="fu">which</span>(<span class="fu">names</span>(args) <span class="sc">%in%</span> <span class="st">"nrestart"</span>)] <span class="do">## remove |nrestart| prior to feeding to <a href="building-the-modelalgorithm.html#flowtrend_once">flowtrend_once</a>().</span></span>
+<span id="cb88-78"><a href="tuning-lambda.html#cb88-78" tabindex="-1"></a>  }</span>
+<span id="cb88-79"><a href="tuning-lambda.html#cb88-79" tabindex="-1"></a></span>
+<span id="cb88-80"><a href="tuning-lambda.html#cb88-80" tabindex="-1"></a>  <span class="fu">tryCatch</span>({</span>
+<span id="cb88-81"><a href="tuning-lambda.html#cb88-81" tabindex="-1"></a></span>
+<span id="cb88-82"><a href="tuning-lambda.html#cb88-82" tabindex="-1"></a>    <span class="do">## Estimate model</span></span>
+<span id="cb88-83"><a href="tuning-lambda.html#cb88-83" tabindex="-1"></a>    argn <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">names</span>(args), as.name)</span>
+<span id="cb88-84"><a href="tuning-lambda.html#cb88-84" tabindex="-1"></a>    <span class="fu">names</span>(argn) <span class="ot">&lt;-</span> <span class="fu">names</span>(args)</span>
+<span id="cb88-85"><a href="tuning-lambda.html#cb88-85" tabindex="-1"></a>    call <span class="ot">&lt;-</span> <span class="fu">as.call</span>(<span class="fu">c</span>(<span class="fu">list</span>(<span class="fu">as.name</span>(<span class="st">"flowtrend_once"</span>)), argn))</span>
+<span id="cb88-86"><a href="tuning-lambda.html#cb88-86" tabindex="-1"></a>    res.train <span class="ot">=</span> <span class="fu">eval</span>(call, args)</span>
 <span id="cb88-87"><a href="tuning-lambda.html#cb88-87" tabindex="-1"></a></span>
-<span id="cb88-88"><a href="tuning-lambda.html#cb88-88" tabindex="-1"></a>    <span class="do">## Build Dl</span></span>
-<span id="cb88-89"><a href="tuning-lambda.html#cb88-89" tabindex="-1"></a>    <span class="do">##</span></span>
-<span id="cb88-90"><a href="tuning-lambda.html#cb88-90" tabindex="-1"></a></span>
-<span id="cb88-91"><a href="tuning-lambda.html#cb88-91" tabindex="-1"></a>    <span class="do">## Evaluate on test data, by calculating objective (penalized likelihood with penalty parameters set to 0)</span></span>
-<span id="cb88-92"><a href="tuning-lambda.html#cb88-92" tabindex="-1"></a>    cvscore <span class="ot">=</span> <a href="building-the-modelalgorithm.html#objective">objective</a>(<span class="at">mu =</span> pred<span class="sc">$</span>mn,</span>
-<span id="cb88-93"><a href="tuning-lambda.html#cb88-93" tabindex="-1"></a>                        <span class="at">prob =</span> pred<span class="sc">$</span>prob,</span>
-<span id="cb88-94"><a href="tuning-lambda.html#cb88-94" tabindex="-1"></a>                        <span class="at">sigma =</span> pred<span class="sc">$</span>sigma,</span>
-<span id="cb88-95"><a href="tuning-lambda.html#cb88-95" tabindex="-1"></a>                        <span class="at">ylist =</span> test.dat,</span>
-<span id="cb88-96"><a href="tuning-lambda.html#cb88-96" tabindex="-1"></a>                        <span class="at">countslist =</span> test.count,</span>
-<span id="cb88-97"><a href="tuning-lambda.html#cb88-97" tabindex="-1"></a>                        <span class="at">unpenalized =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb88-98"><a href="tuning-lambda.html#cb88-98" tabindex="-1"></a>                        <span class="do">## Dl = diag(rep(1, length(test.count))), ## </span><span class="al">TODO</span><span class="do">: what is wrong here?</span></span>
-<span id="cb88-99"><a href="tuning-lambda.html#cb88-99" tabindex="-1"></a>                        <span class="do">## lambda_prob = 0,</span></span>
-<span id="cb88-100"><a href="tuning-lambda.html#cb88-100" tabindex="-1"></a>                        <span class="do">## lambda = 0)</span></span>
-<span id="cb88-101"><a href="tuning-lambda.html#cb88-101" tabindex="-1"></a>                        <span class="do">## prob = res.train$prob,</span></span>
-<span id="cb88-102"><a href="tuning-lambda.html#cb88-102" tabindex="-1"></a>                        <span class="do">## beta = res.train$beta)</span></span>
-<span id="cb88-103"><a href="tuning-lambda.html#cb88-103" tabindex="-1"></a></span>
-<span id="cb88-104"><a href="tuning-lambda.html#cb88-104" tabindex="-1"></a>    <span class="do">## Store (temporarily) the run times</span></span>
-<span id="cb88-105"><a href="tuning-lambda.html#cb88-105" tabindex="-1"></a>    time_per_iter <span class="ot">=</span> res.train<span class="sc">$</span>time_per_iter</span>
-<span id="cb88-106"><a href="tuning-lambda.html#cb88-106" tabindex="-1"></a>    final_iter <span class="ot">=</span> res.train<span class="sc">$</span>final.iter</span>
-<span id="cb88-107"><a href="tuning-lambda.html#cb88-107" tabindex="-1"></a>    total_time <span class="ot">=</span> res.train<span class="sc">$</span>total_time</span>
-<span id="cb88-108"><a href="tuning-lambda.html#cb88-108" tabindex="-1"></a></span>
-<span id="cb88-109"><a href="tuning-lambda.html#cb88-109" tabindex="-1"></a>    <span class="do">## Store the results.</span></span>
-<span id="cb88-110"><a href="tuning-lambda.html#cb88-110" tabindex="-1"></a>    mn <span class="ot">=</span> res.train<span class="sc">$</span>mn</span>
-<span id="cb88-111"><a href="tuning-lambda.html#cb88-111" tabindex="-1"></a>    prob <span class="ot">=</span> res.train<span class="sc">$</span>prob</span>
-<span id="cb88-112"><a href="tuning-lambda.html#cb88-112" tabindex="-1"></a>    objectives <span class="ot">=</span> res.train<span class="sc">$</span>objectives</span>
-<span id="cb88-113"><a href="tuning-lambda.html#cb88-113" tabindex="-1"></a></span>
-<span id="cb88-114"><a href="tuning-lambda.html#cb88-114" tabindex="-1"></a>    <span class="do">## Save the CV results</span></span>
-<span id="cb88-115"><a href="tuning-lambda.html#cb88-115" tabindex="-1"></a>    <span class="fu">save</span>(cvscore,</span>
-<span id="cb88-116"><a href="tuning-lambda.html#cb88-116" tabindex="-1"></a>         <span class="do">## Time</span></span>
-<span id="cb88-117"><a href="tuning-lambda.html#cb88-117" tabindex="-1"></a>         time_per_iter,</span>
-<span id="cb88-118"><a href="tuning-lambda.html#cb88-118" tabindex="-1"></a>         final_iter,</span>
-<span id="cb88-119"><a href="tuning-lambda.html#cb88-119" tabindex="-1"></a>         total_time,</span>
-<span id="cb88-120"><a href="tuning-lambda.html#cb88-120" tabindex="-1"></a>         <span class="do">## Results</span></span>
-<span id="cb88-121"><a href="tuning-lambda.html#cb88-121" tabindex="-1"></a>         lambda_mean,</span>
-<span id="cb88-122"><a href="tuning-lambda.html#cb88-122" tabindex="-1"></a>         lambda_prob,</span>
-<span id="cb88-123"><a href="tuning-lambda.html#cb88-123" tabindex="-1"></a>         lambda_means,</span>
-<span id="cb88-124"><a href="tuning-lambda.html#cb88-124" tabindex="-1"></a>         lambda_probs,</span>
-<span id="cb88-125"><a href="tuning-lambda.html#cb88-125" tabindex="-1"></a>         mn,</span>
-<span id="cb88-126"><a href="tuning-lambda.html#cb88-126" tabindex="-1"></a>         prob,</span>
-<span id="cb88-127"><a href="tuning-lambda.html#cb88-127" tabindex="-1"></a>         objectives,</span>
-<span id="cb88-128"><a href="tuning-lambda.html#cb88-128" tabindex="-1"></a>         <span class="do">## Save the file</span></span>
-<span id="cb88-129"><a href="tuning-lambda.html#cb88-129" tabindex="-1"></a>         <span class="at">file =</span> <span class="fu">file.path</span>(destin, filename))</span>
-<span id="cb88-130"><a href="tuning-lambda.html#cb88-130" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
-<span id="cb88-131"><a href="tuning-lambda.html#cb88-131" tabindex="-1"></a></span>
-<span id="cb88-132"><a href="tuning-lambda.html#cb88-132" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(err) {</span>
-<span id="cb88-133"><a href="tuning-lambda.html#cb88-133" tabindex="-1"></a>    err<span class="sc">$</span>message <span class="ot">=</span> <span class="fu">paste</span>(err<span class="sc">$</span>message,</span>
-<span id="cb88-134"><a href="tuning-lambda.html#cb88-134" tabindex="-1"></a>                        <span class="st">"</span><span class="sc">\n</span><span class="st">(No file will be saved for lambdas ("</span>,</span>
-<span id="cb88-135"><a href="tuning-lambda.html#cb88-135" tabindex="-1"></a>                        <span class="fu">signif</span>(lambda_probs[iprob],<span class="dv">3</span>), <span class="st">", "</span>, <span class="fu">signif</span>(lambda_means[imu],<span class="dv">3</span>),</span>
-<span id="cb88-136"><a href="tuning-lambda.html#cb88-136" tabindex="-1"></a>                        <span class="st">") whose indices are: "</span>,</span>
-<span id="cb88-137"><a href="tuning-lambda.html#cb88-137" tabindex="-1"></a>                        iprob, <span class="st">"-"</span>, imu, <span class="st">"-"</span>, ifold, <span class="st">"-"</span>, irestart,</span>
-<span id="cb88-138"><a href="tuning-lambda.html#cb88-138" tabindex="-1"></a>                        <span class="st">" .)"</span>,<span class="at">sep=</span><span class="st">""</span>)</span>
-<span id="cb88-139"><a href="tuning-lambda.html#cb88-139" tabindex="-1"></a>    <span class="fu">cat</span>(err<span class="sc">$</span>message, <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
-<span id="cb88-140"><a href="tuning-lambda.html#cb88-140" tabindex="-1"></a>    <span class="fu">warning</span>(err)})</span>
-<span id="cb88-141"><a href="tuning-lambda.html#cb88-141" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb88-88"><a href="tuning-lambda.html#cb88-88" tabindex="-1"></a>    <span class="do">## Assign mn and prob</span></span>
+<span id="cb88-89"><a href="tuning-lambda.html#cb88-89" tabindex="-1"></a>    pred <span class="ot">=</span> <a href="tuning-lambda.html#predict_flowtrend">predict_flowtrend</a>(res.train, <span class="at">newtimes =</span> x[test.inds]) <span class="do">## the x is NEW.</span></span>
+<span id="cb88-90"><a href="tuning-lambda.html#cb88-90" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">all</span>(pred<span class="sc">$</span>prob <span class="sc">&gt;=</span> <span class="dv">0</span>))</span>
+<span id="cb88-91"><a href="tuning-lambda.html#cb88-91" tabindex="-1"></a></span>
+<span id="cb88-92"><a href="tuning-lambda.html#cb88-92" tabindex="-1"></a>    <span class="do">## Evaluate on test data, by calculating objective (penalized likelihood with penalty parameters set to 0)</span></span>
+<span id="cb88-93"><a href="tuning-lambda.html#cb88-93" tabindex="-1"></a>    cvscore <span class="ot">=</span> <a href="building-the-modelalgorithm.html#objective">objective</a>(<span class="at">mu =</span> pred<span class="sc">$</span>mn,</span>
+<span id="cb88-94"><a href="tuning-lambda.html#cb88-94" tabindex="-1"></a>                        <span class="at">prob =</span> pred<span class="sc">$</span>prob,</span>
+<span id="cb88-95"><a href="tuning-lambda.html#cb88-95" tabindex="-1"></a>                        <span class="at">sigma =</span> pred<span class="sc">$</span>sigma,</span>
+<span id="cb88-96"><a href="tuning-lambda.html#cb88-96" tabindex="-1"></a>                        <span class="at">ylist =</span> test.dat,</span>
+<span id="cb88-97"><a href="tuning-lambda.html#cb88-97" tabindex="-1"></a>                        <span class="at">countslist =</span> test.count,</span>
+<span id="cb88-98"><a href="tuning-lambda.html#cb88-98" tabindex="-1"></a>                        <span class="at">unpenalized =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb88-99"><a href="tuning-lambda.html#cb88-99" tabindex="-1"></a></span>
+<span id="cb88-100"><a href="tuning-lambda.html#cb88-100" tabindex="-1"></a>    <span class="do">## Store (temporarily) the run times</span></span>
+<span id="cb88-101"><a href="tuning-lambda.html#cb88-101" tabindex="-1"></a>    time_per_iter <span class="ot">=</span> res.train<span class="sc">$</span>time_per_iter</span>
+<span id="cb88-102"><a href="tuning-lambda.html#cb88-102" tabindex="-1"></a>    final_iter <span class="ot">=</span> res.train<span class="sc">$</span>final.iter</span>
+<span id="cb88-103"><a href="tuning-lambda.html#cb88-103" tabindex="-1"></a>    total_time <span class="ot">=</span> res.train<span class="sc">$</span>total_time</span>
+<span id="cb88-104"><a href="tuning-lambda.html#cb88-104" tabindex="-1"></a></span>
+<span id="cb88-105"><a href="tuning-lambda.html#cb88-105" tabindex="-1"></a>    <span class="do">## Store the results.</span></span>
+<span id="cb88-106"><a href="tuning-lambda.html#cb88-106" tabindex="-1"></a>    mn <span class="ot">=</span> res.train<span class="sc">$</span>mn</span>
+<span id="cb88-107"><a href="tuning-lambda.html#cb88-107" tabindex="-1"></a>    prob <span class="ot">=</span> res.train<span class="sc">$</span>prob</span>
+<span id="cb88-108"><a href="tuning-lambda.html#cb88-108" tabindex="-1"></a>    objectives <span class="ot">=</span> res.train<span class="sc">$</span>objectives</span>
+<span id="cb88-109"><a href="tuning-lambda.html#cb88-109" tabindex="-1"></a></span>
+<span id="cb88-110"><a href="tuning-lambda.html#cb88-110" tabindex="-1"></a>    <span class="do">## Save the CV results</span></span>
+<span id="cb88-111"><a href="tuning-lambda.html#cb88-111" tabindex="-1"></a>    <span class="fu">save</span>(cvscore,</span>
+<span id="cb88-112"><a href="tuning-lambda.html#cb88-112" tabindex="-1"></a>         <span class="do">## Time</span></span>
+<span id="cb88-113"><a href="tuning-lambda.html#cb88-113" tabindex="-1"></a>         time_per_iter,</span>
+<span id="cb88-114"><a href="tuning-lambda.html#cb88-114" tabindex="-1"></a>         final_iter,</span>
+<span id="cb88-115"><a href="tuning-lambda.html#cb88-115" tabindex="-1"></a>         total_time,</span>
+<span id="cb88-116"><a href="tuning-lambda.html#cb88-116" tabindex="-1"></a>         <span class="do">## Results</span></span>
+<span id="cb88-117"><a href="tuning-lambda.html#cb88-117" tabindex="-1"></a>         lambda_mean,</span>
+<span id="cb88-118"><a href="tuning-lambda.html#cb88-118" tabindex="-1"></a>         lambda_prob,</span>
+<span id="cb88-119"><a href="tuning-lambda.html#cb88-119" tabindex="-1"></a>         lambda_means,</span>
+<span id="cb88-120"><a href="tuning-lambda.html#cb88-120" tabindex="-1"></a>         lambda_probs,</span>
+<span id="cb88-121"><a href="tuning-lambda.html#cb88-121" tabindex="-1"></a>         mn,</span>
+<span id="cb88-122"><a href="tuning-lambda.html#cb88-122" tabindex="-1"></a>         prob,</span>
+<span id="cb88-123"><a href="tuning-lambda.html#cb88-123" tabindex="-1"></a>         objectives,</span>
+<span id="cb88-124"><a href="tuning-lambda.html#cb88-124" tabindex="-1"></a>         <span class="do">## Save the file</span></span>
+<span id="cb88-125"><a href="tuning-lambda.html#cb88-125" tabindex="-1"></a>         <span class="at">file =</span> <span class="fu">file.path</span>(destin, filename))</span>
+<span id="cb88-126"><a href="tuning-lambda.html#cb88-126" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb88-127"><a href="tuning-lambda.html#cb88-127" tabindex="-1"></a></span>
+<span id="cb88-128"><a href="tuning-lambda.html#cb88-128" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(err) {</span>
+<span id="cb88-129"><a href="tuning-lambda.html#cb88-129" tabindex="-1"></a>    err<span class="sc">$</span>message <span class="ot">=</span> <span class="fu">paste</span>(err<span class="sc">$</span>message,</span>
+<span id="cb88-130"><a href="tuning-lambda.html#cb88-130" tabindex="-1"></a>                        <span class="st">"</span><span class="sc">\n</span><span class="st">(No file will be saved for lambdas ("</span>,</span>
+<span id="cb88-131"><a href="tuning-lambda.html#cb88-131" tabindex="-1"></a>                        <span class="fu">signif</span>(lambda_probs[iprob],<span class="dv">3</span>), <span class="st">", "</span>, <span class="fu">signif</span>(lambda_means[imu],<span class="dv">3</span>),</span>
+<span id="cb88-132"><a href="tuning-lambda.html#cb88-132" tabindex="-1"></a>                        <span class="st">") whose indices are: "</span>,</span>
+<span id="cb88-133"><a href="tuning-lambda.html#cb88-133" tabindex="-1"></a>                        iprob, <span class="st">"-"</span>, imu, <span class="st">"-"</span>, ifold, <span class="st">"-"</span>, irestart,</span>
+<span id="cb88-134"><a href="tuning-lambda.html#cb88-134" tabindex="-1"></a>                        <span class="st">" .)"</span>,<span class="at">sep=</span><span class="st">""</span>)</span>
+<span id="cb88-135"><a href="tuning-lambda.html#cb88-135" tabindex="-1"></a>    <span class="fu">cat</span>(err<span class="sc">$</span>message, <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
+<span id="cb88-136"><a href="tuning-lambda.html#cb88-136" tabindex="-1"></a>    <span class="fu">warning</span>(err)})</span>
+<span id="cb88-137"><a href="tuning-lambda.html#cb88-137" tabindex="-1"></a>}</span></code></pre></div>
 <p>Here is <code><a href="tuning-lambda.html#one_job_refit">one_job_refit</a>()</code>.</p>
 <div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="tuning-lambda.html#cb89-1" tabindex="-1"></a><span class="co">#' Refit model for one pair of regularization parameter values. Saves to</span></span>
 <span id="cb89-2"><a href="tuning-lambda.html#cb89-2" tabindex="-1"></a><span class="co">#' \code{nrestart} files named like "1-4-3-fit.Rdata", for</span></span>
@@ -976,7 +972,7 @@ other is when <em>re-estimating</em> models on the full data.</p>
 <span id="cb89-12"><a href="tuning-lambda.html#cb89-12" tabindex="-1"></a>                          l, l_prob,</span>
 <span id="cb89-13"><a href="tuning-lambda.html#cb89-13" tabindex="-1"></a>                          <span class="at">seedtab =</span> <span class="cn">NULL</span>,</span>
 <span id="cb89-14"><a href="tuning-lambda.html#cb89-14" tabindex="-1"></a>                          <span class="do">## The rest that is needed explicitly for <a href="building-the-modelalgorithm.html#flowtrend_once">flowtrend_once</a>()</span></span>
-<span id="cb89-15"><a href="tuning-lambda.html#cb89-15" tabindex="-1"></a>                          ylist, countslist,</span>
+<span id="cb89-15"><a href="tuning-lambda.html#cb89-15" tabindex="-1"></a>                          ylist, countslist, x,</span>
 <span id="cb89-16"><a href="tuning-lambda.html#cb89-16" tabindex="-1"></a>                          ...){</span>
 <span id="cb89-17"><a href="tuning-lambda.html#cb89-17" tabindex="-1"></a></span>
 <span id="cb89-18"><a href="tuning-lambda.html#cb89-18" tabindex="-1"></a>  args <span class="ot">=</span> <span class="fu">list</span>(...)</span>
@@ -1010,25 +1006,29 @@ other is when <em>re-estimating</em> models on the full data.</p>
 <span id="cb89-46"><a href="tuning-lambda.html#cb89-46" tabindex="-1"></a>      args <span class="ot">=</span> <span class="fu">list</span>(...)</span>
 <span id="cb89-47"><a href="tuning-lambda.html#cb89-47" tabindex="-1"></a>      args<span class="sc">$</span>ylist <span class="ot">=</span> ylist</span>
 <span id="cb89-48"><a href="tuning-lambda.html#cb89-48" tabindex="-1"></a>      args<span class="sc">$</span>countslist <span class="ot">=</span> countslist</span>
-<span id="cb89-49"><a href="tuning-lambda.html#cb89-49" tabindex="-1"></a>      args<span class="sc">$</span>lambda_prob <span class="ot">=</span> lambda_probs[iprob]</span>
-<span id="cb89-50"><a href="tuning-lambda.html#cb89-50" tabindex="-1"></a>      args<span class="sc">$</span>lambda <span class="ot">=</span> lambda_means[imu]</span>
-<span id="cb89-51"><a href="tuning-lambda.html#cb89-51" tabindex="-1"></a>      args<span class="sc">$</span>l <span class="ot">=</span> l</span>
-<span id="cb89-52"><a href="tuning-lambda.html#cb89-52" tabindex="-1"></a>      args<span class="sc">$</span>l_prob <span class="ot">=</span> l_prob</span>
-<span id="cb89-53"><a href="tuning-lambda.html#cb89-53" tabindex="-1"></a>      args<span class="sc">$</span>seed <span class="ot">=</span> seed</span>
-<span id="cb89-54"><a href="tuning-lambda.html#cb89-54" tabindex="-1"></a>      <span class="cf">if</span>(<span class="st">"nrestart"</span> <span class="sc">%in%</span> <span class="fu">names</span>(args)) args <span class="ot">=</span> args[<span class="sc">-</span><span class="fu">which</span>(<span class="fu">names</span>(args) <span class="sc">%in%</span> <span class="st">"nrestart"</span>)] <span class="do">## remove |nrestart| prior to feeding</span></span>
-<span id="cb89-55"><a href="tuning-lambda.html#cb89-55" tabindex="-1"></a></span>
-<span id="cb89-56"><a href="tuning-lambda.html#cb89-56" tabindex="-1"></a>      <span class="do">## Call the function.</span></span>
-<span id="cb89-57"><a href="tuning-lambda.html#cb89-57" tabindex="-1"></a>      argn <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">names</span>(args), as.name)</span>
-<span id="cb89-58"><a href="tuning-lambda.html#cb89-58" tabindex="-1"></a>      <span class="fu">names</span>(argn) <span class="ot">&lt;-</span> <span class="fu">names</span>(args)</span>
-<span id="cb89-59"><a href="tuning-lambda.html#cb89-59" tabindex="-1"></a>      call <span class="ot">&lt;-</span> <span class="fu">as.call</span>(<span class="fu">c</span>(<span class="fu">list</span>(<span class="fu">as.name</span>(<span class="st">"flowtrend_once"</span>)), argn))</span>
-<span id="cb89-60"><a href="tuning-lambda.html#cb89-60" tabindex="-1"></a>      res <span class="ot">=</span> <span class="fu">eval</span>(call, args)</span>
-<span id="cb89-61"><a href="tuning-lambda.html#cb89-61" tabindex="-1"></a></span>
-<span id="cb89-62"><a href="tuning-lambda.html#cb89-62" tabindex="-1"></a>      <span class="do">## Save the results</span></span>
-<span id="cb89-63"><a href="tuning-lambda.html#cb89-63" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="st">"Saving file here:"</span>, <span class="fu">file.path</span>(destin, filename), <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
-<span id="cb89-64"><a href="tuning-lambda.html#cb89-64" tabindex="-1"></a>      <span class="fu">save</span>(res, <span class="at">file=</span><span class="fu">file.path</span>(destin, filename))</span>
-<span id="cb89-65"><a href="tuning-lambda.html#cb89-65" tabindex="-1"></a>    }</span>
-<span id="cb89-66"><a href="tuning-lambda.html#cb89-66" tabindex="-1"></a>  }</span>
-<span id="cb89-67"><a href="tuning-lambda.html#cb89-67" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb89-49"><a href="tuning-lambda.html#cb89-49" tabindex="-1"></a>      args<span class="sc">$</span>x <span class="ot">=</span> x</span>
+<span id="cb89-50"><a href="tuning-lambda.html#cb89-50" tabindex="-1"></a>      args<span class="sc">$</span>lambda_prob <span class="ot">=</span> lambda_probs[iprob]</span>
+<span id="cb89-51"><a href="tuning-lambda.html#cb89-51" tabindex="-1"></a>      args<span class="sc">$</span>lambda <span class="ot">=</span> lambda_means[imu]</span>
+<span id="cb89-52"><a href="tuning-lambda.html#cb89-52" tabindex="-1"></a>      args<span class="sc">$</span>l <span class="ot">=</span> l</span>
+<span id="cb89-53"><a href="tuning-lambda.html#cb89-53" tabindex="-1"></a>      args<span class="sc">$</span>l_prob <span class="ot">=</span> l_prob</span>
+<span id="cb89-54"><a href="tuning-lambda.html#cb89-54" tabindex="-1"></a>      args<span class="sc">$</span>seed <span class="ot">=</span> seed</span>
+<span id="cb89-55"><a href="tuning-lambda.html#cb89-55" tabindex="-1"></a>      <span class="cf">if</span>(<span class="st">"nrestart"</span> <span class="sc">%in%</span> <span class="fu">names</span>(args)){</span>
+<span id="cb89-56"><a href="tuning-lambda.html#cb89-56" tabindex="-1"></a>        <span class="do">## remove |nrestart| prior to feeding it into flowtrend_once</span></span>
+<span id="cb89-57"><a href="tuning-lambda.html#cb89-57" tabindex="-1"></a>        args <span class="ot">=</span> args[<span class="sc">-</span><span class="fu">which</span>(<span class="fu">names</span>(args) <span class="sc">%in%</span> <span class="st">"nrestart"</span>)] </span>
+<span id="cb89-58"><a href="tuning-lambda.html#cb89-58" tabindex="-1"></a>      }</span>
+<span id="cb89-59"><a href="tuning-lambda.html#cb89-59" tabindex="-1"></a></span>
+<span id="cb89-60"><a href="tuning-lambda.html#cb89-60" tabindex="-1"></a>      <span class="do">## Call the function.</span></span>
+<span id="cb89-61"><a href="tuning-lambda.html#cb89-61" tabindex="-1"></a>      argn <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">names</span>(args), as.name)</span>
+<span id="cb89-62"><a href="tuning-lambda.html#cb89-62" tabindex="-1"></a>      <span class="fu">names</span>(argn) <span class="ot">&lt;-</span> <span class="fu">names</span>(args)</span>
+<span id="cb89-63"><a href="tuning-lambda.html#cb89-63" tabindex="-1"></a>      call <span class="ot">&lt;-</span> <span class="fu">as.call</span>(<span class="fu">c</span>(<span class="fu">list</span>(<span class="fu">as.name</span>(<span class="st">"flowtrend_once"</span>)), argn))</span>
+<span id="cb89-64"><a href="tuning-lambda.html#cb89-64" tabindex="-1"></a>      res <span class="ot">=</span> <span class="fu">eval</span>(call, args)</span>
+<span id="cb89-65"><a href="tuning-lambda.html#cb89-65" tabindex="-1"></a></span>
+<span id="cb89-66"><a href="tuning-lambda.html#cb89-66" tabindex="-1"></a>      <span class="do">## Save the results</span></span>
+<span id="cb89-67"><a href="tuning-lambda.html#cb89-67" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="st">"Saving file here:"</span>, <span class="fu">file.path</span>(destin, filename), <span class="at">fill=</span><span class="cn">TRUE</span>)</span>
+<span id="cb89-68"><a href="tuning-lambda.html#cb89-68" tabindex="-1"></a>      <span class="fu">save</span>(res, <span class="at">file=</span><span class="fu">file.path</span>(destin, filename))</span>
+<span id="cb89-69"><a href="tuning-lambda.html#cb89-69" tabindex="-1"></a>    }</span>
+<span id="cb89-70"><a href="tuning-lambda.html#cb89-70" tabindex="-1"></a>  }</span>
+<span id="cb89-71"><a href="tuning-lambda.html#cb89-71" tabindex="-1"></a>}</span></code></pre></div>
 <p>Since cross-validation entails running many jobs, we need to index individual
 “jobs” carefully. Here are some more helpers for indexing:</p>
 <ul>
@@ -1207,151 +1207,157 @@ pairs to be used for cross-validation.</p>
 <span id="cb95-20"><a href="tuning-lambda.html#cb95-20" tabindex="-1"></a><span class="co">#'</span></span>
 <span id="cb95-21"><a href="tuning-lambda.html#cb95-21" tabindex="-1"></a><span class="co">#' @export</span></span>
 <span id="cb95-22"><a href="tuning-lambda.html#cb95-22" tabindex="-1"></a><span id="cv_flowtrend">cv_flowtrend</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="do">## Data</span></span>
-<span id="cb95-23"><a href="tuning-lambda.html#cb95-23" tabindex="-1"></a>                          ylist,</span>
-<span id="cb95-24"><a href="tuning-lambda.html#cb95-24" tabindex="-1"></a>                          countslist,</span>
-<span id="cb95-25"><a href="tuning-lambda.html#cb95-25" tabindex="-1"></a>                          <span class="do">## Define the locations to save the CV.</span></span>
-<span id="cb95-26"><a href="tuning-lambda.html#cb95-26" tabindex="-1"></a>                          <span class="at">destin =</span> <span class="st">"."</span>,</span>
-<span id="cb95-27"><a href="tuning-lambda.html#cb95-27" tabindex="-1"></a>                          <span class="do">## Regularization parameter values</span></span>
-<span id="cb95-28"><a href="tuning-lambda.html#cb95-28" tabindex="-1"></a>                          lambda_means,</span>
-<span id="cb95-29"><a href="tuning-lambda.html#cb95-29" tabindex="-1"></a>                          lambda_probs,</span>
-<span id="cb95-30"><a href="tuning-lambda.html#cb95-30" tabindex="-1"></a>                          l,</span>
-<span id="cb95-31"><a href="tuning-lambda.html#cb95-31" tabindex="-1"></a>                          l_prob,</span>
-<span id="cb95-32"><a href="tuning-lambda.html#cb95-32" tabindex="-1"></a>                          <span class="at">iimat =</span> <span class="cn">NULL</span>,</span>
-<span id="cb95-33"><a href="tuning-lambda.html#cb95-33" tabindex="-1"></a>                          <span class="do">## Other settings</span></span>
-<span id="cb95-34"><a href="tuning-lambda.html#cb95-34" tabindex="-1"></a>                          maxdev,</span>
-<span id="cb95-35"><a href="tuning-lambda.html#cb95-35" tabindex="-1"></a>                          numclust,</span>
-<span id="cb95-36"><a href="tuning-lambda.html#cb95-36" tabindex="-1"></a>                         nfold,</span>
-<span id="cb95-37"><a href="tuning-lambda.html#cb95-37" tabindex="-1"></a>                         blocksize,</span>
-<span id="cb95-38"><a href="tuning-lambda.html#cb95-38" tabindex="-1"></a>                          nrestart,</span>
-<span id="cb95-39"><a href="tuning-lambda.html#cb95-39" tabindex="-1"></a>                          <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb95-40"><a href="tuning-lambda.html#cb95-40" tabindex="-1"></a>                          <span class="at">refit =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb95-41"><a href="tuning-lambda.html#cb95-41" tabindex="-1"></a>                          <span class="at">save_meta =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb95-42"><a href="tuning-lambda.html#cb95-42" tabindex="-1"></a>                          <span class="at">mc.cores =</span> <span class="dv">1</span>,</span>
-<span id="cb95-43"><a href="tuning-lambda.html#cb95-43" tabindex="-1"></a>                          <span class="at">folds =</span> <span class="cn">NULL</span>,</span>
-<span id="cb95-44"><a href="tuning-lambda.html#cb95-44" tabindex="-1"></a>                         <span class="at">seedtab =</span> <span class="cn">NULL</span>,</span>
-<span id="cb95-45"><a href="tuning-lambda.html#cb95-45" tabindex="-1"></a>                         <span class="at">niter =</span> <span class="dv">1000</span>,</span>
-<span id="cb95-46"><a href="tuning-lambda.html#cb95-46" tabindex="-1"></a>                          ...){</span>
-<span id="cb95-47"><a href="tuning-lambda.html#cb95-47" tabindex="-1"></a></span>
-<span id="cb95-48"><a href="tuning-lambda.html#cb95-48" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
-<span id="cb95-49"><a href="tuning-lambda.html#cb95-49" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">length</span>(lambda_probs) <span class="sc">==</span> <span class="fu">length</span>(lambda_means))</span>
-<span id="cb95-50"><a href="tuning-lambda.html#cb95-50" tabindex="-1"></a>  cv_gridsize <span class="ot">=</span> <span class="fu">length</span>(lambda_means)</span>
-<span id="cb95-51"><a href="tuning-lambda.html#cb95-51" tabindex="-1"></a></span>
-<span id="cb95-52"><a href="tuning-lambda.html#cb95-52" tabindex="-1"></a>  <span class="do">## There's an option to input one's own iimat matrix.</span></span>
-<span id="cb95-53"><a href="tuning-lambda.html#cb95-53" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(iimat)){</span>
-<span id="cb95-54"><a href="tuning-lambda.html#cb95-54" tabindex="-1"></a>    <span class="do">## Make an index of all jobs</span></span>
-<span id="cb95-55"><a href="tuning-lambda.html#cb95-55" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span>refit) iimat <span class="ot">=</span> <a href="tuning-lambda.html#make_iimat">make_iimat</a>(cv_gridsize, nfold, nrestart)</span>
-<span id="cb95-56"><a href="tuning-lambda.html#cb95-56" tabindex="-1"></a>    <span class="cf">if</span>(refit) iimat <span class="ot">=</span> <a href="tuning-lambda.html#make_iimat_small">make_iimat_small</a>(cv_gridsize, nrestart)</span>
-<span id="cb95-57"><a href="tuning-lambda.html#cb95-57" tabindex="-1"></a>  }</span>
-<span id="cb95-58"><a href="tuning-lambda.html#cb95-58" tabindex="-1"></a></span>
-<span id="cb95-59"><a href="tuning-lambda.html#cb95-59" tabindex="-1"></a>  <span class="do">## Define the CV folds</span></span>
-<span id="cb95-60"><a href="tuning-lambda.html#cb95-60" tabindex="-1"></a>  <span class="do">## folds = <a href="tuning-lambda.html#make_cv_folds">make_cv_folds</a>(ylist = ylist, nfold = nfold, blocksize = 1)</span></span>
-<span id="cb95-61"><a href="tuning-lambda.html#cb95-61" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(folds)){</span>
-<span id="cb95-62"><a href="tuning-lambda.html#cb95-62" tabindex="-1"></a>    folds <span class="ot">=</span> <a href="tuning-lambda.html#make_cv_folds">make_cv_folds</a>(<span class="at">ylist =</span> ylist, <span class="at">nfold =</span> nfold, <span class="at">blocksize =</span> blocksize)</span>
-<span id="cb95-63"><a href="tuning-lambda.html#cb95-63" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb95-64"><a href="tuning-lambda.html#cb95-64" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">length</span>(folds) <span class="sc">==</span> nfold)</span>
-<span id="cb95-65"><a href="tuning-lambda.html#cb95-65" tabindex="-1"></a>  }</span>
-<span id="cb95-66"><a href="tuning-lambda.html#cb95-66" tabindex="-1"></a></span>
-<span id="cb95-67"><a href="tuning-lambda.html#cb95-67" tabindex="-1"></a>  <span class="do">## Save meta information, once.</span></span>
-<span id="cb95-68"><a href="tuning-lambda.html#cb95-68" tabindex="-1"></a>  <span class="cf">if</span>(save_meta){</span>
-<span id="cb95-69"><a href="tuning-lambda.html#cb95-69" tabindex="-1"></a>    <span class="do">##if(!refit){</span></span>
-<span id="cb95-70"><a href="tuning-lambda.html#cb95-70" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">file.exists</span>(<span class="at">file =</span> <span class="fu">file.path</span>(destin, <span class="st">'meta.Rdata'</span>))){</span>
-<span id="cb95-71"><a href="tuning-lambda.html#cb95-71" tabindex="-1"></a></span>
-<span id="cb95-72"><a href="tuning-lambda.html#cb95-72" tabindex="-1"></a>        <span class="do">## Put aside the current guys</span></span>
-<span id="cb95-73"><a href="tuning-lambda.html#cb95-73" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="at">fill=</span><span class="cn">TRUE</span>)</span>
-<span id="cb95-74"><a href="tuning-lambda.html#cb95-74" tabindex="-1"></a>        <span class="fu">print</span>(<span class="st">"Meta data already exists!"</span>)</span>
-<span id="cb95-75"><a href="tuning-lambda.html#cb95-75" tabindex="-1"></a>        folds_current <span class="ot">=</span> folds</span>
-<span id="cb95-76"><a href="tuning-lambda.html#cb95-76" tabindex="-1"></a>        nfold_current <span class="ot">=</span> nfold</span>
-<span id="cb95-77"><a href="tuning-lambda.html#cb95-77" tabindex="-1"></a>        nrestart_current <span class="ot">=</span> nrestart</span>
-<span id="cb95-78"><a href="tuning-lambda.html#cb95-78" tabindex="-1"></a>        cv_gridsize_current <span class="ot">=</span> cv_gridsize</span>
-<span id="cb95-79"><a href="tuning-lambda.html#cb95-79" tabindex="-1"></a>        lambda_means_current <span class="ot">=</span> lambda_means</span>
-<span id="cb95-80"><a href="tuning-lambda.html#cb95-80" tabindex="-1"></a>        lambda_probs_current <span class="ot">=</span> lambda_probs</span>
-<span id="cb95-81"><a href="tuning-lambda.html#cb95-81" tabindex="-1"></a>        ylist_current <span class="ot">=</span> ylist</span>
-<span id="cb95-82"><a href="tuning-lambda.html#cb95-82" tabindex="-1"></a>        countslist_current <span class="ot">=</span> countslist</span>
-<span id="cb95-83"><a href="tuning-lambda.html#cb95-83" tabindex="-1"></a></span>
-<span id="cb95-84"><a href="tuning-lambda.html#cb95-84" tabindex="-1"></a>        <span class="do">## Load the saved metadata and check if they are all the same as the current guys</span></span>
-<span id="cb95-85"><a href="tuning-lambda.html#cb95-85" tabindex="-1"></a>        <span class="fu">load</span>(<span class="at">file =</span> <span class="fu">file.path</span>(destin, <span class="st">'meta.Rdata'</span>), <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb95-86"><a href="tuning-lambda.html#cb95-86" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="fu">identical</span>(folds, folds_current))</span>
-<span id="cb95-87"><a href="tuning-lambda.html#cb95-87" tabindex="-1"></a>        <span class="fu">stopifnot</span>(nfold <span class="sc">==</span> nfold_current)</span>
-<span id="cb95-88"><a href="tuning-lambda.html#cb95-88" tabindex="-1"></a>        <span class="fu">stopifnot</span>(nrestart <span class="sc">==</span> nrestart_current) <span class="do">## Added recently</span></span>
-<span id="cb95-89"><a href="tuning-lambda.html#cb95-89" tabindex="-1"></a>        <span class="fu">stopifnot</span>(cv_gridsize <span class="sc">==</span> cv_gridsize_current)</span>
-<span id="cb95-90"><a href="tuning-lambda.html#cb95-90" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="fu">all</span>(lambda_means <span class="sc">==</span> lambda_means_current))</span>
-<span id="cb95-91"><a href="tuning-lambda.html#cb95-91" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="fu">all</span>(lambda_probs <span class="sc">==</span> lambda_probs_current))</span>
-<span id="cb95-92"><a href="tuning-lambda.html#cb95-92" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="fu">identical</span>(ylist, ylist_current))</span>
-<span id="cb95-93"><a href="tuning-lambda.html#cb95-93" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="fu">identical</span>(countslist, countslist_current))</span>
-<span id="cb95-94"><a href="tuning-lambda.html#cb95-94" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="at">fill=</span><span class="cn">TRUE</span>)</span>
-<span id="cb95-95"><a href="tuning-lambda.html#cb95-95" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="st">"Successfully checked that the saved metadata is identical to the current one."</span>, <span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb95-96"><a href="tuning-lambda.html#cb95-96" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
-<span id="cb95-97"><a href="tuning-lambda.html#cb95-97" tabindex="-1"></a>        <span class="fu">save</span>(folds,</span>
-<span id="cb95-98"><a href="tuning-lambda.html#cb95-98" tabindex="-1"></a>             nfold,</span>
-<span id="cb95-99"><a href="tuning-lambda.html#cb95-99" tabindex="-1"></a>             nrestart, <span class="do">## Added recently</span></span>
-<span id="cb95-100"><a href="tuning-lambda.html#cb95-100" tabindex="-1"></a>             cv_gridsize,</span>
-<span id="cb95-101"><a href="tuning-lambda.html#cb95-101" tabindex="-1"></a>             lambda_means,</span>
-<span id="cb95-102"><a href="tuning-lambda.html#cb95-102" tabindex="-1"></a>             lambda_probs,</span>
-<span id="cb95-103"><a href="tuning-lambda.html#cb95-103" tabindex="-1"></a>             ylist, countslist,</span>
-<span id="cb95-104"><a href="tuning-lambda.html#cb95-104" tabindex="-1"></a>             <span class="do">## Save the file</span></span>
-<span id="cb95-105"><a href="tuning-lambda.html#cb95-105" tabindex="-1"></a>             <span class="at">file =</span> <span class="fu">file.path</span>(destin, <span class="st">'meta.Rdata'</span>))</span>
-<span id="cb95-106"><a href="tuning-lambda.html#cb95-106" tabindex="-1"></a>        <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"wrote meta data to "</span>, <span class="fu">file.path</span>(destin, <span class="st">'meta.Rdata'</span>)))</span>
-<span id="cb95-107"><a href="tuning-lambda.html#cb95-107" tabindex="-1"></a>      }</span>
-<span id="cb95-108"><a href="tuning-lambda.html#cb95-108" tabindex="-1"></a>    <span class="do">## }</span></span>
-<span id="cb95-109"><a href="tuning-lambda.html#cb95-109" tabindex="-1"></a>  }</span>
-<span id="cb95-110"><a href="tuning-lambda.html#cb95-110" tabindex="-1"></a></span>
-<span id="cb95-111"><a href="tuning-lambda.html#cb95-111" tabindex="-1"></a>  <span class="do">## Run the EM algorithm many times, for each value of (iprob, imu, ifold, irestart)</span></span>
-<span id="cb95-112"><a href="tuning-lambda.html#cb95-112" tabindex="-1"></a>  start.time <span class="ot">=</span> <span class="fu">Sys.time</span>()</span>
-<span id="cb95-113"><a href="tuning-lambda.html#cb95-113" tabindex="-1"></a>  parallel<span class="sc">::</span><span class="fu">mclapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(iimat), <span class="cf">function</span>(ii){</span>
-<span id="cb95-114"><a href="tuning-lambda.html#cb95-114" tabindex="-1"></a>    <a href="building-the-modelalgorithm.html#print_progress">print_progress</a>(ii, <span class="fu">nrow</span>(iimat), <span class="st">"Jobs (EM replicates) assigned on this computer"</span>, <span class="at">start.time =</span> start.time)</span>
-<span id="cb95-115"><a href="tuning-lambda.html#cb95-115" tabindex="-1"></a></span>
-<span id="cb95-116"><a href="tuning-lambda.html#cb95-116" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span>refit){</span>
-<span id="cb95-117"><a href="tuning-lambda.html#cb95-117" tabindex="-1"></a>      iprob <span class="ot">=</span> iimat[ii,<span class="st">"iprob"</span>]</span>
-<span id="cb95-118"><a href="tuning-lambda.html#cb95-118" tabindex="-1"></a>      imu <span class="ot">=</span> iimat[ii,<span class="st">"imu"</span>]</span>
-<span id="cb95-119"><a href="tuning-lambda.html#cb95-119" tabindex="-1"></a>      ifold <span class="ot">=</span> iimat[ii,<span class="st">"ifold"</span>]</span>
-<span id="cb95-120"><a href="tuning-lambda.html#cb95-120" tabindex="-1"></a>      irestart <span class="ot">=</span> iimat[ii,<span class="st">"irestart"</span>]</span>
-<span id="cb95-121"><a href="tuning-lambda.html#cb95-121" tabindex="-1"></a>      <span class="do">## if(verbose) cat('(iprob, imu, ifold, irestart)=', c(iprob, imu, ifold, irestart), fill=TRUE)</span></span>
-<span id="cb95-122"><a href="tuning-lambda.html#cb95-122" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb95-123"><a href="tuning-lambda.html#cb95-123" tabindex="-1"></a>      iprob <span class="ot">=</span> iimat[ii, <span class="st">"iprob"</span>]</span>
-<span id="cb95-124"><a href="tuning-lambda.html#cb95-124" tabindex="-1"></a>      imu <span class="ot">=</span> iimat[ii, <span class="st">"imu"</span>]</span>
-<span id="cb95-125"><a href="tuning-lambda.html#cb95-125" tabindex="-1"></a>      ifold <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb95-126"><a href="tuning-lambda.html#cb95-126" tabindex="-1"></a>    }</span>
-<span id="cb95-127"><a href="tuning-lambda.html#cb95-127" tabindex="-1"></a></span>
-<span id="cb95-128"><a href="tuning-lambda.html#cb95-128" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span>refit){</span>
-<span id="cb95-129"><a href="tuning-lambda.html#cb95-129" tabindex="-1"></a>      <a href="tuning-lambda.html#one_job">one_job</a>(<span class="at">iprob =</span> iprob,</span>
-<span id="cb95-130"><a href="tuning-lambda.html#cb95-130" tabindex="-1"></a>              <span class="at">imu =</span> imu,</span>
-<span id="cb95-131"><a href="tuning-lambda.html#cb95-131" tabindex="-1"></a>              <span class="at">l =</span> l,</span>
-<span id="cb95-132"><a href="tuning-lambda.html#cb95-132" tabindex="-1"></a>              <span class="at">l_prob =</span> l_prob,</span>
-<span id="cb95-133"><a href="tuning-lambda.html#cb95-133" tabindex="-1"></a>              <span class="at">ifold =</span> ifold,</span>
-<span id="cb95-134"><a href="tuning-lambda.html#cb95-134" tabindex="-1"></a>              <span class="at">irestart =</span> irestart,</span>
-<span id="cb95-135"><a href="tuning-lambda.html#cb95-135" tabindex="-1"></a>              <span class="at">folds =</span> folds,</span>
-<span id="cb95-136"><a href="tuning-lambda.html#cb95-136" tabindex="-1"></a>              <span class="at">destin =</span> destin,</span>
-<span id="cb95-137"><a href="tuning-lambda.html#cb95-137" tabindex="-1"></a>              <span class="at">lambda_means =</span> lambda_means,</span>
-<span id="cb95-138"><a href="tuning-lambda.html#cb95-138" tabindex="-1"></a>              <span class="at">lambda_probs =</span> lambda_probs,</span>
-<span id="cb95-139"><a href="tuning-lambda.html#cb95-139" tabindex="-1"></a>              <span class="do">## Arguments for <a href="building-the-modelalgorithm.html#flowtrend">flowtrend</a>()</span></span>
-<span id="cb95-140"><a href="tuning-lambda.html#cb95-140" tabindex="-1"></a>              <span class="at">ylist =</span> ylist, <span class="at">countslist =</span> countslist, </span>
-<span id="cb95-141"><a href="tuning-lambda.html#cb95-141" tabindex="-1"></a>              <span class="do">## Additional arguments for <a href="building-the-modelalgorithm.html#flowtrend">flowtrend</a>().</span></span>
-<span id="cb95-142"><a href="tuning-lambda.html#cb95-142" tabindex="-1"></a>              <span class="at">numclust =</span> numclust,</span>
-<span id="cb95-143"><a href="tuning-lambda.html#cb95-143" tabindex="-1"></a>              <span class="at">maxdev =</span> maxdev,</span>
-<span id="cb95-144"><a href="tuning-lambda.html#cb95-144" tabindex="-1"></a>              <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb95-145"><a href="tuning-lambda.html#cb95-145" tabindex="-1"></a>              <span class="at">seedtab =</span> seedtab,</span>
-<span id="cb95-146"><a href="tuning-lambda.html#cb95-146" tabindex="-1"></a>              <span class="at">niter =</span> niter)</span>
-<span id="cb95-147"><a href="tuning-lambda.html#cb95-147" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb95-148"><a href="tuning-lambda.html#cb95-148" tabindex="-1"></a>      <a href="tuning-lambda.html#one_job_refit">one_job_refit</a>(<span class="at">iprob =</span> iprob,</span>
-<span id="cb95-149"><a href="tuning-lambda.html#cb95-149" tabindex="-1"></a>                    <span class="at">imu =</span> imu,</span>
-<span id="cb95-150"><a href="tuning-lambda.html#cb95-150" tabindex="-1"></a>                    <span class="at">l =</span> l,</span>
-<span id="cb95-151"><a href="tuning-lambda.html#cb95-151" tabindex="-1"></a>                    <span class="at">l_prob =</span> l_prob,</span>
-<span id="cb95-152"><a href="tuning-lambda.html#cb95-152" tabindex="-1"></a>                    <span class="at">destin =</span> destin,</span>
-<span id="cb95-153"><a href="tuning-lambda.html#cb95-153" tabindex="-1"></a>                    <span class="at">lambda_means =</span> lambda_means,</span>
-<span id="cb95-154"><a href="tuning-lambda.html#cb95-154" tabindex="-1"></a>                    <span class="at">lambda_probs =</span> lambda_probs,</span>
-<span id="cb95-155"><a href="tuning-lambda.html#cb95-155" tabindex="-1"></a>                    <span class="do">## Arguments to <a href="building-the-modelalgorithm.html#flowtrend">flowtrend</a>()</span></span>
-<span id="cb95-156"><a href="tuning-lambda.html#cb95-156" tabindex="-1"></a>                    <span class="at">ylist =</span> ylist, <span class="at">countslist =</span> countslist, </span>
-<span id="cb95-157"><a href="tuning-lambda.html#cb95-157" tabindex="-1"></a>                    <span class="do">## Additional arguments for <a href="building-the-modelalgorithm.html#flowtrend">flowtrend</a>().</span></span>
-<span id="cb95-158"><a href="tuning-lambda.html#cb95-158" tabindex="-1"></a>                    <span class="at">numclust =</span> numclust,</span>
-<span id="cb95-159"><a href="tuning-lambda.html#cb95-159" tabindex="-1"></a>                    <span class="at">maxdev =</span> maxdev,</span>
-<span id="cb95-160"><a href="tuning-lambda.html#cb95-160" tabindex="-1"></a>                    <span class="at">nrestart =</span> nrestart,</span>
-<span id="cb95-161"><a href="tuning-lambda.html#cb95-161" tabindex="-1"></a>                    <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb95-162"><a href="tuning-lambda.html#cb95-162" tabindex="-1"></a>                    <span class="at">seedtab =</span> seedtab,</span>
-<span id="cb95-163"><a href="tuning-lambda.html#cb95-163" tabindex="-1"></a>                    <span class="at">niter =</span> niter)</span>
-<span id="cb95-164"><a href="tuning-lambda.html#cb95-164" tabindex="-1"></a>    }</span>
-<span id="cb95-165"><a href="tuning-lambda.html#cb95-165" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
-<span id="cb95-166"><a href="tuning-lambda.html#cb95-166" tabindex="-1"></a>  }, <span class="at">mc.cores =</span> mc.cores)</span>
-<span id="cb95-167"><a href="tuning-lambda.html#cb95-167" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb95-23"><a href="tuning-lambda.html#cb95-23" tabindex="-1"></a>                         ylist,</span>
+<span id="cb95-24"><a href="tuning-lambda.html#cb95-24" tabindex="-1"></a>                         countslist,</span>
+<span id="cb95-25"><a href="tuning-lambda.html#cb95-25" tabindex="-1"></a>                         <span class="at">x =</span> <span class="cn">NULL</span>, <span class="do">## THIS IS NEW</span></span>
+<span id="cb95-26"><a href="tuning-lambda.html#cb95-26" tabindex="-1"></a>                         <span class="do">## Define the locations to save the CV.</span></span>
+<span id="cb95-27"><a href="tuning-lambda.html#cb95-27" tabindex="-1"></a>                         <span class="at">destin =</span> <span class="st">"."</span>,</span>
+<span id="cb95-28"><a href="tuning-lambda.html#cb95-28" tabindex="-1"></a>                         <span class="do">## Regularization parameter values</span></span>
+<span id="cb95-29"><a href="tuning-lambda.html#cb95-29" tabindex="-1"></a>                         lambda_means,</span>
+<span id="cb95-30"><a href="tuning-lambda.html#cb95-30" tabindex="-1"></a>                         lambda_probs,</span>
+<span id="cb95-31"><a href="tuning-lambda.html#cb95-31" tabindex="-1"></a>                         l,</span>
+<span id="cb95-32"><a href="tuning-lambda.html#cb95-32" tabindex="-1"></a>                         l_prob,</span>
+<span id="cb95-33"><a href="tuning-lambda.html#cb95-33" tabindex="-1"></a>                         <span class="at">iimat =</span> <span class="cn">NULL</span>,</span>
+<span id="cb95-34"><a href="tuning-lambda.html#cb95-34" tabindex="-1"></a>                         <span class="do">## Other settings</span></span>
+<span id="cb95-35"><a href="tuning-lambda.html#cb95-35" tabindex="-1"></a>                         maxdev,</span>
+<span id="cb95-36"><a href="tuning-lambda.html#cb95-36" tabindex="-1"></a>                         numclust,</span>
+<span id="cb95-37"><a href="tuning-lambda.html#cb95-37" tabindex="-1"></a>                         nfold,</span>
+<span id="cb95-38"><a href="tuning-lambda.html#cb95-38" tabindex="-1"></a>                         blocksize,</span>
+<span id="cb95-39"><a href="tuning-lambda.html#cb95-39" tabindex="-1"></a>                         nrestart,</span>
+<span id="cb95-40"><a href="tuning-lambda.html#cb95-40" tabindex="-1"></a>                         <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb95-41"><a href="tuning-lambda.html#cb95-41" tabindex="-1"></a>                         <span class="at">refit =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb95-42"><a href="tuning-lambda.html#cb95-42" tabindex="-1"></a>                         <span class="at">save_meta =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb95-43"><a href="tuning-lambda.html#cb95-43" tabindex="-1"></a>                         <span class="at">mc.cores =</span> <span class="dv">1</span>,</span>
+<span id="cb95-44"><a href="tuning-lambda.html#cb95-44" tabindex="-1"></a>                         <span class="at">folds =</span> <span class="cn">NULL</span>,</span>
+<span id="cb95-45"><a href="tuning-lambda.html#cb95-45" tabindex="-1"></a>                         <span class="at">seedtab =</span> <span class="cn">NULL</span>,</span>
+<span id="cb95-46"><a href="tuning-lambda.html#cb95-46" tabindex="-1"></a>                         <span class="at">niter =</span> <span class="dv">1000</span>,</span>
+<span id="cb95-47"><a href="tuning-lambda.html#cb95-47" tabindex="-1"></a>                         ...){</span>
+<span id="cb95-48"><a href="tuning-lambda.html#cb95-48" tabindex="-1"></a></span>
+<span id="cb95-49"><a href="tuning-lambda.html#cb95-49" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb95-50"><a href="tuning-lambda.html#cb95-50" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">length</span>(lambda_probs) <span class="sc">==</span> <span class="fu">length</span>(lambda_means))</span>
+<span id="cb95-51"><a href="tuning-lambda.html#cb95-51" tabindex="-1"></a>  cv_gridsize <span class="ot">=</span> <span class="fu">length</span>(lambda_means)</span>
+<span id="cb95-52"><a href="tuning-lambda.html#cb95-52" tabindex="-1"></a></span>
+<span id="cb95-53"><a href="tuning-lambda.html#cb95-53" tabindex="-1"></a>  <span class="do">## There's an option to input one's own iimat matrix.</span></span>
+<span id="cb95-54"><a href="tuning-lambda.html#cb95-54" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(iimat)){</span>
+<span id="cb95-55"><a href="tuning-lambda.html#cb95-55" tabindex="-1"></a>    <span class="do">## Make an index of all jobs</span></span>
+<span id="cb95-56"><a href="tuning-lambda.html#cb95-56" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span>refit) iimat <span class="ot">=</span> <a href="tuning-lambda.html#make_iimat">make_iimat</a>(cv_gridsize, nfold, nrestart)</span>
+<span id="cb95-57"><a href="tuning-lambda.html#cb95-57" tabindex="-1"></a>    <span class="cf">if</span>(refit) iimat <span class="ot">=</span> <a href="tuning-lambda.html#make_iimat_small">make_iimat_small</a>(cv_gridsize, nrestart)</span>
+<span id="cb95-58"><a href="tuning-lambda.html#cb95-58" tabindex="-1"></a>  }</span>
+<span id="cb95-59"><a href="tuning-lambda.html#cb95-59" tabindex="-1"></a></span>
+<span id="cb95-60"><a href="tuning-lambda.html#cb95-60" tabindex="-1"></a>  <span class="do">## Define the CV folds</span></span>
+<span id="cb95-61"><a href="tuning-lambda.html#cb95-61" tabindex="-1"></a>  <span class="do">## folds = <a href="tuning-lambda.html#make_cv_folds">make_cv_folds</a>(ylist = ylist, nfold = nfold, blocksize = 1)</span></span>
+<span id="cb95-62"><a href="tuning-lambda.html#cb95-62" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(folds)){</span>
+<span id="cb95-63"><a href="tuning-lambda.html#cb95-63" tabindex="-1"></a>    folds <span class="ot">=</span> <a href="tuning-lambda.html#make_cv_folds">make_cv_folds</a>(<span class="at">ylist =</span> ylist, <span class="at">nfold =</span> nfold, <span class="at">blocksize =</span> blocksize)</span>
+<span id="cb95-64"><a href="tuning-lambda.html#cb95-64" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb95-65"><a href="tuning-lambda.html#cb95-65" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">length</span>(folds) <span class="sc">==</span> nfold)</span>
+<span id="cb95-66"><a href="tuning-lambda.html#cb95-66" tabindex="-1"></a>  }</span>
+<span id="cb95-67"><a href="tuning-lambda.html#cb95-67" tabindex="-1"></a></span>
+<span id="cb95-68"><a href="tuning-lambda.html#cb95-68" tabindex="-1"></a>  <span class="do">## Save meta information, once.</span></span>
+<span id="cb95-69"><a href="tuning-lambda.html#cb95-69" tabindex="-1"></a>  <span class="cf">if</span>(save_meta){</span>
+<span id="cb95-70"><a href="tuning-lambda.html#cb95-70" tabindex="-1"></a>    <span class="do">##if(!refit){</span></span>
+<span id="cb95-71"><a href="tuning-lambda.html#cb95-71" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">file.exists</span>(<span class="at">file =</span> <span class="fu">file.path</span>(destin, <span class="st">'meta.Rdata'</span>))){</span>
+<span id="cb95-72"><a href="tuning-lambda.html#cb95-72" tabindex="-1"></a></span>
+<span id="cb95-73"><a href="tuning-lambda.html#cb95-73" tabindex="-1"></a>        <span class="do">## Put aside the current guys</span></span>
+<span id="cb95-74"><a href="tuning-lambda.html#cb95-74" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb95-75"><a href="tuning-lambda.html#cb95-75" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="st">"Meta data already exists!"</span>)</span>
+<span id="cb95-76"><a href="tuning-lambda.html#cb95-76" tabindex="-1"></a>        folds_current <span class="ot">=</span> folds</span>
+<span id="cb95-77"><a href="tuning-lambda.html#cb95-77" tabindex="-1"></a>        nfold_current <span class="ot">=</span> nfold</span>
+<span id="cb95-78"><a href="tuning-lambda.html#cb95-78" tabindex="-1"></a>        nrestart_current <span class="ot">=</span> nrestart</span>
+<span id="cb95-79"><a href="tuning-lambda.html#cb95-79" tabindex="-1"></a>        cv_gridsize_current <span class="ot">=</span> cv_gridsize</span>
+<span id="cb95-80"><a href="tuning-lambda.html#cb95-80" tabindex="-1"></a>        lambda_means_current <span class="ot">=</span> lambda_means</span>
+<span id="cb95-81"><a href="tuning-lambda.html#cb95-81" tabindex="-1"></a>        lambda_probs_current <span class="ot">=</span> lambda_probs</span>
+<span id="cb95-82"><a href="tuning-lambda.html#cb95-82" tabindex="-1"></a>        ylist_current <span class="ot">=</span> ylist</span>
+<span id="cb95-83"><a href="tuning-lambda.html#cb95-83" tabindex="-1"></a>        x_current <span class="ot">=</span> x</span>
+<span id="cb95-84"><a href="tuning-lambda.html#cb95-84" tabindex="-1"></a>        countslist_current <span class="ot">=</span> countslist</span>
+<span id="cb95-85"><a href="tuning-lambda.html#cb95-85" tabindex="-1"></a></span>
+<span id="cb95-86"><a href="tuning-lambda.html#cb95-86" tabindex="-1"></a>        <span class="do">## Load the saved metadata and check if they are all the same as the current guys</span></span>
+<span id="cb95-87"><a href="tuning-lambda.html#cb95-87" tabindex="-1"></a>        <span class="fu">load</span>(<span class="at">file =</span> <span class="fu">file.path</span>(destin, <span class="st">'meta.Rdata'</span>), <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb95-88"><a href="tuning-lambda.html#cb95-88" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="fu">identical</span>(folds, folds_current))</span>
+<span id="cb95-89"><a href="tuning-lambda.html#cb95-89" tabindex="-1"></a>        <span class="fu">stopifnot</span>(nfold <span class="sc">==</span> nfold_current)</span>
+<span id="cb95-90"><a href="tuning-lambda.html#cb95-90" tabindex="-1"></a>        <span class="fu">stopifnot</span>(nrestart <span class="sc">==</span> nrestart_current) <span class="do">## Added recently</span></span>
+<span id="cb95-91"><a href="tuning-lambda.html#cb95-91" tabindex="-1"></a>        <span class="fu">stopifnot</span>(cv_gridsize <span class="sc">==</span> cv_gridsize_current)</span>
+<span id="cb95-92"><a href="tuning-lambda.html#cb95-92" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="fu">all</span>(lambda_means <span class="sc">==</span> lambda_means_current))</span>
+<span id="cb95-93"><a href="tuning-lambda.html#cb95-93" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="fu">all</span>(lambda_probs <span class="sc">==</span> lambda_probs_current))</span>
+<span id="cb95-94"><a href="tuning-lambda.html#cb95-94" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="fu">identical</span>(ylist, ylist_current))</span>
+<span id="cb95-95"><a href="tuning-lambda.html#cb95-95" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="fu">identical</span>(x, x_current))</span>
+<span id="cb95-96"><a href="tuning-lambda.html#cb95-96" tabindex="-1"></a>        <span class="fu">stopifnot</span>(<span class="fu">identical</span>(countslist, countslist_current))</span>
+<span id="cb95-97"><a href="tuning-lambda.html#cb95-97" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="at">fill=</span><span class="cn">TRUE</span>)</span>
+<span id="cb95-98"><a href="tuning-lambda.html#cb95-98" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="st">"Successfully checked that the saved metadata is identical to the current one."</span>, <span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb95-99"><a href="tuning-lambda.html#cb95-99" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb95-100"><a href="tuning-lambda.html#cb95-100" tabindex="-1"></a>        <span class="fu">save</span>(folds,</span>
+<span id="cb95-101"><a href="tuning-lambda.html#cb95-101" tabindex="-1"></a>             nfold,</span>
+<span id="cb95-102"><a href="tuning-lambda.html#cb95-102" tabindex="-1"></a>             nrestart, <span class="do">## Added recently</span></span>
+<span id="cb95-103"><a href="tuning-lambda.html#cb95-103" tabindex="-1"></a>             cv_gridsize,</span>
+<span id="cb95-104"><a href="tuning-lambda.html#cb95-104" tabindex="-1"></a>             lambda_means,</span>
+<span id="cb95-105"><a href="tuning-lambda.html#cb95-105" tabindex="-1"></a>             lambda_probs,</span>
+<span id="cb95-106"><a href="tuning-lambda.html#cb95-106" tabindex="-1"></a>             ylist, countslist,</span>
+<span id="cb95-107"><a href="tuning-lambda.html#cb95-107" tabindex="-1"></a>             x,</span>
+<span id="cb95-108"><a href="tuning-lambda.html#cb95-108" tabindex="-1"></a>             <span class="do">## Save the file</span></span>
+<span id="cb95-109"><a href="tuning-lambda.html#cb95-109" tabindex="-1"></a>             <span class="at">file =</span> <span class="fu">file.path</span>(destin, <span class="st">'meta.Rdata'</span>))</span>
+<span id="cb95-110"><a href="tuning-lambda.html#cb95-110" tabindex="-1"></a>        <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"wrote meta data to "</span>, <span class="fu">file.path</span>(destin, <span class="st">'meta.Rdata'</span>)))</span>
+<span id="cb95-111"><a href="tuning-lambda.html#cb95-111" tabindex="-1"></a>      }</span>
+<span id="cb95-112"><a href="tuning-lambda.html#cb95-112" tabindex="-1"></a>    <span class="do">## }</span></span>
+<span id="cb95-113"><a href="tuning-lambda.html#cb95-113" tabindex="-1"></a>  }</span>
+<span id="cb95-114"><a href="tuning-lambda.html#cb95-114" tabindex="-1"></a></span>
+<span id="cb95-115"><a href="tuning-lambda.html#cb95-115" tabindex="-1"></a>  <span class="do">## Run the EM algorithm many times, for each value of (iprob, imu, ifold, irestart)</span></span>
+<span id="cb95-116"><a href="tuning-lambda.html#cb95-116" tabindex="-1"></a>  start.time <span class="ot">=</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb95-117"><a href="tuning-lambda.html#cb95-117" tabindex="-1"></a>  parallel<span class="sc">::</span><span class="fu">mclapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(iimat), <span class="cf">function</span>(ii){</span>
+<span id="cb95-118"><a href="tuning-lambda.html#cb95-118" tabindex="-1"></a>    <a href="building-the-modelalgorithm.html#print_progress">print_progress</a>(ii, <span class="fu">nrow</span>(iimat), <span class="st">"Jobs (EM replicates) assigned on this computer"</span>, <span class="at">start.time =</span> start.time)</span>
+<span id="cb95-119"><a href="tuning-lambda.html#cb95-119" tabindex="-1"></a></span>
+<span id="cb95-120"><a href="tuning-lambda.html#cb95-120" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span>refit){</span>
+<span id="cb95-121"><a href="tuning-lambda.html#cb95-121" tabindex="-1"></a>      iprob <span class="ot">=</span> iimat[ii,<span class="st">"iprob"</span>]</span>
+<span id="cb95-122"><a href="tuning-lambda.html#cb95-122" tabindex="-1"></a>      imu <span class="ot">=</span> iimat[ii,<span class="st">"imu"</span>]</span>
+<span id="cb95-123"><a href="tuning-lambda.html#cb95-123" tabindex="-1"></a>      ifold <span class="ot">=</span> iimat[ii,<span class="st">"ifold"</span>]</span>
+<span id="cb95-124"><a href="tuning-lambda.html#cb95-124" tabindex="-1"></a>      irestart <span class="ot">=</span> iimat[ii,<span class="st">"irestart"</span>]</span>
+<span id="cb95-125"><a href="tuning-lambda.html#cb95-125" tabindex="-1"></a>      <span class="do">## if(verbose) cat('(iprob, imu, ifold, irestart)=', c(iprob, imu, ifold, irestart), fill=TRUE)</span></span>
+<span id="cb95-126"><a href="tuning-lambda.html#cb95-126" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb95-127"><a href="tuning-lambda.html#cb95-127" tabindex="-1"></a>      iprob <span class="ot">=</span> iimat[ii, <span class="st">"iprob"</span>]</span>
+<span id="cb95-128"><a href="tuning-lambda.html#cb95-128" tabindex="-1"></a>      imu <span class="ot">=</span> iimat[ii, <span class="st">"imu"</span>]</span>
+<span id="cb95-129"><a href="tuning-lambda.html#cb95-129" tabindex="-1"></a>      ifold <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb95-130"><a href="tuning-lambda.html#cb95-130" tabindex="-1"></a>    }</span>
+<span id="cb95-131"><a href="tuning-lambda.html#cb95-131" tabindex="-1"></a></span>
+<span id="cb95-132"><a href="tuning-lambda.html#cb95-132" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span>refit){</span>
+<span id="cb95-133"><a href="tuning-lambda.html#cb95-133" tabindex="-1"></a>      <a href="tuning-lambda.html#one_job">one_job</a>(<span class="at">iprob =</span> iprob,</span>
+<span id="cb95-134"><a href="tuning-lambda.html#cb95-134" tabindex="-1"></a>              <span class="at">imu =</span> imu,</span>
+<span id="cb95-135"><a href="tuning-lambda.html#cb95-135" tabindex="-1"></a>              <span class="at">l =</span> l,</span>
+<span id="cb95-136"><a href="tuning-lambda.html#cb95-136" tabindex="-1"></a>              <span class="at">l_prob =</span> l_prob,</span>
+<span id="cb95-137"><a href="tuning-lambda.html#cb95-137" tabindex="-1"></a>              <span class="at">ifold =</span> ifold,</span>
+<span id="cb95-138"><a href="tuning-lambda.html#cb95-138" tabindex="-1"></a>              <span class="at">irestart =</span> irestart,</span>
+<span id="cb95-139"><a href="tuning-lambda.html#cb95-139" tabindex="-1"></a>              <span class="at">folds =</span> folds,</span>
+<span id="cb95-140"><a href="tuning-lambda.html#cb95-140" tabindex="-1"></a>              <span class="at">destin =</span> destin,</span>
+<span id="cb95-141"><a href="tuning-lambda.html#cb95-141" tabindex="-1"></a>              <span class="at">lambda_means =</span> lambda_means,</span>
+<span id="cb95-142"><a href="tuning-lambda.html#cb95-142" tabindex="-1"></a>              <span class="at">lambda_probs =</span> lambda_probs,</span>
+<span id="cb95-143"><a href="tuning-lambda.html#cb95-143" tabindex="-1"></a>              <span class="do">## Arguments for <a href="building-the-modelalgorithm.html#flowtrend">flowtrend</a>()</span></span>
+<span id="cb95-144"><a href="tuning-lambda.html#cb95-144" tabindex="-1"></a>              <span class="at">ylist =</span> ylist, <span class="at">countslist =</span> countslist,</span>
+<span id="cb95-145"><a href="tuning-lambda.html#cb95-145" tabindex="-1"></a>              <span class="at">x =</span> x,</span>
+<span id="cb95-146"><a href="tuning-lambda.html#cb95-146" tabindex="-1"></a>              <span class="do">## Additional arguments for <a href="building-the-modelalgorithm.html#flowtrend">flowtrend</a>().</span></span>
+<span id="cb95-147"><a href="tuning-lambda.html#cb95-147" tabindex="-1"></a>              <span class="at">numclust =</span> numclust,</span>
+<span id="cb95-148"><a href="tuning-lambda.html#cb95-148" tabindex="-1"></a>              <span class="at">maxdev =</span> maxdev,</span>
+<span id="cb95-149"><a href="tuning-lambda.html#cb95-149" tabindex="-1"></a>              <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb95-150"><a href="tuning-lambda.html#cb95-150" tabindex="-1"></a>              <span class="at">seedtab =</span> seedtab,</span>
+<span id="cb95-151"><a href="tuning-lambda.html#cb95-151" tabindex="-1"></a>              <span class="at">niter =</span> niter)</span>
+<span id="cb95-152"><a href="tuning-lambda.html#cb95-152" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb95-153"><a href="tuning-lambda.html#cb95-153" tabindex="-1"></a>      <a href="tuning-lambda.html#one_job_refit">one_job_refit</a>(<span class="at">iprob =</span> iprob,</span>
+<span id="cb95-154"><a href="tuning-lambda.html#cb95-154" tabindex="-1"></a>                    <span class="at">imu =</span> imu,</span>
+<span id="cb95-155"><a href="tuning-lambda.html#cb95-155" tabindex="-1"></a>                    <span class="at">l =</span> l,</span>
+<span id="cb95-156"><a href="tuning-lambda.html#cb95-156" tabindex="-1"></a>                    <span class="at">l_prob =</span> l_prob,</span>
+<span id="cb95-157"><a href="tuning-lambda.html#cb95-157" tabindex="-1"></a>                    <span class="at">destin =</span> destin,</span>
+<span id="cb95-158"><a href="tuning-lambda.html#cb95-158" tabindex="-1"></a>                    <span class="at">lambda_means =</span> lambda_means,</span>
+<span id="cb95-159"><a href="tuning-lambda.html#cb95-159" tabindex="-1"></a>                    <span class="at">lambda_probs =</span> lambda_probs,</span>
+<span id="cb95-160"><a href="tuning-lambda.html#cb95-160" tabindex="-1"></a>                    <span class="do">## Arguments to <a href="building-the-modelalgorithm.html#flowtrend">flowtrend</a>()</span></span>
+<span id="cb95-161"><a href="tuning-lambda.html#cb95-161" tabindex="-1"></a>                    <span class="at">ylist =</span> ylist, <span class="at">countslist =</span> countslist,</span>
+<span id="cb95-162"><a href="tuning-lambda.html#cb95-162" tabindex="-1"></a>                    <span class="at">x =</span> x,</span>
+<span id="cb95-163"><a href="tuning-lambda.html#cb95-163" tabindex="-1"></a>                    <span class="do">## Additional arguments for <a href="building-the-modelalgorithm.html#flowtrend">flowtrend</a>().</span></span>
+<span id="cb95-164"><a href="tuning-lambda.html#cb95-164" tabindex="-1"></a>                    <span class="at">numclust =</span> numclust,</span>
+<span id="cb95-165"><a href="tuning-lambda.html#cb95-165" tabindex="-1"></a>                    <span class="at">maxdev =</span> maxdev,</span>
+<span id="cb95-166"><a href="tuning-lambda.html#cb95-166" tabindex="-1"></a>                    <span class="at">nrestart =</span> nrestart,</span>
+<span id="cb95-167"><a href="tuning-lambda.html#cb95-167" tabindex="-1"></a>                    <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb95-168"><a href="tuning-lambda.html#cb95-168" tabindex="-1"></a>                    <span class="at">seedtab =</span> seedtab,</span>
+<span id="cb95-169"><a href="tuning-lambda.html#cb95-169" tabindex="-1"></a>                    <span class="at">niter =</span> niter)</span>
+<span id="cb95-170"><a href="tuning-lambda.html#cb95-170" tabindex="-1"></a>    }</span>
+<span id="cb95-171"><a href="tuning-lambda.html#cb95-171" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb95-172"><a href="tuning-lambda.html#cb95-172" tabindex="-1"></a>  }, <span class="at">mc.cores =</span> mc.cores)</span>
+<span id="cb95-173"><a href="tuning-lambda.html#cb95-173" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="summarizing-the-output" class="section level2 hasAnchor" number="5.6">
 <h2>
@@ -1580,7 +1586,7 @@ variables), we write a short helper function to load it.</p>
 <span id="cb99-3"><a href="tuning-lambda.html#cb99-3" tabindex="-1"></a><span class="co">#' @param destin Directory with cross-validation output.</span></span>
 <span id="cb99-4"><a href="tuning-lambda.html#cb99-4" tabindex="-1"></a><span class="co">#'</span></span>
 <span id="cb99-5"><a href="tuning-lambda.html#cb99-5" tabindex="-1"></a><span class="co">#' @export</span></span>
-<span id="cb99-6"><a href="tuning-lambda.html#cb99-6" tabindex="-1"></a><span id="cv_aggregate">cv_aggregate</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(destin){ </span>
+<span id="cb99-6"><a href="tuning-lambda.html#cb99-6" tabindex="-1"></a><span id="cv_aggregate">cv_aggregate</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(destin){  </span>
 <span id="cb99-7"><a href="tuning-lambda.html#cb99-7" tabindex="-1"></a> </span>
 <span id="cb99-8"><a href="tuning-lambda.html#cb99-8" tabindex="-1"></a>  <span class="do">## ## Read the meta data (for |nfold|, |cv_gridsize|, |nrestart|, |lambda_means|,</span></span>
 <span id="cb99-9"><a href="tuning-lambda.html#cb99-9" tabindex="-1"></a>  <span class="do">## ## |lambda_probs|)</span></span>
@@ -1662,7 +1668,7 @@ variables), we write a short helper function to load it.</p>
 <span id="cb99-85"><a href="tuning-lambda.html#cb99-85" tabindex="-1"></a>  <span class="do">## possible_inds[my_ord, ] %&gt;% apply(2, which.max)</span></span>
 <span id="cb99-86"><a href="tuning-lambda.html#cb99-86" tabindex="-1"></a>  <span class="do">## Or even just stick with the ones on the diagonal direction.</span></span>
 <span id="cb99-87"><a href="tuning-lambda.html#cb99-87" tabindex="-1"></a>  myrows <span class="ot">=</span> <span class="fu">which</span>(possible_inds[,<span class="dv">2</span>] <span class="sc">==</span> possible_inds[,<span class="dv">1</span>])</span>
-<span id="cb99-88"><a href="tuning-lambda.html#cb99-88" tabindex="-1"></a>  possible_inds <span class="ot">=</span> possible_inds[myrows, ] </span>
+<span id="cb99-88"><a href="tuning-lambda.html#cb99-88" tabindex="-1"></a>  possible_inds <span class="ot">=</span> possible_inds[myrows, ,drop<span class="ot">=</span><span class="cn">FALSE</span>] </span>
 <span id="cb99-89"><a href="tuning-lambda.html#cb99-89" tabindex="-1"></a>  min.inds<span class="fl">.1</span>se <span class="ot">=</span> possible_inds[<span class="fu">which.max</span>(possible_inds[,<span class="dv">1</span>]),]</span>
 <span id="cb99-90"><a href="tuning-lambda.html#cb99-90" tabindex="-1"></a>  </span>
 <span id="cb99-91"><a href="tuning-lambda.html#cb99-91" tabindex="-1"></a>  <span class="do">## Return the results</span></span>
@@ -1791,186 +1797,229 @@ application would go something like this:</p>
 <span id="cb103-30"><a href="tuning-lambda.html#cb103-30" tabindex="-1"></a>               <span class="at">save_meta =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb103-31"><a href="tuning-lambda.html#cb103-31" tabindex="-1"></a>               <span class="at">mc.cores =</span> <span class="dv">6</span>)</span>
 <span id="cb103-32"><a href="tuning-lambda.html#cb103-32" tabindex="-1"></a>}</span></code></pre></div>
+<p>Next, we test whether <code>cv_flowtrend</code> works for unevenly spaced points.</p>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="tuning-lambda.html#cb104-1" tabindex="-1"></a><span class="do">## Setup</span></span>
+<span id="cb104-2"><a href="tuning-lambda.html#cb104-2" tabindex="-1"></a>l <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb104-3"><a href="tuning-lambda.html#cb104-3" tabindex="-1"></a>l_prob <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb104-4"><a href="tuning-lambda.html#cb104-4" tabindex="-1"></a>destin <span class="ot">=</span> <span class="st">"~/repos/flowtrend/inst/output/test2"</span></span>
+<span id="cb104-5"><a href="tuning-lambda.html#cb104-5" tabindex="-1"></a></span>
+<span id="cb104-6"><a href="tuning-lambda.html#cb104-6" tabindex="-1"></a><span class="do">## Generate data</span></span>
+<span id="cb104-7"><a href="tuning-lambda.html#cb104-7" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">332</span>)</span>
+<span id="cb104-8"><a href="tuning-lambda.html#cb104-8" tabindex="-1"></a>TT <span class="ot">=</span> <span class="dv">50</span></span>
+<span id="cb104-9"><a href="tuning-lambda.html#cb104-9" tabindex="-1"></a>nt <span class="ot">=</span> <span class="dv">100</span></span>
+<span id="cb104-10"><a href="tuning-lambda.html#cb104-10" tabindex="-1"></a>ylist <span class="ot">=</span> <a href="package-setup.html#gendat_1d">gendat_1d</a>(TT, <span class="at">ntlist =</span> <span class="fu">rep</span>(nt, TT)) <span class="sc">%&gt;%</span> <a href="package-setup.html#dt2ylist">dt2ylist</a>()</span>
+<span id="cb104-11"><a href="tuning-lambda.html#cb104-11" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="at">size=</span>TT<span class="sc">/</span><span class="dv">2</span>, <span class="at">replace =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> <span class="fu">sort</span>()</span>
+<span id="cb104-12"><a href="tuning-lambda.html#cb104-12" tabindex="-1"></a>ylist <span class="ot">=</span> ylist[x]</span>
+<span id="cb104-13"><a href="tuning-lambda.html#cb104-13" tabindex="-1"></a></span>
+<span id="cb104-14"><a href="tuning-lambda.html#cb104-14" tabindex="-1"></a><span class="do">## Save the data</span></span>
+<span id="cb104-15"><a href="tuning-lambda.html#cb104-15" tabindex="-1"></a>datobj <span class="ot">=</span> <span class="fu">list</span>(<span class="at">ylist =</span> ylist, <span class="at">x =</span> x, <span class="at">countslist =</span> <span class="cn">NULL</span>)</span>
+<span id="cb104-16"><a href="tuning-lambda.html#cb104-16" tabindex="-1"></a><span class="fu">saveRDS</span>(datobj, <span class="at">file =</span> <span class="fu">file.path</span>(destin, <span class="st">"datobj.RDS"</span>))</span>
+<span id="cb104-17"><a href="tuning-lambda.html#cb104-17" tabindex="-1"></a></span>
+<span id="cb104-18"><a href="tuning-lambda.html#cb104-18" tabindex="-1"></a>folds <span class="ot">=</span> <a href="tuning-lambda.html#make_cv_folds">make_cv_folds</a>(ylist, <span class="at">nfold =</span> nfold, <span class="at">TT =</span> <span class="fu">length</span>(ylist)) <span class="do">## What is this doing? FISHY</span></span>
+<span id="cb104-19"><a href="tuning-lambda.html#cb104-19" tabindex="-1"></a>lambda_means <span class="ot">=</span>  lambda_probs <span class="ot">=</span> <a href="tuning-lambda.html#logspace">logspace</a>(<span class="at">min =</span> <span class="fl">1E-5</span>, <span class="at">max =</span> <span class="dv">1</span>, <span class="at">length =</span> <span class="dv">5</span>)</span>
+<span id="cb104-20"><a href="tuning-lambda.html#cb104-20" tabindex="-1"></a><span class="cf">for</span>(refit <span class="cf">in</span> <span class="fu">c</span>(<span class="cn">FALSE</span>, <span class="cn">TRUE</span>)){</span>
+<span id="cb104-21"><a href="tuning-lambda.html#cb104-21" tabindex="-1"></a>  <a href="tuning-lambda.html#cv_flowtrend">cv_flowtrend</a>(<span class="at">ylist =</span> ylist, <span class="at">countslist =</span> <span class="cn">NULL</span>,</span>
+<span id="cb104-22"><a href="tuning-lambda.html#cb104-22" tabindex="-1"></a>               <span class="at">x =</span> x,</span>
+<span id="cb104-23"><a href="tuning-lambda.html#cb104-23" tabindex="-1"></a>               <span class="at">destin =</span> destin,</span>
+<span id="cb104-24"><a href="tuning-lambda.html#cb104-24" tabindex="-1"></a>               <span class="at">lambda_means =</span> lambda_means,</span>
+<span id="cb104-25"><a href="tuning-lambda.html#cb104-25" tabindex="-1"></a>               <span class="at">lambda_probs =</span> lambda_probs,</span>
+<span id="cb104-26"><a href="tuning-lambda.html#cb104-26" tabindex="-1"></a>               <span class="at">l =</span> l, <span class="at">l_prob =</span> l_prob,</span>
+<span id="cb104-27"><a href="tuning-lambda.html#cb104-27" tabindex="-1"></a>               <span class="at">maxdev =</span> <span class="dv">1</span>, <span class="at">numclust =</span> <span class="dv">3</span>, <span class="at">nfold =</span> <span class="dv">3</span>, <span class="at">nrestart =</span> <span class="dv">3</span>,</span>
+<span id="cb104-28"><a href="tuning-lambda.html#cb104-28" tabindex="-1"></a>               <span class="at">niter =</span> <span class="dv">100</span>,</span>
+<span id="cb104-29"><a href="tuning-lambda.html#cb104-29" tabindex="-1"></a>               <span class="at">folds =</span> folds,</span>
+<span id="cb104-30"><a href="tuning-lambda.html#cb104-30" tabindex="-1"></a>               <span class="at">verbose =</span> <span class="cn">TRUE</span>, <span class="at">refit =</span> refit, <span class="at">save_meta =</span> <span class="cn">TRUE</span>, <span class="at">mc.cores =</span> <span class="dv">4</span>)</span>
+<span id="cb104-31"><a href="tuning-lambda.html#cb104-31" tabindex="-1"></a>}</span>
+<span id="cb104-32"><a href="tuning-lambda.html#cb104-32" tabindex="-1"></a>cvres <span class="ot">=</span> <a href="tuning-lambda.html#cv_summary">cv_summary</a>(<span class="at">destin =</span> destin, <span class="at">save=</span><span class="cn">TRUE</span>)</span>
+<span id="cb104-33"><a href="tuning-lambda.html#cb104-33" tabindex="-1"></a><span class="fu">my_load</span>()</span>
+<span id="cb104-34"><a href="tuning-lambda.html#cb104-34" tabindex="-1"></a><a href="package-setup.html#plot_1d">plot_1d</a>(<span class="at">ylist =</span> ylist, <span class="at">x=</span>x)  <span class="sc">%&gt;%</span></span>
+<span id="cb104-35"><a href="tuning-lambda.html#cb104-35" tabindex="-1"></a>  <a href="package-setup.html#plot_1d_add_model">plot_1d_add_model</a>(<span class="at">obj =</span> cvres<span class="sc">$</span>bestres, <span class="at">idim=</span><span class="dv">1</span>, <span class="at">plot_band =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb104-36"><a href="tuning-lambda.html#cb104-36" tabindex="-1"></a></span>
+<span id="cb104-37"><a href="tuning-lambda.html#cb104-37" tabindex="-1"></a><span class="do">## Plot it!</span></span>
+<span id="cb104-38"><a href="tuning-lambda.html#cb104-38" tabindex="-1"></a><a href="package-setup.html#plot_1d">plot_1d</a>(<span class="at">ylist =</span> ylist, <span class="at">x=</span>x)  <span class="sc">%&gt;%</span> <a href="package-setup.html#plot_1d_add_model">plot_1d_add_model</a>(<span class="at">obj =</span> cvres<span class="sc">$</span>bestres, <span class="at">idim=</span><span class="dv">1</span>, <span class="at">plot_band =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb104-39"><a href="tuning-lambda.html#cb104-39" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y=</span>mean, <span class="at">group =</span> cluster),</span>
+<span id="cb104-40"><a href="tuning-lambda.html#cb104-40" tabindex="-1"></a>            <span class="at">data =</span> <a href="package-setup.html#gendat_1d">gendat_1d</a>(TT, <span class="at">ntlist =</span> <span class="fu">rep</span>(nt, TT), <span class="at">return_model =</span> <span class="cn">TRUE</span>) )</span></code></pre></div>
 </div>
 <div id="plotting" class="section level2 hasAnchor" number="5.8">
 <h2>
 <span class="header-section-number">5.8</span> Plotting<a href="tuning-lambda.html#plotting" class="anchor-section" aria-label="Anchor link to header"></a>
 </h2>
-<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="tuning-lambda.html#cb104-1" tabindex="-1"></a><span class="co">#' Makes a series of plots.</span></span>
-<span id="cb104-2"><a href="tuning-lambda.html#cb104-2" tabindex="-1"></a><span class="co">#' </span></span>
-<span id="cb104-3"><a href="tuning-lambda.html#cb104-3" tabindex="-1"></a><span class="co">#' @param destin This directly has (1) summary.RDS, (2) meta.Rdata, and (3) datobj.RDS; optionally, it may have a dt_model</span></span>
-<span id="cb104-4"><a href="tuning-lambda.html#cb104-4" tabindex="-1"></a><span class="co">#' @return Nothing; but the pdf plots are created.</span></span>
-<span id="cb104-5"><a href="tuning-lambda.html#cb104-5" tabindex="-1"></a><span class="co">#' </span></span>
-<span id="cb104-6"><a href="tuning-lambda.html#cb104-6" tabindex="-1"></a><span class="co">#' @export</span></span>
-<span id="cb104-7"><a href="tuning-lambda.html#cb104-7" tabindex="-1"></a><span id="plot_from_summary">plot_from_summary</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(destin){</span>
-<span id="cb104-8"><a href="tuning-lambda.html#cb104-8" tabindex="-1"></a>  <span class="do">## Load the results </span></span>
-<span id="cb104-9"><a href="tuning-lambda.html#cb104-9" tabindex="-1"></a>  cvres <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(destin, <span class="fu">paste0</span>(<span class="st">"summary.RDS"</span>)))</span>
-<span id="cb104-10"><a href="tuning-lambda.html#cb104-10" tabindex="-1"></a>  <span class="fu">load</span>(<span class="fu">file.path</span>(destin, <span class="fu">paste0</span>(<span class="st">"meta.Rdata"</span>)), <span class="at">verbose=</span><span class="cn">TRUE</span>)</span>
-<span id="cb104-11"><a href="tuning-lambda.html#cb104-11" tabindex="-1"></a><span class="do">##  datobj = readRDS(file.path(destin, paste0("datobj.RDS")))</span></span>
-<span id="cb104-12"><a href="tuning-lambda.html#cb104-12" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">file.exists</span>(<span class="fu">file.path</span>(destin, <span class="st">"dt_model.RDS"</span>))){</span>
-<span id="cb104-13"><a href="tuning-lambda.html#cb104-13" tabindex="-1"></a>    dt.model <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(destin, <span class="fu">paste0</span>(<span class="st">"dt_model.RDS"</span>)))</span>
-<span id="cb104-14"><a href="tuning-lambda.html#cb104-14" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb104-15"><a href="tuning-lambda.html#cb104-15" tabindex="-1"></a>    dt.model <span class="ot">=</span> <span class="cn">NULL</span></span>
-<span id="cb104-16"><a href="tuning-lambda.html#cb104-16" tabindex="-1"></a>  }</span>
-<span id="cb104-17"><a href="tuning-lambda.html#cb104-17" tabindex="-1"></a></span>
-<span id="cb104-18"><a href="tuning-lambda.html#cb104-18" tabindex="-1"></a>  <span class="do">##ylist = datobj$ybin_list %&gt;% lapply(cbind)</span></span>
-<span id="cb104-19"><a href="tuning-lambda.html#cb104-19" tabindex="-1"></a>  <span class="do">##countslist = datobj$counts_list</span></span>
-<span id="cb104-20"><a href="tuning-lambda.html#cb104-20" tabindex="-1"></a>  </span>
-<span id="cb104-21"><a href="tuning-lambda.html#cb104-21" tabindex="-1"></a>  <span class="do">## rows are prob, cols are means</span></span>
-<span id="cb104-22"><a href="tuning-lambda.html#cb104-22" tabindex="-1"></a>  <span class="fu">pdf</span>(<span class="fu">file.path</span>(destin, <span class="st">"cvscoremat.pdf"</span>), <span class="at">width =</span> <span class="dv">6</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
-<span id="cb104-23"><a href="tuning-lambda.html#cb104-23" tabindex="-1"></a>  cvscoremat_lattice_plot <span class="ot">=</span>  </span>
-<span id="cb104-24"><a href="tuning-lambda.html#cb104-24" tabindex="-1"></a>  cvres<span class="sc">$</span>cvscore.mat <span class="sc">%&gt;%</span> <span class="fu">drawmat_precise</span>(<span class="at">ylab =</span> <span class="st">"lambda_prob"</span>, <span class="at">xlab =</span> <span class="st">"lambda_mean"</span>) <span class="sc">+</span></span>
-<span id="cb104-25"><a href="tuning-lambda.html#cb104-25" tabindex="-1"></a>    latticeExtra<span class="sc">::</span><span class="fu">layer</span>(lattice<span class="sc">::</span><span class="fu">panel.points</span>(<span class="at">x =</span> cvres<span class="sc">$</span>min.inds[<span class="dv">2</span>],</span>
-<span id="cb104-26"><a href="tuning-lambda.html#cb104-26" tabindex="-1"></a>                                              <span class="at">y =</span> <span class="fu">nrow</span>(cvres<span class="sc">$</span>cvscore.mat) <span class="sc">+</span> <span class="dv">1</span> <span class="sc">-</span> cvres<span class="sc">$</span>min.inds[<span class="dv">1</span>], </span>
-<span id="cb104-27"><a href="tuning-lambda.html#cb104-27" tabindex="-1"></a>                                              <span class="at">pch =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"orange"</span>, <span class="at">cex=</span><span class="dv">2</span>)) <span class="sc">+</span></span>
-<span id="cb104-28"><a href="tuning-lambda.html#cb104-28" tabindex="-1"></a>    latticeExtra<span class="sc">::</span><span class="fu">layer</span>(lattice<span class="sc">::</span><span class="fu">panel.points</span>(<span class="at">x =</span> cvres<span class="sc">$</span>min.inds<span class="fl">.1</span>se[<span class="dv">2</span>],</span>
-<span id="cb104-29"><a href="tuning-lambda.html#cb104-29" tabindex="-1"></a>                                              <span class="at">y =</span> <span class="fu">nrow</span>(cvres<span class="sc">$</span>cvscore.mat) <span class="sc">+</span> <span class="dv">1</span> <span class="sc">-</span> cvres<span class="sc">$</span>min.inds<span class="fl">.1</span>se[<span class="dv">1</span>], </span>
-<span id="cb104-30"><a href="tuning-lambda.html#cb104-30" tabindex="-1"></a>                                              <span class="at">pch =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"orange"</span>, <span class="at">cex=</span><span class="dv">2</span>))</span>
-<span id="cb104-31"><a href="tuning-lambda.html#cb104-31" tabindex="-1"></a>  <span class="fu">plot</span>(cvscoremat_lattice_plot) <span class="do">## Need to load library(lattice) before this.</span></span>
-<span id="cb104-32"><a href="tuning-lambda.html#cb104-32" tabindex="-1"></a>  <span class="fu">graphics.off</span>()</span>
-<span id="cb104-33"><a href="tuning-lambda.html#cb104-33" tabindex="-1"></a>  </span>
-<span id="cb104-34"><a href="tuning-lambda.html#cb104-34" tabindex="-1"></a>  <span class="do">## The minimum values.</span></span>
-<span id="cb104-35"><a href="tuning-lambda.html#cb104-35" tabindex="-1"></a>  min_lam_prob <span class="ot">=</span> lambda_probs[cvres<span class="sc">$</span>min.inds[<span class="dv">2</span>]]</span>
-<span id="cb104-36"><a href="tuning-lambda.html#cb104-36" tabindex="-1"></a>  min_lam_mean <span class="ot">=</span> lambda_means[cvres<span class="sc">$</span>min.inds[<span class="dv">1</span>]]</span>
-<span id="cb104-37"><a href="tuning-lambda.html#cb104-37" tabindex="-1"></a>  </span>
-<span id="cb104-38"><a href="tuning-lambda.html#cb104-38" tabindex="-1"></a>  <span class="do">## each line is a different lambda_mean</span></span>
-<span id="cb104-39"><a href="tuning-lambda.html#cb104-39" tabindex="-1"></a>  <span class="fu">pdf</span>(<span class="fu">file.path</span>(destin, <span class="st">"cvscoremat-lines-over-means.pdf"</span>), <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">7</span>)</span>
-<span id="cb104-40"><a href="tuning-lambda.html#cb104-40" tabindex="-1"></a>  a <span class="ot">=</span> cvres<span class="sc">$</span>cvscore.mat <span class="sc">%&gt;%</span> <span class="fu">t</span>() <span class="sc">%&gt;%</span> <span class="fu">matplot</span>(<span class="at">x =</span> lambda_probs, <span class="at">type=</span><span class="st">'o'</span>, <span class="at">col =</span> <span class="st">'grey'</span>, <span class="at">main =</span> <span class="st">"each line is a different lambda_mean"</span>, <span class="at">log =</span> <span class="st">"x"</span>)</span>
-<span id="cb104-41"><a href="tuning-lambda.html#cb104-41" tabindex="-1"></a></span>
-<span id="cb104-42"><a href="tuning-lambda.html#cb104-42" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">v=</span>min_lam_prob, <span class="at">col =</span> <span class="st">'red'</span>)</span>
-<span id="cb104-43"><a href="tuning-lambda.html#cb104-43" tabindex="-1"></a>  <span class="fu">graphics.off</span>()</span>
-<span id="cb104-44"><a href="tuning-lambda.html#cb104-44" tabindex="-1"></a>  </span>
-<span id="cb104-45"><a href="tuning-lambda.html#cb104-45" tabindex="-1"></a>  <span class="fu">pdf</span>(<span class="fu">file.path</span>(destin, <span class="st">"cvscoremat-lines-over-probs.pdf"</span>), <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">7</span>)</span>
-<span id="cb104-46"><a href="tuning-lambda.html#cb104-46" tabindex="-1"></a>  cvres<span class="sc">$</span>cvscore.mat <span class="sc">%&gt;%</span> <span class="fu">matplot</span>(<span class="at">x=</span>lambda_means, <span class="at">type=</span><span class="st">'o'</span>, <span class="at">col =</span> <span class="st">'grey'</span>, <span class="at">main =</span> <span class="st">"each line is a different lambda_prob"</span>, <span class="at">log =</span> <span class="st">"x"</span>)</span>
-<span id="cb104-47"><a href="tuning-lambda.html#cb104-47" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">v=</span>min_lam_mean, <span class="at">col =</span> <span class="st">'red'</span>)</span>
-<span id="cb104-48"><a href="tuning-lambda.html#cb104-48" tabindex="-1"></a>  <span class="fu">graphics.off</span>()</span>
-<span id="cb104-49"><a href="tuning-lambda.html#cb104-49" tabindex="-1"></a></span>
-<span id="cb104-50"><a href="tuning-lambda.html#cb104-50" tabindex="-1"></a>  n_lam_prob <span class="ot">=</span> <span class="fu">nrow</span>(cvres<span class="sc">$</span>cvscore.mat)</span>
-<span id="cb104-51"><a href="tuning-lambda.html#cb104-51" tabindex="-1"></a>  n_lam_mean <span class="ot">=</span> <span class="fu">ncol</span>(cvres<span class="sc">$</span>cvscore.mat)</span>
-<span id="cb104-52"><a href="tuning-lambda.html#cb104-52" tabindex="-1"></a>  </span>
-<span id="cb104-53"><a href="tuning-lambda.html#cb104-53" tabindex="-1"></a>  <span class="do">## Reorder clusters</span></span>
-<span id="cb104-54"><a href="tuning-lambda.html#cb104-54" tabindex="-1"></a>  cvres<span class="sc">$</span>bestres <span class="ot">=</span> <a href="reordering-clusters.html#reorder_clust">reorder_clust</a>(cvres<span class="sc">$</span>bestres)</span>
-<span id="cb104-55"><a href="tuning-lambda.html#cb104-55" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_lam_prob){</span>
-<span id="cb104-56"><a href="tuning-lambda.html#cb104-56" tabindex="-1"></a>    <span class="fu">print</span>(ii)</span>
-<span id="cb104-57"><a href="tuning-lambda.html#cb104-57" tabindex="-1"></a>    <span class="cf">for</span>(jj <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_lam_mean){</span>
-<span id="cb104-58"><a href="tuning-lambda.html#cb104-58" tabindex="-1"></a>      <span class="do">## Reorder the cluster labels of the fitted ("best") models.</span></span>
-<span id="cb104-59"><a href="tuning-lambda.html#cb104-59" tabindex="-1"></a>      reordered_obj <span class="ot">=</span> <a href="reordering-clusters.html#reorder_kl">reorder_kl</a>(<span class="at">newres =</span> cvres<span class="sc">$</span>bestreslist[[<span class="fu">paste0</span>(ii, <span class="st">"-"</span>, jj)]],</span>
-<span id="cb104-60"><a href="tuning-lambda.html#cb104-60" tabindex="-1"></a>                                 <span class="at">origres =</span> cvres<span class="sc">$</span>bestres,<span class="do">##cvres$bestreslist[["1-1"]],</span></span>
-<span id="cb104-61"><a href="tuning-lambda.html#cb104-61" tabindex="-1"></a>                                 <span class="at">ylist_particle =</span> datobj<span class="sc">$</span>ylist)</span>
-<span id="cb104-62"><a href="tuning-lambda.html#cb104-62" tabindex="-1"></a>      cvres<span class="sc">$</span>bestreslist[[<span class="fu">paste0</span>(ii, <span class="st">"-"</span>, jj)]] <span class="ot">=</span> reordered_obj</span>
-<span id="cb104-63"><a href="tuning-lambda.html#cb104-63" tabindex="-1"></a>    }</span>
-<span id="cb104-64"><a href="tuning-lambda.html#cb104-64" tabindex="-1"></a>  }</span>
-<span id="cb104-65"><a href="tuning-lambda.html#cb104-65" tabindex="-1"></a>  </span>
-<span id="cb104-66"><a href="tuning-lambda.html#cb104-66" tabindex="-1"></a>  <span class="do">## Dependign on the dimension of the data, make a different plot</span></span>
-<span id="cb104-67"><a href="tuning-lambda.html#cb104-67" tabindex="-1"></a>  <span class="do">## if(obj$dimdat == 1) idim = 1</span></span>
-<span id="cb104-68"><a href="tuning-lambda.html#cb104-68" tabindex="-1"></a>  <span class="do">##  if(obj$dimdat &gt; 1) idim = 1</span></span>
-<span id="cb104-69"><a href="tuning-lambda.html#cb104-69" tabindex="-1"></a>  <span class="cf">for</span>(idim <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
-<span id="cb104-70"><a href="tuning-lambda.html#cb104-70" tabindex="-1"></a>    <span class="fu">print</span>(idim)</span>
-<span id="cb104-71"><a href="tuning-lambda.html#cb104-71" tabindex="-1"></a></span>
-<span id="cb104-72"><a href="tuning-lambda.html#cb104-72" tabindex="-1"></a>  <span class="do">## Make plots of the "best" model</span></span>
-<span id="cb104-73"><a href="tuning-lambda.html#cb104-73" tabindex="-1"></a>  g1 <span class="ot">=</span> flowtrend<span class="sc">::</span><a href="package-setup.html#plot_1d">plot_1d</a>(<span class="at">ylist =</span> ylist,</span>
-<span id="cb104-74"><a href="tuning-lambda.html#cb104-74" tabindex="-1"></a>                          <span class="at">countslist =</span> countslist,</span>
-<span id="cb104-75"><a href="tuning-lambda.html#cb104-75" tabindex="-1"></a>                          <span class="at">obj=</span>cvres<span class="sc">$</span>bestres,</span>
-<span id="cb104-76"><a href="tuning-lambda.html#cb104-76" tabindex="-1"></a>                          <span class="at">idim =</span> idim)</span>
-<span id="cb104-77"><a href="tuning-lambda.html#cb104-77" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(dt.model)){</span>
-<span id="cb104-78"><a href="tuning-lambda.html#cb104-78" tabindex="-1"></a>    g1 <span class="ot">=</span> g1 <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">group =</span> cluster),</span>
-<span id="cb104-79"><a href="tuning-lambda.html#cb104-79" tabindex="-1"></a>                        <span class="at">data =</span> dt.model,<span class="do">## %&gt;% subset(time %ni% held_out),</span></span>
-<span id="cb104-80"><a href="tuning-lambda.html#cb104-80" tabindex="-1"></a>                        <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">size=</span><span class="dv">1</span>, <span class="at">alpha =</span> .<span class="dv">7</span>)</span>
-<span id="cb104-81"><a href="tuning-lambda.html#cb104-81" tabindex="-1"></a>  }</span>
-<span id="cb104-82"><a href="tuning-lambda.html#cb104-82" tabindex="-1"></a>  </span>
-<span id="cb104-83"><a href="tuning-lambda.html#cb104-83" tabindex="-1"></a>  g2 <span class="ot">=</span> flowtrend<span class="sc">::</span><a href="package-setup.html#plot_prob">plot_prob</a>(cvres<span class="sc">$</span>bestres, <span class="at">x=</span><span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist))</span>
-<span id="cb104-84"><a href="tuning-lambda.html#cb104-84" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(dt.model)){</span>
-<span id="cb104-85"><a href="tuning-lambda.html#cb104-85" tabindex="-1"></a>    g2 <span class="ot">=</span> g2 <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y=</span>prob, <span class="at">group =</span> cluster), <span class="at">linetype =</span> <span class="st">"dashed"</span>,</span>
-<span id="cb104-86"><a href="tuning-lambda.html#cb104-86" tabindex="-1"></a>                        <span class="at">data=</span>dt.model  <span class="sc">%&gt;%</span> <span class="fu">select</span>(time, cluster, prob) <span class="sc">%&gt;%</span> <span class="fu">unique</span>())</span>
-<span id="cb104-87"><a href="tuning-lambda.html#cb104-87" tabindex="-1"></a>  }</span>
-<span id="cb104-88"><a href="tuning-lambda.html#cb104-88" tabindex="-1"></a>  <span class="fu">do.call</span>(ggpubr<span class="sc">::</span>ggarrange, <span class="fu">c</span>(<span class="fu">list</span>(g1, g2), <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">nrow =</span> <span class="dv">2</span>)) <span class="ot">-&gt;</span> g</span>
-<span id="cb104-89"><a href="tuning-lambda.html#cb104-89" tabindex="-1"></a>  g <span class="sc">%&gt;%</span> <span class="fu">ggsave</span>(<span class="at">file =</span> <span class="fu">file.path</span>(destin, <span class="fu">paste0</span>(<span class="st">"mean-and-prob-idim-"</span>, idim, <span class="st">".pdf"</span>)), <span class="at">width =</span> <span class="dv">10</span>, <span class="at">height=</span><span class="dv">7</span>)</span>
-<span id="cb104-90"><a href="tuning-lambda.html#cb104-90" tabindex="-1"></a>  }</span>
-<span id="cb104-91"><a href="tuning-lambda.html#cb104-91" tabindex="-1"></a>  </span>
-<span id="cb104-92"><a href="tuning-lambda.html#cb104-92" tabindex="-1"></a>  </span>
-<span id="cb104-93"><a href="tuning-lambda.html#cb104-93" tabindex="-1"></a>  <span class="do">## Make all model plots</span></span>
-<span id="cb104-94"><a href="tuning-lambda.html#cb104-94" tabindex="-1"></a>  lambda_means <span class="ot">=</span> <span class="fu">colnames</span>(cvres<span class="sc">$</span>cvscore.mat) <span class="sc">%&gt;%</span> <span class="fu">as.numeric</span>()</span>
-<span id="cb104-95"><a href="tuning-lambda.html#cb104-95" tabindex="-1"></a>  lambda_probs <span class="ot">=</span> <span class="fu">rownames</span>(cvres<span class="sc">$</span>cvscore.mat) <span class="sc">%&gt;%</span> <span class="fu">as.numeric</span>()</span>
-<span id="cb104-96"><a href="tuning-lambda.html#cb104-96" tabindex="-1"></a></span>
-<span id="cb104-97"><a href="tuning-lambda.html#cb104-97" tabindex="-1"></a>  <span class="cf">for</span>(idim <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
-<span id="cb104-98"><a href="tuning-lambda.html#cb104-98" tabindex="-1"></a>    </span>
-<span id="cb104-99"><a href="tuning-lambda.html#cb104-99" tabindex="-1"></a>  kk <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb104-100"><a href="tuning-lambda.html#cb104-100" tabindex="-1"></a>  glist <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb104-101"><a href="tuning-lambda.html#cb104-101" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_lam_prob){</span>
-<span id="cb104-102"><a href="tuning-lambda.html#cb104-102" tabindex="-1"></a>    <span class="cf">for</span>(jj <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_lam_mean){</span>
-<span id="cb104-103"><a href="tuning-lambda.html#cb104-103" tabindex="-1"></a></span>
-<span id="cb104-104"><a href="tuning-lambda.html#cb104-104" tabindex="-1"></a>      <span class="do">## Calculate number of knots (complexity, df)</span></span>
-<span id="cb104-105"><a href="tuning-lambda.html#cb104-105" tabindex="-1"></a>      knots_mean <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="cf">function</span>(iclust){</span>
-<span id="cb104-106"><a href="tuning-lambda.html#cb104-106" tabindex="-1"></a>        abs_means <span class="ot">=</span> cvres<span class="sc">$</span>bestreslist[[<span class="fu">paste0</span>(ii, <span class="st">"-"</span>, jj)]] <span class="sc">%&gt;%</span> .<span class="sc">$</span>mn <span class="sc">%&gt;%</span> .[,<span class="dv">1</span>,iclust] <span class="sc">%&gt;%</span> <span class="fu">diff</span>(<span class="at">differences=</span><span class="dv">3</span>) <span class="sc">%&gt;%</span> <span class="fu">abs</span>()</span>
-<span id="cb104-107"><a href="tuning-lambda.html#cb104-107" tabindex="-1"></a>        df <span class="ot">=</span> <span class="fu">sum</span>(abs_means <span class="sc">&gt;</span> <span class="fl">1E-4</span>)</span>
-<span id="cb104-108"><a href="tuning-lambda.html#cb104-108" tabindex="-1"></a>      })</span>
-<span id="cb104-109"><a href="tuning-lambda.html#cb104-109" tabindex="-1"></a>      knots_prob <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="cf">function</span>(iclust){</span>
-<span id="cb104-110"><a href="tuning-lambda.html#cb104-110" tabindex="-1"></a>        abs_probs <span class="ot">=</span> cvres<span class="sc">$</span>bestreslist[[<span class="fu">paste0</span>(ii, <span class="st">"-"</span>, jj)]] <span class="sc">%&gt;%</span> .<span class="sc">$</span>prob_link <span class="sc">%&gt;%</span> .[,iclust] <span class="sc">%&gt;%</span> <span class="fu">diff</span>(<span class="at">differences=</span><span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">abs</span>()</span>
-<span id="cb104-111"><a href="tuning-lambda.html#cb104-111" tabindex="-1"></a>        df <span class="ot">=</span> <span class="fu">sum</span>(abs_probs <span class="sc">&gt;</span> <span class="fl">1E-4</span>)</span>
-<span id="cb104-112"><a href="tuning-lambda.html#cb104-112" tabindex="-1"></a>      })</span>
-<span id="cb104-113"><a href="tuning-lambda.html#cb104-113" tabindex="-1"></a></span>
-<span id="cb104-114"><a href="tuning-lambda.html#cb104-114" tabindex="-1"></a>      <span class="do">## Visualize</span></span>
-<span id="cb104-115"><a href="tuning-lambda.html#cb104-115" tabindex="-1"></a>      g <span class="ot">=</span> flowtrend<span class="sc">::</span><a href="package-setup.html#plot_1d">plot_1d</a>(<span class="at">ylist =</span> ylist, <span class="at">countslist =</span> countslist, <span class="at">obj =</span> cvres<span class="sc">$</span>bestreslist[[<span class="fu">paste0</span>(ii, <span class="st">"-"</span>, jj)]], <span class="at">idim =</span> idim)</span>
-<span id="cb104-116"><a href="tuning-lambda.html#cb104-116" tabindex="-1"></a>      g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">"lam="</span>, <span class="fu">signif</span>(lambda_means[[jj]],<span class="dv">3</span>), <span class="st">", lam_prob="</span>, <span class="fu">signif</span>(lambda_probs[[ii]], <span class="dv">3</span>)))</span>
-<span id="cb104-117"><a href="tuning-lambda.html#cb104-117" tabindex="-1"></a>      g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span>
-<span id="cb104-118"><a href="tuning-lambda.html#cb104-118" tabindex="-1"></a></span>
-<span id="cb104-119"><a href="tuning-lambda.html#cb104-119" tabindex="-1"></a>      g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">annotate</span>(<span class="st">"text"</span>,  <span class="at">x=</span><span class="cn">Inf</span>, <span class="at">y =</span> <span class="cn">Inf</span>,</span>
-<span id="cb104-120"><a href="tuning-lambda.html#cb104-120" tabindex="-1"></a>                       <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"knots(prob,mean)="</span>, knots_prob,<span class="st">", "</span>,knots_mean), <span class="at">vjust=</span><span class="dv">1</span>, <span class="at">hjust=</span><span class="dv">1</span>)</span>
-<span id="cb104-121"><a href="tuning-lambda.html#cb104-121" tabindex="-1"></a></span>
-<span id="cb104-122"><a href="tuning-lambda.html#cb104-122" tabindex="-1"></a></span>
-<span id="cb104-123"><a href="tuning-lambda.html#cb104-123" tabindex="-1"></a>      optimal <span class="ot">=</span> ((ii <span class="sc">==</span> cvres<span class="sc">$</span>min.inds[<span class="dv">1</span>]) <span class="sc">&amp;</span> (jj <span class="sc">==</span> cvres<span class="sc">$</span>min.inds[<span class="dv">2</span>]))</span>
-<span id="cb104-124"><a href="tuning-lambda.html#cb104-124" tabindex="-1"></a>      onese <span class="ot">=</span> ((ii <span class="sc">==</span> cvres<span class="sc">$</span>min.inds<span class="fl">.1</span>se[<span class="dv">1</span>]) <span class="sc">&amp;</span> (jj <span class="sc">==</span> cvres<span class="sc">$</span>min.inds<span class="fl">.1</span>se[<span class="dv">2</span>]))</span>
-<span id="cb104-125"><a href="tuning-lambda.html#cb104-125" tabindex="-1"></a>      <span class="cf">if</span>(optimal <span class="sc">|</span> onese){</span>
-<span id="cb104-126"><a href="tuning-lambda.html#cb104-126" tabindex="-1"></a>        g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">fill=</span><span class="cn">NA</span>, <span class="at">size=</span><span class="dv">5</span>))</span>
-<span id="cb104-127"><a href="tuning-lambda.html#cb104-127" tabindex="-1"></a>      }</span>
-<span id="cb104-128"><a href="tuning-lambda.html#cb104-128" tabindex="-1"></a></span>
-<span id="cb104-129"><a href="tuning-lambda.html#cb104-129" tabindex="-1"></a>      <span class="do">## Save plot</span></span>
-<span id="cb104-130"><a href="tuning-lambda.html#cb104-130" tabindex="-1"></a>      glist[[kk]] <span class="ot">=</span> g</span>
-<span id="cb104-131"><a href="tuning-lambda.html#cb104-131" tabindex="-1"></a>      kk <span class="ot">=</span> kk <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb104-132"><a href="tuning-lambda.html#cb104-132" tabindex="-1"></a>    }</span>
-<span id="cb104-133"><a href="tuning-lambda.html#cb104-133" tabindex="-1"></a>  }</span>
-<span id="cb104-134"><a href="tuning-lambda.html#cb104-134" tabindex="-1"></a>  all_bestres <span class="ot">=</span> <span class="fu">do.call</span>(ggpubr<span class="sc">::</span>ggarrange, <span class="fu">c</span>(glist, <span class="at">ncol =</span> n_lam_mean, <span class="at">nrow =</span> n_lam_prob))</span>
-<span id="cb104-135"><a href="tuning-lambda.html#cb104-135" tabindex="-1"></a>  all_bestres <span class="sc">%&gt;%</span></span>
-<span id="cb104-136"><a href="tuning-lambda.html#cb104-136" tabindex="-1"></a>    <span class="fu">ggsave</span>(<span class="at">file =</span> <span class="fu">file.path</span>(destin, <span class="fu">paste0</span>(<span class="st">"all_bestres-idim-"</span>, idim, <span class="st">".pdf"</span>)),</span>
-<span id="cb104-137"><a href="tuning-lambda.html#cb104-137" tabindex="-1"></a>           <span class="at">width =</span> <span class="dv">40</span>, <span class="at">height=</span><span class="dv">30</span>)</span>
-<span id="cb104-138"><a href="tuning-lambda.html#cb104-138" tabindex="-1"></a>  }</span>
-<span id="cb104-139"><a href="tuning-lambda.html#cb104-139" tabindex="-1"></a>  </span>
-<span id="cb104-140"><a href="tuning-lambda.html#cb104-140" tabindex="-1"></a>  <span class="do">##  All probabilities</span></span>
-<span id="cb104-141"><a href="tuning-lambda.html#cb104-141" tabindex="-1"></a>  lambda_means <span class="ot">=</span> <span class="fu">colnames</span>(cvres<span class="sc">$</span>cvscore.mat) <span class="sc">%&gt;%</span> <span class="fu">as.numeric</span>()</span>
-<span id="cb104-142"><a href="tuning-lambda.html#cb104-142" tabindex="-1"></a>  kk <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb104-143"><a href="tuning-lambda.html#cb104-143" tabindex="-1"></a>  glist <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb104-144"><a href="tuning-lambda.html#cb104-144" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_lam_prob){</span>
-<span id="cb104-145"><a href="tuning-lambda.html#cb104-145" tabindex="-1"></a>    <span class="cf">for</span>(jj <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_lam_mean){</span>
-<span id="cb104-146"><a href="tuning-lambda.html#cb104-146" tabindex="-1"></a>      <span class="do">## Visualize</span></span>
-<span id="cb104-147"><a href="tuning-lambda.html#cb104-147" tabindex="-1"></a>      g <span class="ot">=</span> flowtrend<span class="sc">::</span><a href="package-setup.html#plot_prob">plot_prob</a>(<span class="at">obj =</span> cvres<span class="sc">$</span>bestreslist[[<span class="fu">paste0</span>(ii, <span class="st">"-"</span>, jj)]], <span class="at">x=</span><span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist))</span>
-<span id="cb104-148"><a href="tuning-lambda.html#cb104-148" tabindex="-1"></a>      g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">"lam="</span>, <span class="fu">signif</span>(lambda_means[[jj]],<span class="dv">3</span>), <span class="st">", lam_prob="</span>, <span class="fu">signif</span>(lambda_probs[[ii]], <span class="dv">3</span>)))</span>
-<span id="cb104-149"><a href="tuning-lambda.html#cb104-149" tabindex="-1"></a>      <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(dt.model)){</span>
-<span id="cb104-150"><a href="tuning-lambda.html#cb104-150" tabindex="-1"></a>        g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> prob, <span class="at">group =</span> cluster),<span class="do">##, color = cluster),</span></span>
-<span id="cb104-151"><a href="tuning-lambda.html#cb104-151" tabindex="-1"></a>                          <span class="at">data =</span> dt.model, <span class="at">linetype =</span> <span class="st">"dashed"</span>) </span>
-<span id="cb104-152"><a href="tuning-lambda.html#cb104-152" tabindex="-1"></a>      }</span>
-<span id="cb104-153"><a href="tuning-lambda.html#cb104-153" tabindex="-1"></a>      g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
-<span id="cb104-154"><a href="tuning-lambda.html#cb104-154" tabindex="-1"></a></span>
-<span id="cb104-155"><a href="tuning-lambda.html#cb104-155" tabindex="-1"></a>      optimal <span class="ot">=</span> ((ii <span class="sc">==</span> cvres<span class="sc">$</span>min.inds[<span class="dv">1</span>]) <span class="sc">&amp;</span> (jj <span class="sc">==</span> cvres<span class="sc">$</span>min.inds[<span class="dv">2</span>]))</span>
-<span id="cb104-156"><a href="tuning-lambda.html#cb104-156" tabindex="-1"></a>      onese <span class="ot">=</span> ((ii <span class="sc">==</span> cvres<span class="sc">$</span>min.inds<span class="fl">.1</span>se[<span class="dv">1</span>]) <span class="sc">&amp;</span> (jj <span class="sc">==</span> cvres<span class="sc">$</span>min.inds<span class="fl">.1</span>se[<span class="dv">2</span>]))</span>
-<span id="cb104-157"><a href="tuning-lambda.html#cb104-157" tabindex="-1"></a>      <span class="cf">if</span>(optimal <span class="sc">|</span> onese){</span>
-<span id="cb104-158"><a href="tuning-lambda.html#cb104-158" tabindex="-1"></a>        g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">fill=</span><span class="cn">NA</span>, <span class="at">size=</span><span class="dv">5</span>))</span>
-<span id="cb104-159"><a href="tuning-lambda.html#cb104-159" tabindex="-1"></a>      }</span>
-<span id="cb104-160"><a href="tuning-lambda.html#cb104-160" tabindex="-1"></a>  </span>
-<span id="cb104-161"><a href="tuning-lambda.html#cb104-161" tabindex="-1"></a>      <span class="do">## Save plot</span></span>
-<span id="cb104-162"><a href="tuning-lambda.html#cb104-162" tabindex="-1"></a>      glist[[kk]] <span class="ot">=</span> g</span>
-<span id="cb104-163"><a href="tuning-lambda.html#cb104-163" tabindex="-1"></a>      kk <span class="ot">=</span> kk <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb104-164"><a href="tuning-lambda.html#cb104-164" tabindex="-1"></a>    }</span>
-<span id="cb104-165"><a href="tuning-lambda.html#cb104-165" tabindex="-1"></a>  }</span>
-<span id="cb104-166"><a href="tuning-lambda.html#cb104-166" tabindex="-1"></a>  </span>
-<span id="cb104-167"><a href="tuning-lambda.html#cb104-167" tabindex="-1"></a>  all_probs <span class="ot">=</span> <span class="fu">do.call</span>(ggpubr<span class="sc">::</span>ggarrange, <span class="fu">c</span>(glist, <span class="at">ncol=</span>n_lam_mean, <span class="at">nrow=</span>n_lam_prob))</span>
-<span id="cb104-168"><a href="tuning-lambda.html#cb104-168" tabindex="-1"></a>  all_probs <span class="sc">%&gt;%</span></span>
-<span id="cb104-169"><a href="tuning-lambda.html#cb104-169" tabindex="-1"></a>    <span class="fu">ggsave</span>(<span class="at">file =</span> <span class="fu">file.path</span>(destin, <span class="fu">paste0</span>(<span class="st">"all_probs.pdf"</span>)),</span>
-<span id="cb104-170"><a href="tuning-lambda.html#cb104-170" tabindex="-1"></a>           <span class="at">width =</span> <span class="dv">40</span>, <span class="at">height=</span><span class="dv">30</span>)</span>
-<span id="cb104-171"><a href="tuning-lambda.html#cb104-171" tabindex="-1"></a>  list_of_plots <span class="ot">=</span> <span class="fu">list</span>(<span class="at">all_probs =</span> all_probs, <span class="at">all_bestres =</span> all_bestres,</span>
-<span id="cb104-172"><a href="tuning-lambda.html#cb104-172" tabindex="-1"></a>                       <span class="at">cvscoremat_lattice_plot =</span> cvscoremat_lattice_plot ,</span>
-<span id="cb104-173"><a href="tuning-lambda.html#cb104-173" tabindex="-1"></a>                       <span class="at">mean_plot =</span> g1, <span class="at">prob_plot =</span> g2)</span>
-<span id="cb104-174"><a href="tuning-lambda.html#cb104-174" tabindex="-1"></a>  <span class="fu">return</span>(list_of_plots)</span>
-<span id="cb104-175"><a href="tuning-lambda.html#cb104-175" tabindex="-1"></a>}</span></code></pre></div>
+<p>This function <code><a href="tuning-lambda.html#plot_from_summary">plot_from_summary</a>()</code> creates summary plots from the results of
+the cross-validation.</p>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="tuning-lambda.html#cb105-1" tabindex="-1"></a><span class="co">#' Makes a series of plots.</span></span>
+<span id="cb105-2"><a href="tuning-lambda.html#cb105-2" tabindex="-1"></a><span class="co">#' </span></span>
+<span id="cb105-3"><a href="tuning-lambda.html#cb105-3" tabindex="-1"></a><span class="co">#' @param destin This directly has (1) summary.RDS, (2) meta.Rdata, and (3) datobj.RDS; optionally, it may have a dt_model</span></span>
+<span id="cb105-4"><a href="tuning-lambda.html#cb105-4" tabindex="-1"></a><span class="co">#' @return Nothing; but the pdf plots are created.</span></span>
+<span id="cb105-5"><a href="tuning-lambda.html#cb105-5" tabindex="-1"></a><span class="co">#' </span></span>
+<span id="cb105-6"><a href="tuning-lambda.html#cb105-6" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb105-7"><a href="tuning-lambda.html#cb105-7" tabindex="-1"></a><span id="plot_from_summary">plot_from_summary</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(destin){</span>
+<span id="cb105-8"><a href="tuning-lambda.html#cb105-8" tabindex="-1"></a>  <span class="do">## Load the results </span></span>
+<span id="cb105-9"><a href="tuning-lambda.html#cb105-9" tabindex="-1"></a>  cvres <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(destin, <span class="fu">paste0</span>(<span class="st">"summary.RDS"</span>)))</span>
+<span id="cb105-10"><a href="tuning-lambda.html#cb105-10" tabindex="-1"></a>  <span class="fu">load</span>(<span class="fu">file.path</span>(destin, <span class="fu">paste0</span>(<span class="st">"meta.Rdata"</span>)), <span class="at">verbose=</span><span class="cn">TRUE</span>)</span>
+<span id="cb105-11"><a href="tuning-lambda.html#cb105-11" tabindex="-1"></a><span class="do">##  datobj = readRDS(file.path(destin, paste0("datobj.RDS")))</span></span>
+<span id="cb105-12"><a href="tuning-lambda.html#cb105-12" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">file.exists</span>(<span class="fu">file.path</span>(destin, <span class="st">"dt_model.RDS"</span>))){</span>
+<span id="cb105-13"><a href="tuning-lambda.html#cb105-13" tabindex="-1"></a>    dt.model <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="fu">file.path</span>(destin, <span class="fu">paste0</span>(<span class="st">"dt_model.RDS"</span>)))</span>
+<span id="cb105-14"><a href="tuning-lambda.html#cb105-14" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb105-15"><a href="tuning-lambda.html#cb105-15" tabindex="-1"></a>    dt.model <span class="ot">=</span> <span class="cn">NULL</span></span>
+<span id="cb105-16"><a href="tuning-lambda.html#cb105-16" tabindex="-1"></a>  }</span>
+<span id="cb105-17"><a href="tuning-lambda.html#cb105-17" tabindex="-1"></a></span>
+<span id="cb105-18"><a href="tuning-lambda.html#cb105-18" tabindex="-1"></a>  <span class="do">##ylist = datobj$ybin_list %&gt;% lapply(cbind)</span></span>
+<span id="cb105-19"><a href="tuning-lambda.html#cb105-19" tabindex="-1"></a>  <span class="do">##countslist = datobj$counts_list</span></span>
+<span id="cb105-20"><a href="tuning-lambda.html#cb105-20" tabindex="-1"></a>  </span>
+<span id="cb105-21"><a href="tuning-lambda.html#cb105-21" tabindex="-1"></a>  <span class="do">## rows are prob, cols are means</span></span>
+<span id="cb105-22"><a href="tuning-lambda.html#cb105-22" tabindex="-1"></a>  <span class="fu">pdf</span>(<span class="fu">file.path</span>(destin, <span class="st">"cvscoremat.pdf"</span>), <span class="at">width =</span> <span class="dv">6</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
+<span id="cb105-23"><a href="tuning-lambda.html#cb105-23" tabindex="-1"></a>  cvscoremat_lattice_plot <span class="ot">=</span>  </span>
+<span id="cb105-24"><a href="tuning-lambda.html#cb105-24" tabindex="-1"></a>  cvres<span class="sc">$</span>cvscore.mat <span class="sc">%&gt;%</span> <span class="fu">drawmat_precise</span>(<span class="at">ylab =</span> <span class="st">"lambda_prob"</span>, <span class="at">xlab =</span> <span class="st">"lambda_mean"</span>) <span class="sc">+</span></span>
+<span id="cb105-25"><a href="tuning-lambda.html#cb105-25" tabindex="-1"></a>    latticeExtra<span class="sc">::</span><span class="fu">layer</span>(lattice<span class="sc">::</span><span class="fu">panel.points</span>(<span class="at">x =</span> cvres<span class="sc">$</span>min.inds[<span class="dv">2</span>],</span>
+<span id="cb105-26"><a href="tuning-lambda.html#cb105-26" tabindex="-1"></a>                                              <span class="at">y =</span> <span class="fu">nrow</span>(cvres<span class="sc">$</span>cvscore.mat) <span class="sc">+</span> <span class="dv">1</span> <span class="sc">-</span> cvres<span class="sc">$</span>min.inds[<span class="dv">1</span>], </span>
+<span id="cb105-27"><a href="tuning-lambda.html#cb105-27" tabindex="-1"></a>                                              <span class="at">pch =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"orange"</span>, <span class="at">cex=</span><span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb105-28"><a href="tuning-lambda.html#cb105-28" tabindex="-1"></a>    latticeExtra<span class="sc">::</span><span class="fu">layer</span>(lattice<span class="sc">::</span><span class="fu">panel.points</span>(<span class="at">x =</span> cvres<span class="sc">$</span>min.inds<span class="fl">.1</span>se[<span class="dv">2</span>],</span>
+<span id="cb105-29"><a href="tuning-lambda.html#cb105-29" tabindex="-1"></a>                                              <span class="at">y =</span> <span class="fu">nrow</span>(cvres<span class="sc">$</span>cvscore.mat) <span class="sc">+</span> <span class="dv">1</span> <span class="sc">-</span> cvres<span class="sc">$</span>min.inds<span class="fl">.1</span>se[<span class="dv">1</span>], </span>
+<span id="cb105-30"><a href="tuning-lambda.html#cb105-30" tabindex="-1"></a>                                              <span class="at">pch =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"orange"</span>, <span class="at">cex=</span><span class="dv">2</span>))</span>
+<span id="cb105-31"><a href="tuning-lambda.html#cb105-31" tabindex="-1"></a>  <span class="fu">plot</span>(cvscoremat_lattice_plot) <span class="do">## Need to load library(lattice) before this.</span></span>
+<span id="cb105-32"><a href="tuning-lambda.html#cb105-32" tabindex="-1"></a>  <span class="fu">graphics.off</span>()</span>
+<span id="cb105-33"><a href="tuning-lambda.html#cb105-33" tabindex="-1"></a>  </span>
+<span id="cb105-34"><a href="tuning-lambda.html#cb105-34" tabindex="-1"></a>  <span class="do">## The minimum values.</span></span>
+<span id="cb105-35"><a href="tuning-lambda.html#cb105-35" tabindex="-1"></a>  min_lam_prob <span class="ot">=</span> lambda_probs[cvres<span class="sc">$</span>min.inds[<span class="dv">2</span>]]</span>
+<span id="cb105-36"><a href="tuning-lambda.html#cb105-36" tabindex="-1"></a>  min_lam_mean <span class="ot">=</span> lambda_means[cvres<span class="sc">$</span>min.inds[<span class="dv">1</span>]]</span>
+<span id="cb105-37"><a href="tuning-lambda.html#cb105-37" tabindex="-1"></a>  </span>
+<span id="cb105-38"><a href="tuning-lambda.html#cb105-38" tabindex="-1"></a>  <span class="do">## each line is a different lambda_mean</span></span>
+<span id="cb105-39"><a href="tuning-lambda.html#cb105-39" tabindex="-1"></a>  <span class="fu">pdf</span>(<span class="fu">file.path</span>(destin, <span class="st">"cvscoremat-lines-over-means.pdf"</span>), <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">7</span>)</span>
+<span id="cb105-40"><a href="tuning-lambda.html#cb105-40" tabindex="-1"></a>  a <span class="ot">=</span> cvres<span class="sc">$</span>cvscore.mat <span class="sc">%&gt;%</span> <span class="fu">t</span>() <span class="sc">%&gt;%</span> <span class="fu">matplot</span>(<span class="at">x =</span> lambda_probs, <span class="at">type=</span><span class="st">'o'</span>, <span class="at">col =</span> <span class="st">'grey'</span>, <span class="at">main =</span> <span class="st">"each line is a different lambda_mean"</span>, <span class="at">log =</span> <span class="st">"x"</span>)</span>
+<span id="cb105-41"><a href="tuning-lambda.html#cb105-41" tabindex="-1"></a></span>
+<span id="cb105-42"><a href="tuning-lambda.html#cb105-42" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">v=</span>min_lam_prob, <span class="at">col =</span> <span class="st">'red'</span>)</span>
+<span id="cb105-43"><a href="tuning-lambda.html#cb105-43" tabindex="-1"></a>  <span class="fu">graphics.off</span>()</span>
+<span id="cb105-44"><a href="tuning-lambda.html#cb105-44" tabindex="-1"></a>  </span>
+<span id="cb105-45"><a href="tuning-lambda.html#cb105-45" tabindex="-1"></a>  <span class="fu">pdf</span>(<span class="fu">file.path</span>(destin, <span class="st">"cvscoremat-lines-over-probs.pdf"</span>), <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">7</span>)</span>
+<span id="cb105-46"><a href="tuning-lambda.html#cb105-46" tabindex="-1"></a>  cvres<span class="sc">$</span>cvscore.mat <span class="sc">%&gt;%</span> <span class="fu">matplot</span>(<span class="at">x=</span>lambda_means, <span class="at">type=</span><span class="st">'o'</span>, <span class="at">col =</span> <span class="st">'grey'</span>, <span class="at">main =</span> <span class="st">"each line is a different lambda_prob"</span>, <span class="at">log =</span> <span class="st">"x"</span>)</span>
+<span id="cb105-47"><a href="tuning-lambda.html#cb105-47" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">v=</span>min_lam_mean, <span class="at">col =</span> <span class="st">'red'</span>)</span>
+<span id="cb105-48"><a href="tuning-lambda.html#cb105-48" tabindex="-1"></a>  <span class="fu">graphics.off</span>()</span>
+<span id="cb105-49"><a href="tuning-lambda.html#cb105-49" tabindex="-1"></a></span>
+<span id="cb105-50"><a href="tuning-lambda.html#cb105-50" tabindex="-1"></a>  n_lam_prob <span class="ot">=</span> <span class="fu">nrow</span>(cvres<span class="sc">$</span>cvscore.mat)</span>
+<span id="cb105-51"><a href="tuning-lambda.html#cb105-51" tabindex="-1"></a>  n_lam_mean <span class="ot">=</span> <span class="fu">ncol</span>(cvres<span class="sc">$</span>cvscore.mat)</span>
+<span id="cb105-52"><a href="tuning-lambda.html#cb105-52" tabindex="-1"></a>  </span>
+<span id="cb105-53"><a href="tuning-lambda.html#cb105-53" tabindex="-1"></a>  <span class="do">## Reorder clusters</span></span>
+<span id="cb105-54"><a href="tuning-lambda.html#cb105-54" tabindex="-1"></a>  cvres<span class="sc">$</span>bestres <span class="ot">=</span> <a href="reordering-clusters.html#reorder_clust">reorder_clust</a>(cvres<span class="sc">$</span>bestres)</span>
+<span id="cb105-55"><a href="tuning-lambda.html#cb105-55" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_lam_prob){</span>
+<span id="cb105-56"><a href="tuning-lambda.html#cb105-56" tabindex="-1"></a>    <span class="fu">print</span>(ii)</span>
+<span id="cb105-57"><a href="tuning-lambda.html#cb105-57" tabindex="-1"></a>    <span class="cf">for</span>(jj <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_lam_mean){</span>
+<span id="cb105-58"><a href="tuning-lambda.html#cb105-58" tabindex="-1"></a>      <span class="do">## Reorder the cluster labels of the fitted ("best") models.</span></span>
+<span id="cb105-59"><a href="tuning-lambda.html#cb105-59" tabindex="-1"></a>      reordered_obj <span class="ot">=</span> <a href="reordering-clusters.html#reorder_kl">reorder_kl</a>(<span class="at">newres =</span> cvres<span class="sc">$</span>bestreslist[[<span class="fu">paste0</span>(ii, <span class="st">"-"</span>, jj)]],</span>
+<span id="cb105-60"><a href="tuning-lambda.html#cb105-60" tabindex="-1"></a>                                 <span class="at">origres =</span> cvres<span class="sc">$</span>bestres,<span class="do">##cvres$bestreslist[["1-1"]],</span></span>
+<span id="cb105-61"><a href="tuning-lambda.html#cb105-61" tabindex="-1"></a>                                 <span class="at">ylist_particle =</span> datobj<span class="sc">$</span>ylist)</span>
+<span id="cb105-62"><a href="tuning-lambda.html#cb105-62" tabindex="-1"></a>      cvres<span class="sc">$</span>bestreslist[[<span class="fu">paste0</span>(ii, <span class="st">"-"</span>, jj)]] <span class="ot">=</span> reordered_obj</span>
+<span id="cb105-63"><a href="tuning-lambda.html#cb105-63" tabindex="-1"></a>    }</span>
+<span id="cb105-64"><a href="tuning-lambda.html#cb105-64" tabindex="-1"></a>  }</span>
+<span id="cb105-65"><a href="tuning-lambda.html#cb105-65" tabindex="-1"></a>  </span>
+<span id="cb105-66"><a href="tuning-lambda.html#cb105-66" tabindex="-1"></a>  <span class="do">## Dependign on the dimension of the data, make a different plot</span></span>
+<span id="cb105-67"><a href="tuning-lambda.html#cb105-67" tabindex="-1"></a>  <span class="do">## if(obj$dimdat == 1) idim = 1</span></span>
+<span id="cb105-68"><a href="tuning-lambda.html#cb105-68" tabindex="-1"></a>  <span class="do">##  if(obj$dimdat &gt; 1) idim = 1</span></span>
+<span id="cb105-69"><a href="tuning-lambda.html#cb105-69" tabindex="-1"></a>  <span class="cf">for</span>(idim <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
+<span id="cb105-70"><a href="tuning-lambda.html#cb105-70" tabindex="-1"></a>    <span class="fu">print</span>(idim)</span>
+<span id="cb105-71"><a href="tuning-lambda.html#cb105-71" tabindex="-1"></a></span>
+<span id="cb105-72"><a href="tuning-lambda.html#cb105-72" tabindex="-1"></a>  <span class="do">## Make plots of the "best" model</span></span>
+<span id="cb105-73"><a href="tuning-lambda.html#cb105-73" tabindex="-1"></a>  g1 <span class="ot">=</span> flowtrend<span class="sc">::</span><a href="package-setup.html#plot_1d">plot_1d</a>(<span class="at">ylist =</span> ylist,</span>
+<span id="cb105-74"><a href="tuning-lambda.html#cb105-74" tabindex="-1"></a>                          <span class="at">countslist =</span> countslist,</span>
+<span id="cb105-75"><a href="tuning-lambda.html#cb105-75" tabindex="-1"></a>                          <span class="at">obj=</span>cvres<span class="sc">$</span>bestres,</span>
+<span id="cb105-76"><a href="tuning-lambda.html#cb105-76" tabindex="-1"></a>                          <span class="at">idim =</span> idim)</span>
+<span id="cb105-77"><a href="tuning-lambda.html#cb105-77" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(dt.model)){</span>
+<span id="cb105-78"><a href="tuning-lambda.html#cb105-78" tabindex="-1"></a>    g1 <span class="ot">=</span> g1 <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">group =</span> cluster),</span>
+<span id="cb105-79"><a href="tuning-lambda.html#cb105-79" tabindex="-1"></a>                        <span class="at">data =</span> dt.model,<span class="do">## %&gt;% subset(time %ni% held_out),</span></span>
+<span id="cb105-80"><a href="tuning-lambda.html#cb105-80" tabindex="-1"></a>                        <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">size=</span><span class="dv">1</span>, <span class="at">alpha =</span> .<span class="dv">7</span>)</span>
+<span id="cb105-81"><a href="tuning-lambda.html#cb105-81" tabindex="-1"></a>  }</span>
+<span id="cb105-82"><a href="tuning-lambda.html#cb105-82" tabindex="-1"></a>  </span>
+<span id="cb105-83"><a href="tuning-lambda.html#cb105-83" tabindex="-1"></a>  g2 <span class="ot">=</span> flowtrend<span class="sc">::</span><a href="package-setup.html#plot_prob">plot_prob</a>(cvres<span class="sc">$</span>bestres, <span class="at">x=</span><span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist))</span>
+<span id="cb105-84"><a href="tuning-lambda.html#cb105-84" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(dt.model)){</span>
+<span id="cb105-85"><a href="tuning-lambda.html#cb105-85" tabindex="-1"></a>    g2 <span class="ot">=</span> g2 <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y=</span>prob, <span class="at">group =</span> cluster), <span class="at">linetype =</span> <span class="st">"dashed"</span>,</span>
+<span id="cb105-86"><a href="tuning-lambda.html#cb105-86" tabindex="-1"></a>                        <span class="at">data=</span>dt.model  <span class="sc">%&gt;%</span> <span class="fu">select</span>(time, cluster, prob) <span class="sc">%&gt;%</span> <span class="fu">unique</span>())</span>
+<span id="cb105-87"><a href="tuning-lambda.html#cb105-87" tabindex="-1"></a>  }</span>
+<span id="cb105-88"><a href="tuning-lambda.html#cb105-88" tabindex="-1"></a>  <span class="fu">do.call</span>(ggpubr<span class="sc">::</span>ggarrange, <span class="fu">c</span>(<span class="fu">list</span>(g1, g2), <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">nrow =</span> <span class="dv">2</span>)) <span class="ot">-&gt;</span> g</span>
+<span id="cb105-89"><a href="tuning-lambda.html#cb105-89" tabindex="-1"></a>  g <span class="sc">%&gt;%</span> <span class="fu">ggsave</span>(<span class="at">file =</span> <span class="fu">file.path</span>(destin, <span class="fu">paste0</span>(<span class="st">"mean-and-prob-idim-"</span>, idim, <span class="st">".pdf"</span>)), <span class="at">width =</span> <span class="dv">10</span>, <span class="at">height=</span><span class="dv">7</span>)</span>
+<span id="cb105-90"><a href="tuning-lambda.html#cb105-90" tabindex="-1"></a>  }</span>
+<span id="cb105-91"><a href="tuning-lambda.html#cb105-91" tabindex="-1"></a>  </span>
+<span id="cb105-92"><a href="tuning-lambda.html#cb105-92" tabindex="-1"></a>  </span>
+<span id="cb105-93"><a href="tuning-lambda.html#cb105-93" tabindex="-1"></a>  <span class="do">## Make all model plots</span></span>
+<span id="cb105-94"><a href="tuning-lambda.html#cb105-94" tabindex="-1"></a>  lambda_means <span class="ot">=</span> <span class="fu">colnames</span>(cvres<span class="sc">$</span>cvscore.mat) <span class="sc">%&gt;%</span> <span class="fu">as.numeric</span>()</span>
+<span id="cb105-95"><a href="tuning-lambda.html#cb105-95" tabindex="-1"></a>  lambda_probs <span class="ot">=</span> <span class="fu">rownames</span>(cvres<span class="sc">$</span>cvscore.mat) <span class="sc">%&gt;%</span> <span class="fu">as.numeric</span>()</span>
+<span id="cb105-96"><a href="tuning-lambda.html#cb105-96" tabindex="-1"></a></span>
+<span id="cb105-97"><a href="tuning-lambda.html#cb105-97" tabindex="-1"></a>  <span class="cf">for</span>(idim <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
+<span id="cb105-98"><a href="tuning-lambda.html#cb105-98" tabindex="-1"></a>    </span>
+<span id="cb105-99"><a href="tuning-lambda.html#cb105-99" tabindex="-1"></a>  kk <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb105-100"><a href="tuning-lambda.html#cb105-100" tabindex="-1"></a>  glist <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb105-101"><a href="tuning-lambda.html#cb105-101" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_lam_prob){</span>
+<span id="cb105-102"><a href="tuning-lambda.html#cb105-102" tabindex="-1"></a>    <span class="cf">for</span>(jj <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_lam_mean){</span>
+<span id="cb105-103"><a href="tuning-lambda.html#cb105-103" tabindex="-1"></a></span>
+<span id="cb105-104"><a href="tuning-lambda.html#cb105-104" tabindex="-1"></a>      <span class="do">## Calculate number of knots (complexity, df)</span></span>
+<span id="cb105-105"><a href="tuning-lambda.html#cb105-105" tabindex="-1"></a>      knots_mean <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="cf">function</span>(iclust){</span>
+<span id="cb105-106"><a href="tuning-lambda.html#cb105-106" tabindex="-1"></a>        abs_means <span class="ot">=</span> cvres<span class="sc">$</span>bestreslist[[<span class="fu">paste0</span>(ii, <span class="st">"-"</span>, jj)]] <span class="sc">%&gt;%</span> .<span class="sc">$</span>mn <span class="sc">%&gt;%</span> .[,<span class="dv">1</span>,iclust] <span class="sc">%&gt;%</span> <span class="fu">diff</span>(<span class="at">differences=</span><span class="dv">3</span>) <span class="sc">%&gt;%</span> <span class="fu">abs</span>()</span>
+<span id="cb105-107"><a href="tuning-lambda.html#cb105-107" tabindex="-1"></a>        df <span class="ot">=</span> <span class="fu">sum</span>(abs_means <span class="sc">&gt;</span> <span class="fl">1E-4</span>)</span>
+<span id="cb105-108"><a href="tuning-lambda.html#cb105-108" tabindex="-1"></a>      })</span>
+<span id="cb105-109"><a href="tuning-lambda.html#cb105-109" tabindex="-1"></a>      knots_prob <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="cf">function</span>(iclust){</span>
+<span id="cb105-110"><a href="tuning-lambda.html#cb105-110" tabindex="-1"></a>        abs_probs <span class="ot">=</span> cvres<span class="sc">$</span>bestreslist[[<span class="fu">paste0</span>(ii, <span class="st">"-"</span>, jj)]] <span class="sc">%&gt;%</span> .<span class="sc">$</span>prob_link <span class="sc">%&gt;%</span> .[,iclust] <span class="sc">%&gt;%</span> <span class="fu">diff</span>(<span class="at">differences=</span><span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">abs</span>()</span>
+<span id="cb105-111"><a href="tuning-lambda.html#cb105-111" tabindex="-1"></a>        df <span class="ot">=</span> <span class="fu">sum</span>(abs_probs <span class="sc">&gt;</span> <span class="fl">1E-4</span>)</span>
+<span id="cb105-112"><a href="tuning-lambda.html#cb105-112" tabindex="-1"></a>      })</span>
+<span id="cb105-113"><a href="tuning-lambda.html#cb105-113" tabindex="-1"></a></span>
+<span id="cb105-114"><a href="tuning-lambda.html#cb105-114" tabindex="-1"></a>      <span class="do">## Visualize</span></span>
+<span id="cb105-115"><a href="tuning-lambda.html#cb105-115" tabindex="-1"></a>      g <span class="ot">=</span> flowtrend<span class="sc">::</span><a href="package-setup.html#plot_1d">plot_1d</a>(<span class="at">ylist =</span> ylist, <span class="at">countslist =</span> countslist, <span class="at">obj =</span> cvres<span class="sc">$</span>bestreslist[[<span class="fu">paste0</span>(ii, <span class="st">"-"</span>, jj)]], <span class="at">idim =</span> idim)</span>
+<span id="cb105-116"><a href="tuning-lambda.html#cb105-116" tabindex="-1"></a>      g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">"lam="</span>, <span class="fu">signif</span>(lambda_means[[jj]],<span class="dv">3</span>), <span class="st">", lam_prob="</span>, <span class="fu">signif</span>(lambda_probs[[ii]], <span class="dv">3</span>)))</span>
+<span id="cb105-117"><a href="tuning-lambda.html#cb105-117" tabindex="-1"></a>      g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span>
+<span id="cb105-118"><a href="tuning-lambda.html#cb105-118" tabindex="-1"></a></span>
+<span id="cb105-119"><a href="tuning-lambda.html#cb105-119" tabindex="-1"></a>      g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">annotate</span>(<span class="st">"text"</span>,  <span class="at">x=</span><span class="cn">Inf</span>, <span class="at">y =</span> <span class="cn">Inf</span>,</span>
+<span id="cb105-120"><a href="tuning-lambda.html#cb105-120" tabindex="-1"></a>                       <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"knots(prob,mean)="</span>, knots_prob,<span class="st">", "</span>,knots_mean), <span class="at">vjust=</span><span class="dv">1</span>, <span class="at">hjust=</span><span class="dv">1</span>)</span>
+<span id="cb105-121"><a href="tuning-lambda.html#cb105-121" tabindex="-1"></a></span>
+<span id="cb105-122"><a href="tuning-lambda.html#cb105-122" tabindex="-1"></a></span>
+<span id="cb105-123"><a href="tuning-lambda.html#cb105-123" tabindex="-1"></a>      optimal <span class="ot">=</span> ((ii <span class="sc">==</span> cvres<span class="sc">$</span>min.inds[<span class="dv">1</span>]) <span class="sc">&amp;</span> (jj <span class="sc">==</span> cvres<span class="sc">$</span>min.inds[<span class="dv">2</span>]))</span>
+<span id="cb105-124"><a href="tuning-lambda.html#cb105-124" tabindex="-1"></a>      onese <span class="ot">=</span> ((ii <span class="sc">==</span> cvres<span class="sc">$</span>min.inds<span class="fl">.1</span>se[<span class="dv">1</span>]) <span class="sc">&amp;</span> (jj <span class="sc">==</span> cvres<span class="sc">$</span>min.inds<span class="fl">.1</span>se[<span class="dv">2</span>]))</span>
+<span id="cb105-125"><a href="tuning-lambda.html#cb105-125" tabindex="-1"></a>      <span class="cf">if</span>(optimal <span class="sc">|</span> onese){</span>
+<span id="cb105-126"><a href="tuning-lambda.html#cb105-126" tabindex="-1"></a>        g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">fill=</span><span class="cn">NA</span>, <span class="at">size=</span><span class="dv">5</span>))</span>
+<span id="cb105-127"><a href="tuning-lambda.html#cb105-127" tabindex="-1"></a>      }</span>
+<span id="cb105-128"><a href="tuning-lambda.html#cb105-128" tabindex="-1"></a></span>
+<span id="cb105-129"><a href="tuning-lambda.html#cb105-129" tabindex="-1"></a>      <span class="do">## Save plot</span></span>
+<span id="cb105-130"><a href="tuning-lambda.html#cb105-130" tabindex="-1"></a>      glist[[kk]] <span class="ot">=</span> g</span>
+<span id="cb105-131"><a href="tuning-lambda.html#cb105-131" tabindex="-1"></a>      kk <span class="ot">=</span> kk <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb105-132"><a href="tuning-lambda.html#cb105-132" tabindex="-1"></a>    }</span>
+<span id="cb105-133"><a href="tuning-lambda.html#cb105-133" tabindex="-1"></a>  }</span>
+<span id="cb105-134"><a href="tuning-lambda.html#cb105-134" tabindex="-1"></a>  all_bestres <span class="ot">=</span> <span class="fu">do.call</span>(ggpubr<span class="sc">::</span>ggarrange, <span class="fu">c</span>(glist, <span class="at">ncol =</span> n_lam_mean, <span class="at">nrow =</span> n_lam_prob))</span>
+<span id="cb105-135"><a href="tuning-lambda.html#cb105-135" tabindex="-1"></a>  all_bestres <span class="sc">%&gt;%</span></span>
+<span id="cb105-136"><a href="tuning-lambda.html#cb105-136" tabindex="-1"></a>    <span class="fu">ggsave</span>(<span class="at">file =</span> <span class="fu">file.path</span>(destin, <span class="fu">paste0</span>(<span class="st">"all_bestres-idim-"</span>, idim, <span class="st">".pdf"</span>)),</span>
+<span id="cb105-137"><a href="tuning-lambda.html#cb105-137" tabindex="-1"></a>           <span class="at">width =</span> <span class="dv">40</span>, <span class="at">height=</span><span class="dv">30</span>)</span>
+<span id="cb105-138"><a href="tuning-lambda.html#cb105-138" tabindex="-1"></a>  }</span>
+<span id="cb105-139"><a href="tuning-lambda.html#cb105-139" tabindex="-1"></a>  </span>
+<span id="cb105-140"><a href="tuning-lambda.html#cb105-140" tabindex="-1"></a>  <span class="do">##  All probabilities</span></span>
+<span id="cb105-141"><a href="tuning-lambda.html#cb105-141" tabindex="-1"></a>  lambda_means <span class="ot">=</span> <span class="fu">colnames</span>(cvres<span class="sc">$</span>cvscore.mat) <span class="sc">%&gt;%</span> <span class="fu">as.numeric</span>()</span>
+<span id="cb105-142"><a href="tuning-lambda.html#cb105-142" tabindex="-1"></a>  kk <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb105-143"><a href="tuning-lambda.html#cb105-143" tabindex="-1"></a>  glist <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb105-144"><a href="tuning-lambda.html#cb105-144" tabindex="-1"></a>  <span class="cf">for</span>(ii <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_lam_prob){</span>
+<span id="cb105-145"><a href="tuning-lambda.html#cb105-145" tabindex="-1"></a>    <span class="cf">for</span>(jj <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_lam_mean){</span>
+<span id="cb105-146"><a href="tuning-lambda.html#cb105-146" tabindex="-1"></a>      <span class="do">## Visualize</span></span>
+<span id="cb105-147"><a href="tuning-lambda.html#cb105-147" tabindex="-1"></a>      g <span class="ot">=</span> flowtrend<span class="sc">::</span><a href="package-setup.html#plot_prob">plot_prob</a>(<span class="at">obj =</span> cvres<span class="sc">$</span>bestreslist[[<span class="fu">paste0</span>(ii, <span class="st">"-"</span>, jj)]], <span class="at">x=</span><span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ylist))</span>
+<span id="cb105-148"><a href="tuning-lambda.html#cb105-148" tabindex="-1"></a>      g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">"lam="</span>, <span class="fu">signif</span>(lambda_means[[jj]],<span class="dv">3</span>), <span class="st">", lam_prob="</span>, <span class="fu">signif</span>(lambda_probs[[ii]], <span class="dv">3</span>)))</span>
+<span id="cb105-149"><a href="tuning-lambda.html#cb105-149" tabindex="-1"></a>      <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(dt.model)){</span>
+<span id="cb105-150"><a href="tuning-lambda.html#cb105-150" tabindex="-1"></a>        g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> prob, <span class="at">group =</span> cluster),<span class="do">##, color = cluster),</span></span>
+<span id="cb105-151"><a href="tuning-lambda.html#cb105-151" tabindex="-1"></a>                          <span class="at">data =</span> dt.model, <span class="at">linetype =</span> <span class="st">"dashed"</span>) </span>
+<span id="cb105-152"><a href="tuning-lambda.html#cb105-152" tabindex="-1"></a>      }</span>
+<span id="cb105-153"><a href="tuning-lambda.html#cb105-153" tabindex="-1"></a>      g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb105-154"><a href="tuning-lambda.html#cb105-154" tabindex="-1"></a></span>
+<span id="cb105-155"><a href="tuning-lambda.html#cb105-155" tabindex="-1"></a>      optimal <span class="ot">=</span> ((ii <span class="sc">==</span> cvres<span class="sc">$</span>min.inds[<span class="dv">1</span>]) <span class="sc">&amp;</span> (jj <span class="sc">==</span> cvres<span class="sc">$</span>min.inds[<span class="dv">2</span>]))</span>
+<span id="cb105-156"><a href="tuning-lambda.html#cb105-156" tabindex="-1"></a>      onese <span class="ot">=</span> ((ii <span class="sc">==</span> cvres<span class="sc">$</span>min.inds<span class="fl">.1</span>se[<span class="dv">1</span>]) <span class="sc">&amp;</span> (jj <span class="sc">==</span> cvres<span class="sc">$</span>min.inds<span class="fl">.1</span>se[<span class="dv">2</span>]))</span>
+<span id="cb105-157"><a href="tuning-lambda.html#cb105-157" tabindex="-1"></a>      <span class="cf">if</span>(optimal <span class="sc">|</span> onese){</span>
+<span id="cb105-158"><a href="tuning-lambda.html#cb105-158" tabindex="-1"></a>        g <span class="ot">=</span> g <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">fill=</span><span class="cn">NA</span>, <span class="at">size=</span><span class="dv">5</span>))</span>
+<span id="cb105-159"><a href="tuning-lambda.html#cb105-159" tabindex="-1"></a>      }</span>
+<span id="cb105-160"><a href="tuning-lambda.html#cb105-160" tabindex="-1"></a>  </span>
+<span id="cb105-161"><a href="tuning-lambda.html#cb105-161" tabindex="-1"></a>      <span class="do">## Save plot</span></span>
+<span id="cb105-162"><a href="tuning-lambda.html#cb105-162" tabindex="-1"></a>      glist[[kk]] <span class="ot">=</span> g</span>
+<span id="cb105-163"><a href="tuning-lambda.html#cb105-163" tabindex="-1"></a>      kk <span class="ot">=</span> kk <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb105-164"><a href="tuning-lambda.html#cb105-164" tabindex="-1"></a>    }</span>
+<span id="cb105-165"><a href="tuning-lambda.html#cb105-165" tabindex="-1"></a>  }</span>
+<span id="cb105-166"><a href="tuning-lambda.html#cb105-166" tabindex="-1"></a>  </span>
+<span id="cb105-167"><a href="tuning-lambda.html#cb105-167" tabindex="-1"></a>  all_probs <span class="ot">=</span> <span class="fu">do.call</span>(ggpubr<span class="sc">::</span>ggarrange, <span class="fu">c</span>(glist, <span class="at">ncol=</span>n_lam_mean, <span class="at">nrow=</span>n_lam_prob))</span>
+<span id="cb105-168"><a href="tuning-lambda.html#cb105-168" tabindex="-1"></a>  all_probs <span class="sc">%&gt;%</span></span>
+<span id="cb105-169"><a href="tuning-lambda.html#cb105-169" tabindex="-1"></a>    <span class="fu">ggsave</span>(<span class="at">file =</span> <span class="fu">file.path</span>(destin, <span class="fu">paste0</span>(<span class="st">"all_probs.pdf"</span>)),</span>
+<span id="cb105-170"><a href="tuning-lambda.html#cb105-170" tabindex="-1"></a>           <span class="at">width =</span> <span class="dv">40</span>, <span class="at">height=</span><span class="dv">30</span>)</span>
+<span id="cb105-171"><a href="tuning-lambda.html#cb105-171" tabindex="-1"></a>  list_of_plots <span class="ot">=</span> <span class="fu">list</span>(<span class="at">all_probs =</span> all_probs, <span class="at">all_bestres =</span> all_bestres,</span>
+<span id="cb105-172"><a href="tuning-lambda.html#cb105-172" tabindex="-1"></a>                       <span class="at">cvscoremat_lattice_plot =</span> cvscoremat_lattice_plot ,</span>
+<span id="cb105-173"><a href="tuning-lambda.html#cb105-173" tabindex="-1"></a>                       <span class="at">mean_plot =</span> g1, <span class="at">prob_plot =</span> g2)</span>
+<span id="cb105-174"><a href="tuning-lambda.html#cb105-174" tabindex="-1"></a>  <span class="fu">return</span>(list_of_plots)</span>
+<span id="cb105-175"><a href="tuning-lambda.html#cb105-175" tabindex="-1"></a>}</span></code></pre></div>
 
 </div>
 </div>

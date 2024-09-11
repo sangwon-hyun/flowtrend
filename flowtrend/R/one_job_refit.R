@@ -14,7 +14,7 @@ one_job_refit <- function(iprob, imu, destin,
                           l, l_prob,
                           seedtab = NULL,
                           ## The rest that is needed explicitly for flowtrend_once()
-                          ylist, countslist,
+                          ylist, countslist, x,
                           ...){
 
   args = list(...)
@@ -48,12 +48,16 @@ one_job_refit <- function(iprob, imu, destin,
       args = list(...)
       args$ylist = ylist
       args$countslist = countslist
+      args$x = x
       args$lambda_prob = lambda_probs[iprob]
       args$lambda = lambda_means[imu]
       args$l = l
       args$l_prob = l_prob
       args$seed = seed
-      if("nrestart" %in% names(args)) args = args[-which(names(args) %in% "nrestart")] ## remove |nrestart| prior to feeding
+      if("nrestart" %in% names(args)){
+        ## remove |nrestart| prior to feeding it into flowtrend_once
+        args = args[-which(names(args) %in% "nrestart")] 
+      }
 
       ## Call the function.
       argn <- lapply(names(args), as.name)

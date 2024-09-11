@@ -12,7 +12,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="3 Building the model/algorithm | Creating the flowtrend R package">
 <meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien">
-<meta name="date" content="2024-06-22">
+<meta name="date" content="2024-09-11">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -183,9 +183,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="7.1" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#two-alternative-clusterings"><i class="fa fa-check"></i><b>7.1</b> Two alternative clusterings</a></li>
 <li class="chapter" data-level="7.2" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#example-using-other-cluster-algorithms"><i class="fa fa-check"></i><b>7.2</b> Example using other cluster algorithms</a></li>
-<li class="chapter" data-level="7.3" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>7.3</b> Evaluating performance: soft RAND index</a></li>
-<li class="chapter" data-level="7.4" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#generating-pseudo-real-data"><i class="fa fa-check"></i><b>7.4</b> Generating “pseudo-real” data</a></li>
-<li class="chapter" data-level="7.5" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#miscellaneous-helpers"><i class="fa fa-check"></i><b>7.5</b> Miscellaneous helpers</a></li>
+<li class="chapter" data-level="7.3" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#oracle"><i class="fa fa-check"></i><b>7.3</b> Oracle</a></li>
+<li class="chapter" data-level="7.4" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#evaluating-performance-soft-rand-index"><i class="fa fa-check"></i><b>7.4</b> Evaluating performance: soft RAND index</a></li>
+<li class="chapter" data-level="7.5" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#generating-pseudo-real-data"><i class="fa fa-check"></i><b>7.5</b> Generating “pseudo-real” data</a></li>
+<li class="chapter" data-level="7.6" data-path="helpers-for-simulations.html"><a href="helpers-for-simulations.html#miscellaneous-helpers"><i class="fa fa-check"></i><b>7.6</b> Miscellaneous helpers</a></li>
 </ul>
 </li>
 <li class="chapter" data-level="8" data-path="documenting-the-package-and-building.html"><a href="documenting-the-package-and-building.html"><i class="fa fa-check"></i><b>8</b> Documenting the package and building</a></li>
@@ -472,7 +473,7 @@ for equally spaced data.</p>
 <span id="cb30-2"><a href="building-the-modelalgorithm.html#cb30-2" tabindex="-1"></a><span class="co">#'</span></span>
 <span id="cb30-3"><a href="building-the-modelalgorithm.html#cb30-3" tabindex="-1"></a><span class="co">#' @param mu Cluster means.</span></span>
 <span id="cb30-4"><a href="building-the-modelalgorithm.html#cb30-4" tabindex="-1"></a><span class="co">#' @param prob Cluster probabilities.</span></span>
-<span id="cb30-5"><a href="building-the-modelalgorithm.html#cb30-5" tabindex="-1"></a><span class="co">#' @param prob Cluster variances.</span></span>
+<span id="cb30-5"><a href="building-the-modelalgorithm.html#cb30-5" tabindex="-1"></a><span class="co">#' @param sigma Cluster variances.</span></span>
 <span id="cb30-6"><a href="building-the-modelalgorithm.html#cb30-6" tabindex="-1"></a><span class="co">#' @param ylist Data.</span></span>
 <span id="cb30-7"><a href="building-the-modelalgorithm.html#cb30-7" tabindex="-1"></a><span class="co">#' @param tt Time point.</span></span>
 <span id="cb30-8"><a href="building-the-modelalgorithm.html#cb30-8" tabindex="-1"></a><span id="loglik_tt">loglik_tt</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, tt, mu, sigma, prob, <span class="at">dimdat =</span> <span class="cn">NULL</span>, <span class="at">countslist =</span> <span class="cn">NULL</span>, numclust){</span>
@@ -498,7 +499,7 @@ for equally spaced data.</p>
 cytograms, given model parameter <code>mu</code>, <code>prob</code>, and <code>sigma</code>:</p>
 <p><span class="math display">\[\sum_{t=1}^T\sum_{i=1}^{n_t} C_i^{(t)} \log\left( \sum_{k=1}^K \pi_{itk} \phi(y_i^{(t)};
 \mu_{kt}, \Sigma_k) \right). \]</span></p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="building-the-modelalgorithm.html#cb31-1" tabindex="-1"></a><span class="co">#' Evaluating the penalized data log-likelihood on all data \code{ylist} given parameters \code{mu}, \code{prob}, and \code{sigma}.</span></span>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="building-the-modelalgorithm.html#cb31-1" tabindex="-1"></a><span class="co">#' Evaluating the penalized negative log-likelihood on all data \code{ylist} given parameters \code{mu}, \code{prob}, and \code{sigma}.</span></span>
 <span id="cb31-2"><a href="building-the-modelalgorithm.html#cb31-2" tabindex="-1"></a><span class="co">#'</span></span>
 <span id="cb31-3"><a href="building-the-modelalgorithm.html#cb31-3" tabindex="-1"></a><span class="co">#' @param mu</span></span>
 <span id="cb31-4"><a href="building-the-modelalgorithm.html#cb31-4" tabindex="-1"></a><span class="co">#' @param prob</span></span>
@@ -523,7 +524,7 @@ cytograms, given model parameter <code>mu</code>, <code>prob</code>, and <code>s
 <span id="cb31-23"><a href="building-the-modelalgorithm.html#cb31-23" tabindex="-1"></a><span class="co">#' @examples</span></span>
 <span id="cb31-24"><a href="building-the-modelalgorithm.html#cb31-24" tabindex="-1"></a><span id="objective">objective</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, prob, <span class="at">prob_link =</span> <span class="cn">NULL</span>, sigma,</span>
 <span id="cb31-25"><a href="building-the-modelalgorithm.html#cb31-25" tabindex="-1"></a>                      ylist,</span>
-<span id="cb31-26"><a href="building-the-modelalgorithm.html#cb31-26" tabindex="-1"></a>                      Dlp1, <span class="at">l =</span> <span class="cn">NULL</span>,</span>
+<span id="cb31-26"><a href="building-the-modelalgorithm.html#cb31-26" tabindex="-1"></a>                      <span class="at">Dlp1 =</span> <span class="cn">NULL</span>, <span class="at">l =</span> <span class="cn">NULL</span>,</span>
 <span id="cb31-27"><a href="building-the-modelalgorithm.html#cb31-27" tabindex="-1"></a>                      <span class="at">lambda =</span> <span class="dv">0</span>,</span>
 <span id="cb31-28"><a href="building-the-modelalgorithm.html#cb31-28" tabindex="-1"></a>                      <span class="at">l_prob =</span> <span class="cn">NULL</span>,</span>
 <span id="cb31-29"><a href="building-the-modelalgorithm.html#cb31-29" tabindex="-1"></a>                      <span class="at">Dlp1_prob =</span> <span class="cn">NULL</span>,</span>
@@ -750,7 +751,7 @@ by default.</p>
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="building-the-modelalgorithm.html#cb37-1" tabindex="-1"></a><span class="co">#' E step, which updates the "responsibilities", which are posterior membership probabilities of each particle.</span></span>
 <span id="cb37-2"><a href="building-the-modelalgorithm.html#cb37-2" tabindex="-1"></a><span class="co">#'</span></span>
 <span id="cb37-3"><a href="building-the-modelalgorithm.html#cb37-3" tabindex="-1"></a><span class="co">#' @param mn</span></span>
-<span id="cb37-4"><a href="building-the-modelalgorithm.html#cb37-4" tabindex="-1"></a><span class="co">#' @param sigma</span></span>
+<span id="cb37-4"><a href="building-the-modelalgorithm.html#cb37-4" tabindex="-1"></a><span class="co">#' @param sigma covariance</span></span>
 <span id="cb37-5"><a href="building-the-modelalgorithm.html#cb37-5" tabindex="-1"></a><span class="co">#' @param prob</span></span>
 <span id="cb37-6"><a href="building-the-modelalgorithm.html#cb37-6" tabindex="-1"></a><span class="co">#' @param ylist</span></span>
 <span id="cb37-7"><a href="building-the-modelalgorithm.html#cb37-7" tabindex="-1"></a><span class="co">#' @param numclust</span></span>
@@ -2288,21 +2289,20 @@ objective value should be the same. Let’s check that.</p>
 <span id="cb64-178"><a href="building-the-modelalgorithm.html#cb64-178" tabindex="-1"></a>                        <span class="at">sigma =</span> sigma,</span>
 <span id="cb64-179"><a href="building-the-modelalgorithm.html#cb64-179" tabindex="-1"></a>                        <span class="at">objectives =</span> objectives[<span class="dv">2</span><span class="sc">:</span>iter],</span>
 <span id="cb64-180"><a href="building-the-modelalgorithm.html#cb64-180" tabindex="-1"></a>                        <span class="at">final.iter =</span> iter,</span>
-<span id="cb64-181"><a href="building-the-modelalgorithm.html#cb64-181" tabindex="-1"></a>                        <span class="at">resp =</span> resp,</span>
-<span id="cb64-182"><a href="building-the-modelalgorithm.html#cb64-182" tabindex="-1"></a>                        <span class="do">## Above is output, below are data/algorithm settings.</span></span>
-<span id="cb64-183"><a href="building-the-modelalgorithm.html#cb64-183" tabindex="-1"></a>                        <span class="at">dimdat =</span> dimdat,</span>
-<span id="cb64-184"><a href="building-the-modelalgorithm.html#cb64-184" tabindex="-1"></a>                        <span class="at">TT =</span> TT,</span>
-<span id="cb64-185"><a href="building-the-modelalgorithm.html#cb64-185" tabindex="-1"></a>                        <span class="at">N =</span> N,</span>
-<span id="cb64-186"><a href="building-the-modelalgorithm.html#cb64-186" tabindex="-1"></a>                        <span class="at">l =</span> l,</span>
-<span id="cb64-187"><a href="building-the-modelalgorithm.html#cb64-187" tabindex="-1"></a>                        <span class="at">l_prob =</span> l_prob,</span>
-<span id="cb64-188"><a href="building-the-modelalgorithm.html#cb64-188" tabindex="-1"></a>                        <span class="at">x =</span> x,</span>
-<span id="cb64-189"><a href="building-the-modelalgorithm.html#cb64-189" tabindex="-1"></a>                        <span class="at">numclust =</span> numclust,</span>
-<span id="cb64-190"><a href="building-the-modelalgorithm.html#cb64-190" tabindex="-1"></a>                        <span class="at">lambda =</span> lambda,</span>
-<span id="cb64-191"><a href="building-the-modelalgorithm.html#cb64-191" tabindex="-1"></a>                        <span class="at">lambda_prob =</span> lambda_prob,</span>
-<span id="cb64-192"><a href="building-the-modelalgorithm.html#cb64-192" tabindex="-1"></a>                        <span class="at">maxdev =</span> maxdev,</span>
-<span id="cb64-193"><a href="building-the-modelalgorithm.html#cb64-193" tabindex="-1"></a>                        <span class="at">niter =</span> niter</span>
-<span id="cb64-194"><a href="building-the-modelalgorithm.html#cb64-194" tabindex="-1"></a>  ), <span class="at">class =</span> <span class="st">"flowtrend"</span>))</span>
-<span id="cb64-195"><a href="building-the-modelalgorithm.html#cb64-195" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb64-181"><a href="building-the-modelalgorithm.html#cb64-181" tabindex="-1"></a>                        <span class="do">## Above is output, below are data/algorithm settings.</span></span>
+<span id="cb64-182"><a href="building-the-modelalgorithm.html#cb64-182" tabindex="-1"></a>                        <span class="at">dimdat =</span> dimdat,</span>
+<span id="cb64-183"><a href="building-the-modelalgorithm.html#cb64-183" tabindex="-1"></a>                        <span class="at">TT =</span> TT,</span>
+<span id="cb64-184"><a href="building-the-modelalgorithm.html#cb64-184" tabindex="-1"></a>                        <span class="at">N =</span> N,</span>
+<span id="cb64-185"><a href="building-the-modelalgorithm.html#cb64-185" tabindex="-1"></a>                        <span class="at">l =</span> l,</span>
+<span id="cb64-186"><a href="building-the-modelalgorithm.html#cb64-186" tabindex="-1"></a>                        <span class="at">l_prob =</span> l_prob,</span>
+<span id="cb64-187"><a href="building-the-modelalgorithm.html#cb64-187" tabindex="-1"></a>                        <span class="at">x =</span> x,</span>
+<span id="cb64-188"><a href="building-the-modelalgorithm.html#cb64-188" tabindex="-1"></a>                        <span class="at">numclust =</span> numclust,</span>
+<span id="cb64-189"><a href="building-the-modelalgorithm.html#cb64-189" tabindex="-1"></a>                        <span class="at">lambda =</span> lambda,</span>
+<span id="cb64-190"><a href="building-the-modelalgorithm.html#cb64-190" tabindex="-1"></a>                        <span class="at">lambda_prob =</span> lambda_prob,</span>
+<span id="cb64-191"><a href="building-the-modelalgorithm.html#cb64-191" tabindex="-1"></a>                        <span class="at">maxdev =</span> maxdev,</span>
+<span id="cb64-192"><a href="building-the-modelalgorithm.html#cb64-192" tabindex="-1"></a>                        <span class="at">niter =</span> niter</span>
+<span id="cb64-193"><a href="building-the-modelalgorithm.html#cb64-193" tabindex="-1"></a>  ), <span class="at">class =</span> <span class="st">"flowtrend"</span>))</span>
+<span id="cb64-194"><a href="building-the-modelalgorithm.html#cb64-194" tabindex="-1"></a>}</span></code></pre></div>
 <p>Next, <code><a href="building-the-modelalgorithm.html#flowtrend">flowtrend</a>()</code> is the main user-facing function.</p>
 <div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="building-the-modelalgorithm.html#cb65-1" tabindex="-1"></a><span class="co">#' Main function. Repeats the EM algorithm (\code{<a href="building-the-modelalgorithm.html#flowtrend_once">flowtrend_once</a>()}) with |nrep| restarts (5 by default).</span></span>
 <span id="cb65-2"><a href="building-the-modelalgorithm.html#cb65-2" tabindex="-1"></a><span class="co">#'</span></span>

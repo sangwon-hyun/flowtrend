@@ -9,6 +9,7 @@ plot_3d(
   obj = NULL,
   tt,
   countslist = NULL,
+  mn_colours = NULL,
   labels = NULL,
   bin = TRUE,
   plot_title = NULL,

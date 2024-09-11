@@ -2,7 +2,7 @@
 % Please edit documentation in _main.Rmd.
 \name{objective}
 \alias{objective}
-\title{Evaluating the penalized data log-likelihood on all data \code{ylist} given parameters \code{mu}, \code{prob}, and \code{sigma}.}
+\title{Evaluating the penalized negative log-likelihood on all data \code{ylist} given parameters \code{mu}, \code{prob}, and \code{sigma}.}
 \usage{
 objective(
   mu,
@@ -10,7 +10,7 @@ objective(
   prob_link = NULL,
   sigma,
   ylist,
-  Dlp1,
+  Dlp1 = NULL,
   l = NULL,
   lambda = 0,
   l_prob = NULL,
@@ -27,5 +27,5 @@ objective(
 \item{unpenalized}{if TRUE, return the unpenalized out-of-sample fit.}
 }
 \description{
-Evaluating the penalized data log-likelihood on all data \code{ylist} given parameters \code{mu}, \code{prob}, and \code{sigma}.
+Evaluating the penalized negative log-likelihood on all data \code{ylist} given parameters \code{mu}, \code{prob}, and \code{sigma}.
 }

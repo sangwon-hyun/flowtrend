@@ -8,6 +8,7 @@
 cv_flowtrend(
   ylist,
   countslist,
+  x = NULL,
   destin = ".",
   lambda_means,
   lambda_probs,
@@ -33,6 +34,9 @@ cv_flowtrend(
 \item{ylist}{Data.}
 
 \item{countslist}{Counts corresponding to multiplicities.}
+
+\item{x}{Times, if points are not evenly spaced. Defaults to NULL, in which
+case the value becomes \code{1:T}, for the $T==length(ylist)$.}
 
 \item{destin}{Directory where output files are saved.}
 

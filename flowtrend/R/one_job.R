@@ -19,21 +19,26 @@
 #'
 #' @export
 one_job <- function(iprob, imu, ifold, irestart, folds, destin,
-                       lambda_means, lambda_probs,
-                       seedtab = NULL,
-                       ## The rest that is needed explicitly for flowtrend()
-                       ylist, countslist,
-                       l, l_prob,
-                       ...){
+                    lambda_means, lambda_probs,
+                    seedtab = NULL,
+                    x = NULL,
+                    ## The rest that is needed explicitly for flowtrend()
+                    ylist, countslist,
+                    l, l_prob,
+                    ...){
 
   ## Get the train/test data
   TT <- length(ylist)
+  if(is.null(x)) x = 1:TT
   test.inds = unlist(folds[ifold]) %>% sort()
   test.dat = ylist[test.inds]
   test.count = countslist[test.inds]
   train.inds = c(1, unlist(folds[-ifold]), TT) %>% sort()
   train.dat = ylist[train.inds]
   train.count = countslist[train.inds]
+
+  ## NEW: fit the model on the *time points* in training indices, and
+  ## NEW: test the model on *time points* in the test indices.
 
   ## Check whether this job has been done already.
   filename = make_cvscore_filename(iprob, imu, ifold, irestart)
@@ -57,7 +62,6 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
     seed = NULL
   }
 
-
   lambda_prob = lambda_probs[iprob]
   lambda_mean = lambda_means[imu]
 
@@ -65,7 +69,7 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
   args = list(...)
   args$ylist = train.dat
   args$countslist = train.count
-  args$x = train.inds
+  args$x = x[train.inds] ## NEW
   args$lambda = lambda_mean
   args$lambda_prob = lambda_prob
   args$l = l
@@ -84,11 +88,8 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
     res.train = eval(call, args)
 
     ## Assign mn and prob
-    pred = predict_flowtrend(res.train, newtimes = test.inds)
+    pred = predict_flowtrend(res.train, newtimes = x[test.inds]) ## the x is NEW.
     stopifnot(all(pred$prob >= 0))
-
-    ## Build Dl
-    ##
 
     ## Evaluate on test data, by calculating objective (penalized likelihood with penalty parameters set to 0)
     cvscore = objective(mu = pred$mn,
@@ -97,11 +98,6 @@ one_job <- function(iprob, imu, ifold, irestart, folds, destin,
                         ylist = test.dat,
                         countslist = test.count,
                         unpenalized = TRUE)
-                        ## Dl = diag(rep(1, length(test.count))), ## TODO: what is wrong here?
-                        ## lambda_prob = 0,
-                        ## lambda = 0)
-                        ## prob = res.train$prob,
-                        ## beta = res.train$beta)
 
     ## Store (temporarily) the run times
     time_per_iter = res.train$time_per_iter

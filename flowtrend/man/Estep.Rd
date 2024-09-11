@@ -16,6 +16,8 @@ Estep(
 )
 }
 \arguments{
+\item{sigma}{covariance}
+
 \item{countslist}{}
 }
 \description{

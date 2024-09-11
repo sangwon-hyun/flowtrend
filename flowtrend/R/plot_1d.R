@@ -61,7 +61,8 @@ plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, alpha = .1, bin 
     est_long = full_join(mn_long, prob_long, by = c("time","cluster"))
     gg = gg + geom_path(aes(x = time, y = mean, linewidth = prob, group = cluster, color = cluster),
                         data = est_long,
-                        lineend = "round", linejoin="mitre")
+                        lineend = "round", linejoin="mitre") +
+      scale_linewidth(range = c(0.05,5), limits = c(0, 1))
     ## TODO: make it ignore the missing values at the gaps; currently this is not coded as NAs.
 
     if(plot_band){

@@ -2,7 +2,7 @@
 % Please edit documentation in _main.Rmd.
 \name{flowmeans_each}
 \alias{flowmeans_each}
-\title{Apply flowmeans in each.}
+\title{Apply flowmeans in each cytogram.}
 \usage{
 flowmeans_each(ylist, numclust)
 }
@@ -12,5 +12,5 @@ flowmeans_each(ylist, numclust)
 \item{numclust}{Number of clusters.}
 }
 \description{
-Apply flowmeans in each.
+Apply flowmeans in each cytogram.
 }
