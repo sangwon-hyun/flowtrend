@@ -90,7 +90,8 @@ underfit_flowmeans <- function(ylist, numclust){
 #' 
 #' @param ylist Data.
 #' @param numclust Number of clusters.
-#' @return 
+#' @return
+#' 
 #' @export
 underfit_gmm <- function(ylist, numclust){
 
@@ -783,6 +784,7 @@ rand <- function(resp_list1, resp_list2, times = NULL){
 #'   specific times.
 #'
 #' @return A single soft rand index for all particles across all times.
+#' 
 #' @export
 adjusted_rand <- function(resp_list1, resp_list2, times = NULL){ 
 

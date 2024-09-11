@@ -292,87 +292,88 @@ to cluster the cytograms in this section.</p>
 <span id="cb118-2"><a href="helpers-for-simulations.html#cb118-2" tabindex="-1"></a><span class="co">#' </span></span>
 <span id="cb118-3"><a href="helpers-for-simulations.html#cb118-3" tabindex="-1"></a><span class="co">#' @param ylist Data.</span></span>
 <span id="cb118-4"><a href="helpers-for-simulations.html#cb118-4" tabindex="-1"></a><span class="co">#' @param numclust Number of clusters.</span></span>
-<span id="cb118-5"><a href="helpers-for-simulations.html#cb118-5" tabindex="-1"></a><span class="co">#' @return </span></span>
-<span id="cb118-6"><a href="helpers-for-simulations.html#cb118-6" tabindex="-1"></a><span class="co">#' @export</span></span>
-<span id="cb118-7"><a href="helpers-for-simulations.html#cb118-7" tabindex="-1"></a><span id="underfit_gmm">underfit_gmm</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, numclust){</span>
-<span id="cb118-8"><a href="helpers-for-simulations.html#cb118-8" tabindex="-1"></a></span>
-<span id="cb118-9"><a href="helpers-for-simulations.html#cb118-9" tabindex="-1"></a>  <span class="do">## ## Tempoerary</span></span>
-<span id="cb118-10"><a href="helpers-for-simulations.html#cb118-10" tabindex="-1"></a>  <span class="do">## isignal = 0</span></span>
-<span id="cb118-11"><a href="helpers-for-simulations.html#cb118-11" tabindex="-1"></a>  <span class="do">## isim = 1</span></span>
-<span id="cb118-12"><a href="helpers-for-simulations.html#cb118-12" tabindex="-1"></a>  <span class="do">## destin = file.path("~/repos/flowtrend/inst/output/1dsim-even/data")</span></span>
-<span id="cb118-13"><a href="helpers-for-simulations.html#cb118-13" tabindex="-1"></a>  <span class="do">## datobj = readRDS(file = file.path(destin, paste0("isignal-", isignal,"-isim-", isim, "-", "datobj.RDS")) )</span></span>
-<span id="cb118-14"><a href="helpers-for-simulations.html#cb118-14" tabindex="-1"></a>  <span class="do">## datobj_new = readRDS(file = file.path(destin, paste0("isignal-", isignal,"-isim-", isim, "-", "datobj-new.RDS")) )</span></span>
-<span id="cb118-15"><a href="helpers-for-simulations.html#cb118-15" tabindex="-1"></a>  <span class="do">## ylist = datobj$ylist_unsorted</span></span>
-<span id="cb118-16"><a href="helpers-for-simulations.html#cb118-16" tabindex="-1"></a>  <span class="do">## numclust = 2</span></span>
-<span id="cb118-17"><a href="helpers-for-simulations.html#cb118-17" tabindex="-1"></a>  <span class="do">## ## end of temporary</span></span>
-<span id="cb118-18"><a href="helpers-for-simulations.html#cb118-18" tabindex="-1"></a>  </span>
-<span id="cb118-19"><a href="helpers-for-simulations.html#cb118-19" tabindex="-1"></a>  <span class="do">## Pool all data</span></span>
-<span id="cb118-20"><a href="helpers-for-simulations.html#cb118-20" tabindex="-1"></a>  TT <span class="ot">&lt;-</span> <span class="fu">length</span>(ylist)</span>
-<span id="cb118-21"><a href="helpers-for-simulations.html#cb118-21" tabindex="-1"></a>  nt <span class="ot">&lt;-</span> <span class="fu">sapply</span>(ylist, nrow)</span>
-<span id="cb118-22"><a href="helpers-for-simulations.html#cb118-22" tabindex="-1"></a>  ylist_pooled <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, ylist) <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
-<span id="cb118-23"><a href="helpers-for-simulations.html#cb118-23" tabindex="-1"></a>  <span class="fu">colnames</span>(ylist_pooled) <span class="ot">=</span> <span class="st">"y"</span></span>
-<span id="cb118-24"><a href="helpers-for-simulations.html#cb118-24" tabindex="-1"></a></span>
-<span id="cb118-25"><a href="helpers-for-simulations.html#cb118-25" tabindex="-1"></a>  <span class="do">## Fit the GMM model</span></span>
-<span id="cb118-26"><a href="helpers-for-simulations.html#cb118-26" tabindex="-1"></a>  gmm_pooled <span class="ot">&lt;-</span> mclust<span class="sc">::</span><span class="fu">Mclust</span>(<span class="at">data =</span> ylist_pooled, <span class="at">G =</span> numclust,</span>
-<span id="cb118-27"><a href="helpers-for-simulations.html#cb118-27" tabindex="-1"></a>                                <span class="at">modelNames =</span> <span class="st">"V"</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb118-28"><a href="helpers-for-simulations.html#cb118-28" tabindex="-1"></a></span>
-<span id="cb118-29"><a href="helpers-for-simulations.html#cb118-29" tabindex="-1"></a>  <span class="do">## Memberships (soft- and hard-clustered)</span></span>
-<span id="cb118-30"><a href="helpers-for-simulations.html#cb118-30" tabindex="-1"></a>  hard_mem <span class="ot">=</span> gmm_pooled<span class="sc">$</span>z  <span class="sc">%&gt;%</span> <span class="fu">apply</span>(<span class="dv">1</span>, which.max)</span>
-<span id="cb118-31"><a href="helpers-for-simulations.html#cb118-31" tabindex="-1"></a>  soft_mem <span class="ot">=</span> gmm_pooled<span class="sc">$</span>z  <span class="sc">%&gt;%</span></span>
-<span id="cb118-32"><a href="helpers-for-simulations.html#cb118-32" tabindex="-1"></a>    <span class="fu">apply</span>(<span class="dv">1</span>, <span class="cf">function</span>(myrow){</span>
-<span id="cb118-33"><a href="helpers-for-simulations.html#cb118-33" tabindex="-1"></a>      <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">replace =</span> <span class="cn">FALSE</span>, <span class="at">prob=</span>myrow)</span>
-<span id="cb118-34"><a href="helpers-for-simulations.html#cb118-34" tabindex="-1"></a>    })</span>
-<span id="cb118-35"><a href="helpers-for-simulations.html#cb118-35" tabindex="-1"></a></span>
-<span id="cb118-36"><a href="helpers-for-simulations.html#cb118-36" tabindex="-1"></a>  <span class="do">## Put together in a table</span></span>
-<span id="cb118-37"><a href="helpers-for-simulations.html#cb118-37" tabindex="-1"></a>  tab <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">y =</span> ylist_pooled<span class="sc">$</span>y,</span>
-<span id="cb118-38"><a href="helpers-for-simulations.html#cb118-38" tabindex="-1"></a>                <span class="at">soft_cluster =</span> <span class="fu">factor</span>(soft_mem, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>)),</span>
-<span id="cb118-39"><a href="helpers-for-simulations.html#cb118-39" tabindex="-1"></a>                <span class="at">hard_cluster =</span> <span class="fu">factor</span>(hard_mem, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>)),</span>
-<span id="cb118-40"><a href="helpers-for-simulations.html#cb118-40" tabindex="-1"></a>                <span class="at">time =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="at">times =</span> nt)) </span>
-<span id="cb118-41"><a href="helpers-for-simulations.html#cb118-41" tabindex="-1"></a>  tab_long <span class="ot">=</span> tab <span class="sc">%&gt;%</span>  <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="fu">c</span>(<span class="st">"time"</span>, <span class="st">"y"</span>), <span class="at">values_to =</span> <span class="st">"cluster"</span>,</span>
-<span id="cb118-42"><a href="helpers-for-simulations.html#cb118-42" tabindex="-1"></a>                                   <span class="at">names_to =</span> <span class="st">"type"</span>)</span>
-<span id="cb118-43"><a href="helpers-for-simulations.html#cb118-43" tabindex="-1"></a>  <span class="do">## ## Optional plotting code</span></span>
-<span id="cb118-44"><a href="helpers-for-simulations.html#cb118-44" tabindex="-1"></a>  <span class="do">## ggplot(tab_long) +</span></span>
-<span id="cb118-45"><a href="helpers-for-simulations.html#cb118-45" tabindex="-1"></a>  <span class="do">##   geom_point(aes(x=time, y=y, col = cluster), alpha = .5) +</span></span>
-<span id="cb118-46"><a href="helpers-for-simulations.html#cb118-46" tabindex="-1"></a>  <span class="do">##   facet_grid(cluster~type)</span></span>
-<span id="cb118-47"><a href="helpers-for-simulations.html#cb118-47" tabindex="-1"></a></span>
-<span id="cb118-48"><a href="helpers-for-simulations.html#cb118-48" tabindex="-1"></a>  <span class="do">## ## We need this to return the same mu, prob, and sigma as before</span></span>
-<span id="cb118-49"><a href="helpers-for-simulations.html#cb118-49" tabindex="-1"></a>  <span class="do">## mu = obj_flowtrend$mn</span></span>
-<span id="cb118-50"><a href="helpers-for-simulations.html#cb118-50" tabindex="-1"></a>  <span class="do">## prob = obj_flowtrend$prob</span></span>
-<span id="cb118-51"><a href="helpers-for-simulations.html#cb118-51" tabindex="-1"></a>  <span class="do">## sigma = obj_flowtrend$sigma</span></span>
-<span id="cb118-52"><a href="helpers-for-simulations.html#cb118-52" tabindex="-1"></a></span>
-<span id="cb118-53"><a href="helpers-for-simulations.html#cb118-53" tabindex="-1"></a>  <span class="do">## That's it! Return the results</span></span>
-<span id="cb118-54"><a href="helpers-for-simulations.html#cb118-54" tabindex="-1"></a>  <span class="do">## param_mat = matrix(NA, nrow = TT, ncol = 6)</span></span>
-<span id="cb118-55"><a href="helpers-for-simulations.html#cb118-55" tabindex="-1"></a>  <span class="do">## colnames(param_mat) = c("time", "mn1", "mn2", "prob1", "prob2", "sd1", "sd2")</span></span>
-<span id="cb118-56"><a href="helpers-for-simulations.html#cb118-56" tabindex="-1"></a>  <span class="do">## param_mat$time = 1:TT</span></span>
-<span id="cb118-57"><a href="helpers-for-simulations.html#cb118-57" tabindex="-1"></a>  param_mat <span class="ot">=</span> <span class="fu">tibble</span>(<span class="at">time=</span><span class="dv">1</span><span class="sc">:</span>TT,</span>
-<span id="cb118-58"><a href="helpers-for-simulations.html#cb118-58" tabindex="-1"></a>                     <span class="at">mn1 =</span> gmm_pooled<span class="sc">$</span>parameters<span class="sc">$</span>mean[<span class="dv">1</span>],</span>
-<span id="cb118-59"><a href="helpers-for-simulations.html#cb118-59" tabindex="-1"></a>         <span class="at">mn2 =</span> gmm_pooled<span class="sc">$</span>parameters<span class="sc">$</span>mean[<span class="dv">2</span>],</span>
-<span id="cb118-60"><a href="helpers-for-simulations.html#cb118-60" tabindex="-1"></a>         <span class="at">sd1 =</span> gmm_pooled<span class="sc">$</span>parameters<span class="sc">$</span>variance<span class="sc">$</span>sigmasq[<span class="dv">1</span>],</span>
-<span id="cb118-61"><a href="helpers-for-simulations.html#cb118-61" tabindex="-1"></a>         <span class="at">sd2 =</span> gmm_pooled<span class="sc">$</span>parameters<span class="sc">$</span>variance<span class="sc">$</span>sigmasq[<span class="dv">2</span>],</span>
-<span id="cb118-62"><a href="helpers-for-simulations.html#cb118-62" tabindex="-1"></a>         <span class="at">prob1 =</span> gmm_pooled<span class="sc">$</span>parameters<span class="sc">$</span>pro[<span class="dv">1</span>],</span>
-<span id="cb118-63"><a href="helpers-for-simulations.html#cb118-63" tabindex="-1"></a>         <span class="at">prob2 =</span> gmm_pooled<span class="sc">$</span>parameters<span class="sc">$</span>pro[<span class="dv">2</span>])</span>
-<span id="cb118-64"><a href="helpers-for-simulations.html#cb118-64" tabindex="-1"></a>  mu <span class="ot">=</span> param_mat[,<span class="fu">c</span>(<span class="st">"mn1"</span>, <span class="st">"mn2"</span>)] <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
-<span id="cb118-65"><a href="helpers-for-simulations.html#cb118-65" tabindex="-1"></a>  prob <span class="ot">=</span> param_mat[,<span class="fu">c</span>(<span class="st">"prob1"</span>, <span class="st">"prob2"</span>)] <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
-<span id="cb118-66"><a href="helpers-for-simulations.html#cb118-66" tabindex="-1"></a>  sigma <span class="ot">=</span> param_mat[,<span class="fu">c</span>(<span class="st">"sd1"</span>, <span class="st">"sd2"</span>)] <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
-<span id="cb118-67"><a href="helpers-for-simulations.html#cb118-67" tabindex="-1"></a>  </span>
-<span id="cb118-68"><a href="helpers-for-simulations.html#cb118-68" tabindex="-1"></a>  <span class="do">## Soft membership</span></span>
-<span id="cb118-69"><a href="helpers-for-simulations.html#cb118-69" tabindex="-1"></a>  memlist <span class="ot">=</span> tab_long <span class="sc">%&gt;%</span> <span class="fu">subset</span>(type <span class="sc">==</span> <span class="st">"soft_cluster"</span>) <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(time) <span class="sc">%&gt;%</span> </span>
-<span id="cb118-70"><a href="helpers-for-simulations.html#cb118-70" tabindex="-1"></a>    <span class="fu">group_split</span>() <span class="sc">%&gt;%</span> <span class="fu">lapply</span>(<span class="cf">function</span>(a)<span class="fu">pull</span>(a, cluster))</span>
-<span id="cb118-71"><a href="helpers-for-simulations.html#cb118-71" tabindex="-1"></a></span>
-<span id="cb118-72"><a href="helpers-for-simulations.html#cb118-72" tabindex="-1"></a>  <span class="do">## Responsibilities</span></span>
-<span id="cb118-73"><a href="helpers-for-simulations.html#cb118-73" tabindex="-1"></a>  soft_mem <span class="ot">=</span> gmm_pooled<span class="sc">$</span>z <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
-<span id="cb118-74"><a href="helpers-for-simulations.html#cb118-74" tabindex="-1"></a>  <span class="fu">colnames</span>(soft_mem) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"clust1"</span>, <span class="st">"clust2"</span>)</span>
-<span id="cb118-75"><a href="helpers-for-simulations.html#cb118-75" tabindex="-1"></a>  resp_list <span class="ot">=</span> soft_mem <span class="sc">%&gt;%</span> <span class="fu">add_column</span>( <span class="at">time =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="at">times =</span> nt))  <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(time) <span class="sc">%&gt;%</span> <span class="fu">group_split</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb118-76"><a href="helpers-for-simulations.html#cb118-76" tabindex="-1"></a>    <span class="fu">lapply</span>(select, <span class="fu">c</span>(<span class="st">"clust1"</span>, <span class="st">"clust2"</span>)) <span class="sc">%&gt;%</span> <span class="fu">lapply</span>(as.matrix)</span>
-<span id="cb118-77"><a href="helpers-for-simulations.html#cb118-77" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">tab_long =</span> tab_long,</span>
-<span id="cb118-78"><a href="helpers-for-simulations.html#cb118-78" tabindex="-1"></a>              <span class="at">param_mat =</span> param_mat,</span>
-<span id="cb118-79"><a href="helpers-for-simulations.html#cb118-79" tabindex="-1"></a>              <span class="at">mu =</span> mu,</span>
-<span id="cb118-80"><a href="helpers-for-simulations.html#cb118-80" tabindex="-1"></a>              <span class="at">prob =</span> prob,</span>
-<span id="cb118-81"><a href="helpers-for-simulations.html#cb118-81" tabindex="-1"></a>              <span class="at">sigma =</span> sigma,</span>
-<span id="cb118-82"><a href="helpers-for-simulations.html#cb118-82" tabindex="-1"></a>              <span class="at">memlist =</span> memlist,</span>
-<span id="cb118-83"><a href="helpers-for-simulations.html#cb118-83" tabindex="-1"></a>              <span class="at">resp_list =</span> resp_list,</span>
-<span id="cb118-84"><a href="helpers-for-simulations.html#cb118-84" tabindex="-1"></a>              <span class="at">numclust =</span> numclust))</span>
-<span id="cb118-85"><a href="helpers-for-simulations.html#cb118-85" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb118-5"><a href="helpers-for-simulations.html#cb118-5" tabindex="-1"></a><span class="co">#' @return</span></span>
+<span id="cb118-6"><a href="helpers-for-simulations.html#cb118-6" tabindex="-1"></a><span class="co">#' </span></span>
+<span id="cb118-7"><a href="helpers-for-simulations.html#cb118-7" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb118-8"><a href="helpers-for-simulations.html#cb118-8" tabindex="-1"></a><span id="underfit_gmm">underfit_gmm</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(ylist, numclust){</span>
+<span id="cb118-9"><a href="helpers-for-simulations.html#cb118-9" tabindex="-1"></a></span>
+<span id="cb118-10"><a href="helpers-for-simulations.html#cb118-10" tabindex="-1"></a>  <span class="do">## ## Tempoerary</span></span>
+<span id="cb118-11"><a href="helpers-for-simulations.html#cb118-11" tabindex="-1"></a>  <span class="do">## isignal = 0</span></span>
+<span id="cb118-12"><a href="helpers-for-simulations.html#cb118-12" tabindex="-1"></a>  <span class="do">## isim = 1</span></span>
+<span id="cb118-13"><a href="helpers-for-simulations.html#cb118-13" tabindex="-1"></a>  <span class="do">## destin = file.path("~/repos/flowtrend/inst/output/1dsim-even/data")</span></span>
+<span id="cb118-14"><a href="helpers-for-simulations.html#cb118-14" tabindex="-1"></a>  <span class="do">## datobj = readRDS(file = file.path(destin, paste0("isignal-", isignal,"-isim-", isim, "-", "datobj.RDS")) )</span></span>
+<span id="cb118-15"><a href="helpers-for-simulations.html#cb118-15" tabindex="-1"></a>  <span class="do">## datobj_new = readRDS(file = file.path(destin, paste0("isignal-", isignal,"-isim-", isim, "-", "datobj-new.RDS")) )</span></span>
+<span id="cb118-16"><a href="helpers-for-simulations.html#cb118-16" tabindex="-1"></a>  <span class="do">## ylist = datobj$ylist_unsorted</span></span>
+<span id="cb118-17"><a href="helpers-for-simulations.html#cb118-17" tabindex="-1"></a>  <span class="do">## numclust = 2</span></span>
+<span id="cb118-18"><a href="helpers-for-simulations.html#cb118-18" tabindex="-1"></a>  <span class="do">## ## end of temporary</span></span>
+<span id="cb118-19"><a href="helpers-for-simulations.html#cb118-19" tabindex="-1"></a>  </span>
+<span id="cb118-20"><a href="helpers-for-simulations.html#cb118-20" tabindex="-1"></a>  <span class="do">## Pool all data</span></span>
+<span id="cb118-21"><a href="helpers-for-simulations.html#cb118-21" tabindex="-1"></a>  TT <span class="ot">&lt;-</span> <span class="fu">length</span>(ylist)</span>
+<span id="cb118-22"><a href="helpers-for-simulations.html#cb118-22" tabindex="-1"></a>  nt <span class="ot">&lt;-</span> <span class="fu">sapply</span>(ylist, nrow)</span>
+<span id="cb118-23"><a href="helpers-for-simulations.html#cb118-23" tabindex="-1"></a>  ylist_pooled <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, ylist) <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
+<span id="cb118-24"><a href="helpers-for-simulations.html#cb118-24" tabindex="-1"></a>  <span class="fu">colnames</span>(ylist_pooled) <span class="ot">=</span> <span class="st">"y"</span></span>
+<span id="cb118-25"><a href="helpers-for-simulations.html#cb118-25" tabindex="-1"></a></span>
+<span id="cb118-26"><a href="helpers-for-simulations.html#cb118-26" tabindex="-1"></a>  <span class="do">## Fit the GMM model</span></span>
+<span id="cb118-27"><a href="helpers-for-simulations.html#cb118-27" tabindex="-1"></a>  gmm_pooled <span class="ot">&lt;-</span> mclust<span class="sc">::</span><span class="fu">Mclust</span>(<span class="at">data =</span> ylist_pooled, <span class="at">G =</span> numclust,</span>
+<span id="cb118-28"><a href="helpers-for-simulations.html#cb118-28" tabindex="-1"></a>                                <span class="at">modelNames =</span> <span class="st">"V"</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb118-29"><a href="helpers-for-simulations.html#cb118-29" tabindex="-1"></a></span>
+<span id="cb118-30"><a href="helpers-for-simulations.html#cb118-30" tabindex="-1"></a>  <span class="do">## Memberships (soft- and hard-clustered)</span></span>
+<span id="cb118-31"><a href="helpers-for-simulations.html#cb118-31" tabindex="-1"></a>  hard_mem <span class="ot">=</span> gmm_pooled<span class="sc">$</span>z  <span class="sc">%&gt;%</span> <span class="fu">apply</span>(<span class="dv">1</span>, which.max)</span>
+<span id="cb118-32"><a href="helpers-for-simulations.html#cb118-32" tabindex="-1"></a>  soft_mem <span class="ot">=</span> gmm_pooled<span class="sc">$</span>z  <span class="sc">%&gt;%</span></span>
+<span id="cb118-33"><a href="helpers-for-simulations.html#cb118-33" tabindex="-1"></a>    <span class="fu">apply</span>(<span class="dv">1</span>, <span class="cf">function</span>(myrow){</span>
+<span id="cb118-34"><a href="helpers-for-simulations.html#cb118-34" tabindex="-1"></a>      <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">replace =</span> <span class="cn">FALSE</span>, <span class="at">prob=</span>myrow)</span>
+<span id="cb118-35"><a href="helpers-for-simulations.html#cb118-35" tabindex="-1"></a>    })</span>
+<span id="cb118-36"><a href="helpers-for-simulations.html#cb118-36" tabindex="-1"></a></span>
+<span id="cb118-37"><a href="helpers-for-simulations.html#cb118-37" tabindex="-1"></a>  <span class="do">## Put together in a table</span></span>
+<span id="cb118-38"><a href="helpers-for-simulations.html#cb118-38" tabindex="-1"></a>  tab <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">y =</span> ylist_pooled<span class="sc">$</span>y,</span>
+<span id="cb118-39"><a href="helpers-for-simulations.html#cb118-39" tabindex="-1"></a>                <span class="at">soft_cluster =</span> <span class="fu">factor</span>(soft_mem, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>)),</span>
+<span id="cb118-40"><a href="helpers-for-simulations.html#cb118-40" tabindex="-1"></a>                <span class="at">hard_cluster =</span> <span class="fu">factor</span>(hard_mem, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>)),</span>
+<span id="cb118-41"><a href="helpers-for-simulations.html#cb118-41" tabindex="-1"></a>                <span class="at">time =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="at">times =</span> nt)) </span>
+<span id="cb118-42"><a href="helpers-for-simulations.html#cb118-42" tabindex="-1"></a>  tab_long <span class="ot">=</span> tab <span class="sc">%&gt;%</span>  <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="fu">c</span>(<span class="st">"time"</span>, <span class="st">"y"</span>), <span class="at">values_to =</span> <span class="st">"cluster"</span>,</span>
+<span id="cb118-43"><a href="helpers-for-simulations.html#cb118-43" tabindex="-1"></a>                                   <span class="at">names_to =</span> <span class="st">"type"</span>)</span>
+<span id="cb118-44"><a href="helpers-for-simulations.html#cb118-44" tabindex="-1"></a>  <span class="do">## ## Optional plotting code</span></span>
+<span id="cb118-45"><a href="helpers-for-simulations.html#cb118-45" tabindex="-1"></a>  <span class="do">## ggplot(tab_long) +</span></span>
+<span id="cb118-46"><a href="helpers-for-simulations.html#cb118-46" tabindex="-1"></a>  <span class="do">##   geom_point(aes(x=time, y=y, col = cluster), alpha = .5) +</span></span>
+<span id="cb118-47"><a href="helpers-for-simulations.html#cb118-47" tabindex="-1"></a>  <span class="do">##   facet_grid(cluster~type)</span></span>
+<span id="cb118-48"><a href="helpers-for-simulations.html#cb118-48" tabindex="-1"></a></span>
+<span id="cb118-49"><a href="helpers-for-simulations.html#cb118-49" tabindex="-1"></a>  <span class="do">## ## We need this to return the same mu, prob, and sigma as before</span></span>
+<span id="cb118-50"><a href="helpers-for-simulations.html#cb118-50" tabindex="-1"></a>  <span class="do">## mu = obj_flowtrend$mn</span></span>
+<span id="cb118-51"><a href="helpers-for-simulations.html#cb118-51" tabindex="-1"></a>  <span class="do">## prob = obj_flowtrend$prob</span></span>
+<span id="cb118-52"><a href="helpers-for-simulations.html#cb118-52" tabindex="-1"></a>  <span class="do">## sigma = obj_flowtrend$sigma</span></span>
+<span id="cb118-53"><a href="helpers-for-simulations.html#cb118-53" tabindex="-1"></a></span>
+<span id="cb118-54"><a href="helpers-for-simulations.html#cb118-54" tabindex="-1"></a>  <span class="do">## That's it! Return the results</span></span>
+<span id="cb118-55"><a href="helpers-for-simulations.html#cb118-55" tabindex="-1"></a>  <span class="do">## param_mat = matrix(NA, nrow = TT, ncol = 6)</span></span>
+<span id="cb118-56"><a href="helpers-for-simulations.html#cb118-56" tabindex="-1"></a>  <span class="do">## colnames(param_mat) = c("time", "mn1", "mn2", "prob1", "prob2", "sd1", "sd2")</span></span>
+<span id="cb118-57"><a href="helpers-for-simulations.html#cb118-57" tabindex="-1"></a>  <span class="do">## param_mat$time = 1:TT</span></span>
+<span id="cb118-58"><a href="helpers-for-simulations.html#cb118-58" tabindex="-1"></a>  param_mat <span class="ot">=</span> <span class="fu">tibble</span>(<span class="at">time=</span><span class="dv">1</span><span class="sc">:</span>TT,</span>
+<span id="cb118-59"><a href="helpers-for-simulations.html#cb118-59" tabindex="-1"></a>                     <span class="at">mn1 =</span> gmm_pooled<span class="sc">$</span>parameters<span class="sc">$</span>mean[<span class="dv">1</span>],</span>
+<span id="cb118-60"><a href="helpers-for-simulations.html#cb118-60" tabindex="-1"></a>         <span class="at">mn2 =</span> gmm_pooled<span class="sc">$</span>parameters<span class="sc">$</span>mean[<span class="dv">2</span>],</span>
+<span id="cb118-61"><a href="helpers-for-simulations.html#cb118-61" tabindex="-1"></a>         <span class="at">sd1 =</span> gmm_pooled<span class="sc">$</span>parameters<span class="sc">$</span>variance<span class="sc">$</span>sigmasq[<span class="dv">1</span>],</span>
+<span id="cb118-62"><a href="helpers-for-simulations.html#cb118-62" tabindex="-1"></a>         <span class="at">sd2 =</span> gmm_pooled<span class="sc">$</span>parameters<span class="sc">$</span>variance<span class="sc">$</span>sigmasq[<span class="dv">2</span>],</span>
+<span id="cb118-63"><a href="helpers-for-simulations.html#cb118-63" tabindex="-1"></a>         <span class="at">prob1 =</span> gmm_pooled<span class="sc">$</span>parameters<span class="sc">$</span>pro[<span class="dv">1</span>],</span>
+<span id="cb118-64"><a href="helpers-for-simulations.html#cb118-64" tabindex="-1"></a>         <span class="at">prob2 =</span> gmm_pooled<span class="sc">$</span>parameters<span class="sc">$</span>pro[<span class="dv">2</span>])</span>
+<span id="cb118-65"><a href="helpers-for-simulations.html#cb118-65" tabindex="-1"></a>  mu <span class="ot">=</span> param_mat[,<span class="fu">c</span>(<span class="st">"mn1"</span>, <span class="st">"mn2"</span>)] <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb118-66"><a href="helpers-for-simulations.html#cb118-66" tabindex="-1"></a>  prob <span class="ot">=</span> param_mat[,<span class="fu">c</span>(<span class="st">"prob1"</span>, <span class="st">"prob2"</span>)] <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb118-67"><a href="helpers-for-simulations.html#cb118-67" tabindex="-1"></a>  sigma <span class="ot">=</span> param_mat[,<span class="fu">c</span>(<span class="st">"sd1"</span>, <span class="st">"sd2"</span>)] <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb118-68"><a href="helpers-for-simulations.html#cb118-68" tabindex="-1"></a>  </span>
+<span id="cb118-69"><a href="helpers-for-simulations.html#cb118-69" tabindex="-1"></a>  <span class="do">## Soft membership</span></span>
+<span id="cb118-70"><a href="helpers-for-simulations.html#cb118-70" tabindex="-1"></a>  memlist <span class="ot">=</span> tab_long <span class="sc">%&gt;%</span> <span class="fu">subset</span>(type <span class="sc">==</span> <span class="st">"soft_cluster"</span>) <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(time) <span class="sc">%&gt;%</span> </span>
+<span id="cb118-71"><a href="helpers-for-simulations.html#cb118-71" tabindex="-1"></a>    <span class="fu">group_split</span>() <span class="sc">%&gt;%</span> <span class="fu">lapply</span>(<span class="cf">function</span>(a)<span class="fu">pull</span>(a, cluster))</span>
+<span id="cb118-72"><a href="helpers-for-simulations.html#cb118-72" tabindex="-1"></a></span>
+<span id="cb118-73"><a href="helpers-for-simulations.html#cb118-73" tabindex="-1"></a>  <span class="do">## Responsibilities</span></span>
+<span id="cb118-74"><a href="helpers-for-simulations.html#cb118-74" tabindex="-1"></a>  soft_mem <span class="ot">=</span> gmm_pooled<span class="sc">$</span>z <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
+<span id="cb118-75"><a href="helpers-for-simulations.html#cb118-75" tabindex="-1"></a>  <span class="fu">colnames</span>(soft_mem) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"clust1"</span>, <span class="st">"clust2"</span>)</span>
+<span id="cb118-76"><a href="helpers-for-simulations.html#cb118-76" tabindex="-1"></a>  resp_list <span class="ot">=</span> soft_mem <span class="sc">%&gt;%</span> <span class="fu">add_column</span>( <span class="at">time =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="at">times =</span> nt))  <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(time) <span class="sc">%&gt;%</span> <span class="fu">group_split</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb118-77"><a href="helpers-for-simulations.html#cb118-77" tabindex="-1"></a>    <span class="fu">lapply</span>(select, <span class="fu">c</span>(<span class="st">"clust1"</span>, <span class="st">"clust2"</span>)) <span class="sc">%&gt;%</span> <span class="fu">lapply</span>(as.matrix)</span>
+<span id="cb118-78"><a href="helpers-for-simulations.html#cb118-78" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">tab_long =</span> tab_long,</span>
+<span id="cb118-79"><a href="helpers-for-simulations.html#cb118-79" tabindex="-1"></a>              <span class="at">param_mat =</span> param_mat,</span>
+<span id="cb118-80"><a href="helpers-for-simulations.html#cb118-80" tabindex="-1"></a>              <span class="at">mu =</span> mu,</span>
+<span id="cb118-81"><a href="helpers-for-simulations.html#cb118-81" tabindex="-1"></a>              <span class="at">prob =</span> prob,</span>
+<span id="cb118-82"><a href="helpers-for-simulations.html#cb118-82" tabindex="-1"></a>              <span class="at">sigma =</span> sigma,</span>
+<span id="cb118-83"><a href="helpers-for-simulations.html#cb118-83" tabindex="-1"></a>              <span class="at">memlist =</span> memlist,</span>
+<span id="cb118-84"><a href="helpers-for-simulations.html#cb118-84" tabindex="-1"></a>              <span class="at">resp_list =</span> resp_list,</span>
+<span id="cb118-85"><a href="helpers-for-simulations.html#cb118-85" tabindex="-1"></a>              <span class="at">numclust =</span> numclust))</span>
+<span id="cb118-86"><a href="helpers-for-simulations.html#cb118-86" tabindex="-1"></a>}</span></code></pre></div>
 <p>Here is a plotter function.</p>
 <div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="helpers-for-simulations.html#cb119-1" tabindex="-1"></a><span class="co">#' Plotter for underfit and overfit flowmeans.</span></span>
 <span id="cb119-2"><a href="helpers-for-simulations.html#cb119-2" tabindex="-1"></a><span class="co">#' @param ylist Data</span></span>
@@ -934,54 +935,55 @@ the pair of points <span class="math inline">\(i\)</span> and <span class="math 
 <span id="cb129-7"><a href="helpers-for-simulations.html#cb129-7" tabindex="-1"></a><span class="co">#'   specific times.</span></span>
 <span id="cb129-8"><a href="helpers-for-simulations.html#cb129-8" tabindex="-1"></a><span class="co">#'</span></span>
 <span id="cb129-9"><a href="helpers-for-simulations.html#cb129-9" tabindex="-1"></a><span class="co">#' @return A single soft rand index for all particles across all times.</span></span>
-<span id="cb129-10"><a href="helpers-for-simulations.html#cb129-10" tabindex="-1"></a><span class="co">#' @export</span></span>
-<span id="cb129-11"><a href="helpers-for-simulations.html#cb129-11" tabindex="-1"></a><span id="adjusted_rand">adjusted_rand</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(resp_list1, resp_list2, <span class="at">times =</span> <span class="cn">NULL</span>){ </span>
-<span id="cb129-12"><a href="helpers-for-simulations.html#cb129-12" tabindex="-1"></a></span>
-<span id="cb129-13"><a href="helpers-for-simulations.html#cb129-13" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
-<span id="cb129-14"><a href="helpers-for-simulations.html#cb129-14" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(times)) resp_list1 <span class="ot">=</span> resp_list1[times]</span>
-<span id="cb129-15"><a href="helpers-for-simulations.html#cb129-15" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(times)) resp_list2 <span class="ot">=</span> resp_list2[times]</span>
-<span id="cb129-16"><a href="helpers-for-simulations.html#cb129-16" tabindex="-1"></a>  </span>
-<span id="cb129-17"><a href="helpers-for-simulations.html#cb129-17" tabindex="-1"></a>  all_mat_over_time <span class="ot">=</span> <span class="fu">mapply</span>(adjusted_rand_onetime, resp_list1, resp_list2,</span>
-<span id="cb129-18"><a href="helpers-for-simulations.html#cb129-18" tabindex="-1"></a>                             <span class="at">SIMPLIFY =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb129-19"><a href="helpers-for-simulations.html#cb129-19" tabindex="-1"></a>  mat <span class="ot">=</span> <span class="fu">Reduce</span>(<span class="st">'+'</span>, all_mat_over_time)</span>
-<span id="cb129-20"><a href="helpers-for-simulations.html#cb129-20" tabindex="-1"></a></span>
-<span id="cb129-21"><a href="helpers-for-simulations.html#cb129-21" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">sum</span>(mat)</span>
-<span id="cb129-22"><a href="helpers-for-simulations.html#cb129-22" tabindex="-1"></a>  sum_a <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">sapply</span>(<span class="fu">rowSums</span>(mat), choose, <span class="dv">2</span>))</span>
-<span id="cb129-23"><a href="helpers-for-simulations.html#cb129-23" tabindex="-1"></a>  sum_b <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">sapply</span>(<span class="fu">colSums</span>(mat), choose, <span class="dv">2</span>))</span>
-<span id="cb129-24"><a href="helpers-for-simulations.html#cb129-24" tabindex="-1"></a>  numer <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">sapply</span>(mat, <span class="cf">function</span>(a) <span class="fu">choose</span>(a,<span class="dv">2</span>))) <span class="sc">-</span></span>
-<span id="cb129-25"><a href="helpers-for-simulations.html#cb129-25" tabindex="-1"></a>    sum_a <span class="sc">*</span> sum_b <span class="sc">/</span> <span class="fu">choose</span>(n, <span class="dv">2</span>)</span>
-<span id="cb129-26"><a href="helpers-for-simulations.html#cb129-26" tabindex="-1"></a>  denom <span class="ot">=</span> (sum_a <span class="sc">+</span> sum_b)<span class="sc">/</span><span class="dv">2</span> <span class="sc">-</span> (sum_a <span class="sc">*</span> sum_b)<span class="sc">/</span><span class="fu">choose</span>(n,<span class="dv">2</span>) </span>
-<span id="cb129-27"><a href="helpers-for-simulations.html#cb129-27" tabindex="-1"></a>  ari <span class="ot">=</span> numer<span class="sc">/</span>denom</span>
-<span id="cb129-28"><a href="helpers-for-simulations.html#cb129-28" tabindex="-1"></a>  <span class="fu">return</span>(ari)</span>
-<span id="cb129-29"><a href="helpers-for-simulations.html#cb129-29" tabindex="-1"></a>}</span>
-<span id="cb129-30"><a href="helpers-for-simulations.html#cb129-30" tabindex="-1"></a></span>
+<span id="cb129-10"><a href="helpers-for-simulations.html#cb129-10" tabindex="-1"></a><span class="co">#' </span></span>
+<span id="cb129-11"><a href="helpers-for-simulations.html#cb129-11" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb129-12"><a href="helpers-for-simulations.html#cb129-12" tabindex="-1"></a><span id="adjusted_rand">adjusted_rand</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(resp_list1, resp_list2, <span class="at">times =</span> <span class="cn">NULL</span>){ </span>
+<span id="cb129-13"><a href="helpers-for-simulations.html#cb129-13" tabindex="-1"></a></span>
+<span id="cb129-14"><a href="helpers-for-simulations.html#cb129-14" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb129-15"><a href="helpers-for-simulations.html#cb129-15" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(times)) resp_list1 <span class="ot">=</span> resp_list1[times]</span>
+<span id="cb129-16"><a href="helpers-for-simulations.html#cb129-16" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(times)) resp_list2 <span class="ot">=</span> resp_list2[times]</span>
+<span id="cb129-17"><a href="helpers-for-simulations.html#cb129-17" tabindex="-1"></a>  </span>
+<span id="cb129-18"><a href="helpers-for-simulations.html#cb129-18" tabindex="-1"></a>  all_mat_over_time <span class="ot">=</span> <span class="fu">mapply</span>(adjusted_rand_onetime, resp_list1, resp_list2,</span>
+<span id="cb129-19"><a href="helpers-for-simulations.html#cb129-19" tabindex="-1"></a>                             <span class="at">SIMPLIFY =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb129-20"><a href="helpers-for-simulations.html#cb129-20" tabindex="-1"></a>  mat <span class="ot">=</span> <span class="fu">Reduce</span>(<span class="st">'+'</span>, all_mat_over_time)</span>
+<span id="cb129-21"><a href="helpers-for-simulations.html#cb129-21" tabindex="-1"></a></span>
+<span id="cb129-22"><a href="helpers-for-simulations.html#cb129-22" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">sum</span>(mat)</span>
+<span id="cb129-23"><a href="helpers-for-simulations.html#cb129-23" tabindex="-1"></a>  sum_a <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">sapply</span>(<span class="fu">rowSums</span>(mat), choose, <span class="dv">2</span>))</span>
+<span id="cb129-24"><a href="helpers-for-simulations.html#cb129-24" tabindex="-1"></a>  sum_b <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">sapply</span>(<span class="fu">colSums</span>(mat), choose, <span class="dv">2</span>))</span>
+<span id="cb129-25"><a href="helpers-for-simulations.html#cb129-25" tabindex="-1"></a>  numer <span class="ot">=</span> <span class="fu">sum</span>(<span class="fu">sapply</span>(mat, <span class="cf">function</span>(a) <span class="fu">choose</span>(a,<span class="dv">2</span>))) <span class="sc">-</span></span>
+<span id="cb129-26"><a href="helpers-for-simulations.html#cb129-26" tabindex="-1"></a>    sum_a <span class="sc">*</span> sum_b <span class="sc">/</span> <span class="fu">choose</span>(n, <span class="dv">2</span>)</span>
+<span id="cb129-27"><a href="helpers-for-simulations.html#cb129-27" tabindex="-1"></a>  denom <span class="ot">=</span> (sum_a <span class="sc">+</span> sum_b)<span class="sc">/</span><span class="dv">2</span> <span class="sc">-</span> (sum_a <span class="sc">*</span> sum_b)<span class="sc">/</span><span class="fu">choose</span>(n,<span class="dv">2</span>) </span>
+<span id="cb129-28"><a href="helpers-for-simulations.html#cb129-28" tabindex="-1"></a>  ari <span class="ot">=</span> numer<span class="sc">/</span>denom</span>
+<span id="cb129-29"><a href="helpers-for-simulations.html#cb129-29" tabindex="-1"></a>  <span class="fu">return</span>(ari)</span>
+<span id="cb129-30"><a href="helpers-for-simulations.html#cb129-30" tabindex="-1"></a>}</span>
 <span id="cb129-31"><a href="helpers-for-simulations.html#cb129-31" tabindex="-1"></a></span>
-<span id="cb129-32"><a href="helpers-for-simulations.html#cb129-32" tabindex="-1"></a><span class="co">#' A "soft" *and adjusted* version of a rand index between two responsibility</span></span>
-<span id="cb129-33"><a href="helpers-for-simulations.html#cb129-33" tabindex="-1"></a><span class="co">#' (membership probability) matrices. Measures the /disagreement/ between the</span></span>
-<span id="cb129-34"><a href="helpers-for-simulations.html#cb129-34" tabindex="-1"></a><span class="co">#' two clusterings.</span></span>
-<span id="cb129-35"><a href="helpers-for-simulations.html#cb129-35" tabindex="-1"></a><span class="co">#' </span></span>
-<span id="cb129-36"><a href="helpers-for-simulations.html#cb129-36" tabindex="-1"></a><span class="co">#' @param resp1 One responsibility matrices.</span></span>
-<span id="cb129-37"><a href="helpers-for-simulations.html#cb129-37" tabindex="-1"></a><span class="co">#' @param resp2 Another responsibility matrices.</span></span>
-<span id="cb129-38"><a href="helpers-for-simulations.html#cb129-38" tabindex="-1"></a><span class="co">#'</span></span>
-<span id="cb129-39"><a href="helpers-for-simulations.html#cb129-39" tabindex="-1"></a><span class="co">#' @return A single soft rand index for all particles.</span></span>
-<span id="cb129-40"><a href="helpers-for-simulations.html#cb129-40" tabindex="-1"></a><span class="co">#' @export</span></span>
-<span id="cb129-41"><a href="helpers-for-simulations.html#cb129-41" tabindex="-1"></a><span id="adjusted_rand_onetime">adjusted_rand_onetime</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(resp1, resp2){</span>
-<span id="cb129-42"><a href="helpers-for-simulations.html#cb129-42" tabindex="-1"></a></span>
-<span id="cb129-43"><a href="helpers-for-simulations.html#cb129-43" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
-<span id="cb129-44"><a href="helpers-for-simulations.html#cb129-44" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">nrow</span>(resp1) <span class="sc">==</span> <span class="fu">nrow</span>(resp2))</span>
-<span id="cb129-45"><a href="helpers-for-simulations.html#cb129-45" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">ncol</span>(resp1) <span class="sc">==</span> <span class="fu">ncol</span>(resp2))</span>
-<span id="cb129-46"><a href="helpers-for-simulations.html#cb129-46" tabindex="-1"></a>  nt <span class="ot">=</span> <span class="fu">nrow</span>(resp1)</span>
-<span id="cb129-47"><a href="helpers-for-simulations.html#cb129-47" tabindex="-1"></a>  </span>
-<span id="cb129-48"><a href="helpers-for-simulations.html#cb129-48" tabindex="-1"></a>  <span class="do">## Next, build contingency table</span></span>
-<span id="cb129-49"><a href="helpers-for-simulations.html#cb129-49" tabindex="-1"></a>  mem1 <span class="ot">=</span> resp1 <span class="sc">%&gt;%</span> <span class="fu">apply</span>(<span class="dv">1</span>, <span class="cf">function</span>(a){(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)[<span class="fu">which</span>(a<span class="sc">==</span><span class="dv">0</span>)]}) <span class="do">## why is this a==0?? </span><span class="al">TODO</span><span class="do"> address this.</span></span>
-<span id="cb129-50"><a href="helpers-for-simulations.html#cb129-50" tabindex="-1"></a>  mem2 <span class="ot">=</span> resp2 <span class="sc">%&gt;%</span> <span class="fu">apply</span>(<span class="dv">1</span>, <span class="cf">function</span>(a){(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)[<span class="fu">which</span>(a<span class="sc">==</span><span class="dv">0</span>)]})</span>
-<span id="cb129-51"><a href="helpers-for-simulations.html#cb129-51" tabindex="-1"></a>  mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span><span class="dv">2</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span>
-<span id="cb129-52"><a href="helpers-for-simulations.html#cb129-52" tabindex="-1"></a>  mat[<span class="dv">1</span>,<span class="dv">1</span>] <span class="ot">=</span> <span class="fu">sum</span>(mem1<span class="sc">==</span><span class="dv">1</span> <span class="sc">&amp;</span> mem2 <span class="sc">==</span> <span class="dv">1</span>) </span>
-<span id="cb129-53"><a href="helpers-for-simulations.html#cb129-53" tabindex="-1"></a>  mat[<span class="dv">2</span>,<span class="dv">2</span>] <span class="ot">=</span> <span class="fu">sum</span>(mem1<span class="sc">==</span><span class="dv">2</span> <span class="sc">&amp;</span> mem2 <span class="sc">==</span> <span class="dv">2</span>) </span>
-<span id="cb129-54"><a href="helpers-for-simulations.html#cb129-54" tabindex="-1"></a>  mat[<span class="dv">1</span>,<span class="dv">2</span>] <span class="ot">=</span> <span class="fu">sum</span>(mem1<span class="sc">==</span><span class="dv">1</span> <span class="sc">&amp;</span> mem2 <span class="sc">==</span> <span class="dv">2</span>) </span>
-<span id="cb129-55"><a href="helpers-for-simulations.html#cb129-55" tabindex="-1"></a>  mat[<span class="dv">2</span>,<span class="dv">1</span>] <span class="ot">=</span> <span class="fu">sum</span>(mem1<span class="sc">==</span><span class="dv">2</span> <span class="sc">&amp;</span> mem2 <span class="sc">==</span> <span class="dv">1</span>) </span>
-<span id="cb129-56"><a href="helpers-for-simulations.html#cb129-56" tabindex="-1"></a>  <span class="fu">return</span>(mat)</span>
-<span id="cb129-57"><a href="helpers-for-simulations.html#cb129-57" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb129-32"><a href="helpers-for-simulations.html#cb129-32" tabindex="-1"></a></span>
+<span id="cb129-33"><a href="helpers-for-simulations.html#cb129-33" tabindex="-1"></a><span class="co">#' A "soft" *and adjusted* version of a rand index between two responsibility</span></span>
+<span id="cb129-34"><a href="helpers-for-simulations.html#cb129-34" tabindex="-1"></a><span class="co">#' (membership probability) matrices. Measures the /disagreement/ between the</span></span>
+<span id="cb129-35"><a href="helpers-for-simulations.html#cb129-35" tabindex="-1"></a><span class="co">#' two clusterings.</span></span>
+<span id="cb129-36"><a href="helpers-for-simulations.html#cb129-36" tabindex="-1"></a><span class="co">#' </span></span>
+<span id="cb129-37"><a href="helpers-for-simulations.html#cb129-37" tabindex="-1"></a><span class="co">#' @param resp1 One responsibility matrices.</span></span>
+<span id="cb129-38"><a href="helpers-for-simulations.html#cb129-38" tabindex="-1"></a><span class="co">#' @param resp2 Another responsibility matrices.</span></span>
+<span id="cb129-39"><a href="helpers-for-simulations.html#cb129-39" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb129-40"><a href="helpers-for-simulations.html#cb129-40" tabindex="-1"></a><span class="co">#' @return A single soft rand index for all particles.</span></span>
+<span id="cb129-41"><a href="helpers-for-simulations.html#cb129-41" tabindex="-1"></a><span class="co">#' @export</span></span>
+<span id="cb129-42"><a href="helpers-for-simulations.html#cb129-42" tabindex="-1"></a><span id="adjusted_rand_onetime">adjusted_rand_onetime</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(resp1, resp2){</span>
+<span id="cb129-43"><a href="helpers-for-simulations.html#cb129-43" tabindex="-1"></a></span>
+<span id="cb129-44"><a href="helpers-for-simulations.html#cb129-44" tabindex="-1"></a>  <span class="do">## Basic checks</span></span>
+<span id="cb129-45"><a href="helpers-for-simulations.html#cb129-45" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">nrow</span>(resp1) <span class="sc">==</span> <span class="fu">nrow</span>(resp2))</span>
+<span id="cb129-46"><a href="helpers-for-simulations.html#cb129-46" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">ncol</span>(resp1) <span class="sc">==</span> <span class="fu">ncol</span>(resp2))</span>
+<span id="cb129-47"><a href="helpers-for-simulations.html#cb129-47" tabindex="-1"></a>  nt <span class="ot">=</span> <span class="fu">nrow</span>(resp1)</span>
+<span id="cb129-48"><a href="helpers-for-simulations.html#cb129-48" tabindex="-1"></a>  </span>
+<span id="cb129-49"><a href="helpers-for-simulations.html#cb129-49" tabindex="-1"></a>  <span class="do">## Next, build contingency table</span></span>
+<span id="cb129-50"><a href="helpers-for-simulations.html#cb129-50" tabindex="-1"></a>  mem1 <span class="ot">=</span> resp1 <span class="sc">%&gt;%</span> <span class="fu">apply</span>(<span class="dv">1</span>, <span class="cf">function</span>(a){(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)[<span class="fu">which</span>(a<span class="sc">==</span><span class="dv">0</span>)]}) <span class="do">## why is this a==0?? </span><span class="al">TODO</span><span class="do"> address this.</span></span>
+<span id="cb129-51"><a href="helpers-for-simulations.html#cb129-51" tabindex="-1"></a>  mem2 <span class="ot">=</span> resp2 <span class="sc">%&gt;%</span> <span class="fu">apply</span>(<span class="dv">1</span>, <span class="cf">function</span>(a){(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)[<span class="fu">which</span>(a<span class="sc">==</span><span class="dv">0</span>)]})</span>
+<span id="cb129-52"><a href="helpers-for-simulations.html#cb129-52" tabindex="-1"></a>  mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span><span class="dv">2</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span>
+<span id="cb129-53"><a href="helpers-for-simulations.html#cb129-53" tabindex="-1"></a>  mat[<span class="dv">1</span>,<span class="dv">1</span>] <span class="ot">=</span> <span class="fu">sum</span>(mem1<span class="sc">==</span><span class="dv">1</span> <span class="sc">&amp;</span> mem2 <span class="sc">==</span> <span class="dv">1</span>) </span>
+<span id="cb129-54"><a href="helpers-for-simulations.html#cb129-54" tabindex="-1"></a>  mat[<span class="dv">2</span>,<span class="dv">2</span>] <span class="ot">=</span> <span class="fu">sum</span>(mem1<span class="sc">==</span><span class="dv">2</span> <span class="sc">&amp;</span> mem2 <span class="sc">==</span> <span class="dv">2</span>) </span>
+<span id="cb129-55"><a href="helpers-for-simulations.html#cb129-55" tabindex="-1"></a>  mat[<span class="dv">1</span>,<span class="dv">2</span>] <span class="ot">=</span> <span class="fu">sum</span>(mem1<span class="sc">==</span><span class="dv">1</span> <span class="sc">&amp;</span> mem2 <span class="sc">==</span> <span class="dv">2</span>) </span>
+<span id="cb129-56"><a href="helpers-for-simulations.html#cb129-56" tabindex="-1"></a>  mat[<span class="dv">2</span>,<span class="dv">1</span>] <span class="ot">=</span> <span class="fu">sum</span>(mem1<span class="sc">==</span><span class="dv">2</span> <span class="sc">&amp;</span> mem2 <span class="sc">==</span> <span class="dv">1</span>) </span>
+<span id="cb129-57"><a href="helpers-for-simulations.html#cb129-57" tabindex="-1"></a>  <span class="fu">return</span>(mat)</span>
+<span id="cb129-58"><a href="helpers-for-simulations.html#cb129-58" tabindex="-1"></a>}</span></code></pre></div>
 <div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="helpers-for-simulations.html#cb130-1" tabindex="-1"></a>numclust <span class="ot">=</span> <span class="dv">3</span></span>
 <span id="cb130-2"><a href="helpers-for-simulations.html#cb130-2" tabindex="-1"></a>TT <span class="ot">=</span> <span class="dv">100</span></span>
 <span id="cb130-3"><a href="helpers-for-simulations.html#cb130-3" tabindex="-1"></a>dimdat <span class="ot">=</span> <span class="dv">1</span></span>
