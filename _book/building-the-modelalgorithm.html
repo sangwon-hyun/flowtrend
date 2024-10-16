@@ -12,7 +12,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="3 Building the model/algorithm | Creating the flowtrend R package">
 <meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien">
-<meta name="date" content="2024-09-11">
+<meta name="date" content="2024-10-15">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -763,7 +763,7 @@ by default.</p>
 <span id="cb37-13"><a href="building-the-modelalgorithm.html#cb37-13" tabindex="-1"></a><span class="co">#' @export</span></span>
 <span id="cb37-14"><a href="building-the-modelalgorithm.html#cb37-14" tabindex="-1"></a><span class="co">#'</span></span>
 <span id="cb37-15"><a href="building-the-modelalgorithm.html#cb37-15" tabindex="-1"></a><span id="Estep">Estep</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(mn, sigma, prob, <span class="at">ylist =</span> <span class="cn">NULL</span>, numclust, <span class="at">denslist_by_clust =</span> <span class="cn">NULL</span>,</span>
-<span id="cb37-16"><a href="building-the-modelalgorithm.html#cb37-16" tabindex="-1"></a>                  <span class="at">first_iter =</span> <span class="cn">FALSE</span>, <span class="at">countslist =</span> <span class="cn">NULL</span>){</span>
+<span id="cb37-16"><a href="building-the-modelalgorithm.html#cb37-16" tabindex="-1"></a>                  <span class="at">first_iter =</span> <span class="cn">FALSE</span>, <span class="at">countslist =</span> <span class="cn">NULL</span>, <span class="at">padding =</span> <span class="fl">1E-20</span>){</span>
 <span id="cb37-17"><a href="building-the-modelalgorithm.html#cb37-17" tabindex="-1"></a>  <span class="do">## Basic setup</span></span>
 <span id="cb37-18"><a href="building-the-modelalgorithm.html#cb37-18" tabindex="-1"></a>  TT <span class="ot">=</span> <span class="fu">length</span>(ylist)</span>
 <span id="cb37-19"><a href="building-the-modelalgorithm.html#cb37-19" tabindex="-1"></a>  ntlist <span class="ot">=</span> <span class="fu">sapply</span>(ylist, nrow)</span>
@@ -791,7 +791,7 @@ by default.</p>
 <span id="cb37-41"><a href="building-the-modelalgorithm.html#cb37-41" tabindex="-1"></a>                      mn, sigma, denslist_by_clust, first_iter)</span>
 <span id="cb37-42"><a href="building-the-modelalgorithm.html#cb37-42" tabindex="-1"></a>    wt.densmat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(prob[tt, ], <span class="at">nrow =</span> ntlist[tt],</span>
 <span id="cb37-43"><a href="building-the-modelalgorithm.html#cb37-43" tabindex="-1"></a>                         <span class="at">ncol =</span> ncol.prob, <span class="at">byrow =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> densmat</span>
-<span id="cb37-44"><a href="building-the-modelalgorithm.html#cb37-44" tabindex="-1"></a>    wt.densmat <span class="ot">=</span> wt.densmat <span class="sc">+</span> <span class="fl">1e-20</span></span>
+<span id="cb37-44"><a href="building-the-modelalgorithm.html#cb37-44" tabindex="-1"></a>    wt.densmat <span class="ot">=</span> wt.densmat <span class="sc">+</span> padding<span class="do">##1e-20</span></span>
 <span id="cb37-45"><a href="building-the-modelalgorithm.html#cb37-45" tabindex="-1"></a>    wt.densmat <span class="ot">&lt;-</span> wt.densmat<span class="sc">/</span><span class="fu">rowSums</span>(wt.densmat)</span>
 <span id="cb37-46"><a href="building-the-modelalgorithm.html#cb37-46" tabindex="-1"></a>    resp[[tt]] <span class="ot">&lt;-</span> wt.densmat</span>
 <span id="cb37-47"><a href="building-the-modelalgorithm.html#cb37-47" tabindex="-1"></a>  }</span>
@@ -883,13 +883,14 @@ which is a <span class="math inline">\(T\)</span> -length list of matrices of si
 <span id="cb39-42"><a href="building-the-modelalgorithm.html#cb39-42" tabindex="-1"></a>    penalty.facs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, l_prob<span class="sc">+</span><span class="dv">1</span>), <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">nrow</span>(H_tf) <span class="sc">-</span> l_prob <span class="sc">-</span> <span class="dv">1</span>))</span>
 <span id="cb39-43"><a href="building-the-modelalgorithm.html#cb39-43" tabindex="-1"></a>    resp.predict <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(resp, colSums))</span>
 <span id="cb39-44"><a href="building-the-modelalgorithm.html#cb39-44" tabindex="-1"></a>    glmnet_obj <span class="ot">&lt;-</span> glmnet<span class="sc">::</span><span class="fu">glmnet</span>(<span class="at">x =</span> H_tf, <span class="at">y =</span> resp.predict, <span class="at">family =</span> <span class="st">"multinomial"</span>,</span>
-<span id="cb39-45"><a href="building-the-modelalgorithm.html#cb39-45" tabindex="-1"></a>                                 <span class="at">penalty.factor =</span> penalty.facs, <span class="at">maxit =</span> <span class="fl">1e7</span>,</span>
-<span id="cb39-46"><a href="building-the-modelalgorithm.html#cb39-46" tabindex="-1"></a>                                 <span class="at">lambda =</span>  <span class="fu">mean</span>(penalty.facs)<span class="sc">*</span><a href="building-the-modelalgorithm.html#lambda_range">lambda_range</a>(lambda_prob),</span>
-<span id="cb39-47"><a href="building-the-modelalgorithm.html#cb39-47" tabindex="-1"></a>                                 <span class="at">standardize =</span> F, <span class="at">intercept =</span> <span class="cn">FALSE</span>) </span>
-<span id="cb39-48"><a href="building-the-modelalgorithm.html#cb39-48" tabindex="-1"></a>    pred_link <span class="ot">&lt;-</span> <span class="fu">predict</span>(glmnet_obj, <span class="at">newx =</span> H_tf, <span class="at">type =</span> <span class="st">"link"</span>, <span class="at">s =</span> <span class="fu">mean</span>(penalty.facs) <span class="sc">*</span> lambda_prob)[,,<span class="dv">1</span>]</span>
-<span id="cb39-49"><a href="building-the-modelalgorithm.html#cb39-49" tabindex="-1"></a>    <span class="fu">return</span>(pred_link)</span>
-<span id="cb39-50"><a href="building-the-modelalgorithm.html#cb39-50" tabindex="-1"></a>  }</span>
-<span id="cb39-51"><a href="building-the-modelalgorithm.html#cb39-51" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb39-45"><a href="building-the-modelalgorithm.html#cb39-45" tabindex="-1"></a>                                 <span class="at">penalty.factor =</span> penalty.facs, <span class="at">maxit =</span> <span class="fl">1e8</span>,</span>
+<span id="cb39-46"><a href="building-the-modelalgorithm.html#cb39-46" tabindex="-1"></a>                                 <span class="do">## penalty.factor = penalty.facs, maxit = 1e7,</span></span>
+<span id="cb39-47"><a href="building-the-modelalgorithm.html#cb39-47" tabindex="-1"></a>                                 <span class="at">lambda =</span>  <span class="fu">mean</span>(penalty.facs)<span class="sc">*</span><a href="building-the-modelalgorithm.html#lambda_range">lambda_range</a>(lambda_prob),</span>
+<span id="cb39-48"><a href="building-the-modelalgorithm.html#cb39-48" tabindex="-1"></a>                                 <span class="at">standardize =</span> F, <span class="at">intercept =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb39-49"><a href="building-the-modelalgorithm.html#cb39-49" tabindex="-1"></a>    pred_link <span class="ot">&lt;-</span> <span class="fu">predict</span>(glmnet_obj, <span class="at">newx =</span> H_tf, <span class="at">type =</span> <span class="st">"link"</span>, <span class="at">s =</span> <span class="fu">mean</span>(penalty.facs) <span class="sc">*</span> lambda_prob)[,,<span class="dv">1</span>]</span>
+<span id="cb39-50"><a href="building-the-modelalgorithm.html#cb39-50" tabindex="-1"></a>    <span class="fu">return</span>(pred_link)</span>
+<span id="cb39-51"><a href="building-the-modelalgorithm.html#cb39-51" tabindex="-1"></a>  }</span>
+<span id="cb39-52"><a href="building-the-modelalgorithm.html#cb39-52" tabindex="-1"></a>}</span></code></pre></div>
 <p>This should return a <span class="math inline">\(T\)</span> by <span class="math inline">\(K\)</span> matrix, which we’ll test here:</p>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="building-the-modelalgorithm.html#cb40-1" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="st">"Mstep of pi returns a (T x K) matrix."</span>, {</span>
 <span id="cb40-2"><a href="building-the-modelalgorithm.html#cb40-2" tabindex="-1"></a></span>
@@ -1110,83 +1111,84 @@ whether the objective values have plateaued.</p>
 <span id="cb43-124"><a href="building-the-modelalgorithm.html#cb43-124" tabindex="-1"></a>    resp.iclust <span class="ot">&lt;-</span> <span class="fu">lapply</span>(resp, <span class="at">FUN =</span> <span class="cf">function</span>(r) <span class="fu">matrix</span>(r[,iclust]))</span>
 <span id="cb43-125"><a href="building-the-modelalgorithm.html#cb43-125" tabindex="-1"></a></span>
 <span id="cb43-126"><a href="building-the-modelalgorithm.html#cb43-126" tabindex="-1"></a>    <span class="do">## Possibly locally adaptive ADMM, for now just running with rho == lambda</span></span>
-<span id="cb43-127"><a href="building-the-modelalgorithm.html#cb43-127" tabindex="-1"></a>    res <span class="ot">=</span> <a href="building-the-modelalgorithm.html#la_admm_oneclust">la_admm_oneclust</a>(<span class="at">K =</span> (<span class="cf">if</span>(local_adapt) local_adapt_niter <span class="cf">else</span> <span class="dv">1</span>),</span>
-<span id="cb43-128"><a href="building-the-modelalgorithm.html#cb43-128" tabindex="-1"></a>                           <span class="at">local_adapt =</span> local_adapt,</span>
-<span id="cb43-129"><a href="building-the-modelalgorithm.html#cb43-129" tabindex="-1"></a>                           <span class="at">iclust =</span> iclust,</span>
-<span id="cb43-130"><a href="building-the-modelalgorithm.html#cb43-130" tabindex="-1"></a>                           <span class="at">niter =</span> niter,</span>
-<span id="cb43-131"><a href="building-the-modelalgorithm.html#cb43-131" tabindex="-1"></a>                           <span class="at">TT =</span> TT, <span class="at">N =</span> N, <span class="at">dimdat =</span> dimdat, <span class="at">maxdev =</span> maxdev,</span>
-<span id="cb43-132"><a href="building-the-modelalgorithm.html#cb43-132" tabindex="-1"></a>                           <span class="at">schurA =</span> schur_syl_A_by_clust[[iclust]],</span>
-<span id="cb43-133"><a href="building-the-modelalgorithm.html#cb43-133" tabindex="-1"></a>                           <span class="at">schurB =</span> schur_syl_B_by_clust[[iclust]],</span>
-<span id="cb43-134"><a href="building-the-modelalgorithm.html#cb43-134" tabindex="-1"></a>                           <span class="at">sigmainv =</span> sigmainv_list[[iclust]],</span>
-<span id="cb43-135"><a href="building-the-modelalgorithm.html#cb43-135" tabindex="-1"></a>                           <span class="at">rho =</span> rho_init, </span>
-<span id="cb43-136"><a href="building-the-modelalgorithm.html#cb43-136" tabindex="-1"></a>                           <span class="at">rhoinit =</span> rho_init, </span>
-<span id="cb43-137"><a href="building-the-modelalgorithm.html#cb43-137" tabindex="-1"></a>                           <span class="do">## rho = (if(iclust == 1) rho_init else res$rho/2),</span></span>
-<span id="cb43-138"><a href="building-the-modelalgorithm.html#cb43-138" tabindex="-1"></a>                           <span class="do">## rhoinit = (if(iclust == 1) rho_init else res$rho/2),</span></span>
-<span id="cb43-139"><a href="building-the-modelalgorithm.html#cb43-139" tabindex="-1"></a>                           <span class="at">sigma =</span> sigma,</span>
-<span id="cb43-140"><a href="building-the-modelalgorithm.html#cb43-140" tabindex="-1"></a>                           <span class="at">lambda =</span> lambda,</span>
-<span id="cb43-141"><a href="building-the-modelalgorithm.html#cb43-141" tabindex="-1"></a>                           <span class="at">resp =</span> resp.iclust,</span>
-<span id="cb43-142"><a href="building-the-modelalgorithm.html#cb43-142" tabindex="-1"></a>                           <span class="at">resp_sum =</span> resp.sum[,iclust],</span>
-<span id="cb43-143"><a href="building-the-modelalgorithm.html#cb43-143" tabindex="-1"></a>                           <span class="at">l =</span> l,</span>
-<span id="cb43-144"><a href="building-the-modelalgorithm.html#cb43-144" tabindex="-1"></a>                           <span class="at">Dlp1 =</span> Dlp1,</span>
-<span id="cb43-145"><a href="building-the-modelalgorithm.html#cb43-145" tabindex="-1"></a>                           <span class="at">Dl =</span> Dl,</span>
-<span id="cb43-146"><a href="building-the-modelalgorithm.html#cb43-146" tabindex="-1"></a>                           <span class="at">tDl =</span> tDl,</span>
-<span id="cb43-147"><a href="building-the-modelalgorithm.html#cb43-147" tabindex="-1"></a>                           <span class="at">y =</span> ylist,</span>
-<span id="cb43-148"><a href="building-the-modelalgorithm.html#cb43-148" tabindex="-1"></a>                           <span class="at">err_rel =</span> err_rel,</span>
-<span id="cb43-149"><a href="building-the-modelalgorithm.html#cb43-149" tabindex="-1"></a>                           <span class="at">err_abs =</span> err_abs,</span>
-<span id="cb43-150"><a href="building-the-modelalgorithm.html#cb43-150" tabindex="-1"></a>                           <span class="at">zerothresh =</span> zerothresh,</span>
-<span id="cb43-151"><a href="building-the-modelalgorithm.html#cb43-151" tabindex="-1"></a>                           <span class="at">sigma_eig_by_clust =</span> sigma_eig_by_clust,</span>
-<span id="cb43-152"><a href="building-the-modelalgorithm.html#cb43-152" tabindex="-1"></a>                           <span class="at">iter =</span> iter,</span>
-<span id="cb43-153"><a href="building-the-modelalgorithm.html#cb43-153" tabindex="-1"></a></span>
-<span id="cb43-154"><a href="building-the-modelalgorithm.html#cb43-154" tabindex="-1"></a>                           <span class="do">## Warm starts from previous *EM* iteration</span></span>
-<span id="cb43-155"><a href="building-the-modelalgorithm.html#cb43-155" tabindex="-1"></a>                           <span class="at">first_iter =</span> first_iter,</span>
-<span id="cb43-156"><a href="building-the-modelalgorithm.html#cb43-156" tabindex="-1"></a>                           <span class="do">## mu = mus[[iclust]], ## I think we want this.</span></span>
-<span id="cb43-157"><a href="building-the-modelalgorithm.html#cb43-157" tabindex="-1"></a>                           <span class="at">uw =</span> uws[[iclust]],</span>
-<span id="cb43-158"><a href="building-the-modelalgorithm.html#cb43-158" tabindex="-1"></a>                           <span class="at">uz =</span> uzs[[iclust]],</span>
-<span id="cb43-159"><a href="building-the-modelalgorithm.html#cb43-159" tabindex="-1"></a>                           <span class="at">z =</span> Zs[[iclust]],</span>
-<span id="cb43-160"><a href="building-the-modelalgorithm.html#cb43-160" tabindex="-1"></a>                           <span class="at">w =</span> Ws[[iclust]])</span>
-<span id="cb43-161"><a href="building-the-modelalgorithm.html#cb43-161" tabindex="-1"></a>    <span class="do">## print(res$rho)</span></span>
-<span id="cb43-162"><a href="building-the-modelalgorithm.html#cb43-162" tabindex="-1"></a></span>
-<span id="cb43-163"><a href="building-the-modelalgorithm.html#cb43-163" tabindex="-1"></a>    <span class="do">## Store the results</span></span>
-<span id="cb43-164"><a href="building-the-modelalgorithm.html#cb43-164" tabindex="-1"></a>    mus[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>mu</span>
-<span id="cb43-165"><a href="building-the-modelalgorithm.html#cb43-165" tabindex="-1"></a>    admm_niters[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>kk</span>
-<span id="cb43-166"><a href="building-the-modelalgorithm.html#cb43-166" tabindex="-1"></a>    admm_inner_iters[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>inner.iter</span>
-<span id="cb43-167"><a href="building-the-modelalgorithm.html#cb43-167" tabindex="-1"></a></span>
-<span id="cb43-168"><a href="building-the-modelalgorithm.html#cb43-168" tabindex="-1"></a>    <span class="do">## Store other things for for warmstart</span></span>
-<span id="cb43-169"><a href="building-the-modelalgorithm.html#cb43-169" tabindex="-1"></a>    <span class="do">## mus[[iclust]] = res$mu</span></span>
-<span id="cb43-170"><a href="building-the-modelalgorithm.html#cb43-170" tabindex="-1"></a>    Zs[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>Z</span>
-<span id="cb43-171"><a href="building-the-modelalgorithm.html#cb43-171" tabindex="-1"></a>    uzs[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>uz</span>
-<span id="cb43-172"><a href="building-the-modelalgorithm.html#cb43-172" tabindex="-1"></a>    uws[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>uw</span>
-<span id="cb43-173"><a href="building-the-modelalgorithm.html#cb43-173" tabindex="-1"></a>    Ws[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>W</span>
-<span id="cb43-174"><a href="building-the-modelalgorithm.html#cb43-174" tabindex="-1"></a>    <span class="do">## The upper triangular matrix remains the same. (code missing?)</span></span>
-<span id="cb43-175"><a href="building-the-modelalgorithm.html#cb43-175" tabindex="-1"></a></span>
-<span id="cb43-176"><a href="building-the-modelalgorithm.html#cb43-176" tabindex="-1"></a>  }</span>
-<span id="cb43-177"><a href="building-the-modelalgorithm.html#cb43-177" tabindex="-1"></a></span>
-<span id="cb43-178"><a href="building-the-modelalgorithm.html#cb43-178" tabindex="-1"></a>  <span class="do">## Aggregate the yhats into one array</span></span>
-<span id="cb43-179"><a href="building-the-modelalgorithm.html#cb43-179" tabindex="-1"></a>  mu_array <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim =</span> <span class="fu">c</span>(TT, dimdat, numclust))</span>
-<span id="cb43-180"><a href="building-the-modelalgorithm.html#cb43-180" tabindex="-1"></a>  <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){ mu_array[,,iclust] <span class="ot">=</span> mus[[iclust]] }</span>
-<span id="cb43-181"><a href="building-the-modelalgorithm.html#cb43-181" tabindex="-1"></a></span>
-<span id="cb43-182"><a href="building-the-modelalgorithm.html#cb43-182" tabindex="-1"></a>  <span class="do">## Each are lists of length |numclust|.</span></span>
-<span id="cb43-183"><a href="building-the-modelalgorithm.html#cb43-183" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">mns =</span> mu_array,</span>
-<span id="cb43-184"><a href="building-the-modelalgorithm.html#cb43-184" tabindex="-1"></a>              <span class="at">admm_niters =</span> admm_niters, </span>
-<span id="cb43-185"><a href="building-the-modelalgorithm.html#cb43-185" tabindex="-1"></a>              <span class="at">admm_inner_iters =</span> admm_inner_iters,</span>
-<span id="cb43-186"><a href="building-the-modelalgorithm.html#cb43-186" tabindex="-1"></a></span>
-<span id="cb43-187"><a href="building-the-modelalgorithm.html#cb43-187" tabindex="-1"></a>              <span class="do">## For warmstarts</span></span>
-<span id="cb43-188"><a href="building-the-modelalgorithm.html#cb43-188" tabindex="-1"></a>              <span class="at">Zs =</span> Zs,</span>
-<span id="cb43-189"><a href="building-the-modelalgorithm.html#cb43-189" tabindex="-1"></a>              <span class="at">Ws =</span> Ws,</span>
-<span id="cb43-190"><a href="building-the-modelalgorithm.html#cb43-190" tabindex="-1"></a>              <span class="at">uws =</span> uws,</span>
-<span id="cb43-191"><a href="building-the-modelalgorithm.html#cb43-191" tabindex="-1"></a>              <span class="at">uzs =</span> uzs,</span>
-<span id="cb43-192"><a href="building-the-modelalgorithm.html#cb43-192" tabindex="-1"></a>              <span class="at">N =</span> N,</span>
-<span id="cb43-193"><a href="building-the-modelalgorithm.html#cb43-193" tabindex="-1"></a></span>
-<span id="cb43-194"><a href="building-the-modelalgorithm.html#cb43-194" tabindex="-1"></a>              <span class="do">## Return the column</span></span>
-<span id="cb43-195"><a href="building-the-modelalgorithm.html#cb43-195" tabindex="-1"></a>              <span class="at">rho =</span> res<span class="sc">$</span>rho,</span>
-<span id="cb43-196"><a href="building-the-modelalgorithm.html#cb43-196" tabindex="-1"></a></span>
-<span id="cb43-197"><a href="building-the-modelalgorithm.html#cb43-197" tabindex="-1"></a>              <span class="do">## For using in the Sigma M step</span></span>
-<span id="cb43-198"><a href="building-the-modelalgorithm.html#cb43-198" tabindex="-1"></a>              <span class="at">ycentered_list =</span> ycentered_list,</span>
-<span id="cb43-199"><a href="building-the-modelalgorithm.html#cb43-199" tabindex="-1"></a>              <span class="at">Xcentered_list =</span> Xcentered_list,</span>
-<span id="cb43-200"><a href="building-the-modelalgorithm.html#cb43-200" tabindex="-1"></a>              <span class="at">yXcentered_list =</span> yXcentered_list,</span>
-<span id="cb43-201"><a href="building-the-modelalgorithm.html#cb43-201" tabindex="-1"></a>              <span class="at">Qlist =</span> Qlist</span>
-<span id="cb43-202"><a href="building-the-modelalgorithm.html#cb43-202" tabindex="-1"></a>  ))</span>
-<span id="cb43-203"><a href="building-the-modelalgorithm.html#cb43-203" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb43-127"><a href="building-the-modelalgorithm.html#cb43-127" tabindex="-1"></a>    <span class="do">## if(iter == 3 &amp; iclust == 5) browser()</span></span>
+<span id="cb43-128"><a href="building-the-modelalgorithm.html#cb43-128" tabindex="-1"></a>    res <span class="ot">=</span> <a href="building-the-modelalgorithm.html#la_admm_oneclust">la_admm_oneclust</a>(<span class="at">K =</span> (<span class="cf">if</span>(local_adapt) local_adapt_niter <span class="cf">else</span> <span class="dv">1</span>),</span>
+<span id="cb43-129"><a href="building-the-modelalgorithm.html#cb43-129" tabindex="-1"></a>                           <span class="at">local_adapt =</span> local_adapt,</span>
+<span id="cb43-130"><a href="building-the-modelalgorithm.html#cb43-130" tabindex="-1"></a>                           <span class="at">iclust =</span> iclust,</span>
+<span id="cb43-131"><a href="building-the-modelalgorithm.html#cb43-131" tabindex="-1"></a>                           <span class="at">niter =</span> niter,</span>
+<span id="cb43-132"><a href="building-the-modelalgorithm.html#cb43-132" tabindex="-1"></a>                           <span class="at">TT =</span> TT, <span class="at">N =</span> N, <span class="at">dimdat =</span> dimdat, <span class="at">maxdev =</span> maxdev,</span>
+<span id="cb43-133"><a href="building-the-modelalgorithm.html#cb43-133" tabindex="-1"></a>                           <span class="at">schurA =</span> schur_syl_A_by_clust[[iclust]],</span>
+<span id="cb43-134"><a href="building-the-modelalgorithm.html#cb43-134" tabindex="-1"></a>                           <span class="at">schurB =</span> schur_syl_B_by_clust[[iclust]],</span>
+<span id="cb43-135"><a href="building-the-modelalgorithm.html#cb43-135" tabindex="-1"></a>                           <span class="at">sigmainv =</span> sigmainv_list[[iclust]],</span>
+<span id="cb43-136"><a href="building-the-modelalgorithm.html#cb43-136" tabindex="-1"></a>                           <span class="at">rho =</span> rho_init, </span>
+<span id="cb43-137"><a href="building-the-modelalgorithm.html#cb43-137" tabindex="-1"></a>                           <span class="at">rhoinit =</span> rho_init, </span>
+<span id="cb43-138"><a href="building-the-modelalgorithm.html#cb43-138" tabindex="-1"></a>                           <span class="do">## rho = (if(iclust == 1) rho_init else res$rho/2),</span></span>
+<span id="cb43-139"><a href="building-the-modelalgorithm.html#cb43-139" tabindex="-1"></a>                           <span class="do">## rhoinit = (if(iclust == 1) rho_init else res$rho/2),</span></span>
+<span id="cb43-140"><a href="building-the-modelalgorithm.html#cb43-140" tabindex="-1"></a>                           <span class="at">sigma =</span> sigma,</span>
+<span id="cb43-141"><a href="building-the-modelalgorithm.html#cb43-141" tabindex="-1"></a>                           <span class="at">lambda =</span> lambda,</span>
+<span id="cb43-142"><a href="building-the-modelalgorithm.html#cb43-142" tabindex="-1"></a>                           <span class="at">resp =</span> resp.iclust,</span>
+<span id="cb43-143"><a href="building-the-modelalgorithm.html#cb43-143" tabindex="-1"></a>                           <span class="at">resp_sum =</span> resp.sum[,iclust],</span>
+<span id="cb43-144"><a href="building-the-modelalgorithm.html#cb43-144" tabindex="-1"></a>                           <span class="at">l =</span> l,</span>
+<span id="cb43-145"><a href="building-the-modelalgorithm.html#cb43-145" tabindex="-1"></a>                           <span class="at">Dlp1 =</span> Dlp1,</span>
+<span id="cb43-146"><a href="building-the-modelalgorithm.html#cb43-146" tabindex="-1"></a>                           <span class="at">Dl =</span> Dl,</span>
+<span id="cb43-147"><a href="building-the-modelalgorithm.html#cb43-147" tabindex="-1"></a>                           <span class="at">tDl =</span> tDl,</span>
+<span id="cb43-148"><a href="building-the-modelalgorithm.html#cb43-148" tabindex="-1"></a>                           <span class="at">y =</span> ylist,</span>
+<span id="cb43-149"><a href="building-the-modelalgorithm.html#cb43-149" tabindex="-1"></a>                           <span class="at">err_rel =</span> err_rel,</span>
+<span id="cb43-150"><a href="building-the-modelalgorithm.html#cb43-150" tabindex="-1"></a>                           <span class="at">err_abs =</span> err_abs,</span>
+<span id="cb43-151"><a href="building-the-modelalgorithm.html#cb43-151" tabindex="-1"></a>                           <span class="at">zerothresh =</span> zerothresh,</span>
+<span id="cb43-152"><a href="building-the-modelalgorithm.html#cb43-152" tabindex="-1"></a>                           <span class="at">sigma_eig_by_clust =</span> sigma_eig_by_clust,</span>
+<span id="cb43-153"><a href="building-the-modelalgorithm.html#cb43-153" tabindex="-1"></a>                           <span class="at">em_iter =</span> iter,</span>
+<span id="cb43-154"><a href="building-the-modelalgorithm.html#cb43-154" tabindex="-1"></a></span>
+<span id="cb43-155"><a href="building-the-modelalgorithm.html#cb43-155" tabindex="-1"></a>                           <span class="do">## Warm starts from previous *EM* iteration</span></span>
+<span id="cb43-156"><a href="building-the-modelalgorithm.html#cb43-156" tabindex="-1"></a>                           <span class="at">first_iter =</span> first_iter,</span>
+<span id="cb43-157"><a href="building-the-modelalgorithm.html#cb43-157" tabindex="-1"></a>                           <span class="do">## mu = mus[[iclust]], ## I think we want this.</span></span>
+<span id="cb43-158"><a href="building-the-modelalgorithm.html#cb43-158" tabindex="-1"></a>                           <span class="at">uw =</span> uws[[iclust]],</span>
+<span id="cb43-159"><a href="building-the-modelalgorithm.html#cb43-159" tabindex="-1"></a>                           <span class="at">uz =</span> uzs[[iclust]],</span>
+<span id="cb43-160"><a href="building-the-modelalgorithm.html#cb43-160" tabindex="-1"></a>                           <span class="at">z =</span> Zs[[iclust]],</span>
+<span id="cb43-161"><a href="building-the-modelalgorithm.html#cb43-161" tabindex="-1"></a>                           <span class="at">w =</span> Ws[[iclust]])</span>
+<span id="cb43-162"><a href="building-the-modelalgorithm.html#cb43-162" tabindex="-1"></a>    <span class="do">## print(res$rho)</span></span>
+<span id="cb43-163"><a href="building-the-modelalgorithm.html#cb43-163" tabindex="-1"></a></span>
+<span id="cb43-164"><a href="building-the-modelalgorithm.html#cb43-164" tabindex="-1"></a>    <span class="do">## Store the results</span></span>
+<span id="cb43-165"><a href="building-the-modelalgorithm.html#cb43-165" tabindex="-1"></a>    mus[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>mu</span>
+<span id="cb43-166"><a href="building-the-modelalgorithm.html#cb43-166" tabindex="-1"></a>    admm_niters[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>kk</span>
+<span id="cb43-167"><a href="building-the-modelalgorithm.html#cb43-167" tabindex="-1"></a>    admm_inner_iters[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>inner.iter</span>
+<span id="cb43-168"><a href="building-the-modelalgorithm.html#cb43-168" tabindex="-1"></a></span>
+<span id="cb43-169"><a href="building-the-modelalgorithm.html#cb43-169" tabindex="-1"></a>    <span class="do">## Store other things for for warmstart</span></span>
+<span id="cb43-170"><a href="building-the-modelalgorithm.html#cb43-170" tabindex="-1"></a>    <span class="do">## mus[[iclust]] = res$mu</span></span>
+<span id="cb43-171"><a href="building-the-modelalgorithm.html#cb43-171" tabindex="-1"></a>    Zs[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>Z</span>
+<span id="cb43-172"><a href="building-the-modelalgorithm.html#cb43-172" tabindex="-1"></a>    uzs[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>uz</span>
+<span id="cb43-173"><a href="building-the-modelalgorithm.html#cb43-173" tabindex="-1"></a>    uws[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>uw</span>
+<span id="cb43-174"><a href="building-the-modelalgorithm.html#cb43-174" tabindex="-1"></a>    Ws[[iclust]] <span class="ot">=</span> res<span class="sc">$</span>W</span>
+<span id="cb43-175"><a href="building-the-modelalgorithm.html#cb43-175" tabindex="-1"></a>    <span class="do">## The upper triangular matrix remains the same. (code missing?)</span></span>
+<span id="cb43-176"><a href="building-the-modelalgorithm.html#cb43-176" tabindex="-1"></a></span>
+<span id="cb43-177"><a href="building-the-modelalgorithm.html#cb43-177" tabindex="-1"></a>  }</span>
+<span id="cb43-178"><a href="building-the-modelalgorithm.html#cb43-178" tabindex="-1"></a></span>
+<span id="cb43-179"><a href="building-the-modelalgorithm.html#cb43-179" tabindex="-1"></a>  <span class="do">## Aggregate the yhats into one array</span></span>
+<span id="cb43-180"><a href="building-the-modelalgorithm.html#cb43-180" tabindex="-1"></a>  mu_array <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim =</span> <span class="fu">c</span>(TT, dimdat, numclust))</span>
+<span id="cb43-181"><a href="building-the-modelalgorithm.html#cb43-181" tabindex="-1"></a>  <span class="cf">for</span>(iclust <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numclust){ mu_array[,,iclust] <span class="ot">=</span> mus[[iclust]] }</span>
+<span id="cb43-182"><a href="building-the-modelalgorithm.html#cb43-182" tabindex="-1"></a></span>
+<span id="cb43-183"><a href="building-the-modelalgorithm.html#cb43-183" tabindex="-1"></a>  <span class="do">## Each are lists of length |numclust|.</span></span>
+<span id="cb43-184"><a href="building-the-modelalgorithm.html#cb43-184" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">mns =</span> mu_array,</span>
+<span id="cb43-185"><a href="building-the-modelalgorithm.html#cb43-185" tabindex="-1"></a>              <span class="at">admm_niters =</span> admm_niters, </span>
+<span id="cb43-186"><a href="building-the-modelalgorithm.html#cb43-186" tabindex="-1"></a>              <span class="at">admm_inner_iters =</span> admm_inner_iters,</span>
+<span id="cb43-187"><a href="building-the-modelalgorithm.html#cb43-187" tabindex="-1"></a></span>
+<span id="cb43-188"><a href="building-the-modelalgorithm.html#cb43-188" tabindex="-1"></a>              <span class="do">## For warmstarts</span></span>
+<span id="cb43-189"><a href="building-the-modelalgorithm.html#cb43-189" tabindex="-1"></a>              <span class="at">Zs =</span> Zs,</span>
+<span id="cb43-190"><a href="building-the-modelalgorithm.html#cb43-190" tabindex="-1"></a>              <span class="at">Ws =</span> Ws,</span>
+<span id="cb43-191"><a href="building-the-modelalgorithm.html#cb43-191" tabindex="-1"></a>              <span class="at">uws =</span> uws,</span>
+<span id="cb43-192"><a href="building-the-modelalgorithm.html#cb43-192" tabindex="-1"></a>              <span class="at">uzs =</span> uzs,</span>
+<span id="cb43-193"><a href="building-the-modelalgorithm.html#cb43-193" tabindex="-1"></a>              <span class="at">N =</span> N,</span>
+<span id="cb43-194"><a href="building-the-modelalgorithm.html#cb43-194" tabindex="-1"></a></span>
+<span id="cb43-195"><a href="building-the-modelalgorithm.html#cb43-195" tabindex="-1"></a>              <span class="do">## Return the column</span></span>
+<span id="cb43-196"><a href="building-the-modelalgorithm.html#cb43-196" tabindex="-1"></a>              <span class="at">rho =</span> res<span class="sc">$</span>rho,</span>
+<span id="cb43-197"><a href="building-the-modelalgorithm.html#cb43-197" tabindex="-1"></a></span>
+<span id="cb43-198"><a href="building-the-modelalgorithm.html#cb43-198" tabindex="-1"></a>              <span class="do">## For using in the Sigma M step</span></span>
+<span id="cb43-199"><a href="building-the-modelalgorithm.html#cb43-199" tabindex="-1"></a>              <span class="at">ycentered_list =</span> ycentered_list,</span>
+<span id="cb43-200"><a href="building-the-modelalgorithm.html#cb43-200" tabindex="-1"></a>              <span class="at">Xcentered_list =</span> Xcentered_list,</span>
+<span id="cb43-201"><a href="building-the-modelalgorithm.html#cb43-201" tabindex="-1"></a>              <span class="at">yXcentered_list =</span> yXcentered_list,</span>
+<span id="cb43-202"><a href="building-the-modelalgorithm.html#cb43-202" tabindex="-1"></a>              <span class="at">Qlist =</span> Qlist</span>
+<span id="cb43-203"><a href="building-the-modelalgorithm.html#cb43-203" tabindex="-1"></a>  ))</span>
+<span id="cb43-204"><a href="building-the-modelalgorithm.html#cb43-204" tabindex="-1"></a>}</span></code></pre></div>
 <p>The locally adaptive admm for a single cluster involves an inner and outer
 loop. The inner loop is an ADMM for a fixed <span class="math inline">\(\rho\)</span>. The outer loop is written
 here in <code>la_admm_oneclust</code>, and runs the inner ADMM with a fixed step-size
@@ -1453,7 +1455,7 @@ iterations <code>iter=1,...,n</code>.</p>
 <span id="cb48-21"><a href="building-the-modelalgorithm.html#cb48-21" tabindex="-1"></a>                          <span class="do">## warmstart = FALSE,</span></span>
 <span id="cb48-22"><a href="building-the-modelalgorithm.html#cb48-22" tabindex="-1"></a>                          <span class="do">## mu.warm = if(!warmstart) NULL,</span></span>
 <span id="cb48-23"><a href="building-the-modelalgorithm.html#cb48-23" tabindex="-1"></a>                          first_iter,<span class="do">## Not used </span></span>
-<span id="cb48-24"><a href="building-the-modelalgorithm.html#cb48-24" tabindex="-1"></a>                          iter,</span>
+<span id="cb48-24"><a href="building-the-modelalgorithm.html#cb48-24" tabindex="-1"></a>                          em_iter,</span>
 <span id="cb48-25"><a href="building-the-modelalgorithm.html#cb48-25" tabindex="-1"></a>                          outer_iter,</span>
 <span id="cb48-26"><a href="building-the-modelalgorithm.html#cb48-26" tabindex="-1"></a>                          local_adapt,</span>
 <span id="cb48-27"><a href="building-the-modelalgorithm.html#cb48-27" tabindex="-1"></a>                          sigma,</span>
@@ -1465,121 +1467,125 @@ iterations <code>iter=1,...,n</code>.</p>
 <span id="cb48-33"><a href="building-the-modelalgorithm.html#cb48-33" tabindex="-1"></a>  resid_mat <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> <span class="fu">ceiling</span>(niter<span class="sc">/</span><span class="dv">5</span>), <span class="at">ncol =</span> <span class="dv">6</span>)</span>
 <span id="cb48-34"><a href="building-the-modelalgorithm.html#cb48-34" tabindex="-1"></a>  <span class="fu">colnames</span>(resid_mat) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"prim1"</span>, <span class="st">"prim2"</span>, <span class="st">"primresid"</span>, <span class="st">"primerr"</span>, <span class="st">"dualresid"</span>, <span class="st">"dualerr"</span>)</span>
 <span id="cb48-35"><a href="building-the-modelalgorithm.html#cb48-35" tabindex="-1"></a>  rhofac <span class="ot">=</span> rho <span class="sc">/</span> rhoinit </span>
-<span id="cb48-36"><a href="building-the-modelalgorithm.html#cb48-36" tabindex="-1"></a></span>
-<span id="cb48-37"><a href="building-the-modelalgorithm.html#cb48-37" tabindex="-1"></a>  </span>
-<span id="cb48-38"><a href="building-the-modelalgorithm.html#cb48-38" tabindex="-1"></a></span>
-<span id="cb48-39"><a href="building-the-modelalgorithm.html#cb48-39" tabindex="-1"></a>  <span class="do">## This doesn't change over iterations</span></span>
-<span id="cb48-40"><a href="building-the-modelalgorithm.html#cb48-40" tabindex="-1"></a>  schurB <span class="ot">=</span> <a href="building-the-modelalgorithm.html#myschur">myschur</a>(schurB<span class="sc">$</span>orig <span class="sc">*</span> rhofac) <span class="do">## In flowmix, this is done on A. Here, it's done on B (in AX + XB + C = 0).</span></span>
-<span id="cb48-41"><a href="building-the-modelalgorithm.html#cb48-41" tabindex="-1"></a>  TA <span class="ot">=</span> schurA<span class="sc">$</span>T <span class="do">##* rhofac</span></span>
-<span id="cb48-42"><a href="building-the-modelalgorithm.html#cb48-42" tabindex="-1"></a>  TB <span class="ot">=</span> schurB<span class="sc">$</span>T</span>
-<span id="cb48-43"><a href="building-the-modelalgorithm.html#cb48-43" tabindex="-1"></a>  UA <span class="ot">=</span> schurA<span class="sc">$</span>Q</span>
-<span id="cb48-44"><a href="building-the-modelalgorithm.html#cb48-44" tabindex="-1"></a>  UB <span class="ot">=</span> schurB<span class="sc">$</span>Q</span>
-<span id="cb48-45"><a href="building-the-modelalgorithm.html#cb48-45" tabindex="-1"></a>  tUA <span class="ot">=</span> schurA<span class="sc">$</span>tQ</span>
-<span id="cb48-46"><a href="building-the-modelalgorithm.html#cb48-46" tabindex="-1"></a>  tUB <span class="ot">=</span> schurB<span class="sc">$</span>tQ</span>
-<span id="cb48-47"><a href="building-the-modelalgorithm.html#cb48-47" tabindex="-1"></a></span>
-<span id="cb48-48"><a href="building-the-modelalgorithm.html#cb48-48" tabindex="-1"></a>  <span class="do">## This also doesn't change over iterations</span></span>
-<span id="cb48-49"><a href="building-the-modelalgorithm.html#cb48-49" tabindex="-1"></a>  C1 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="at">FUN =</span> <span class="cf">function</span>(tt){</span>
-<span id="cb48-50"><a href="building-the-modelalgorithm.html#cb48-50" tabindex="-1"></a>      multmat <span class="ot">&lt;-</span> <span class="fu">apply</span>(y[[tt]], <span class="at">FUN =</span> <span class="cf">function</span>(yy) yy <span class="sc">*</span> resp[[tt]], <span class="at">MARGIN =</span> <span class="dv">2</span>)</span>
-<span id="cb48-51"><a href="building-the-modelalgorithm.html#cb48-51" tabindex="-1"></a>      sigmainv <span class="sc">%*%</span> <span class="fu">colSums</span>(multmat)</span>
-<span id="cb48-52"><a href="building-the-modelalgorithm.html#cb48-52" tabindex="-1"></a>    }))</span>
-<span id="cb48-53"><a href="building-the-modelalgorithm.html#cb48-53" tabindex="-1"></a></span>
-<span id="cb48-54"><a href="building-the-modelalgorithm.html#cb48-54" tabindex="-1"></a></span>
-<span id="cb48-55"><a href="building-the-modelalgorithm.html#cb48-55" tabindex="-1"></a>  <span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>niter){</span>
-<span id="cb48-56"><a href="building-the-modelalgorithm.html#cb48-56" tabindex="-1"></a>    syl_C <span class="ot">&lt;-</span> <a href="building-the-modelalgorithm.html#get_C_mat">get_C_mat</a>(<span class="at">C1 =</span> C1, <span class="at">resp_sum =</span> resp_sum, <span class="at">TT =</span> TT, <span class="at">dimdat =</span> dimdat,</span>
-<span id="cb48-57"><a href="building-the-modelalgorithm.html#cb48-57" tabindex="-1"></a>                       <span class="at">Sigma_inv =</span> sigmainv, <span class="at">N =</span> N, <span class="at">Dl =</span> Dl, <span class="at">rho =</span> rho,</span>
-<span id="cb48-58"><a href="building-the-modelalgorithm.html#cb48-58" tabindex="-1"></a>                       <span class="at">z =</span> z, <span class="at">w =</span> w, <span class="at">uz =</span> uz, <span class="at">uw =</span> uw, <span class="at">l=</span>l)</span>
-<span id="cb48-59"><a href="building-the-modelalgorithm.html#cb48-59" tabindex="-1"></a>    FF <span class="ot">=</span>  (<span class="sc">-</span><span class="dv">1</span>) <span class="sc">*</span> tUA <span class="sc">%*%</span> syl_C <span class="sc">%*%</span> UB</span>
-<span id="cb48-60"><a href="building-the-modelalgorithm.html#cb48-60" tabindex="-1"></a>    mu <span class="ot">=</span> UA <span class="sc">%*%</span> <span class="fu">matrix_function_solve_triangular_sylvester_barebonesC2</span>(TA, TB, FF) <span class="sc">%*%</span> tUB</span>
-<span id="cb48-61"><a href="building-the-modelalgorithm.html#cb48-61" tabindex="-1"></a>    mu <span class="ot">=</span> <span class="fu">t</span>(mu)</span>
-<span id="cb48-62"><a href="building-the-modelalgorithm.html#cb48-62" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">nrow</span>(mu) <span class="sc">==</span> TT)</span>
-<span id="cb48-63"><a href="building-the-modelalgorithm.html#cb48-63" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">ncol</span>(mu) <span class="sc">==</span> dimdat)</span>
-<span id="cb48-64"><a href="building-the-modelalgorithm.html#cb48-64" tabindex="-1"></a></span>
-<span id="cb48-65"><a href="building-the-modelalgorithm.html#cb48-65" tabindex="-1"></a>    <span class="do">## if(warmstart &amp; iter == 1){</span></span>
-<span id="cb48-66"><a href="building-the-modelalgorithm.html#cb48-66" tabindex="-1"></a>    <span class="do">##   print("warmed up mu!")</span></span>
-<span id="cb48-67"><a href="building-the-modelalgorithm.html#cb48-67" tabindex="-1"></a>    <span class="do">##   mu = mu.warm</span></span>
-<span id="cb48-68"><a href="building-the-modelalgorithm.html#cb48-68" tabindex="-1"></a>    <span class="do">## }</span></span>
-<span id="cb48-69"><a href="building-the-modelalgorithm.html#cb48-69" tabindex="-1"></a></span>
-<span id="cb48-70"><a href="building-the-modelalgorithm.html#cb48-70" tabindex="-1"></a>    centered_mu <span class="ot">=</span> <span class="fu">sweep</span>(mu, <span class="dv">2</span>, <span class="fu">colMeans</span>(mu)) </span>
-<span id="cb48-71"><a href="building-the-modelalgorithm.html#cb48-71" tabindex="-1"></a>    <span class="do">## stopifnot(all(abs(colMeans(centered_mu))&lt;1E-8))</span></span>
-<span id="cb48-72"><a href="building-the-modelalgorithm.html#cb48-72" tabindex="-1"></a>    z <span class="ot">&lt;-</span> <a href="building-the-modelalgorithm.html#Z_update">Z_update</a>(centered_mu, <span class="at">Uz =</span> uz, <span class="at">C =</span> maxdev, <span class="at">rho =</span> rho)</span>
-<span id="cb48-73"><a href="building-the-modelalgorithm.html#cb48-73" tabindex="-1"></a></span>
-<span id="cb48-74"><a href="building-the-modelalgorithm.html#cb48-74" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">any</span>(<span class="fu">abs</span>(mu)<span class="sc">&gt;</span><span class="fl">1E2</span>)){</span>
-<span id="cb48-75"><a href="building-the-modelalgorithm.html#cb48-75" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">"mu is blowing up!"</span>)</span>
-<span id="cb48-76"><a href="building-the-modelalgorithm.html#cb48-76" tabindex="-1"></a>      <span class="do">## break</span></span>
-<span id="cb48-77"><a href="building-the-modelalgorithm.html#cb48-77" tabindex="-1"></a>    }</span>
-<span id="cb48-78"><a href="building-the-modelalgorithm.html#cb48-78" tabindex="-1"></a>    wlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>dimdat, <span class="cf">function</span>(j){</span>
-<span id="cb48-79"><a href="building-the-modelalgorithm.html#cb48-79" tabindex="-1"></a>      <a href="building-the-modelalgorithm.html#W_update_fused">W_update_fused</a>(<span class="at">l =</span> l, <span class="at">TT =</span> TT, <span class="at">mu =</span> mu[, j, <span class="at">drop =</span> <span class="cn">TRUE</span>],</span>
-<span id="cb48-80"><a href="building-the-modelalgorithm.html#cb48-80" tabindex="-1"></a>                     <span class="at">rho =</span> rho, <span class="at">lambda =</span> lambda,</span>
-<span id="cb48-81"><a href="building-the-modelalgorithm.html#cb48-81" tabindex="-1"></a>                     <span class="at">uw =</span> uw[,j,<span class="at">drop=</span><span class="cn">TRUE</span>],</span>
-<span id="cb48-82"><a href="building-the-modelalgorithm.html#cb48-82" tabindex="-1"></a>                     <span class="at">Dl =</span> Dl)})</span>
-<span id="cb48-83"><a href="building-the-modelalgorithm.html#cb48-83" tabindex="-1"></a>    w <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, wlist)</span>
-<span id="cb48-84"><a href="building-the-modelalgorithm.html#cb48-84" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">nrow</span>(w) <span class="sc">==</span> TT<span class="sc">-</span>l)</span>
-<span id="cb48-85"><a href="building-the-modelalgorithm.html#cb48-85" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">ncol</span>(w) <span class="sc">==</span> dimdat)</span>
-<span id="cb48-86"><a href="building-the-modelalgorithm.html#cb48-86" tabindex="-1"></a></span>
-<span id="cb48-87"><a href="building-the-modelalgorithm.html#cb48-87" tabindex="-1"></a></span>
-<span id="cb48-88"><a href="building-the-modelalgorithm.html#cb48-88" tabindex="-1"></a>    uz <span class="ot">=</span> <a href="building-the-modelalgorithm.html#U_update_Z">U_update_Z</a>(uz, rho, mu, z, TT)</span>
-<span id="cb48-89"><a href="building-the-modelalgorithm.html#cb48-89" tabindex="-1"></a></span>
+<span id="cb48-36"><a href="building-the-modelalgorithm.html#cb48-36" tabindex="-1"></a> </span>
+<span id="cb48-37"><a href="building-the-modelalgorithm.html#cb48-37" tabindex="-1"></a>   </span>
+<span id="cb48-38"><a href="building-the-modelalgorithm.html#cb48-38" tabindex="-1"></a>  <span class="do">## print("iclust") </span></span>
+<span id="cb48-39"><a href="building-the-modelalgorithm.html#cb48-39" tabindex="-1"></a>  <span class="do">## print(iclust)</span></span>
+<span id="cb48-40"><a href="building-the-modelalgorithm.html#cb48-40" tabindex="-1"></a>  <span class="do">## if(iclust == 5) browser()</span></span>
+<span id="cb48-41"><a href="building-the-modelalgorithm.html#cb48-41" tabindex="-1"></a></span>
+<span id="cb48-42"><a href="building-the-modelalgorithm.html#cb48-42" tabindex="-1"></a>  <span class="do">## This doesn't change over iterations</span></span>
+<span id="cb48-43"><a href="building-the-modelalgorithm.html#cb48-43" tabindex="-1"></a>  schurB <span class="ot">=</span> <a href="building-the-modelalgorithm.html#myschur">myschur</a>(schurB<span class="sc">$</span>orig <span class="sc">*</span> rhofac) <span class="do">## In flowmix, this is done on A. Here, it's done on B (in AX + XB + C = 0).</span></span>
+<span id="cb48-44"><a href="building-the-modelalgorithm.html#cb48-44" tabindex="-1"></a>  TA <span class="ot">=</span> schurA<span class="sc">$</span>T <span class="do">##* rhofac</span></span>
+<span id="cb48-45"><a href="building-the-modelalgorithm.html#cb48-45" tabindex="-1"></a>  TB <span class="ot">=</span> schurB<span class="sc">$</span>T</span>
+<span id="cb48-46"><a href="building-the-modelalgorithm.html#cb48-46" tabindex="-1"></a>  UA <span class="ot">=</span> schurA<span class="sc">$</span>Q</span>
+<span id="cb48-47"><a href="building-the-modelalgorithm.html#cb48-47" tabindex="-1"></a>  UB <span class="ot">=</span> schurB<span class="sc">$</span>Q</span>
+<span id="cb48-48"><a href="building-the-modelalgorithm.html#cb48-48" tabindex="-1"></a>  tUA <span class="ot">=</span> schurA<span class="sc">$</span>tQ</span>
+<span id="cb48-49"><a href="building-the-modelalgorithm.html#cb48-49" tabindex="-1"></a>  tUB <span class="ot">=</span> schurB<span class="sc">$</span>tQ</span>
+<span id="cb48-50"><a href="building-the-modelalgorithm.html#cb48-50" tabindex="-1"></a></span>
+<span id="cb48-51"><a href="building-the-modelalgorithm.html#cb48-51" tabindex="-1"></a>  <span class="do">## This also doesn't change over iterations</span></span>
+<span id="cb48-52"><a href="building-the-modelalgorithm.html#cb48-52" tabindex="-1"></a>  C1 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>TT, <span class="at">FUN =</span> <span class="cf">function</span>(tt){</span>
+<span id="cb48-53"><a href="building-the-modelalgorithm.html#cb48-53" tabindex="-1"></a>      multmat <span class="ot">&lt;-</span> <span class="fu">apply</span>(y[[tt]], <span class="at">FUN =</span> <span class="cf">function</span>(yy) yy <span class="sc">*</span> resp[[tt]], <span class="at">MARGIN =</span> <span class="dv">2</span>)</span>
+<span id="cb48-54"><a href="building-the-modelalgorithm.html#cb48-54" tabindex="-1"></a>      sigmainv <span class="sc">%*%</span> <span class="fu">colSums</span>(multmat)</span>
+<span id="cb48-55"><a href="building-the-modelalgorithm.html#cb48-55" tabindex="-1"></a>    }))</span>
+<span id="cb48-56"><a href="building-the-modelalgorithm.html#cb48-56" tabindex="-1"></a></span>
+<span id="cb48-57"><a href="building-the-modelalgorithm.html#cb48-57" tabindex="-1"></a>  </span>
+<span id="cb48-58"><a href="building-the-modelalgorithm.html#cb48-58" tabindex="-1"></a>  <span class="cf">for</span>(iter <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>niter){</span>
+<span id="cb48-59"><a href="building-the-modelalgorithm.html#cb48-59" tabindex="-1"></a>    syl_C <span class="ot">&lt;-</span> <a href="building-the-modelalgorithm.html#get_C_mat">get_C_mat</a>(<span class="at">C1 =</span> C1, <span class="at">resp_sum =</span> resp_sum, <span class="at">TT =</span> TT, <span class="at">dimdat =</span> dimdat,</span>
+<span id="cb48-60"><a href="building-the-modelalgorithm.html#cb48-60" tabindex="-1"></a>                       <span class="at">Sigma_inv =</span> sigmainv, <span class="at">N =</span> N, <span class="at">Dl =</span> Dl, <span class="at">rho =</span> rho,</span>
+<span id="cb48-61"><a href="building-the-modelalgorithm.html#cb48-61" tabindex="-1"></a>                       <span class="at">z =</span> z, <span class="at">w =</span> w, <span class="at">uz =</span> uz, <span class="at">uw =</span> uw, <span class="at">l=</span>l)</span>
+<span id="cb48-62"><a href="building-the-modelalgorithm.html#cb48-62" tabindex="-1"></a>    FF <span class="ot">=</span>  (<span class="sc">-</span><span class="dv">1</span>) <span class="sc">*</span> tUA <span class="sc">%*%</span> syl_C <span class="sc">%*%</span> UB</span>
+<span id="cb48-63"><a href="building-the-modelalgorithm.html#cb48-63" tabindex="-1"></a>    mu <span class="ot">=</span> UA <span class="sc">%*%</span> <span class="fu">matrix_function_solve_triangular_sylvester_barebonesC2</span>(TA, TB, FF) <span class="sc">%*%</span> tUB</span>
+<span id="cb48-64"><a href="building-the-modelalgorithm.html#cb48-64" tabindex="-1"></a>    mu <span class="ot">=</span> <span class="fu">t</span>(mu)</span>
+<span id="cb48-65"><a href="building-the-modelalgorithm.html#cb48-65" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">nrow</span>(mu) <span class="sc">==</span> TT)</span>
+<span id="cb48-66"><a href="building-the-modelalgorithm.html#cb48-66" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">ncol</span>(mu) <span class="sc">==</span> dimdat)</span>
+<span id="cb48-67"><a href="building-the-modelalgorithm.html#cb48-67" tabindex="-1"></a></span>
+<span id="cb48-68"><a href="building-the-modelalgorithm.html#cb48-68" tabindex="-1"></a>    <span class="do">## if(warmstart &amp; iter == 1){</span></span>
+<span id="cb48-69"><a href="building-the-modelalgorithm.html#cb48-69" tabindex="-1"></a>    <span class="do">##   print("warmed up mu!")</span></span>
+<span id="cb48-70"><a href="building-the-modelalgorithm.html#cb48-70" tabindex="-1"></a>    <span class="do">##   mu = mu.warm</span></span>
+<span id="cb48-71"><a href="building-the-modelalgorithm.html#cb48-71" tabindex="-1"></a>    <span class="do">## }</span></span>
+<span id="cb48-72"><a href="building-the-modelalgorithm.html#cb48-72" tabindex="-1"></a></span>
+<span id="cb48-73"><a href="building-the-modelalgorithm.html#cb48-73" tabindex="-1"></a>    centered_mu <span class="ot">=</span> <span class="fu">sweep</span>(mu, <span class="dv">2</span>, <span class="fu">colMeans</span>(mu)) </span>
+<span id="cb48-74"><a href="building-the-modelalgorithm.html#cb48-74" tabindex="-1"></a>    <span class="do">## stopifnot(all(abs(colMeans(centered_mu))&lt;1E-8))</span></span>
+<span id="cb48-75"><a href="building-the-modelalgorithm.html#cb48-75" tabindex="-1"></a>    z <span class="ot">&lt;-</span> <a href="building-the-modelalgorithm.html#Z_update">Z_update</a>(centered_mu, <span class="at">Uz =</span> uz, <span class="at">C =</span> maxdev, <span class="at">rho =</span> rho)</span>
+<span id="cb48-76"><a href="building-the-modelalgorithm.html#cb48-76" tabindex="-1"></a></span>
+<span id="cb48-77"><a href="building-the-modelalgorithm.html#cb48-77" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">any</span>(<span class="fu">abs</span>(mu)<span class="sc">&gt;</span><span class="fl">1E2</span>)){</span>
+<span id="cb48-78"><a href="building-the-modelalgorithm.html#cb48-78" tabindex="-1"></a>      <span class="do">## browser() </span></span>
+<span id="cb48-79"><a href="building-the-modelalgorithm.html#cb48-79" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">"mu is blowing up!"</span>)</span>
+<span id="cb48-80"><a href="building-the-modelalgorithm.html#cb48-80" tabindex="-1"></a>      <span class="do">## break</span></span>
+<span id="cb48-81"><a href="building-the-modelalgorithm.html#cb48-81" tabindex="-1"></a>    }</span>
+<span id="cb48-82"><a href="building-the-modelalgorithm.html#cb48-82" tabindex="-1"></a>    wlist <span class="ot">=</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span>dimdat, <span class="cf">function</span>(j){</span>
+<span id="cb48-83"><a href="building-the-modelalgorithm.html#cb48-83" tabindex="-1"></a>      <a href="building-the-modelalgorithm.html#W_update_fused">W_update_fused</a>(<span class="at">l =</span> l, <span class="at">TT =</span> TT, <span class="at">mu =</span> mu[, j, <span class="at">drop =</span> <span class="cn">TRUE</span>],</span>
+<span id="cb48-84"><a href="building-the-modelalgorithm.html#cb48-84" tabindex="-1"></a>                     <span class="at">rho =</span> rho, <span class="at">lambda =</span> lambda,</span>
+<span id="cb48-85"><a href="building-the-modelalgorithm.html#cb48-85" tabindex="-1"></a>                     <span class="at">uw =</span> uw[,j,<span class="at">drop=</span><span class="cn">TRUE</span>],</span>
+<span id="cb48-86"><a href="building-the-modelalgorithm.html#cb48-86" tabindex="-1"></a>                     <span class="at">Dl =</span> Dl)})</span>
+<span id="cb48-87"><a href="building-the-modelalgorithm.html#cb48-87" tabindex="-1"></a>    w <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, wlist)</span>
+<span id="cb48-88"><a href="building-the-modelalgorithm.html#cb48-88" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">nrow</span>(w) <span class="sc">==</span> TT<span class="sc">-</span>l)</span>
+<span id="cb48-89"><a href="building-the-modelalgorithm.html#cb48-89" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">ncol</span>(w) <span class="sc">==</span> dimdat)</span>
 <span id="cb48-90"><a href="building-the-modelalgorithm.html#cb48-90" tabindex="-1"></a></span>
-<span id="cb48-91"><a href="building-the-modelalgorithm.html#cb48-91" tabindex="-1"></a>    <span class="do">## uw = <a href="building-the-modelalgorithm.html#U_update_W">U_update_W</a>(uw, rho, mu, w, l, TT)</span></span>
-<span id="cb48-92"><a href="building-the-modelalgorithm.html#cb48-92" tabindex="-1"></a>    uw <span class="ot">=</span> <a href="building-the-modelalgorithm.html#U_update_W">U_update_W</a>(uw, rho, mu, w, l, Dl, TT)</span>
+<span id="cb48-91"><a href="building-the-modelalgorithm.html#cb48-91" tabindex="-1"></a></span>
+<span id="cb48-92"><a href="building-the-modelalgorithm.html#cb48-92" tabindex="-1"></a>    uz <span class="ot">=</span> <a href="building-the-modelalgorithm.html#U_update_Z">U_update_Z</a>(uz, rho, mu, z, TT)</span>
 <span id="cb48-93"><a href="building-the-modelalgorithm.html#cb48-93" tabindex="-1"></a></span>
 <span id="cb48-94"><a href="building-the-modelalgorithm.html#cb48-94" tabindex="-1"></a></span>
-<span id="cb48-95"><a href="building-the-modelalgorithm.html#cb48-95" tabindex="-1"></a>    <span class="do">## Check convergence</span></span>
-<span id="cb48-96"><a href="building-the-modelalgorithm.html#cb48-96" tabindex="-1"></a>    <span class="cf">if</span>( iter <span class="sc">&gt;</span> <span class="dv">1</span>  <span class="sc">&amp;</span> iter <span class="sc">%%</span> <span class="dv">5</span> <span class="sc">==</span> <span class="dv">0</span>){<span class="do">## &amp; !local_adapt){</span></span>
+<span id="cb48-95"><a href="building-the-modelalgorithm.html#cb48-95" tabindex="-1"></a>    <span class="do">## uw = <a href="building-the-modelalgorithm.html#U_update_W">U_update_W</a>(uw, rho, mu, w, l, TT)</span></span>
+<span id="cb48-96"><a href="building-the-modelalgorithm.html#cb48-96" tabindex="-1"></a>    uw <span class="ot">=</span> <a href="building-the-modelalgorithm.html#U_update_W">U_update_W</a>(uw, rho, mu, w, l, Dl, TT)</span>
 <span id="cb48-97"><a href="building-the-modelalgorithm.html#cb48-97" tabindex="-1"></a></span>
-<span id="cb48-98"><a href="building-the-modelalgorithm.html#cb48-98" tabindex="-1"></a>      <span class="do">## Calculate convergence criterion</span></span>
-<span id="cb48-99"><a href="building-the-modelalgorithm.html#cb48-99" tabindex="-1"></a>      obj <span class="ot">=</span> <a href="building-the-modelalgorithm.html#check_converge">check_converge</a>(mu, rho,</span>
-<span id="cb48-100"><a href="building-the-modelalgorithm.html#cb48-100" tabindex="-1"></a>                           w, z,</span>
-<span id="cb48-101"><a href="building-the-modelalgorithm.html#cb48-101" tabindex="-1"></a>                           w_prev, z_prev,</span>
-<span id="cb48-102"><a href="building-the-modelalgorithm.html#cb48-102" tabindex="-1"></a>                           uw, uz,</span>
-<span id="cb48-103"><a href="building-the-modelalgorithm.html#cb48-103" tabindex="-1"></a>                           Dl, tDl, <span class="at">err_rel =</span> err_rel, <span class="at">err_abs =</span> err_abs)</span>
-<span id="cb48-104"><a href="building-the-modelalgorithm.html#cb48-104" tabindex="-1"></a></span>
-<span id="cb48-105"><a href="building-the-modelalgorithm.html#cb48-105" tabindex="-1"></a>      jj <span class="ot">=</span> (iter<span class="sc">/</span> <span class="dv">5</span>)</span>
-<span id="cb48-106"><a href="building-the-modelalgorithm.html#cb48-106" tabindex="-1"></a>      resid_mat[jj,] <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb48-107"><a href="building-the-modelalgorithm.html#cb48-107" tabindex="-1"></a>          <span class="fu">norm</span>(obj<span class="sc">$</span>primal_resid1, <span class="st">"F"</span>), <span class="do">## Temp</span></span>
-<span id="cb48-108"><a href="building-the-modelalgorithm.html#cb48-108" tabindex="-1"></a>          <span class="fu">norm</span>(obj<span class="sc">$</span>primal_resid2, <span class="st">"F"</span>), <span class="do">## Temp</span></span>
-<span id="cb48-109"><a href="building-the-modelalgorithm.html#cb48-109" tabindex="-1"></a>          <span class="fu">norm</span>(obj<span class="sc">$</span>primal_resid, <span class="st">"F"</span>),</span>
-<span id="cb48-110"><a href="building-the-modelalgorithm.html#cb48-110" tabindex="-1"></a>                         obj<span class="sc">$</span>primal_err,</span>
-<span id="cb48-111"><a href="building-the-modelalgorithm.html#cb48-111" tabindex="-1"></a>                         <span class="fu">norm</span>(obj<span class="sc">$</span>dual_resid,<span class="st">"F"</span>),</span>
-<span id="cb48-112"><a href="building-the-modelalgorithm.html#cb48-112" tabindex="-1"></a>                         obj<span class="sc">$</span>dual_err)</span>
-<span id="cb48-113"><a href="building-the-modelalgorithm.html#cb48-113" tabindex="-1"></a></span>
-<span id="cb48-114"><a href="building-the-modelalgorithm.html#cb48-114" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">is.na</span>(obj<span class="sc">$</span>converge)){</span>
-<span id="cb48-115"><a href="building-the-modelalgorithm.html#cb48-115" tabindex="-1"></a>        obj<span class="sc">$</span>converge <span class="ot">=</span> converge <span class="ot">=</span> <span class="cn">FALSE</span></span>
-<span id="cb48-116"><a href="building-the-modelalgorithm.html#cb48-116" tabindex="-1"></a>        <span class="fu">warning</span>(<span class="st">"Convergence was NA"</span>)</span>
-<span id="cb48-117"><a href="building-the-modelalgorithm.html#cb48-117" tabindex="-1"></a>      }</span>
-<span id="cb48-118"><a href="building-the-modelalgorithm.html#cb48-118" tabindex="-1"></a>      <span class="cf">if</span>(obj<span class="sc">$</span>converge){</span>
-<span id="cb48-119"><a href="building-the-modelalgorithm.html#cb48-119" tabindex="-1"></a>        converge <span class="ot">=</span> <span class="cn">TRUE</span></span>
-<span id="cb48-120"><a href="building-the-modelalgorithm.html#cb48-120" tabindex="-1"></a>        <span class="cf">break</span></span>
-<span id="cb48-121"><a href="building-the-modelalgorithm.html#cb48-121" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
-<span id="cb48-122"><a href="building-the-modelalgorithm.html#cb48-122" tabindex="-1"></a>        converge <span class="ot">=</span> <span class="cn">FALSE</span></span>
-<span id="cb48-123"><a href="building-the-modelalgorithm.html#cb48-123" tabindex="-1"></a>      }</span>
-<span id="cb48-124"><a href="building-the-modelalgorithm.html#cb48-124" tabindex="-1"></a>    }</span>
-<span id="cb48-125"><a href="building-the-modelalgorithm.html#cb48-125" tabindex="-1"></a>    w_prev <span class="ot">=</span> w</span>
-<span id="cb48-126"><a href="building-the-modelalgorithm.html#cb48-126" tabindex="-1"></a>    z_prev <span class="ot">=</span> z</span>
-<span id="cb48-127"><a href="building-the-modelalgorithm.html#cb48-127" tabindex="-1"></a>  }</span>
-<span id="cb48-128"><a href="building-the-modelalgorithm.html#cb48-128" tabindex="-1"></a></span>
-<span id="cb48-129"><a href="building-the-modelalgorithm.html#cb48-129" tabindex="-1"></a>  <span class="cf">if</span>(<span class="cn">FALSE</span>){</span>
-<span id="cb48-130"><a href="building-the-modelalgorithm.html#cb48-130" tabindex="-1"></a>    <span class="do">## Calculate optimization objective values for this cluster.</span></span>
-<span id="cb48-131"><a href="building-the-modelalgorithm.html#cb48-131" tabindex="-1"></a>    obj.value <span class="ot">&lt;-</span> <a href="building-the-modelalgorithm.html#objective_per_cluster">objective_per_cluster</a>(<span class="at">y =</span> y, <span class="at">mu =</span> mu, <span class="at">resp =</span> resp,</span>
-<span id="cb48-132"><a href="building-the-modelalgorithm.html#cb48-132" tabindex="-1"></a>                                       <span class="at">Sigma_inv =</span> sigmainv, <span class="at">TT =</span> TT,</span>
-<span id="cb48-133"><a href="building-the-modelalgorithm.html#cb48-133" tabindex="-1"></a>                                       <span class="at">d =</span> dimdat, <span class="at">Dlp1 =</span> Dlp1, <span class="at">Dl =</span> Dl, <span class="at">l =</span> l,</span>
-<span id="cb48-134"><a href="building-the-modelalgorithm.html#cb48-134" tabindex="-1"></a>                                       <span class="at">maxdev =</span> maxdev, <span class="at">lambda =</span> lambda,</span>
-<span id="cb48-135"><a href="building-the-modelalgorithm.html#cb48-135" tabindex="-1"></a>                                       <span class="at">rho =</span> rho, <span class="at">N =</span> N)</span>
-<span id="cb48-136"><a href="building-the-modelalgorithm.html#cb48-136" tabindex="-1"></a>    <span class="do">## This is very expensive to do within each ADMM iteration, so it's commented out for now.</span></span>
-<span id="cb48-137"><a href="building-the-modelalgorithm.html#cb48-137" tabindex="-1"></a>  }</span>
-<span id="cb48-138"><a href="building-the-modelalgorithm.html#cb48-138" tabindex="-1"></a>  obj.value <span class="ot">=</span> <span class="cn">NA</span></span>
-<span id="cb48-139"><a href="building-the-modelalgorithm.html#cb48-139" tabindex="-1"></a></span>
-<span id="cb48-140"><a href="building-the-modelalgorithm.html#cb48-140" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">mu =</span> mu,</span>
-<span id="cb48-141"><a href="building-the-modelalgorithm.html#cb48-141" tabindex="-1"></a>              <span class="at">resid_mat =</span> resid_mat,</span>
-<span id="cb48-142"><a href="building-the-modelalgorithm.html#cb48-142" tabindex="-1"></a>              <span class="at">converge =</span> converge,</span>
-<span id="cb48-143"><a href="building-the-modelalgorithm.html#cb48-143" tabindex="-1"></a>              <span class="do">## Other variables to return.</span></span>
-<span id="cb48-144"><a href="building-the-modelalgorithm.html#cb48-144" tabindex="-1"></a>              <span class="at">Z =</span> z,</span>
-<span id="cb48-145"><a href="building-the-modelalgorithm.html#cb48-145" tabindex="-1"></a>              <span class="at">W =</span> w,</span>
-<span id="cb48-146"><a href="building-the-modelalgorithm.html#cb48-146" tabindex="-1"></a>              <span class="at">uz =</span> uz,</span>
-<span id="cb48-147"><a href="building-the-modelalgorithm.html#cb48-147" tabindex="-1"></a>              <span class="at">uw =</span> uw,</span>
-<span id="cb48-148"><a href="building-the-modelalgorithm.html#cb48-148" tabindex="-1"></a>              <span class="at">inner.iter =</span> iter,</span>
-<span id="cb48-149"><a href="building-the-modelalgorithm.html#cb48-149" tabindex="-1"></a>              <span class="at">single_admm_objective =</span> obj.value))</span>
-<span id="cb48-150"><a href="building-the-modelalgorithm.html#cb48-150" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb48-98"><a href="building-the-modelalgorithm.html#cb48-98" tabindex="-1"></a></span>
+<span id="cb48-99"><a href="building-the-modelalgorithm.html#cb48-99" tabindex="-1"></a>    <span class="do">## Check convergence</span></span>
+<span id="cb48-100"><a href="building-the-modelalgorithm.html#cb48-100" tabindex="-1"></a>    <span class="cf">if</span>( iter <span class="sc">&gt;</span> <span class="dv">1</span>  <span class="sc">&amp;</span> iter <span class="sc">%%</span> <span class="dv">5</span> <span class="sc">==</span> <span class="dv">0</span>){<span class="do">## &amp; !local_adapt){</span></span>
+<span id="cb48-101"><a href="building-the-modelalgorithm.html#cb48-101" tabindex="-1"></a></span>
+<span id="cb48-102"><a href="building-the-modelalgorithm.html#cb48-102" tabindex="-1"></a>      <span class="do">## Calculate convergence criterion</span></span>
+<span id="cb48-103"><a href="building-the-modelalgorithm.html#cb48-103" tabindex="-1"></a>      obj <span class="ot">=</span> <a href="building-the-modelalgorithm.html#check_converge">check_converge</a>(mu, rho,</span>
+<span id="cb48-104"><a href="building-the-modelalgorithm.html#cb48-104" tabindex="-1"></a>                           w, z,</span>
+<span id="cb48-105"><a href="building-the-modelalgorithm.html#cb48-105" tabindex="-1"></a>                           w_prev, z_prev,</span>
+<span id="cb48-106"><a href="building-the-modelalgorithm.html#cb48-106" tabindex="-1"></a>                           uw, uz,</span>
+<span id="cb48-107"><a href="building-the-modelalgorithm.html#cb48-107" tabindex="-1"></a>                           Dl, tDl, <span class="at">err_rel =</span> err_rel, <span class="at">err_abs =</span> err_abs)</span>
+<span id="cb48-108"><a href="building-the-modelalgorithm.html#cb48-108" tabindex="-1"></a></span>
+<span id="cb48-109"><a href="building-the-modelalgorithm.html#cb48-109" tabindex="-1"></a>      jj <span class="ot">=</span> (iter<span class="sc">/</span> <span class="dv">5</span>)</span>
+<span id="cb48-110"><a href="building-the-modelalgorithm.html#cb48-110" tabindex="-1"></a>      resid_mat[jj,] <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb48-111"><a href="building-the-modelalgorithm.html#cb48-111" tabindex="-1"></a>          <span class="fu">norm</span>(obj<span class="sc">$</span>primal_resid1, <span class="st">"F"</span>), <span class="do">## Temp</span></span>
+<span id="cb48-112"><a href="building-the-modelalgorithm.html#cb48-112" tabindex="-1"></a>          <span class="fu">norm</span>(obj<span class="sc">$</span>primal_resid2, <span class="st">"F"</span>), <span class="do">## Temp</span></span>
+<span id="cb48-113"><a href="building-the-modelalgorithm.html#cb48-113" tabindex="-1"></a>          <span class="fu">norm</span>(obj<span class="sc">$</span>primal_resid, <span class="st">"F"</span>),</span>
+<span id="cb48-114"><a href="building-the-modelalgorithm.html#cb48-114" tabindex="-1"></a>                         obj<span class="sc">$</span>primal_err,</span>
+<span id="cb48-115"><a href="building-the-modelalgorithm.html#cb48-115" tabindex="-1"></a>                         <span class="fu">norm</span>(obj<span class="sc">$</span>dual_resid,<span class="st">"F"</span>),</span>
+<span id="cb48-116"><a href="building-the-modelalgorithm.html#cb48-116" tabindex="-1"></a>                         obj<span class="sc">$</span>dual_err)</span>
+<span id="cb48-117"><a href="building-the-modelalgorithm.html#cb48-117" tabindex="-1"></a></span>
+<span id="cb48-118"><a href="building-the-modelalgorithm.html#cb48-118" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">is.na</span>(obj<span class="sc">$</span>converge)){</span>
+<span id="cb48-119"><a href="building-the-modelalgorithm.html#cb48-119" tabindex="-1"></a>        obj<span class="sc">$</span>converge <span class="ot">=</span> converge <span class="ot">=</span> <span class="cn">FALSE</span></span>
+<span id="cb48-120"><a href="building-the-modelalgorithm.html#cb48-120" tabindex="-1"></a>        <span class="fu">warning</span>(<span class="st">"Convergence was NA"</span>)</span>
+<span id="cb48-121"><a href="building-the-modelalgorithm.html#cb48-121" tabindex="-1"></a>      }</span>
+<span id="cb48-122"><a href="building-the-modelalgorithm.html#cb48-122" tabindex="-1"></a>      <span class="cf">if</span>(obj<span class="sc">$</span>converge){</span>
+<span id="cb48-123"><a href="building-the-modelalgorithm.html#cb48-123" tabindex="-1"></a>        converge <span class="ot">=</span> <span class="cn">TRUE</span></span>
+<span id="cb48-124"><a href="building-the-modelalgorithm.html#cb48-124" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb48-125"><a href="building-the-modelalgorithm.html#cb48-125" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb48-126"><a href="building-the-modelalgorithm.html#cb48-126" tabindex="-1"></a>        converge <span class="ot">=</span> <span class="cn">FALSE</span></span>
+<span id="cb48-127"><a href="building-the-modelalgorithm.html#cb48-127" tabindex="-1"></a>      }</span>
+<span id="cb48-128"><a href="building-the-modelalgorithm.html#cb48-128" tabindex="-1"></a>    }</span>
+<span id="cb48-129"><a href="building-the-modelalgorithm.html#cb48-129" tabindex="-1"></a>    w_prev <span class="ot">=</span> w</span>
+<span id="cb48-130"><a href="building-the-modelalgorithm.html#cb48-130" tabindex="-1"></a>    z_prev <span class="ot">=</span> z</span>
+<span id="cb48-131"><a href="building-the-modelalgorithm.html#cb48-131" tabindex="-1"></a>  }</span>
+<span id="cb48-132"><a href="building-the-modelalgorithm.html#cb48-132" tabindex="-1"></a></span>
+<span id="cb48-133"><a href="building-the-modelalgorithm.html#cb48-133" tabindex="-1"></a>  <span class="cf">if</span>(<span class="cn">FALSE</span>){</span>
+<span id="cb48-134"><a href="building-the-modelalgorithm.html#cb48-134" tabindex="-1"></a>    <span class="do">## Calculate optimization objective values for this cluster.</span></span>
+<span id="cb48-135"><a href="building-the-modelalgorithm.html#cb48-135" tabindex="-1"></a>    obj.value <span class="ot">&lt;-</span> <a href="building-the-modelalgorithm.html#objective_per_cluster">objective_per_cluster</a>(<span class="at">y =</span> y, <span class="at">mu =</span> mu, <span class="at">resp =</span> resp,</span>
+<span id="cb48-136"><a href="building-the-modelalgorithm.html#cb48-136" tabindex="-1"></a>                                       <span class="at">Sigma_inv =</span> sigmainv, <span class="at">TT =</span> TT,</span>
+<span id="cb48-137"><a href="building-the-modelalgorithm.html#cb48-137" tabindex="-1"></a>                                       <span class="at">d =</span> dimdat, <span class="at">Dlp1 =</span> Dlp1, <span class="at">Dl =</span> Dl, <span class="at">l =</span> l,</span>
+<span id="cb48-138"><a href="building-the-modelalgorithm.html#cb48-138" tabindex="-1"></a>                                       <span class="at">maxdev =</span> maxdev, <span class="at">lambda =</span> lambda,</span>
+<span id="cb48-139"><a href="building-the-modelalgorithm.html#cb48-139" tabindex="-1"></a>                                       <span class="at">rho =</span> rho, <span class="at">N =</span> N)</span>
+<span id="cb48-140"><a href="building-the-modelalgorithm.html#cb48-140" tabindex="-1"></a>    <span class="do">## This is very expensive to do within each ADMM iteration, so it's commented out for now.</span></span>
+<span id="cb48-141"><a href="building-the-modelalgorithm.html#cb48-141" tabindex="-1"></a>  }</span>
+<span id="cb48-142"><a href="building-the-modelalgorithm.html#cb48-142" tabindex="-1"></a>  obj.value <span class="ot">=</span> <span class="cn">NA</span></span>
+<span id="cb48-143"><a href="building-the-modelalgorithm.html#cb48-143" tabindex="-1"></a></span>
+<span id="cb48-144"><a href="building-the-modelalgorithm.html#cb48-144" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">mu =</span> mu,</span>
+<span id="cb48-145"><a href="building-the-modelalgorithm.html#cb48-145" tabindex="-1"></a>              <span class="at">resid_mat =</span> resid_mat,</span>
+<span id="cb48-146"><a href="building-the-modelalgorithm.html#cb48-146" tabindex="-1"></a>              <span class="at">converge =</span> converge,</span>
+<span id="cb48-147"><a href="building-the-modelalgorithm.html#cb48-147" tabindex="-1"></a>              <span class="do">## Other variables to return.</span></span>
+<span id="cb48-148"><a href="building-the-modelalgorithm.html#cb48-148" tabindex="-1"></a>              <span class="at">Z =</span> z,</span>
+<span id="cb48-149"><a href="building-the-modelalgorithm.html#cb48-149" tabindex="-1"></a>              <span class="at">W =</span> w,</span>
+<span id="cb48-150"><a href="building-the-modelalgorithm.html#cb48-150" tabindex="-1"></a>              <span class="at">uz =</span> uz,</span>
+<span id="cb48-151"><a href="building-the-modelalgorithm.html#cb48-151" tabindex="-1"></a>              <span class="at">uw =</span> uw,</span>
+<span id="cb48-152"><a href="building-the-modelalgorithm.html#cb48-152" tabindex="-1"></a>              <span class="at">inner.iter =</span> iter,</span>
+<span id="cb48-153"><a href="building-the-modelalgorithm.html#cb48-153" tabindex="-1"></a>              <span class="at">single_admm_objective =</span> obj.value))</span>
+<span id="cb48-154"><a href="building-the-modelalgorithm.html#cb48-154" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="helpers-for-m-step-mu" class="section level3 hasAnchor" number="3.5.4">
 <h3>
@@ -2228,81 +2234,83 @@ objective value should be the same. Let’s check that.</p>
 <span id="cb64-117"><a href="building-the-modelalgorithm.html#cb64-117" tabindex="-1"></a>    }</span>
 <span id="cb64-118"><a href="building-the-modelalgorithm.html#cb64-118" tabindex="-1"></a>    resp <span class="ot">&lt;-</span> <a href="building-the-modelalgorithm.html#Estep">Estep</a>(mn, sigma, prob, <span class="at">ylist =</span> ylist, <span class="at">numclust =</span> numclust,</span>
 <span id="cb64-119"><a href="building-the-modelalgorithm.html#cb64-119" tabindex="-1"></a>                  <span class="at">denslist_by_clust =</span> denslist_by_clust,</span>
-<span id="cb64-120"><a href="building-the-modelalgorithm.html#cb64-120" tabindex="-1"></a>                  <span class="at">first_iter =</span> (iter <span class="sc">==</span> <span class="dv">2</span>), <span class="at">countslist =</span> countslist)</span>
-<span id="cb64-121"><a href="building-the-modelalgorithm.html#cb64-121" tabindex="-1"></a></span>
-<span id="cb64-122"><a href="building-the-modelalgorithm.html#cb64-122" tabindex="-1"></a>    <span class="do">## M step (three parts)</span></span>
-<span id="cb64-123"><a href="building-the-modelalgorithm.html#cb64-123" tabindex="-1"></a></span>
-<span id="cb64-124"><a href="building-the-modelalgorithm.html#cb64-124" tabindex="-1"></a>    <span class="do">## 1. Means</span></span>
-<span id="cb64-125"><a href="building-the-modelalgorithm.html#cb64-125" tabindex="-1"></a>    res_mu <span class="ot">=</span> <a href="building-the-modelalgorithm.html#Mstep_mu">Mstep_mu</a>(resp, ylist,</span>
-<span id="cb64-126"><a href="building-the-modelalgorithm.html#cb64-126" tabindex="-1"></a>                      <span class="at">lambda =</span> lambda,</span>
-<span id="cb64-127"><a href="building-the-modelalgorithm.html#cb64-127" tabindex="-1"></a>                      <span class="at">first_iter =</span> (iter <span class="sc">==</span> <span class="dv">2</span>),</span>
-<span id="cb64-128"><a href="building-the-modelalgorithm.html#cb64-128" tabindex="-1"></a>                      <span class="at">l =</span> l, <span class="at">Dlp1 =</span> Dlp1, <span class="at">Dl =</span> Dl,</span>
-<span id="cb64-129"><a href="building-the-modelalgorithm.html#cb64-129" tabindex="-1"></a>                      <span class="at">tDl =</span> tDl,</span>
-<span id="cb64-130"><a href="building-the-modelalgorithm.html#cb64-130" tabindex="-1"></a>                      <span class="at">Dlsqrd =</span> Dlsqrd,</span>
-<span id="cb64-131"><a href="building-the-modelalgorithm.html#cb64-131" tabindex="-1"></a>                      <span class="at">sigma_eig_by_clust =</span> sigma_eig_by_clust,</span>
-<span id="cb64-132"><a href="building-the-modelalgorithm.html#cb64-132" tabindex="-1"></a>                      <span class="at">sigma =</span> sigma, <span class="at">maxdev =</span> maxdev,</span>
-<span id="cb64-133"><a href="building-the-modelalgorithm.html#cb64-133" tabindex="-1"></a>                      <span class="at">e_mat =</span> e_mat,</span>
-<span id="cb64-134"><a href="building-the-modelalgorithm.html#cb64-134" tabindex="-1"></a>                      <span class="at">Zs =</span> <span class="cn">NULL</span>,</span>
-<span id="cb64-135"><a href="building-the-modelalgorithm.html#cb64-135" tabindex="-1"></a>                      <span class="at">Ws =</span> <span class="cn">NULL</span>,</span>
-<span id="cb64-136"><a href="building-the-modelalgorithm.html#cb64-136" tabindex="-1"></a>                      <span class="at">uws =</span> <span class="cn">NULL</span>,</span>
-<span id="cb64-137"><a href="building-the-modelalgorithm.html#cb64-137" tabindex="-1"></a>                      <span class="at">uzs =</span>  <span class="cn">NULL</span>,</span>
-<span id="cb64-138"><a href="building-the-modelalgorithm.html#cb64-138" tabindex="-1"></a>                      <span class="at">x =</span> x,</span>
-<span id="cb64-139"><a href="building-the-modelalgorithm.html#cb64-139" tabindex="-1"></a>                      <span class="at">err_rel =</span> admm_err_rel,</span>
-<span id="cb64-140"><a href="building-the-modelalgorithm.html#cb64-140" tabindex="-1"></a>                      <span class="at">err_abs =</span> admm_err_abs,</span>
-<span id="cb64-141"><a href="building-the-modelalgorithm.html#cb64-141" tabindex="-1"></a>                      <span class="at">local_adapt =</span> admm_local_adapt,</span>
-<span id="cb64-142"><a href="building-the-modelalgorithm.html#cb64-142" tabindex="-1"></a>                      <span class="at">local_adapt_niter =</span> admm_local_adapt_niter,</span>
-<span id="cb64-143"><a href="building-the-modelalgorithm.html#cb64-143" tabindex="-1"></a>                      <span class="at">rho_init =</span> rho_init,</span>
-<span id="cb64-144"><a href="building-the-modelalgorithm.html#cb64-144" tabindex="-1"></a>                      <span class="at">iter =</span> iter)</span>
-<span id="cb64-145"><a href="building-the-modelalgorithm.html#cb64-145" tabindex="-1"></a>                      <span class="do">## rho_init = (if(iter == 2) rho_init else latest_rho))</span></span>
-<span id="cb64-146"><a href="building-the-modelalgorithm.html#cb64-146" tabindex="-1"></a>    <span class="do">## latest_rho = res_mu$rho</span></span>
-<span id="cb64-147"><a href="building-the-modelalgorithm.html#cb64-147" tabindex="-1"></a>    mn <span class="ot">=</span> res_mu<span class="sc">$</span>mns</span>
-<span id="cb64-148"><a href="building-the-modelalgorithm.html#cb64-148" tabindex="-1"></a></span>
-<span id="cb64-149"><a href="building-the-modelalgorithm.html#cb64-149" tabindex="-1"></a>    <span class="do">## 2. Sigma</span></span>
-<span id="cb64-150"><a href="building-the-modelalgorithm.html#cb64-150" tabindex="-1"></a>    sigma <span class="ot">=</span> <a href="building-the-modelalgorithm.html#Mstep_sigma">Mstep_sigma</a>(resp, ylist, mn, numclust)</span>
-<span id="cb64-151"><a href="building-the-modelalgorithm.html#cb64-151" tabindex="-1"></a></span>
-<span id="cb64-152"><a href="building-the-modelalgorithm.html#cb64-152" tabindex="-1"></a>    <span class="do">## 3. Probabilities</span></span>
-<span id="cb64-153"><a href="building-the-modelalgorithm.html#cb64-153" tabindex="-1"></a>    prob_link <span class="ot">=</span> <a href="building-the-modelalgorithm.html#Mstep_prob">Mstep_prob</a>(resp, <span class="at">countslist =</span> countslist, <span class="at">H_tf =</span> H_tf,</span>
-<span id="cb64-154"><a href="building-the-modelalgorithm.html#cb64-154" tabindex="-1"></a>                           <span class="at">lambda_prob =</span> lambda_prob, <span class="at">l_prob =</span> l_prob, <span class="at">x =</span> x)</span>
-<span id="cb64-155"><a href="building-the-modelalgorithm.html#cb64-155" tabindex="-1"></a>    prob <span class="ot">=</span> <a href="building-the-modelalgorithm.html#softmax">softmax</a>(prob_link)</span>
-<span id="cb64-156"><a href="building-the-modelalgorithm.html#cb64-156" tabindex="-1"></a></span>
-<span id="cb64-157"><a href="building-the-modelalgorithm.html#cb64-157" tabindex="-1"></a>    objectives[iter] <span class="ot">=</span> <a href="building-the-modelalgorithm.html#objective">objective</a>(<span class="at">ylist =</span> ylist, <span class="at">mu =</span> mn, <span class="at">sigma =</span> sigma, <span class="at">prob =</span> prob, <span class="at">prob_link =</span> prob_link,</span>
-<span id="cb64-158"><a href="building-the-modelalgorithm.html#cb64-158" tabindex="-1"></a>                                 <span class="at">lambda =</span> lambda, <span class="at">Dlp1 =</span> Dlp1, <span class="at">l =</span> l, <span class="at">countslist =</span> countslist,</span>
-<span id="cb64-159"><a href="building-the-modelalgorithm.html#cb64-159" tabindex="-1"></a>                                 <span class="at">Dlp1_prob =</span> Dlp1_prob,</span>
-<span id="cb64-160"><a href="building-the-modelalgorithm.html#cb64-160" tabindex="-1"></a>                                 <span class="at">l_prob =</span> l_prob,</span>
-<span id="cb64-161"><a href="building-the-modelalgorithm.html#cb64-161" tabindex="-1"></a>                                 <span class="at">lambda_prob =</span> lambda_prob)</span>
-<span id="cb64-162"><a href="building-the-modelalgorithm.html#cb64-162" tabindex="-1"></a></span>
-<span id="cb64-163"><a href="building-the-modelalgorithm.html#cb64-163" tabindex="-1"></a>    <span class="do">## Check convergence</span></span>
-<span id="cb64-164"><a href="building-the-modelalgorithm.html#cb64-164" tabindex="-1"></a>    <span class="cf">if</span>(iter <span class="sc">&gt;</span> <span class="dv">10</span>){ </span>
-<span id="cb64-165"><a href="building-the-modelalgorithm.html#cb64-165" tabindex="-1"></a>      <span class="cf">if</span>(check_convergence <span class="sc">&amp;</span></span>
-<span id="cb64-166"><a href="building-the-modelalgorithm.html#cb64-166" tabindex="-1"></a>         <a href="building-the-modelalgorithm.html#check_converge_rel">check_converge_rel</a>(objectives[iter<span class="dv">-1</span>], objectives[iter], <span class="at">tol =</span> tol_em) <span class="sc">&amp;</span></span>
-<span id="cb64-167"><a href="building-the-modelalgorithm.html#cb64-167" tabindex="-1"></a>         <a href="building-the-modelalgorithm.html#check_converge_rel">check_converge_rel</a>(objectives[iter<span class="dv">-2</span>], objectives[iter<span class="dv">-1</span>], <span class="at">tol =</span> tol_em)<span class="sc">&amp;</span></span>
-<span id="cb64-168"><a href="building-the-modelalgorithm.html#cb64-168" tabindex="-1"></a>         <a href="building-the-modelalgorithm.html#check_converge_rel">check_converge_rel</a>(objectives[iter<span class="dv">-3</span>], objectives[iter<span class="dv">-2</span>], <span class="at">tol =</span> tol_em)){</span>
-<span id="cb64-169"><a href="building-the-modelalgorithm.html#cb64-169" tabindex="-1"></a>         <span class="do">## <a href="building-the-modelalgorithm.html#check_converge_rel">check_converge_rel</a>(objectives[iter-4], objectives[iter-3], tol = tol_em)){</span></span>
-<span id="cb64-170"><a href="building-the-modelalgorithm.html#cb64-170" tabindex="-1"></a>        <span class="cf">break</span></span>
-<span id="cb64-171"><a href="building-the-modelalgorithm.html#cb64-171" tabindex="-1"></a>      }</span>
-<span id="cb64-172"><a href="building-the-modelalgorithm.html#cb64-172" tabindex="-1"></a>    }</span>
-<span id="cb64-173"><a href="building-the-modelalgorithm.html#cb64-173" tabindex="-1"></a>  }</span>
+<span id="cb64-120"><a href="building-the-modelalgorithm.html#cb64-120" tabindex="-1"></a>                  <span class="at">first_iter =</span> (iter <span class="sc">==</span> <span class="dv">2</span>), <span class="at">countslist =</span> countslist,</span>
+<span id="cb64-121"><a href="building-the-modelalgorithm.html#cb64-121" tabindex="-1"></a>                  <span class="at">padding =</span> <span class="fl">1E-8</span>)</span>
+<span id="cb64-122"><a href="building-the-modelalgorithm.html#cb64-122" tabindex="-1"></a></span>
+<span id="cb64-123"><a href="building-the-modelalgorithm.html#cb64-123" tabindex="-1"></a>    <span class="do">## M step (three parts)</span></span>
+<span id="cb64-124"><a href="building-the-modelalgorithm.html#cb64-124" tabindex="-1"></a></span>
+<span id="cb64-125"><a href="building-the-modelalgorithm.html#cb64-125" tabindex="-1"></a>    <span class="do">## 1. Means</span></span>
+<span id="cb64-126"><a href="building-the-modelalgorithm.html#cb64-126" tabindex="-1"></a>    res_mu <span class="ot">=</span> <a href="building-the-modelalgorithm.html#Mstep_mu">Mstep_mu</a>(resp, ylist,</span>
+<span id="cb64-127"><a href="building-the-modelalgorithm.html#cb64-127" tabindex="-1"></a>                      <span class="at">lambda =</span> lambda,</span>
+<span id="cb64-128"><a href="building-the-modelalgorithm.html#cb64-128" tabindex="-1"></a>                      <span class="at">first_iter =</span> (iter <span class="sc">==</span> <span class="dv">2</span>),</span>
+<span id="cb64-129"><a href="building-the-modelalgorithm.html#cb64-129" tabindex="-1"></a>                      <span class="at">l =</span> l, <span class="at">Dlp1 =</span> Dlp1, <span class="at">Dl =</span> Dl,</span>
+<span id="cb64-130"><a href="building-the-modelalgorithm.html#cb64-130" tabindex="-1"></a>                      <span class="at">tDl =</span> tDl,</span>
+<span id="cb64-131"><a href="building-the-modelalgorithm.html#cb64-131" tabindex="-1"></a>                      <span class="at">Dlsqrd =</span> Dlsqrd,</span>
+<span id="cb64-132"><a href="building-the-modelalgorithm.html#cb64-132" tabindex="-1"></a>                      <span class="at">sigma_eig_by_clust =</span> sigma_eig_by_clust,</span>
+<span id="cb64-133"><a href="building-the-modelalgorithm.html#cb64-133" tabindex="-1"></a>                      <span class="at">sigma =</span> sigma, <span class="at">maxdev =</span> maxdev,</span>
+<span id="cb64-134"><a href="building-the-modelalgorithm.html#cb64-134" tabindex="-1"></a>                      <span class="at">e_mat =</span> e_mat,</span>
+<span id="cb64-135"><a href="building-the-modelalgorithm.html#cb64-135" tabindex="-1"></a>                      <span class="at">Zs =</span> <span class="cn">NULL</span>,</span>
+<span id="cb64-136"><a href="building-the-modelalgorithm.html#cb64-136" tabindex="-1"></a>                      <span class="at">Ws =</span> <span class="cn">NULL</span>,</span>
+<span id="cb64-137"><a href="building-the-modelalgorithm.html#cb64-137" tabindex="-1"></a>                      <span class="at">uws =</span> <span class="cn">NULL</span>,</span>
+<span id="cb64-138"><a href="building-the-modelalgorithm.html#cb64-138" tabindex="-1"></a>                      <span class="at">uzs =</span>  <span class="cn">NULL</span>,</span>
+<span id="cb64-139"><a href="building-the-modelalgorithm.html#cb64-139" tabindex="-1"></a>                      <span class="at">x =</span> x,</span>
+<span id="cb64-140"><a href="building-the-modelalgorithm.html#cb64-140" tabindex="-1"></a>                      <span class="at">err_rel =</span> admm_err_rel,</span>
+<span id="cb64-141"><a href="building-the-modelalgorithm.html#cb64-141" tabindex="-1"></a>                      <span class="at">err_abs =</span> admm_err_abs,</span>
+<span id="cb64-142"><a href="building-the-modelalgorithm.html#cb64-142" tabindex="-1"></a>                      <span class="at">local_adapt =</span> admm_local_adapt,</span>
+<span id="cb64-143"><a href="building-the-modelalgorithm.html#cb64-143" tabindex="-1"></a>                      <span class="at">local_adapt_niter =</span> admm_local_adapt_niter,</span>
+<span id="cb64-144"><a href="building-the-modelalgorithm.html#cb64-144" tabindex="-1"></a>                      <span class="at">rho_init =</span> rho_init,</span>
+<span id="cb64-145"><a href="building-the-modelalgorithm.html#cb64-145" tabindex="-1"></a>                      <span class="at">iter =</span> iter)</span>
+<span id="cb64-146"><a href="building-the-modelalgorithm.html#cb64-146" tabindex="-1"></a>                      <span class="do">## rho_init = (if(iter == 2) rho_init else latest_rho))</span></span>
+<span id="cb64-147"><a href="building-the-modelalgorithm.html#cb64-147" tabindex="-1"></a>    <span class="do">## latest_rho = res_mu$rho</span></span>
+<span id="cb64-148"><a href="building-the-modelalgorithm.html#cb64-148" tabindex="-1"></a>    mn <span class="ot">=</span> res_mu<span class="sc">$</span>mns</span>
+<span id="cb64-149"><a href="building-the-modelalgorithm.html#cb64-149" tabindex="-1"></a></span>
+<span id="cb64-150"><a href="building-the-modelalgorithm.html#cb64-150" tabindex="-1"></a>    <span class="do">## 2. Sigma</span></span>
+<span id="cb64-151"><a href="building-the-modelalgorithm.html#cb64-151" tabindex="-1"></a>    sigma <span class="ot">=</span> <a href="building-the-modelalgorithm.html#Mstep_sigma">Mstep_sigma</a>(resp, ylist, mn, numclust)</span>
+<span id="cb64-152"><a href="building-the-modelalgorithm.html#cb64-152" tabindex="-1"></a></span>
+<span id="cb64-153"><a href="building-the-modelalgorithm.html#cb64-153" tabindex="-1"></a>    <span class="do">## 3. Probabilities</span></span>
+<span id="cb64-154"><a href="building-the-modelalgorithm.html#cb64-154" tabindex="-1"></a>    prob_link <span class="ot">=</span> <a href="building-the-modelalgorithm.html#Mstep_prob">Mstep_prob</a>(resp, <span class="at">countslist =</span> countslist, <span class="at">H_tf =</span> H_tf,</span>
+<span id="cb64-155"><a href="building-the-modelalgorithm.html#cb64-155" tabindex="-1"></a>                           <span class="at">lambda_prob =</span> lambda_prob, <span class="at">l_prob =</span> l_prob, <span class="at">x =</span> x)</span>
+<span id="cb64-156"><a href="building-the-modelalgorithm.html#cb64-156" tabindex="-1"></a>    prob <span class="ot">=</span> <a href="building-the-modelalgorithm.html#softmax">softmax</a>(prob_link)</span>
+<span id="cb64-157"><a href="building-the-modelalgorithm.html#cb64-157" tabindex="-1"></a></span>
+<span id="cb64-158"><a href="building-the-modelalgorithm.html#cb64-158" tabindex="-1"></a>    objectives[iter] <span class="ot">=</span> <a href="building-the-modelalgorithm.html#objective">objective</a>(<span class="at">ylist =</span> ylist, <span class="at">mu =</span> mn, <span class="at">sigma =</span> sigma, <span class="at">prob =</span> prob, <span class="at">prob_link =</span> prob_link,</span>
+<span id="cb64-159"><a href="building-the-modelalgorithm.html#cb64-159" tabindex="-1"></a>                                 <span class="at">lambda =</span> lambda, <span class="at">Dlp1 =</span> Dlp1, <span class="at">l =</span> l, <span class="at">countslist =</span> countslist,</span>
+<span id="cb64-160"><a href="building-the-modelalgorithm.html#cb64-160" tabindex="-1"></a>                                 <span class="at">Dlp1_prob =</span> Dlp1_prob,</span>
+<span id="cb64-161"><a href="building-the-modelalgorithm.html#cb64-161" tabindex="-1"></a>                                 <span class="at">l_prob =</span> l_prob,</span>
+<span id="cb64-162"><a href="building-the-modelalgorithm.html#cb64-162" tabindex="-1"></a>                                 <span class="at">lambda_prob =</span> lambda_prob)</span>
+<span id="cb64-163"><a href="building-the-modelalgorithm.html#cb64-163" tabindex="-1"></a></span>
+<span id="cb64-164"><a href="building-the-modelalgorithm.html#cb64-164" tabindex="-1"></a>    <span class="do">## Check convergence</span></span>
+<span id="cb64-165"><a href="building-the-modelalgorithm.html#cb64-165" tabindex="-1"></a>    <span class="cf">if</span>(iter <span class="sc">&gt;</span> <span class="dv">10</span>){ </span>
+<span id="cb64-166"><a href="building-the-modelalgorithm.html#cb64-166" tabindex="-1"></a>      <span class="cf">if</span>(check_convergence <span class="sc">&amp;</span></span>
+<span id="cb64-167"><a href="building-the-modelalgorithm.html#cb64-167" tabindex="-1"></a>         <a href="building-the-modelalgorithm.html#check_converge_rel">check_converge_rel</a>(objectives[iter<span class="dv">-1</span>], objectives[iter], <span class="at">tol =</span> tol_em) <span class="sc">&amp;</span></span>
+<span id="cb64-168"><a href="building-the-modelalgorithm.html#cb64-168" tabindex="-1"></a>         <a href="building-the-modelalgorithm.html#check_converge_rel">check_converge_rel</a>(objectives[iter<span class="dv">-2</span>], objectives[iter<span class="dv">-1</span>], <span class="at">tol =</span> tol_em)<span class="sc">&amp;</span></span>
+<span id="cb64-169"><a href="building-the-modelalgorithm.html#cb64-169" tabindex="-1"></a>         <a href="building-the-modelalgorithm.html#check_converge_rel">check_converge_rel</a>(objectives[iter<span class="dv">-3</span>], objectives[iter<span class="dv">-2</span>], <span class="at">tol =</span> tol_em)){</span>
+<span id="cb64-170"><a href="building-the-modelalgorithm.html#cb64-170" tabindex="-1"></a>         <span class="do">## <a href="building-the-modelalgorithm.html#check_converge_rel">check_converge_rel</a>(objectives[iter-4], objectives[iter-3], tol = tol_em)){</span></span>
+<span id="cb64-171"><a href="building-the-modelalgorithm.html#cb64-171" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb64-172"><a href="building-the-modelalgorithm.html#cb64-172" tabindex="-1"></a>      }</span>
+<span id="cb64-173"><a href="building-the-modelalgorithm.html#cb64-173" tabindex="-1"></a>    }</span>
 <span id="cb64-174"><a href="building-the-modelalgorithm.html#cb64-174" tabindex="-1"></a></span>
-<span id="cb64-175"><a href="building-the-modelalgorithm.html#cb64-175" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">structure</span>(<span class="fu">list</span>(<span class="at">mn =</span> mn,</span>
-<span id="cb64-176"><a href="building-the-modelalgorithm.html#cb64-176" tabindex="-1"></a>                        <span class="at">prob =</span> prob,</span>
-<span id="cb64-177"><a href="building-the-modelalgorithm.html#cb64-177" tabindex="-1"></a>                        <span class="at">prob_link =</span> prob_link,</span>
-<span id="cb64-178"><a href="building-the-modelalgorithm.html#cb64-178" tabindex="-1"></a>                        <span class="at">sigma =</span> sigma,</span>
-<span id="cb64-179"><a href="building-the-modelalgorithm.html#cb64-179" tabindex="-1"></a>                        <span class="at">objectives =</span> objectives[<span class="dv">2</span><span class="sc">:</span>iter],</span>
-<span id="cb64-180"><a href="building-the-modelalgorithm.html#cb64-180" tabindex="-1"></a>                        <span class="at">final.iter =</span> iter,</span>
-<span id="cb64-181"><a href="building-the-modelalgorithm.html#cb64-181" tabindex="-1"></a>                        <span class="do">## Above is output, below are data/algorithm settings.</span></span>
-<span id="cb64-182"><a href="building-the-modelalgorithm.html#cb64-182" tabindex="-1"></a>                        <span class="at">dimdat =</span> dimdat,</span>
-<span id="cb64-183"><a href="building-the-modelalgorithm.html#cb64-183" tabindex="-1"></a>                        <span class="at">TT =</span> TT,</span>
-<span id="cb64-184"><a href="building-the-modelalgorithm.html#cb64-184" tabindex="-1"></a>                        <span class="at">N =</span> N,</span>
-<span id="cb64-185"><a href="building-the-modelalgorithm.html#cb64-185" tabindex="-1"></a>                        <span class="at">l =</span> l,</span>
-<span id="cb64-186"><a href="building-the-modelalgorithm.html#cb64-186" tabindex="-1"></a>                        <span class="at">l_prob =</span> l_prob,</span>
-<span id="cb64-187"><a href="building-the-modelalgorithm.html#cb64-187" tabindex="-1"></a>                        <span class="at">x =</span> x,</span>
-<span id="cb64-188"><a href="building-the-modelalgorithm.html#cb64-188" tabindex="-1"></a>                        <span class="at">numclust =</span> numclust,</span>
-<span id="cb64-189"><a href="building-the-modelalgorithm.html#cb64-189" tabindex="-1"></a>                        <span class="at">lambda =</span> lambda,</span>
-<span id="cb64-190"><a href="building-the-modelalgorithm.html#cb64-190" tabindex="-1"></a>                        <span class="at">lambda_prob =</span> lambda_prob,</span>
-<span id="cb64-191"><a href="building-the-modelalgorithm.html#cb64-191" tabindex="-1"></a>                        <span class="at">maxdev =</span> maxdev,</span>
-<span id="cb64-192"><a href="building-the-modelalgorithm.html#cb64-192" tabindex="-1"></a>                        <span class="at">niter =</span> niter</span>
-<span id="cb64-193"><a href="building-the-modelalgorithm.html#cb64-193" tabindex="-1"></a>  ), <span class="at">class =</span> <span class="st">"flowtrend"</span>))</span>
-<span id="cb64-194"><a href="building-the-modelalgorithm.html#cb64-194" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb64-175"><a href="building-the-modelalgorithm.html#cb64-175" tabindex="-1"></a>  }</span>
+<span id="cb64-176"><a href="building-the-modelalgorithm.html#cb64-176" tabindex="-1"></a></span>
+<span id="cb64-177"><a href="building-the-modelalgorithm.html#cb64-177" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">structure</span>(<span class="fu">list</span>(<span class="at">mn =</span> mn,</span>
+<span id="cb64-178"><a href="building-the-modelalgorithm.html#cb64-178" tabindex="-1"></a>                        <span class="at">prob =</span> prob,</span>
+<span id="cb64-179"><a href="building-the-modelalgorithm.html#cb64-179" tabindex="-1"></a>                        <span class="at">prob_link =</span> prob_link,</span>
+<span id="cb64-180"><a href="building-the-modelalgorithm.html#cb64-180" tabindex="-1"></a>                        <span class="at">sigma =</span> sigma,</span>
+<span id="cb64-181"><a href="building-the-modelalgorithm.html#cb64-181" tabindex="-1"></a>                        <span class="at">objectives =</span> objectives[<span class="dv">2</span><span class="sc">:</span>iter],</span>
+<span id="cb64-182"><a href="building-the-modelalgorithm.html#cb64-182" tabindex="-1"></a>                        <span class="at">final.iter =</span> iter,</span>
+<span id="cb64-183"><a href="building-the-modelalgorithm.html#cb64-183" tabindex="-1"></a>                        <span class="do">## Above is output, below are data/algorithm settings.</span></span>
+<span id="cb64-184"><a href="building-the-modelalgorithm.html#cb64-184" tabindex="-1"></a>                        <span class="at">dimdat =</span> dimdat,</span>
+<span id="cb64-185"><a href="building-the-modelalgorithm.html#cb64-185" tabindex="-1"></a>                        <span class="at">TT =</span> TT,</span>
+<span id="cb64-186"><a href="building-the-modelalgorithm.html#cb64-186" tabindex="-1"></a>                        <span class="at">N =</span> N,</span>
+<span id="cb64-187"><a href="building-the-modelalgorithm.html#cb64-187" tabindex="-1"></a>                        <span class="at">l =</span> l,</span>
+<span id="cb64-188"><a href="building-the-modelalgorithm.html#cb64-188" tabindex="-1"></a>                        <span class="at">l_prob =</span> l_prob,</span>
+<span id="cb64-189"><a href="building-the-modelalgorithm.html#cb64-189" tabindex="-1"></a>                        <span class="at">x =</span> x,</span>
+<span id="cb64-190"><a href="building-the-modelalgorithm.html#cb64-190" tabindex="-1"></a>                        <span class="at">numclust =</span> numclust,</span>
+<span id="cb64-191"><a href="building-the-modelalgorithm.html#cb64-191" tabindex="-1"></a>                        <span class="at">lambda =</span> lambda,</span>
+<span id="cb64-192"><a href="building-the-modelalgorithm.html#cb64-192" tabindex="-1"></a>                        <span class="at">lambda_prob =</span> lambda_prob,</span>
+<span id="cb64-193"><a href="building-the-modelalgorithm.html#cb64-193" tabindex="-1"></a>                        <span class="at">maxdev =</span> maxdev,</span>
+<span id="cb64-194"><a href="building-the-modelalgorithm.html#cb64-194" tabindex="-1"></a>                        <span class="at">niter =</span> niter</span>
+<span id="cb64-195"><a href="building-the-modelalgorithm.html#cb64-195" tabindex="-1"></a>  ), <span class="at">class =</span> <span class="st">"flowtrend"</span>))</span>
+<span id="cb64-196"><a href="building-the-modelalgorithm.html#cb64-196" tabindex="-1"></a>}</span></code></pre></div>
 <p>Next, <code><a href="building-the-modelalgorithm.html#flowtrend">flowtrend</a>()</code> is the main user-facing function.</p>
 <div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="building-the-modelalgorithm.html#cb65-1" tabindex="-1"></a><span class="co">#' Main function. Repeats the EM algorithm (\code{<a href="building-the-modelalgorithm.html#flowtrend_once">flowtrend_once</a>()}) with |nrep| restarts (5 by default).</span></span>
 <span id="cb65-2"><a href="building-the-modelalgorithm.html#cb65-2" tabindex="-1"></a><span class="co">#'</span></span>

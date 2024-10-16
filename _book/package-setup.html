@@ -12,7 +12,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2 Package setup | Creating the flowtrend R package">
 <meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien">
-<meta name="date" content="2024-09-11">
+<meta name="date" content="2024-10-15">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -447,7 +447,7 @@ in a single plot. <code><a href="package-setup.html#plot_1d">plot_1d</a>()</code
 <span id="cb10-71"><a href="package-setup.html#cb10-71" tabindex="-1"></a>        mn_long_by_clust[[iclust]] <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">upper =</span> mean <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[iclust]) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">lower =</span> mean <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> stdev[iclust])</span>
 <span id="cb10-72"><a href="package-setup.html#cb10-72" tabindex="-1"></a>      })</span>
 <span id="cb10-73"><a href="package-setup.html#cb10-73" tabindex="-1"></a>      band_long <span class="ot">=</span> band_long_by_clust <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>()</span>
-<span id="cb10-74"><a href="package-setup.html#cb10-74" tabindex="-1"></a>      gg <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> upper, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
+<span id="cb10-74"><a href="package-setup.html#cb10-74" tabindex="-1"></a>      gg <span class="ot">=</span> gg <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> upper, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
 <span id="cb10-75"><a href="package-setup.html#cb10-75" tabindex="-1"></a>                     <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(.<span class="dv">7</span>), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
 <span id="cb10-76"><a href="package-setup.html#cb10-76" tabindex="-1"></a>        <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> lower, <span class="at">group =</span> cluster, <span class="at">color =</span> cluster),</span>
 <span id="cb10-77"><a href="package-setup.html#cb10-77" tabindex="-1"></a>                  <span class="at">data =</span> band_long, <span class="at">size =</span> <span class="fu">rel</span>(.<span class="dv">7</span>), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>

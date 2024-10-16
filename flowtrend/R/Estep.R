@@ -15,7 +15,7 @@
 #' @export
 #'
 Estep <- function(mn, sigma, prob, ylist = NULL, numclust, denslist_by_clust = NULL,
-                  first_iter = FALSE, countslist = NULL){
+                  first_iter = FALSE, countslist = NULL, padding = 1E-20){
   ## Basic setup
   TT = length(ylist)
   ntlist = sapply(ylist, nrow)
@@ -43,7 +43,7 @@ Estep <- function(mn, sigma, prob, ylist = NULL, numclust, denslist_by_clust = N
                       mn, sigma, denslist_by_clust, first_iter)
     wt.densmat <- matrix(prob[tt, ], nrow = ntlist[tt],
                          ncol = ncol.prob, byrow = TRUE) * densmat
-    wt.densmat = wt.densmat + 1e-20
+    wt.densmat = wt.densmat + padding##1e-20
     wt.densmat <- wt.densmat/rowSums(wt.densmat)
     resp[[tt]] <- wt.densmat
   }

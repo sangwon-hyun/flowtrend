@@ -12,7 +12,8 @@ Estep(
   numclust,
   denslist_by_clust = NULL,
   first_iter = FALSE,
-  countslist = NULL
+  countslist = NULL,
+  padding = 1e-20
 )
 }
 \arguments{

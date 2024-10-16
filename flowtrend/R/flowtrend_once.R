@@ -119,7 +119,8 @@ flowtrend_once <- function(ylist,
     }
     resp <- Estep(mn, sigma, prob, ylist = ylist, numclust = numclust,
                   denslist_by_clust = denslist_by_clust,
-                  first_iter = (iter == 2), countslist = countslist)
+                  first_iter = (iter == 2), countslist = countslist,
+                  padding = 1E-8)
 
     ## M step (three parts)
 
@@ -172,6 +173,7 @@ flowtrend_once <- function(ylist,
         break
       }
     }
+
   }
 
   return(structure(list(mn = mn,

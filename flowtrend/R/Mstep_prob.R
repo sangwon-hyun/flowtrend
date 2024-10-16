@@ -44,7 +44,8 @@ Mstep_prob <- function(resp, H_tf, countslist = NULL,
     penalty.facs <- c(rep(0, l_prob+1), rep(1, nrow(H_tf) - l_prob - 1))
     resp.predict <- do.call(rbind, lapply(resp, colSums))
     glmnet_obj <- glmnet::glmnet(x = H_tf, y = resp.predict, family = "multinomial",
-                                 penalty.factor = penalty.facs, maxit = 1e7,
+                                 penalty.factor = penalty.facs, maxit = 1e8,
+                                 ## penalty.factor = penalty.facs, maxit = 1e7,
                                  lambda =  mean(penalty.facs)*lambda_range(lambda_prob),
                                  standardize = F, intercept = FALSE) 
     pred_link <- predict(glmnet_obj, newx = H_tf, type = "link", s = mean(penalty.facs) * lambda_prob)[,,1]

@@ -46,5 +46,3 @@ cv_aggregate_res <- function(destin){
   }
   return(res.list)
 }
-
-

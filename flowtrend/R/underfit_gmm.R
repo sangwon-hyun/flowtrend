@@ -77,11 +77,22 @@ underfit_gmm <- function(ylist, numclust){
   colnames(soft_mem) = c("clust1", "clust2")
   resp_list = soft_mem %>% add_column( time = rep(1:TT, times = nt))  %>% group_by(time) %>% group_split() %>%
     lapply(select, c("clust1", "clust2")) %>% lapply(as.matrix)
+
+  ## List of sigmas
+  TT = nrow(sigma)
+  sigma_list = lapply(1:TT, function(tt){
+    one_row = sigma[tt,] %>% as.numeric()
+    one_sigma = array(NA, dim = c(2,1,1))
+    one_sigma[,1,1] = one_row
+    return(one_sigma)
+  })
+
   return(list(tab_long = tab_long,
               param_mat = param_mat,
               mu = mu,
               prob = prob,
               sigma = sigma,
+              sigma_list = sigma_list,
               memlist = memlist,
               resp_list = resp_list,
               numclust = numclust))

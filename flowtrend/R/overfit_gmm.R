@@ -44,11 +44,21 @@ overfit_gmm <- function(ylist, numclust = 2, reorder = TRUE){
   ## Responsibilities
   resp_list = gmm_list %>% lapply(function(a) a$resp)
 
+  ## Make a list of each time points' sigmas
+  TT = nrow(sigma)
+  sigma_list = lapply(1:TT, function(tt){
+    one_row = sigma[tt,] %>% as.numeric()
+    one_sigma = array(NA, dim = c(2,1,1))
+    one_sigma[,1,1] = one_row
+    return(one_sigma)
+  })
+
   return(list(tab_long = tab_long,
               param_mat = param_mat,
               mu = mu,
               prob = prob,
               sigma = sigma,
+              sigma_list = sigma_list,
               resp_list = resp_list,
               numclust = numclust))
 }
@@ -191,5 +201,5 @@ gmm_each <- function(one_y, numclust){
                  prob2 = prob2)
   resp = obj$z
 
-  return(list(tab = tab, param = param, resp = resp))
+  return(list(tab = tab, param = param, resp = resp))##, sigma_list = sigma_list))
 }

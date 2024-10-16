@@ -624,7 +624,7 @@ print_progress <- function(isim, nsim,
 #' @export
 #'
 Estep <- function(mn, sigma, prob, ylist = NULL, numclust, denslist_by_clust = NULL,
-                  first_iter = FALSE, countslist = NULL){
+                  first_iter = FALSE, countslist = NULL, padding = 1E-20){
   ## Basic setup
   TT = length(ylist)
   ntlist = sapply(ylist, nrow)
@@ -652,7 +652,7 @@ Estep <- function(mn, sigma, prob, ylist = NULL, numclust, denslist_by_clust = N
                       mn, sigma, denslist_by_clust, first_iter)
     wt.densmat <- matrix(prob[tt, ], nrow = ntlist[tt],
                          ncol = ncol.prob, byrow = TRUE) * densmat
-    wt.densmat = wt.densmat + 1e-20
+    wt.densmat = wt.densmat + padding##1e-20
     wt.densmat <- wt.densmat/rowSums(wt.densmat)
     resp[[tt]] <- wt.densmat
   }
@@ -1017,7 +1017,7 @@ Mstep_mu <- function(resp,
                            err_abs = err_abs,
                            zerothresh = zerothresh,
                            sigma_eig_by_clust = sigma_eig_by_clust,
-                           iter = iter,
+                           em_iter = iter,
 
                            ## Warm starts from previous *EM* iteration
                            first_iter = first_iter,
@@ -1362,7 +1362,7 @@ admm_oneclust <- function(iclust = 1, niter, y,
                           ## warmstart = FALSE,
                           ## mu.warm = if(!warmstart) NULL,
                           first_iter,## Not used 
-                          iter,
+                          em_iter,
                           outer_iter,
                           local_adapt,
                           sigma,
@@ -1374,8 +1374,6 @@ admm_oneclust <- function(iclust = 1, niter, y,
   resid_mat = matrix(NA, nrow = ceiling(niter/5), ncol = 6)
   colnames(resid_mat) = c("prim1", "prim2", "primresid", "primerr", "dualresid", "dualerr")
   rhofac = rho / rhoinit 
-
-  
 
   ## This doesn't change over iterations
   schurB = myschur(schurB$orig * rhofac) ## In flowmix, this is done on A. Here, it's done on B (in AX + XB + C = 0).
@@ -1392,7 +1390,7 @@ admm_oneclust <- function(iclust = 1, niter, y,
       sigmainv %*% colSums(multmat)
     }))
 
-
+  
   for(iter in 1:niter){
     syl_C <- get_C_mat(C1 = C1, resp_sum = resp_sum, TT = TT, dimdat = dimdat,
                        Sigma_inv = sigmainv, N = N, Dl = Dl, rho = rho,
@@ -2181,7 +2179,8 @@ flowtrend_once <- function(ylist,
     }
     resp <- Estep(mn, sigma, prob, ylist = ylist, numclust = numclust,
                   denslist_by_clust = denslist_by_clust,
-                  first_iter = (iter == 2), countslist = countslist)
+                  first_iter = (iter == 2), countslist = countslist,
+                  padding = 1E-8)
 
     ## M step (three parts)
 

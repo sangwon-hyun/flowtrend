@@ -73,7 +73,7 @@ plot_1d <- function(ylist, countslist=NULL, obj=NULL, x = NULL, alpha = .1, bin 
         mn_long_by_clust[[iclust]] %>% mutate(upper = mean + 1.96 * stdev[iclust]) %>% mutate(lower = mean - 1.96 * stdev[iclust])
       })
       band_long = band_long_by_clust %>% bind_rows()
-      gg + geom_line(aes(x = time, y = upper, group = cluster, color = cluster),
+      gg = gg + geom_line(aes(x = time, y = upper, group = cluster, color = cluster),
                      data = band_long, size = rel(.7), alpha = .5) +
         geom_line(aes(x = time, y = lower, group = cluster, color = cluster),
                   data = band_long, size = rel(.7), alpha = .5) +

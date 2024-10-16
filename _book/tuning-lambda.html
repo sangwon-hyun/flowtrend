@@ -12,7 +12,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="5 Tuning \(\lambda\) | Creating the flowtrend R package">
 <meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien">
-<meta name="date" content="2024-09-11">
+<meta name="date" content="2024-10-15">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -1629,58 +1629,62 @@ variables), we write a short helper function to load it.</p>
 <span id="cb99-46"><a href="tuning-lambda.html#cb99-46" tabindex="-1"></a>      }</span>
 <span id="cb99-47"><a href="tuning-lambda.html#cb99-47" tabindex="-1"></a></span>
 <span id="cb99-48"><a href="tuning-lambda.html#cb99-48" tabindex="-1"></a>      <span class="do">## Pick out the CV scores with the *best* (lowest) objective value</span></span>
-<span id="cb99-49"><a href="tuning-lambda.html#cb99-49" tabindex="-1"></a>      cvscores <span class="ot">=</span> cvscore.array[iprob, imu , , ]</span>
+<span id="cb99-49"><a href="tuning-lambda.html#cb99-49" tabindex="-1"></a>      cvscores <span class="ot">=</span> cvscore.array[iprob, imu , , ] <span class="do">## nfold x nrestart</span></span>
 <span id="cb99-50"><a href="tuning-lambda.html#cb99-50" tabindex="-1"></a>      best.models <span class="ot">=</span> <span class="fu">apply</span>(obj, <span class="dv">1</span>, <span class="cf">function</span>(myrow){</span>
 <span id="cb99-51"><a href="tuning-lambda.html#cb99-51" tabindex="-1"></a>        ind <span class="ot">=</span> <span class="fu">which</span>(myrow <span class="sc">==</span> <span class="fu">min</span>(myrow, <span class="at">na.rm=</span><span class="cn">TRUE</span>))</span>
 <span id="cb99-52"><a href="tuning-lambda.html#cb99-52" tabindex="-1"></a>        <span class="cf">if</span>(<span class="fu">length</span>(ind)<span class="sc">&gt;</span><span class="dv">1</span>) ind <span class="ot">=</span> ind[<span class="dv">1</span>]  <span class="do">## Just choose one, if there is a tie.</span></span>
 <span id="cb99-53"><a href="tuning-lambda.html#cb99-53" tabindex="-1"></a>        <span class="fu">return</span>(ind)</span>
 <span id="cb99-54"><a href="tuning-lambda.html#cb99-54" tabindex="-1"></a>      }) <span class="sc">%&gt;%</span> <span class="fu">as.numeric</span>()</span>
-<span id="cb99-55"><a href="tuning-lambda.html#cb99-55" tabindex="-1"></a>      final.cvscores <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>nfold, <span class="cf">function</span>(ifold){</span>
-<span id="cb99-56"><a href="tuning-lambda.html#cb99-56" tabindex="-1"></a>        cvscores[ifold, best.models[ifold]] <span class="do">## Why did we get rid of this?</span></span>
-<span id="cb99-57"><a href="tuning-lambda.html#cb99-57" tabindex="-1"></a>        <span class="do">## cvscores[ifold]</span></span>
-<span id="cb99-58"><a href="tuning-lambda.html#cb99-58" tabindex="-1"></a>      })</span>
-<span id="cb99-59"><a href="tuning-lambda.html#cb99-59" tabindex="-1"></a>      cvscore.mat[iprob, imu] <span class="ot">=</span> <span class="fu">mean</span>(final.cvscores)</span>
-<span id="cb99-60"><a href="tuning-lambda.html#cb99-60" tabindex="-1"></a>      cvscore.mat.se[iprob, imu] <span class="ot">=</span> <span class="fu">sd</span>(final.cvscores)</span>
-<span id="cb99-61"><a href="tuning-lambda.html#cb99-61" tabindex="-1"></a>    }</span>
-<span id="cb99-62"><a href="tuning-lambda.html#cb99-62" tabindex="-1"></a>  }</span>
-<span id="cb99-63"><a href="tuning-lambda.html#cb99-63" tabindex="-1"></a></span>
-<span id="cb99-64"><a href="tuning-lambda.html#cb99-64" tabindex="-1"></a>  <span class="do">## Clean a bit</span></span>
-<span id="cb99-65"><a href="tuning-lambda.html#cb99-65" tabindex="-1"></a>  cvscore.mat[<span class="fu">which</span>(<span class="fu">is.nan</span>(cvscore.mat), <span class="at">arr.ind =</span> <span class="cn">TRUE</span>)] <span class="ot">=</span> <span class="cn">NA</span></span>
-<span id="cb99-66"><a href="tuning-lambda.html#cb99-66" tabindex="-1"></a></span>
-<span id="cb99-67"><a href="tuning-lambda.html#cb99-67" tabindex="-1"></a>  <span class="do">## ## Read the meta data (for |nfold|, |cv_gridsize|, |nrestart|)</span></span>
-<span id="cb99-68"><a href="tuning-lambda.html#cb99-68" tabindex="-1"></a>  <span class="fu">rownames</span>(cvscore.mat) <span class="ot">=</span> <span class="fu">signif</span>(lambda_probs,<span class="dv">3</span>)</span>
-<span id="cb99-69"><a href="tuning-lambda.html#cb99-69" tabindex="-1"></a>  <span class="fu">colnames</span>(cvscore.mat) <span class="ot">=</span> <span class="fu">signif</span>(lambda_means,<span class="dv">3</span>)</span>
+<span id="cb99-55"><a href="tuning-lambda.html#cb99-55" tabindex="-1"></a></span>
+<span id="cb99-56"><a href="tuning-lambda.html#cb99-56" tabindex="-1"></a>      <span class="do">## best.models is the *best* model out of nrestarts, for each fold.</span></span>
+<span id="cb99-57"><a href="tuning-lambda.html#cb99-57" tabindex="-1"></a>      <span class="do">## final.cvscores[ifold,] has the |nrestart| final cv scores for that fold. </span></span>
+<span id="cb99-58"><a href="tuning-lambda.html#cb99-58" tabindex="-1"></a>      <span class="do">## cvscores[ifold, best.models[ifold]] is the best CV score for that fold.</span></span>
+<span id="cb99-59"><a href="tuning-lambda.html#cb99-59" tabindex="-1"></a>      final.cvscores <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>nfold, <span class="cf">function</span>(ifold){</span>
+<span id="cb99-60"><a href="tuning-lambda.html#cb99-60" tabindex="-1"></a>        cvscores[ifold, best.models[ifold]] <span class="do">## Why did we get rid of this?</span></span>
+<span id="cb99-61"><a href="tuning-lambda.html#cb99-61" tabindex="-1"></a>        <span class="do">## cvscores[ifold]</span></span>
+<span id="cb99-62"><a href="tuning-lambda.html#cb99-62" tabindex="-1"></a>      })</span>
+<span id="cb99-63"><a href="tuning-lambda.html#cb99-63" tabindex="-1"></a>      cvscore.mat[iprob, imu] <span class="ot">=</span> <span class="fu">mean</span>(final.cvscores)</span>
+<span id="cb99-64"><a href="tuning-lambda.html#cb99-64" tabindex="-1"></a>      cvscore.mat.se[iprob, imu] <span class="ot">=</span> <span class="fu">sd</span>(final.cvscores)</span>
+<span id="cb99-65"><a href="tuning-lambda.html#cb99-65" tabindex="-1"></a>    }</span>
+<span id="cb99-66"><a href="tuning-lambda.html#cb99-66" tabindex="-1"></a>  }</span>
+<span id="cb99-67"><a href="tuning-lambda.html#cb99-67" tabindex="-1"></a></span>
+<span id="cb99-68"><a href="tuning-lambda.html#cb99-68" tabindex="-1"></a>  <span class="do">## Clean a bit</span></span>
+<span id="cb99-69"><a href="tuning-lambda.html#cb99-69" tabindex="-1"></a>  cvscore.mat[<span class="fu">which</span>(<span class="fu">is.nan</span>(cvscore.mat), <span class="at">arr.ind =</span> <span class="cn">TRUE</span>)] <span class="ot">=</span> <span class="cn">NA</span></span>
 <span id="cb99-70"><a href="tuning-lambda.html#cb99-70" tabindex="-1"></a></span>
-<span id="cb99-71"><a href="tuning-lambda.html#cb99-71" tabindex="-1"></a>  <span class="do">## Find the minimum</span></span>
-<span id="cb99-72"><a href="tuning-lambda.html#cb99-72" tabindex="-1"></a>  mat <span class="ot">=</span> cvscore.mat</span>
-<span id="cb99-73"><a href="tuning-lambda.html#cb99-73" tabindex="-1"></a>  min.inds <span class="ot">=</span> <span class="fu">which</span>(mat <span class="sc">==</span> <span class="fu">min</span>(mat, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">arr.ind =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb99-71"><a href="tuning-lambda.html#cb99-71" tabindex="-1"></a>  <span class="do">## ## Read the meta data (for |nfold|, |cv_gridsize|, |nrestart|)</span></span>
+<span id="cb99-72"><a href="tuning-lambda.html#cb99-72" tabindex="-1"></a>  <span class="fu">rownames</span>(cvscore.mat) <span class="ot">=</span> <span class="fu">signif</span>(lambda_probs,<span class="dv">3</span>)</span>
+<span id="cb99-73"><a href="tuning-lambda.html#cb99-73" tabindex="-1"></a>  <span class="fu">colnames</span>(cvscore.mat) <span class="ot">=</span> <span class="fu">signif</span>(lambda_means,<span class="dv">3</span>)</span>
 <span id="cb99-74"><a href="tuning-lambda.html#cb99-74" tabindex="-1"></a></span>
-<span id="cb99-75"><a href="tuning-lambda.html#cb99-75" tabindex="-1"></a>  <span class="do">## Find the 1SE minimum index too</span></span>
+<span id="cb99-75"><a href="tuning-lambda.html#cb99-75" tabindex="-1"></a>  <span class="do">## Find the minimum</span></span>
 <span id="cb99-76"><a href="tuning-lambda.html#cb99-76" tabindex="-1"></a>  mat <span class="ot">=</span> cvscore.mat</span>
-<span id="cb99-77"><a href="tuning-lambda.html#cb99-77" tabindex="-1"></a>  <span class="do">## sdmat = (out$cvscore.mat) ## This is fake</span></span>
-<span id="cb99-78"><a href="tuning-lambda.html#cb99-78" tabindex="-1"></a>  <span class="do">## sdmat[] = sd(out$cvscore.mat) ## This is fake</span></span>
-<span id="cb99-79"><a href="tuning-lambda.html#cb99-79" tabindex="-1"></a>  sdmat <span class="ot">=</span> cvscore.mat.se <span class="do">## This is fake</span></span>
-<span id="cb99-80"><a href="tuning-lambda.html#cb99-80" tabindex="-1"></a></span>
-<span id="cb99-81"><a href="tuning-lambda.html#cb99-81" tabindex="-1"></a>  upper <span class="ot">=</span> mat[min.inds] <span class="sc">+</span> sdmat[min.inds]</span>
-<span id="cb99-82"><a href="tuning-lambda.html#cb99-82" tabindex="-1"></a>  possible_inds <span class="ot">=</span> <span class="fu">which</span>(mat <span class="sc">&lt;</span> upper, <span class="at">arr.ind=</span><span class="cn">TRUE</span>)</span>
-<span id="cb99-83"><a href="tuning-lambda.html#cb99-83" tabindex="-1"></a>  <span class="do">## ## Because there is no good heuristic, we'll just go up in both directions.</span></span>
-<span id="cb99-84"><a href="tuning-lambda.html#cb99-84" tabindex="-1"></a>  <span class="do">## my_ord = order(abs(possible_inds[,2] - possible_inds[,1]))</span></span>
-<span id="cb99-85"><a href="tuning-lambda.html#cb99-85" tabindex="-1"></a>  <span class="do">## possible_inds[my_ord, ] %&gt;% apply(2, which.max)</span></span>
-<span id="cb99-86"><a href="tuning-lambda.html#cb99-86" tabindex="-1"></a>  <span class="do">## Or even just stick with the ones on the diagonal direction.</span></span>
-<span id="cb99-87"><a href="tuning-lambda.html#cb99-87" tabindex="-1"></a>  myrows <span class="ot">=</span> <span class="fu">which</span>(possible_inds[,<span class="dv">2</span>] <span class="sc">==</span> possible_inds[,<span class="dv">1</span>])</span>
-<span id="cb99-88"><a href="tuning-lambda.html#cb99-88" tabindex="-1"></a>  possible_inds <span class="ot">=</span> possible_inds[myrows, ,drop<span class="ot">=</span><span class="cn">FALSE</span>] </span>
-<span id="cb99-89"><a href="tuning-lambda.html#cb99-89" tabindex="-1"></a>  min.inds<span class="fl">.1</span>se <span class="ot">=</span> possible_inds[<span class="fu">which.max</span>(possible_inds[,<span class="dv">1</span>]),]</span>
-<span id="cb99-90"><a href="tuning-lambda.html#cb99-90" tabindex="-1"></a>  </span>
-<span id="cb99-91"><a href="tuning-lambda.html#cb99-91" tabindex="-1"></a>  <span class="do">## Return the results</span></span>
-<span id="cb99-92"><a href="tuning-lambda.html#cb99-92" tabindex="-1"></a>  out <span class="ot">=</span> <span class="fu">list</span>(<span class="at">cvscore.array =</span> cvscore.array,</span>
-<span id="cb99-93"><a href="tuning-lambda.html#cb99-93" tabindex="-1"></a>              <span class="at">cvscore.mat =</span> cvscore.mat,</span>
-<span id="cb99-94"><a href="tuning-lambda.html#cb99-94" tabindex="-1"></a>              <span class="at">cvscore.mat.se =</span> cvscore.mat.se,</span>
-<span id="cb99-95"><a href="tuning-lambda.html#cb99-95" tabindex="-1"></a>              <span class="at">lambda_means =</span> lambda_means,</span>
-<span id="cb99-96"><a href="tuning-lambda.html#cb99-96" tabindex="-1"></a>              <span class="at">lambda_probs =</span> lambda_probs,</span>
-<span id="cb99-97"><a href="tuning-lambda.html#cb99-97" tabindex="-1"></a>              <span class="at">min.inds =</span> min.inds,</span>
-<span id="cb99-98"><a href="tuning-lambda.html#cb99-98" tabindex="-1"></a>              <span class="at">min.inds.1se =</span> min.inds<span class="fl">.1</span>se)</span>
-<span id="cb99-99"><a href="tuning-lambda.html#cb99-99" tabindex="-1"></a>  <span class="fu">return</span>(out)</span>
-<span id="cb99-100"><a href="tuning-lambda.html#cb99-100" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb99-77"><a href="tuning-lambda.html#cb99-77" tabindex="-1"></a>  min.inds <span class="ot">=</span> <span class="fu">which</span>(mat <span class="sc">==</span> <span class="fu">min</span>(mat, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">arr.ind =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb99-78"><a href="tuning-lambda.html#cb99-78" tabindex="-1"></a></span>
+<span id="cb99-79"><a href="tuning-lambda.html#cb99-79" tabindex="-1"></a>  <span class="do">## Find the 1SE minimum index too</span></span>
+<span id="cb99-80"><a href="tuning-lambda.html#cb99-80" tabindex="-1"></a>  mat <span class="ot">=</span> cvscore.mat</span>
+<span id="cb99-81"><a href="tuning-lambda.html#cb99-81" tabindex="-1"></a>  <span class="do">## sdmat = (out$cvscore.mat) ## This is fake</span></span>
+<span id="cb99-82"><a href="tuning-lambda.html#cb99-82" tabindex="-1"></a>  <span class="do">## sdmat[] = sd(out$cvscore.mat) ## This is fake</span></span>
+<span id="cb99-83"><a href="tuning-lambda.html#cb99-83" tabindex="-1"></a>  sdmat <span class="ot">=</span> cvscore.mat.se <span class="do">## This is fake</span></span>
+<span id="cb99-84"><a href="tuning-lambda.html#cb99-84" tabindex="-1"></a></span>
+<span id="cb99-85"><a href="tuning-lambda.html#cb99-85" tabindex="-1"></a>  upper <span class="ot">=</span> mat[min.inds] <span class="sc">+</span> sdmat[min.inds]</span>
+<span id="cb99-86"><a href="tuning-lambda.html#cb99-86" tabindex="-1"></a>  possible_inds <span class="ot">=</span> <span class="fu">which</span>(mat <span class="sc">&lt;</span> upper, <span class="at">arr.ind=</span><span class="cn">TRUE</span>)</span>
+<span id="cb99-87"><a href="tuning-lambda.html#cb99-87" tabindex="-1"></a>  <span class="do">## ## Because there is no good heuristic, we'll just go up in both directions.</span></span>
+<span id="cb99-88"><a href="tuning-lambda.html#cb99-88" tabindex="-1"></a>  <span class="do">## my_ord = order(abs(possible_inds[,2] - possible_inds[,1]))</span></span>
+<span id="cb99-89"><a href="tuning-lambda.html#cb99-89" tabindex="-1"></a>  <span class="do">## possible_inds[my_ord, ] %&gt;% apply(2, which.max)</span></span>
+<span id="cb99-90"><a href="tuning-lambda.html#cb99-90" tabindex="-1"></a>  <span class="do">## Or even just stick with the ones on the diagonal direction.</span></span>
+<span id="cb99-91"><a href="tuning-lambda.html#cb99-91" tabindex="-1"></a>  myrows <span class="ot">=</span> <span class="fu">which</span>(possible_inds[,<span class="dv">2</span>] <span class="sc">==</span> possible_inds[,<span class="dv">1</span>])</span>
+<span id="cb99-92"><a href="tuning-lambda.html#cb99-92" tabindex="-1"></a>  possible_inds <span class="ot">=</span> possible_inds[myrows, ,drop<span class="ot">=</span><span class="cn">FALSE</span>] </span>
+<span id="cb99-93"><a href="tuning-lambda.html#cb99-93" tabindex="-1"></a>  min.inds<span class="fl">.1</span>se <span class="ot">=</span> possible_inds[<span class="fu">which.max</span>(possible_inds[,<span class="dv">1</span>]),]</span>
+<span id="cb99-94"><a href="tuning-lambda.html#cb99-94" tabindex="-1"></a>  </span>
+<span id="cb99-95"><a href="tuning-lambda.html#cb99-95" tabindex="-1"></a>  <span class="do">## Return the results</span></span>
+<span id="cb99-96"><a href="tuning-lambda.html#cb99-96" tabindex="-1"></a>  out <span class="ot">=</span> <span class="fu">list</span>(<span class="at">cvscore.array =</span> cvscore.array,</span>
+<span id="cb99-97"><a href="tuning-lambda.html#cb99-97" tabindex="-1"></a>              <span class="at">cvscore.mat =</span> cvscore.mat,</span>
+<span id="cb99-98"><a href="tuning-lambda.html#cb99-98" tabindex="-1"></a>              <span class="at">cvscore.mat.se =</span> cvscore.mat.se,</span>
+<span id="cb99-99"><a href="tuning-lambda.html#cb99-99" tabindex="-1"></a>              <span class="at">lambda_means =</span> lambda_means,</span>
+<span id="cb99-100"><a href="tuning-lambda.html#cb99-100" tabindex="-1"></a>              <span class="at">lambda_probs =</span> lambda_probs,</span>
+<span id="cb99-101"><a href="tuning-lambda.html#cb99-101" tabindex="-1"></a>              <span class="at">min.inds =</span> min.inds,</span>
+<span id="cb99-102"><a href="tuning-lambda.html#cb99-102" tabindex="-1"></a>              <span class="at">min.inds.1se =</span> min.inds<span class="fl">.1</span>se)</span>
+<span id="cb99-103"><a href="tuning-lambda.html#cb99-103" tabindex="-1"></a>  <span class="fu">return</span>(out)</span>
+<span id="cb99-104"><a href="tuning-lambda.html#cb99-104" tabindex="-1"></a>}</span></code></pre></div>
 <div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="tuning-lambda.html#cb100-1" tabindex="-1"></a><span class="co">#' Helper to aggregate CV results and obtain the |res| object, all saved in</span></span>
 <span id="cb100-2"><a href="tuning-lambda.html#cb100-2" tabindex="-1"></a><span class="co">#' |destin|.</span></span>
 <span id="cb100-3"><a href="tuning-lambda.html#cb100-3" tabindex="-1"></a><span class="co">#'</span></span>
@@ -1726,8 +1730,7 @@ variables), we write a short helper function to load it.</p>
 <span id="cb100-43"><a href="tuning-lambda.html#cb100-43" tabindex="-1"></a>    }</span>
 <span id="cb100-44"><a href="tuning-lambda.html#cb100-44" tabindex="-1"></a>  }</span>
 <span id="cb100-45"><a href="tuning-lambda.html#cb100-45" tabindex="-1"></a>  <span class="fu">return</span>(res.list)</span>
-<span id="cb100-46"><a href="tuning-lambda.html#cb100-46" tabindex="-1"></a>}</span>
-<span id="cb100-47"><a href="tuning-lambda.html#cb100-47" tabindex="-1"></a></span></code></pre></div>
+<span id="cb100-46"><a href="tuning-lambda.html#cb100-46" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="cv-on-your-own-computer" class="section level2 hasAnchor" number="5.7">
 <h2>

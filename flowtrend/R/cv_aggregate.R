@@ -48,12 +48,16 @@ cv_aggregate <- function(destin){
       }
 
       ## Pick out the CV scores with the *best* (lowest) objective value
-      cvscores = cvscore.array[iprob, imu , , ]
+      cvscores = cvscore.array[iprob, imu , , ] ## nfold x nrestart
       best.models = apply(obj, 1, function(myrow){
         ind = which(myrow == min(myrow, na.rm=TRUE))
         if(length(ind)>1) ind = ind[1]  ## Just choose one, if there is a tie.
         return(ind)
       }) %>% as.numeric()
+
+      ## best.models is the *best* model out of nrestarts, for each fold.
+      ## final.cvscores[ifold,] has the |nrestart| final cv scores for that fold. 
+      ## cvscores[ifold, best.models[ifold]] is the best CV score for that fold.
       final.cvscores = sapply(1:nfold, function(ifold){
         cvscores[ifold, best.models[ifold]] ## Why did we get rid of this?
         ## cvscores[ifold]

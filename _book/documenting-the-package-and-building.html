@@ -12,7 +12,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="8 Documenting the package and building | Creating the flowtrend R package">
 <meta name="author" content="Sangwon Hyun, Tim Coleman, Francois Ribalet, Jacob Bien">
-<meta name="date" content="2024-09-11">
+<meta name="date" content="2024-10-15">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -209,7 +209,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </h1>
 <p>We finish by running commands that will document, build, and install the
 package. It may also be a good idea to check the package from within this file.</p>
-<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="documenting-the-package-and-building.html#cb136-1" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">document</span>() <span class="co"># &lt;-- use instead of devtools::document() </span></span></code></pre></div>
+<div class="sourceCode" id="cb137"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb137-1"><a href="documenting-the-package-and-building.html#cb137-1" tabindex="-1"></a>litr<span class="sc">::</span><span class="fu">document</span>() <span class="co"># &lt;-- use instead of devtools::document() </span></span></code></pre></div>
 <pre><code>## ℹ Updating flowtrend documentation
 ## ℹ Loading flowtrend
 ## ℹ Re-compiling flowtrend (debug build)</code></pre>
@@ -291,8 +291,9 @@ package. It may also be a good idea to check the package from within this file.<
 <pre><code>## Warning: [objective.R:25] @examples requires a value</code></pre>
 <pre><code>## Warning: [overfit_flowmeans.R:7] @return requires a value</code></pre>
 <pre><code>## Warning: [overfit_gmm.R:7] @return requires a value</code></pre>
-<pre><code>## Warning: [overfit_gmm.R:147] @return requires a value</code></pre>
+<pre><code>## Warning: [overfit_gmm.R:157] @return requires a value</code></pre>
 <pre><code>## Warning: [plot_3d.R:12] @return requires a value</code></pre>
+<pre><code>## Warning: [rand_old.R:148] @param requires name and description</code></pre>
 <pre><code>## Warning: [soft_gate_one_responsibility_matrix.R:7] @return requires a value</code></pre>
 <pre><code>## Warning: [underfit_gmm.R:7] @return requires a value</code></pre>
 <pre><code>## Writing 'NAMESPACE'</code></pre>
@@ -321,6 +322,7 @@ package. It may also be a good idea to check the package from within this file.<
 ## Writing 'check_converge.Rd'
 ## Writing 'check_converge_rel.Rd'
 ## Writing 'create_destin.Rd'
+## Writing 'create_oracle.Rd'
 ## Writing 'cv_aggregate.Rd'
 ## Writing 'cv_aggregate_res.Rd'
 ## Writing 'cv_flowtrend.Rd'
@@ -385,7 +387,11 @@ package. It may also be a good idea to check the package from within this file.<
 ## Writing 'plot_prob.Rd'
 ## Writing 'predict_flowtrend.Rd'
 ## Writing 'print_progress.Rd'
+## Writing 'rand_old.Rd'
 ## Writing 'rand.Rd'
+## Writing 'make_contingency_table.Rd'
+## Writing 'get_rand_from_table.Rd'
+## Writing 'rand_from_mems.Rd'
 ## Writing 'reorder_clust.Rd'
 ## Writing 'reorder_flowmeans.Rd'
 ## Writing 'reorder_kl.Rd'
