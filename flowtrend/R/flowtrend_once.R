@@ -173,7 +173,6 @@ flowtrend_once <- function(ylist,
         break
       }
     }
-
   }
 
   return(structure(list(mn = mn,

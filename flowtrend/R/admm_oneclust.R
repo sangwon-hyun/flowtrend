@@ -35,11 +35,6 @@ admm_oneclust <- function(iclust = 1, niter, y,
   resid_mat = matrix(NA, nrow = ceiling(niter/5), ncol = 6)
   colnames(resid_mat) = c("prim1", "prim2", "primresid", "primerr", "dualresid", "dualerr")
   rhofac = rho / rhoinit 
- 
-   
-  ## print("iclust") 
-  ## print(iclust)
-  ## if(iclust == 5) browser()
 
   ## This doesn't change over iterations
   schurB = myschur(schurB$orig * rhofac) ## In flowmix, this is done on A. Here, it's done on B (in AX + XB + C = 0).
@@ -77,7 +72,6 @@ admm_oneclust <- function(iclust = 1, niter, y,
     z <- Z_update(centered_mu, Uz = uz, C = maxdev, rho = rho)
 
     if(any(abs(mu)>1E2)){
-      ## browser() 
       stop("mu is blowing up!")
       ## break
     }

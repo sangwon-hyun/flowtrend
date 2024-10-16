@@ -126,7 +126,6 @@ Mstep_mu <- function(resp,
     resp.iclust <- lapply(resp, FUN = function(r) matrix(r[,iclust]))
 
     ## Possibly locally adaptive ADMM, for now just running with rho == lambda
-    ## if(iter == 3 & iclust == 5) browser()
     res = la_admm_oneclust(K = (if(local_adapt) local_adapt_niter else 1),
                            local_adapt = local_adapt,
                            iclust = iclust,
